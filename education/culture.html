@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>米遇安文化</title>
+    <!-- Tailwind + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0078D7',
+                        secondary: '#F8F9FA',
+                        dark: '#212529',
+                        cultureGold: '#C9A03D',
+                    },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] },
+                    borderRadius: {
+                        DEFAULT: '0px',
+                        none: '0px',
+                        sm: '0px',
+                        md: '0px',
+                        lg: '0px',
+                        xl: '0px',
+                        '2xl': '0px',
+                        full: '9999px',
+                    },
+                    keyframes: {
+                        float: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-6px)' } },
+                        gradientShift: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } },
+                        gentleRise: { '0%': { opacity: '0', transform: 'translateY(12px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        modalSlideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    },
+                    animation: { float: 'float 5s ease-in-out infinite', gradientShift: 'gradientShift 7s ease infinite', gentleRise: 'gentleRise 0.6s ease-out forwards', modalSlideUp: 'modalSlideUp 0.3s ease forwards' }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { scroll-behavior: smooth; margin: 0; padding: 0; box-sizing: border-box; }
+        /* 直角风格强制 (除full外) */
+        .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded, button:not(.rounded-full), [class*="rounded-"]:not(.rounded-full) { border-radius: 0px !important; }
+        .rounded-full { border-radius: 9999px !important; }
+        
+        /* 导航栏 */
+        #navbar {
+            position: fixed !important; top: 0; left: 0; right: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(18px) saturate(180%);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.2,0.9,0.3,1);
+            z-index: 100000;
+            padding: 12px 0;
+        }
+        .dark #navbar { background: rgba(17, 24, 39, 0.94) !important; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .navbar-scrolled { background: rgba(255,255,255,0.98) !important; box-shadow: 0 6px 18px rgba(0,0,0,0.05); }
+        .dark .navbar-scrolled { background: rgba(17,24,39,0.98) !important; box-shadow: 0 6px 18px rgba(0,0,0,0.3); }
+        
+        body { margin: 0; padding-top: 74px; background-color: #ffffff; transition: background 0.2s; }
+        .dark body { background-color: #121212; }
+        
+        #mobileMenu { position: absolute; top: 100%; left: 0; width: 100%; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-top: 1px solid rgba(0,0,0,0.05); animation: slideDown 0.2s ease-out; z-index: 99999; }
+        .dark #mobileMenu { background: rgba(17,24,39,0.96); border-top: 1px solid rgba(255,255,255,0.05); }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
+        
+        /* 深色模式适配 */
+        .dark .bg-white { background-color: #1e1f22; }
+        .dark .bg-secondary { background-color: #18191c; }
+        .dark .text-dark { color: #f0f0f0; }
+        .dark .text-gray-600, .dark .text-gray-700 { color: #bcbcbc !important; }
+        .dark .text-primary { color: #5aa9e6 !important; }
+        .dark .border-gray-100 { border-color: #2c2e33; }
+        
+        /* 动态渐变文字 (文化主题增强) */
+        .culture-gradient {
+            background: linear-gradient(120deg, #0078D7, #2b6aa9, #C9A03D, #0078D7);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 8s ease infinite;
+            font-weight: 800;
+        }
+        
+        .hero-title { font-size: 2.8rem; line-height: 1.2; }
+        @media (min-width: 768px) { .hero-title { font-size: 3.8rem; } }
+        @media (min-width: 1024px) { .hero-title { font-size: 4.5rem; } }
+        
+        /* 卡片悬浮 */
+        .card-hover { transition: all 0.4s cubic-bezier(0.2,0.9,0.3,1); will-change: transform; }
+        .card-hover:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 18px 28px -12px rgba(0,120,215,0.2); }
+        
+        /* 光晕跟随 */
+        .hover-tint { position: relative; isolation: isolate; overflow: hidden; }
+        .hover-tint::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0,120,215,0.22) 0%, rgba(0,120,215,0.05) 50%, transparent 80%);
+            opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 1;
+        }
+        .dark .hover-tint::before { background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(90,169,230,0.28) 0%, rgba(90,169,230,0.08) 55%, transparent 80%); }
+        .hover-tint:hover::before { opacity: 1; }
+        .hover-tint > * { position: relative; z-index: 2; }
+        
+        /* 文章卡片样式 */
+        .article-card {
+            border-left: 4px solid #0078D7;
+            transition: all 0.3s;
+        }
+        .article-card:hover {
+            transform: translateX(6px);
+            box-shadow: 0 12px 20px -12px rgba(0,0,0,0.1);
+        }
+        .dark .article-card:hover {
+            box-shadow: 0 12px 20px -12px rgba(90,169,230,0.2);
+        }
+        .btn-primary {
+            background: #0078D7; color: white; padding: 0.6rem 1.5rem; transition: all 0.25s ease; display: inline-block; font-weight: 500;
+        }
+        .btn-primary:hover { background: #005a9e; transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,120,215,0.3); }
+        .dark .btn-primary { background: #5aa9e6; color: #121212; }
+        
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+        @media (max-width: 768px) { .container { padding: 0 1rem; } }
+        
+        .footer-link { cursor: pointer; transition: 0.2s; }
+        .footer-link:hover { color: #0078D7 !important; }
+        .legal-link { cursor: pointer; }
+        .legal-link:hover { color: #0078D7 !important; text-decoration: underline; }
+        
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 200000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.25s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-container { background: white; width: 90%; max-width: 650px; max-height: 80vh; display: flex; flex-direction: column; animation: modalSlideUp 0.3s forwards; }
+        .dark .modal-container { background: #1e1f22; border: 1px solid rgba(90,169,230,0.3); }
+        .btn-outline {
+            border: 2px solid #0078D7;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .btn-outline:hover {
+            background: rgba(0,120,215,0.08);
+            transform: translateY(-2px);
+        }
+        .dark .btn-outline {
+            border-color: #5aa9e6;
+            color: #5aa9e6;
+        }
+        .dark .btn-outline:hover {
+            background: rgba(90,169,230,0.15);
+        }
+    </style>
+</head>
+<body class="font-inter text-dark antialiased">
+    <!-- 法律模态框 -->
+    <div id="legalModal" class="modal-overlay" onclick="closeModal(event)"><div class="modal-container" onclick="event.stopPropagation()"><div class="modal-header p-4 border-b flex justify-between items-center"><h2 id="modalTitle" class="text-primary font-bold text-xl">隐私政策</h2><button class="modal-close text-2xl" onclick="closeModal()">&times;</button></div><div class="modal-body p-5 overflow-auto" id="modalBody"></div><div class="modal-footer p-3 border-t flex justify-end"><button onclick="closeModal()" class="btn-primary text-sm px-5">关闭</button></div></div></div>
+
+    <nav id="navbar">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="#" class="text-2xl font-black text-primary tracking-tight">米遇安<span class="text-cultureGold">·文化</span></a>
+            </div>
+            <div class="hidden md:flex items-center space-x-7 font-medium">
+                <a href="#home" class="hover:text-primary transition-all">首页</a>
+                <a href="#article-zhendan" class="hover:text-primary transition-all">震旦之名</a>
+                <a href="#article-zhuyin" class="hover:text-primary transition-all">注音</a>
+                <button id="darkModeToggle" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"><i id="darkModeIcon" class="fas fa-moon text-primary text-lg"></i></button>
+            </div>
+            <div class="flex md:hidden gap-2">
+                <button id="darkModeToggleMobile" class="p-2"><i id="darkModeIconMobile" class="fas fa-moon text-primary"></i></button>
+                <button id="menuBtn" class="text-2xl"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden"><div class="container py-5 flex flex-col space-y-4 text-base"><a href="#home" class="hover:text-primary">首页</a><a href="#article-zhendan" class="hover:text-primary">震旦之名</a><a href="#article-zhuyin" class="hover:text-primary">注音</a></div></div>
+    </nav>
+
+    <main>
+        <!-- 英雄区 文化主题 -->
+        <section id="home" class="bg-secondary">
+            <div class="hero-section py-16 md:py-24 text-center">
+                <div class="container">
+                    <h1 class="hero-title font-black leading-tight"><span class="culture-gradient">文明的回响</span><br><span class="text-primary block mt-2 animate-float">从震旦到注音，探源文化本质</span></h1>
+                    <p class="text-lg md:text-xl max-w-2xl mx-auto mt-5 text-gray-700 dark:text-gray-300">米遇安文化 · 深入文化内涵，探究文明本质。一篇篇溯源，一次次惊奇。</p>
+                    <div class="flex flex-wrap justify-center gap-5 mt-10">
+                        <a href="#article-zhendan" class="btn-primary">探索震旦 <i class="fas fa-globe-asia ml-1"></i></a>
+                        <a href="#article-zhuyin" class="btn-outline px-5 py-2">注音智慧</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 文章1：中国为什么被叫做“震旦” (完整保留历史细节) -->
+        <section id="article-zhendan" class="py-16">
+            <div class="container max-w-4xl mx-auto">
+                <div class="article-card bg-white dark:bg-gray-800 p-6 md:p-8 shadow-sm hover-tint" onmousemove="updateMask(event)">
+                    <div class="flex items-center gap-3 mb-4"><i class="fas fa-flag-china text-4xl text-primary"></i><h2 class="text-3xl md:text-4xl font-bold text-primary">中国为什么被叫做“震旦”</h2></div>
+                    <div class="text-gray-500 text-sm mb-6 border-b pb-3 flex items-center gap-2"><i class="far fa-clock"></i> 文化溯源 · 米遇安文化</div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 space-y-5 leading-relaxed">
+                        <p>我相信很多人都听过“震旦”这个词语，也知道这代表着中国，但为什么“震旦”代表着中国呢？今天，我们就从波斯帝国开始探讨这个问题。</p>
+                        <p>众所周知，波斯帝国是一个古老且历史久远的帝国，而它的鼎盛时期恰好对应我们的秦汉时期，当时的波斯帝国范围及其广，覆盖了欧洲、亚洲和非洲。因为它太大了，于是为它的区域及旁边国家的区域分类，总共分了以下几类：</p>
+                        <p>①常居型 —— stan</p>
+                        <p>②游牧型 —— mongo、hongs等</p>
+                        <p>“stan”中“st”有着“不动、停止”的意思，整个“stan”也就是不动的人民，也就是定居的意思这与我国的农耕文明完全符合，于是波斯人为我们分为了“stan”类，音译成中文也就是“斯坦”。又因为我们是当时是“秦”，于是波斯人称我们的国家为“Cinastan”，其中“Cina”也就是“秦”的音译，整个单词被音译为“秦那斯坦”。</p>
+                        <p>所以当时简称“Cina”来代表我们中国。由于当时没有印刷术，书文的传承只能靠手写，于是“Cina”被误写误记成了“Sina”“Sino”，这也就是为什么新浪网的英文是“Sina”，中国石化的英文单词里有个“Sino”了。</p>
+                        <p>同样地，“mongo”中的“mon”即为“move”，有“移动”的意思，这里我就不细讲了。</p>
+                        <p>后来，大秦帝国倒塌了，臭名昭著的秦的暴政与《过秦论》也一起将整个秦朝的名声弄坏了，便将“秦”字删去了。因为我们是东方之国，而东方对应“震”卦，于是取名为“震那斯坦”，又因为“坦”太“土”了（“坦”字有“土”字旁），所以改名为“震那斯旦”，简称为“震旦”。</p>
+                        <p>在北洋军阀时期，马相伯先生修建了一所大学，取名为“震旦公学”，却因战乱而被销毁。后来，蒋介石统一了全中国，政府提出重新修建震旦公学，于是取名为“复建震旦大学”，也就是现在我们说的“复旦大学”。</p>
+                        <div class="bg-primary/5 p-5 mt-6 border-l-4 border-primary italic">怎么样，很有意思吧？没想到中国被叫作“震旦”竟然与波斯帝国和英文有关。关注米遇安文化（Miyuan Culture），带你深入文化内涵，探究文明本质。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 文章2：注音 (完整保留繁体与简体内容、注音对应表及键盘布局) -->
+        <section id="article-zhuyin" class="py-16 bg-secondary">
+            <div class="container max-w-4xl mx-auto">
+                <div class="article-card bg-white dark:bg-gray-800 p-6 md:p-8 shadow-sm hover-tint" onmousemove="updateMask(event)">
+                    <div class="flex items-center gap-3 mb-4"><i class="fas fa-font text-4xl text-primary"></i><h2 class="text-3xl md:text-4xl font-bold text-primary">註音</h2></div>
+                    <div class="text-gray-500 text-sm mb-6 border-b pb-3"><i class="far fa-keyboard"></i> 文字拼音 · 米遇安文化</div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 space-y-5 leading-relaxed">
+                        <h3 class="text-xl font-bold">什麼是註音</h3>
+                        <p>註音，大家看到這個詞的第一反應是什麼？是將一個字標註上拼音呢，還是不知道它是什麼呢？其實，註音就相當於古代版的拼音，簡體中是將一個字標註上拼音。雖然現在基本只有臺灣人在使用它，但這註音傳承甚久，我們也可以學學它。</p>
+                        <h3 class="text-xl font-bold">註音與拼音的對應</h3>
+                        <p>想必通過上面我對大家的介紹，那麽下面我們就來與拼音對應起來吧！</p>
+                        <div class="bg-gray-50 dark:bg-gray-900 p-4 text-sm font-mono leading-relaxed overflow-x-auto">
+                            b→ㄅ；p→ㄆ；m→ㄇ；f→ㄈ；d→ㄉ；t→ㄊ；n→ㄋ；l→ㄌ；g→ㄍ；k→ㄎ；h→ㄏ；j→ㄐ；q→ㄑ；x→ㄒ；zh→ㄓ；ch→ㄔ；sh→ㄕ；r→ㄖ；z→ㄗ；c→ㄘ；s→ㄙ；i→ㄧ；u/w→ㄨ；yu→ㄩ；a→ㄚ；o→ㄛ；e→ㄜ；ie→ㄝ；ai→ㄞ；ei→ㄟ；ao→ㄠ；ou→ㄡ；an→ㄢ；en→ㄣ；ang→ㄤ；eng→ㄥ；er→ㄦ
+                        </div>
+                        <p>當然，這些都需要不斷積累、不斷鞏固。希望你能背熟！</p>
+                        <h3 class="text-xl font-bold">特殊情況</h3>
+                        <p>如果你細心一些，你會發現，有一些拼音似乎並沒有對應的註音，比如ing、yong等。這些其實是特殊情況，我們其實可以將一個拼音拆分成幾個註音，比如：ye→i+ie→ㄧㄝ；in→i+en→ㄧㄣ；ing→i+eng→ㄧㄥ；ui/wei→u/w+ei→ㄨㄟ；ong→u+eng→ㄨㄥ；yuan→yu+an→ㄩㄢ；yong→i+ong→i+u+eng→yu+eng→ㄩㄥ等。</p>
+                        <h3 class="text-xl font-bold">鍵盤上的使用</h3>
+                        <p>接下來我們就來講講如何使用註音利用鍵盤在電子裝置上打字吧！</p>
+                        <p>如果你現在正在使用實體鍵盤，那麽你鍵盤上註音的順序應爲（因爲註音很多，故佔用了鍵盤中主鍵盤曲中數字鍵的位置，切換到英文時即可解除）：</p>
+                        <div class="bg-gray-50 dark:bg-gray-900 p-3 font-mono text-sm overflow-x-auto whitespace-pre">
+                            ㄅㄉˇˋㄓˊ˙ㄚㄞㄢㄦ
+                            ㄆㄊㄍㄐㄔㄗㄧㄛㄟㄣ
+                            ㄇㄋㄎㄑㄕㄘㄨㄜㄠㄤ
+                            ㄈㄌㄏㄒㄖㄙㄩㄝㄡㄥ
+                        </div>
+                        <p>如果你現在正在使用虛擬鍵盤，那麽你會遇到兩種情況，第一種與實體鍵盤相同，如螢幕擷取畫面一所示。第二種如螢幕擷取畫面二所示。</p>
+                        <div class="bg-primary/5 p-5 mt-6 border-l-4 border-primary italic">关注米遇安文化（Miyuan Culture），帶你深入文化內涵，探究文明本質。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 鸣谢 + 简短联系区 -->
+        <section class="py-12 bg-secondary">
+            <div class="container max-w-3xl mx-auto text-center">
+                <i class="fas fa-hand-sparkles text-5xl text-primary mb-3"></i>
+                <h3 class="text-2xl font-bold">文化探索 · 未完待续</h3>
+                <p class="text-gray-600 mt-2">米遇安文化持续分享有温度、有深度的文明故事。</p>
+                <div class="mt-6 text-sm text-gray-500">合作联系：3493792731@qq.com</div>
+            </div>
+        </section>
+
+        <footer class="bg-dark text-white py-8 mt-8">
+            <div class="container">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div><h3 class="text-primary text-xl font-bold">米遇安文化</h3><p class="text-gray-400 text-sm">深入文化内涵，探究文明本质。</p></div>
+                    <div><h4 class="font-bold mb-2">探索文章</h4><ul class="space-y-1 text-sm"><li><a href="#article-zhendan" class="footer-link">震旦之名</a></li><li><a href="#article-zhuyin" class="footer-link">註音</a></li></ul></div>
+                    <div><h4 class="font-bold mb-2">关于我们</h4><p class="text-sm text-gray-400">米遇安文化 · 校园文化品牌，专注历史与跨学科知识传播。</p><div class="flex gap-4 mt-2"><a href="#" class="legal-link text-gray-400 text-xs" onclick="showPrivacyPolicy(); return false;">隐私政策</a><a href="#" class="legal-link text-gray-400 text-xs" onclick="showUserAgreement(); return false;">用户协议</a></div></div>
+                </div>
+                <div class="border-t border-gray-700 mt-6 pt-5 text-center text-gray-400 text-xs"><p>© 2026 米遇安文化 · 探寻文明脉络</p></div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // 法律模态框
+        function showPrivacyPolicy(){ document.getElementById('modalTitle').innerHTML='隐私政策'; document.getElementById('modalBody').innerHTML='<p>米遇安文化尊重您的隐私，仅用于优化内容推荐与沟通，不泄露个人信息。</p><p class="mt-2">如您有任何疑问请联系官方邮箱。</p>'; document.getElementById('legalModal').classList.add('active'); document.body.style.overflow='hidden'; }
+        function showUserAgreement(){ document.getElementById('modalTitle').innerHTML='用户协议'; document.getElementById('modalBody').innerHTML='<p>访问本网站即表示您同意遵守法律法规，尊重原创文化内容，禁止未授权转载。</p><p>米遇安文化保留最终解释权。</p>'; document.getElementById('legalModal').classList.add('active'); document.body.style.overflow='hidden'; }
+        function closeModal(e){ if(e && e.target !== document.getElementById('legalModal') && !e.target.closest('.modal-close') && !e.target.closest('.modal-footer button')) { if(e.target===document.getElementById('legalModal')){ document.getElementById('legalModal').classList.remove('active'); document.body.style.overflow=''; } return; } document.getElementById('legalModal').classList.remove('active'); document.body.style.overflow=''; }
+        window.showPrivacyPolicy=showPrivacyPolicy; window.showUserAgreement=showUserAgreement; window.closeModal=closeModal;
+        // 滚动导航栏效果
+        window.addEventListener('scroll',()=>document.getElementById('navbar')?.classList.toggle('navbar-scrolled',window.scrollY>50));
+        // 移动端菜单
+        const menuBtn = document.getElementById('menuBtn'), mobileMenu = document.getElementById('mobileMenu');
+        if(menuBtn) menuBtn.onclick = () => mobileMenu.classList.toggle('hidden');
+        // 深色模式
+        const toggleDark=()=>{ let isDark=!document.documentElement.classList.contains('dark'); document.documentElement.classList.toggle('dark',isDark); ['darkModeIcon','darkModeIconMobile'].forEach(id=>{ let el=document.getElementById(id); if(el) el.className=isDark?'fas fa-sun text-primary text-lg':'fas fa-moon text-primary text-lg'; }); localStorage.setItem('darkMode',isDark); };
+        let savedDark=localStorage.getItem('darkMode'), prefers=window.matchMedia('(prefers-color-scheme: dark)').matches, isDark=savedDark==='true'||(savedDark===null&&prefers);
+        document.documentElement.classList.toggle('dark',isDark);
+        document.getElementById('darkModeToggle')?.addEventListener('click',toggleDark);
+        document.getElementById('darkModeToggleMobile')?.addEventListener('click',toggleDark);
+        // 鼠标光晕
+        function updateMask(ev){ let rect=ev.currentTarget.getBoundingClientRect(); let x=(ev.clientX-rect.left)/rect.width, y=(ev.clientY-rect.top)/rect.height; ev.currentTarget.style.setProperty('--x',`${Math.min(1,Math.max(0,x))*100}%`); ev.currentTarget.style.setProperty('--y',`${Math.min(1,Math.max(0,y))*100}%`); }
+        window.updateMask=updateMask;
+    </script>
+</body>
+</html>
