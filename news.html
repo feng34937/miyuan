@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>米遇安新闻 · 全球视野 实时资讯</title>
+    <!-- Tailwind + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0078D7',
+                        secondary: '#F8F9FA',
+                        dark: '#212529',
+                    },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] },
+                    borderRadius: {
+                        DEFAULT: '0px',
+                        none: '0px',
+                        sm: '0px',
+                        md: '0px',
+                        lg: '0px',
+                        xl: '0px',
+                        '2xl': '0px',
+                        full: '9999px',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        gradientShift: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    },
+                    animation: {
+                        float: 'float 5s ease-in-out infinite',
+                        gradientShift: 'gradientShift 6s ease infinite',
+                        fadeInUp: 'fadeInUp 0.5s ease forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { scroll-behavior: smooth; }
+        
+        /* 直角风格 (保留官网调性) */
+        .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded, button, [class*="rounded-"]:not(.rounded-full):not(.carousel-dot) {
+            border-radius: 0px !important;
+        }
+        .rounded-full, .carousel-dot {
+            border-radius: 9999px !important;
+        }
+        
+        /* 导航栏 */
+        #navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+            z-index: 100000 !important;
+            padding: 12px 0;
+        }
+        .dark #navbar {
+            background: rgba(17, 24, 39, 0.88) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .navbar-scrolled {
+            background: rgba(255, 255, 255, 0.96) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+        }
+        .dark .navbar-scrolled {
+            background: rgba(17, 24, 39, 0.96) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+        }
+        
+        body {
+            margin: 0;
+            padding-top: 74px !important;
+            background-color: #ffffff;
+            transition: background-color 0.3s ease;
+        }
+        .dark body { background-color: #121212; }
+        
+        #mobileMenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            z-index: 99999;
+            animation: slideDown 0.25s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .dark #mobileMenu { background: rgba(17, 24, 39, 0.96); border-top: 1px solid rgba(255,255,255,0.05); }
+        
+        /* 深色适配 */
+        .dark .bg-secondary { background-color: #1e1f22; }
+        .dark .bg-white { background-color: #1e1f22; }
+        .dark .text-dark { color: #f0f0f0; }
+        .dark .text-gray-600, .dark .text-gray-700 { color: #b0b0b0 !important; }
+        .dark .text-primary { color: #5aa9e6 !important; }
+        
+        .dynamic-gradient-text {
+            background: linear-gradient(90deg, #0078D7, #2b88d9, #0078D7, #005a9e, #0078D7);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 6s ease infinite;
+            font-weight: 900;
+        }
+        
+        /* 新闻卡片悬停效果 */
+        .news-card {
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+            will-change: transform, box-shadow;
+            background: white;
+            border: 1px solid rgba(0,120,215,0.12);
+        }
+        .news-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 20px 30px -12px rgba(0,120,215,0.2) !important;
+            border-color: rgba(0,120,215,0.4);
+        }
+        .dark .news-card {
+            background: #1e1f22;
+            border-color: rgba(90,169,230,0.15);
+        }
+        .dark .news-card:hover {
+            box-shadow: 0 20px 30px -12px rgba(90,169,230,0.25) !important;
+        }
+        
+        /* 鼠标靠近光晕 (复用官网特效) */
+        .hover-tint {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+        }
+        .hover-tint::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+                        rgba(0, 120, 215, 0.2) 0%,
+                        rgba(0, 120, 215, 0.05) 45%,
+                        transparent 75%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .dark .hover-tint::before {
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+                        rgba(90, 169, 230, 0.3) 0%,
+                        rgba(90, 169, 230, 0.1) 45%,
+                        transparent 75%);
+        }
+        .hover-tint:hover::before { opacity: 1; }
+        .hover-tint > * { position: relative; z-index: 2; }
+        
+        .category-btn {
+            transition: all 0.25s ease;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+        }
+        .category-btn.active {
+            color: #0078D7;
+            border-bottom-color: #0078D7;
+            font-weight: 600;
+        }
+        .dark .category-btn.active {
+            color: #5aa9e6;
+            border-bottom-color: #5aa9e6;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 46px;
+            height: 46px;
+            background: #0078D7;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .back-to-top:hover {
+            background: #005a9e;
+            transform: translateY(-3px);
+        }
+        .dark .back-to-top {
+            background: #5aa9e6;
+            color: #121212;
+        }
+        
+        .loader {
+            border: 3px solid rgba(0,120,215,0.2);
+            border-top: 3px solid #0078D7;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 0.8s linear infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .dark .loader { border-top-color: #5aa9e6; }
+        
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+        @media (max-width: 768px) { .container { padding: 0 1rem; } }
+    </style>
+</head>
+<body class="font-inter text-dark antialiased">
+
+    <nav id="navbar" class="transition-all">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="#" class="text-2xl font-black text-primary tracking-tight hover:scale-105 transition-transform">米遇安 · 新闻</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-7 text-[0.95rem] font-medium">
+                <a href="#" class="hover:text-primary transition-all relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full">首页</a>
+                <a href="#" class="hover:text-primary transition-all relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full">要闻</a>
+                <a href="#" class="hover:text-primary transition-all relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full">科技</a>
+                <a href="#" class="hover:text-primary transition-all relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full">文化</a>
+                <a href="#" class="hover:text-primary transition-all relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full">关于我们</a>
+                <button id="darkModeToggle" class="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"><i id="darkModeIcon" class="fas fa-moon text-primary text-lg"></i></button>
+            </div>
+            <div class="flex items-center gap-3 md:hidden">
+                <button id="darkModeToggleMobile" class="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"><i id="darkModeIconMobile" class="fas fa-moon text-primary text-lg"></i></button>
+                <button id="menuBtn" class="text-2xl text-dark hover:text-primary"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden">
+            <div class="container py-5 flex flex-col space-y-4 text-base font-medium">
+                <a href="#" class="hover:text-primary py-1 transition">首页</a>
+                <a href="#" class="hover:text-primary py-1 transition">要闻</a>
+                <a href="#" class="hover:text-primary py-1 transition">科技</a>
+                <a href="#" class="hover:text-primary py-1 transition">文化</a>
+                <a href="#" class="hover:text-primary py-1 transition">关于我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="bg-secondary py-12 md:py-16 border-b border-gray-200 dark:border-gray-800">
+            <div class="container text-center">
+                <h1 class="text-4xl md:text-6xl font-black leading-tight">
+                    <span class="dynamic-gradient-text">米遇安新闻</span>
+                </h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto mt-5 text-gray-700 dark:text-gray-300">实时网络资讯 · 洞察时代脉搏</p>
+                <div class="max-w-xl mx-auto mt-8">
+                    <div class="flex gap-2">
+                        <input type="text" id="globalSearchInput" placeholder="搜索新闻标题或摘要..." class="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary outline-none transition">
+                        <button id="globalSearchBtn" class="btn-primary px-6"><i class="fas fa-search mr-2"></i>搜索</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-12 md:py-16">
+            <div class="container">
+                <div class="flex flex-wrap justify-center gap-6 md:gap-10 border-b border-gray-200 dark:border-gray-700 pb-3 mb-10">
+                    <button data-category="all" class="category-btn active text-lg font-medium transition-all">全部</button>
+                    <button data-category="domestic" class="category-btn text-lg font-medium transition-all">国内</button>
+                    <button data-category="international" class="category-btn text-lg font-medium transition-all">国际</button>
+                    <button data-category="technology" class="category-btn text-lg font-medium transition-all">科技</button>
+                    <button data-category="culture" class="category-btn text-lg font-medium transition-all">文化教育</button>
+                </div>
+
+                <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="col-span-full flex justify-center py-12"><div class="loader"></div></div>
+                </div>
+                <div class="text-center mt-8" id="newsStatus"></div>
+            </div>
+        </section>
+
+        <section class="bg-secondary py-16 border-t border-gray-200 dark:border-gray-800">
+            <div class="container max-w-4xl mx-auto text-center">
+                <i class="fas fa-globe text-primary text-5xl mb-4"></i>
+                <h2 class="text-3xl font-bold mb-4">聚合优质信源 · 即时网络新闻</h2>
+                <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                    米遇安新闻聚合来自权威网络媒体的实时资讯，涵盖时政、科技、教育、文化等领域。
+                    我们坚持客观、快速、有价值的原则，让每一位读者第一时间了解世界动态。
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white py-10">
+        <div class="container">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div><h3 class="text-xl font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-sm">致力于实用的工具和有趣的小游戏</p></div>
+                <div><h3 class="font-bold mb-2">新闻板块</h3><ul class="space-y-1 text-sm"><li class="footer-link cursor-pointer hover:text-primary transition">要闻</li><li class="footer-link cursor-pointer hover:text-primary transition">科技</li><li class="footer-link cursor-pointer hover:text-primary transition">文化</li></ul></div>
+                <div><h3 class="font-bold mb-2">快速链接</h3><ul class="space-y-1 text-sm"><li class="footer-link cursor-pointer hover:text-primary transition">关于米遇安</li><li class="footer-link cursor-pointer hover:text-primary transition">核心团队</li><li class="footer-link cursor-pointer hover:text-primary transition">教育分区</li><li class="footer-link cursor-pointer hover:text-primary transition">工具游戏</li></ul></div>
+                <div><h3 class="font-bold mb-2">联系方式</h3><ul class="space-y-1 text-sm"><li><i class="fas fa-map-marker-alt text-primary w-5"></i> 桂林市第一中学</li><li><i class="fas fa-phone text-primary w-5"></i> +86 152 0773 8425</li><li><i class="fas fa-envelope text-primary w-5"></i> 3493792731@qq.com</li></ul></div>
+            </div>
+            <div class="border-t border-gray-700 pt-5 text-center text-gray-400 text-xs">
+                <p>&copy; 2026 米遇安新闻 · 数据来自网络公开资讯 | 洞察时代脉搏</p>
+                <div class="flex justify-center gap-5 mt-2">
+                    <a href="#" class="legal-link text-gray-400 hover:text-primary transition" onclick="alert('隐私政策与用户协议遵循米遇安官网标准。'); return false;">隐私政策</a>
+                    <a href="#" class="legal-link text-gray-400 hover:text-primary transition" onclick="alert('使用本网站即代表同意相关协议。'); return false;">用户协议</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </div>
+
+    <script>
+        // ---------- 新闻API 代理 (仅从网络获取，完全移除米遇安本地新闻) ----------
+        let currentCategory = "all";
+        let searchKeyword = "";
+        let allNewsItems = [];      // 存储从网络获取的所有新闻
+        
+        const newsGrid = document.getElementById("newsGrid");
+        const newsStatus = document.getElementById("newsStatus");
+        
+        // 获取分类标签中文
+        function getCategoryLabel(cat) {
+            const map = { domestic: "国内", international: "国际", technology: "科技", culture: "文化教育" };
+            return map[cat] || "资讯";
+        }
+        
+        // 格式化日期
+        function formatRelativeDate(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return "最新";
+                const now = new Date();
+                const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+                if (diff === 0) return "今日";
+                if (diff === 1) return "昨日";
+                if (diff < 7) return `${diff}天前`;
+                return `${date.getMonth()+1}月${date.getDate()}日`;
+            } catch(e) { return "近日"; }
+        }
+        
+        // 转义HTML
+        function escapeHtml(str) {
+            if(!str) return "";
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        // 随机图标映射
+        const iconMap = ["fa-globe", "fa-newspaper", "fa-microchip", "fa-chalkboard-user", "fa-landmark", "fa-rocket", "fa-brain", "fa-laptop-code", "fa-chart-line", "fa-university"];
+        function getRandomIcon(seed) {
+            return iconMap[Math.abs(seed) % iconMap.length];
+        }
+        
+        // 渲染新闻卡片
+        function renderNews() {
+            let filtered = [...allNewsItems];
+            if (currentCategory !== "all") {
+                filtered = filtered.filter(item => item.category === currentCategory);
+            }
+            if (searchKeyword.trim() !== "") {
+                const kw = searchKeyword.trim().toLowerCase();
+                filtered = filtered.filter(item => item.title.toLowerCase().includes(kw) || (item.summary && item.summary.toLowerCase().includes(kw)));
+            }
+            
+            if (filtered.length === 0) {
+                newsGrid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-newspaper text-5xl mb-3 opacity-50"></i><p>没有找到相关新闻，试试其他关键词吧~</p></div>`;
+                newsStatus.innerText = "暂无匹配结果";
+                return;
+            }
+            
+            newsStatus.innerText = `共 ${filtered.length} 条实时资讯 · 网络聚合`;
+            newsGrid.innerHTML = filtered.map((news, idx) => `
+                <div class="news-card p-5 hover-tint flex flex-col" onmousemove="updateMask(event)">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center"><i class="fas ${news.icon || getRandomIcon(news.id || idx)} text-primary text-xl"></i></div>
+                        <span class="text-xs text-gray-500"><i class="far fa-clock mr-1"></i>${formatRelativeDate(news.pubDate)}</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 line-clamp-2">${escapeHtml(news.title)}</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 flex-1">${escapeHtml(news.summary || news.description || "点击阅读全文了解详情")}</p>
+                    <div class="flex justify-between items-center mt-2 border-t border-gray-100 dark:border-gray-800 pt-3">
+                        <span class="text-xs text-primary font-medium">${getCategoryLabel(news.category)}</span>
+                        <a href="${news.link}" target="_blank" rel="noopener noreferrer" class="text-primary text-sm font-medium hover:underline transition">阅读全文 <i class="fas fa-external-link-alt ml-1 text-xs"></i></a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 从网络获取新闻 (使用 RSS to JSON 代理，获取真实新闻，无任何米遇安相关内容)
+        async function fetchNetworkNews() {
+            // 多个新闻源: 新浪国内、BBC国际、The Verge科技、以及文化教育类 RSS
+            const sources = [
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://news.sina.com.cn/roll/rollnews_sudoku_0_1.xml", category: "domestic", name: "新浪新闻" },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml", category: "international", name: "BBC国际" },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml", category: "technology", name: "The Verge" },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.chronicle.com/rss/news", category: "culture", name: "教育文化" }  // 高等教育纪事报文化教育类
+            ];
+            
+            let allArticles = [];
+            
+            try {
+                const fetchPromises = sources.map(async (source) => {
+                    try {
+                        const response = await fetch(source.url);
+                        const data = await response.json();
+                        if (data && data.items && Array.isArray(data.items)) {
+                            // 每个源取最新10条左右
+                            return data.items.slice(0, 12).map(item => ({
+                                id: item.guid || item.link,
+                                title: item.title || "无标题",
+                                summary: (item.description || item.content || "").replace(/<[^>]*>/g, '').substring(0, 220),
+                                pubDate: item.pubDate || new Date().toISOString(),
+                                link: item.link || "#",
+                                category: source.category,
+                                icon: source.category === "domestic" ? "fa-china-railway" : (source.category === "international" ? "fa-globe" : (source.category === "technology" ? "fa-microchip" : "fa-book-open"))
+                            }));
+                        }
+                        return [];
+                    } catch (err) {
+                        console.warn(`获取源 ${source.name} 失败:`, err);
+                        return [];
+                    }
+                });
+                
+                const results = await Promise.all(fetchPromises);
+                for (const articles of results) {
+                    allArticles.push(...articles);
+                }
+            } catch(e) {
+                console.error("新闻聚合出错", e);
+            }
+            
+            // 如果网络获取完全失败（例如跨域限制或所有源都失效），则提供一组备用但依然是真实风格的非米遇安新闻
+            if (allArticles.length === 0) {
+                // 备用数据: 基于真实新闻标题的样例 (不涉及任何米遇安品牌)
+                allArticles = [
+                    { id: "fall1", title: "中国成功发射遥感卫星·助力国土测绘", summary: "卫星顺利进入预定轨道，将为自然资源调查和防灾减灾提供数据支撑。", pubDate: new Date().toISOString(), link: "#", category: "domestic", icon: "fa-rocket" },
+                    { id: "fall2", title: "OpenAI 推出轻量级模型GPT-4o mini，免费开放API", summary: "大幅降低AI应用门槛，开发者可低成本集成智能对话与多模态识别。", pubDate: new Date(Date.now() - 86400000).toISOString(), link: "#", category: "technology", icon: "fa-brain" },
+                    { id: "fall3", title: "联合国教科文组织呼吁加强AI伦理教育", summary: "全球教育峰会强调数字素养与批判性思维培养，避免技术鸿沟扩大。", pubDate: new Date(Date.now() - 172800000).toISOString(), link: "#", category: "international", icon: "fa-university" },
+                    { id: "fall4", title: "故宫博物院推出线上沉浸式文化展", summary: "运用VR/AR技术让观众近距离感受文物之美，数字文化传承新尝试。", pubDate: new Date(Date.now() - 259200000).toISOString(), link: "#", category: "culture", icon: "fa-landmark" },
+                    { id: "fall5", title: "国家统计局：一季度GDP同比增长5.3%", summary: "经济运行开局良好，高质量发展扎实推进。", pubDate: new Date(Date.now() - 345600000).toISOString(), link: "#", category: "domestic", icon: "fa-chart-line" },
+                    { id: "fall6", title: "NASA公布最新系外行星探测进展", summary: "韦伯望远镜发现可能存在水蒸气的大气特征。", pubDate: new Date(Date.now() - 432000000).toISOString(), link: "#", category: "technology", icon: "fa-space-shuttle" }
+                ];
+            }
+            
+            // 按时间排序最新的在前
+            allArticles.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
+            return allArticles;
+        }
+        
+        // 初始化加载网络新闻
+        async function loadNewsFromNetwork() {
+            newsGrid.innerHTML = `<div class="col-span-full flex justify-center py-12"><div class="loader"></div></div>`;
+            try {
+                const networkNews = await fetchNetworkNews();
+                allNewsItems = networkNews;
+                renderNews();
+            } catch (err) {
+                console.error("新闻加载异常", err);
+                newsGrid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500"><i class="fas fa-exclamation-triangle text-3xl mb-2"></i><p>新闻加载失败，请检查网络后刷新重试</p></div>`;
+                newsStatus.innerText = "加载失败，稍后重试";
+            }
+        }
+        
+        // 分类/搜索触发重新渲染
+        function setCategory(category) {
+            currentCategory = category;
+            searchKeyword = "";
+            document.getElementById('globalSearchInput').value = "";
+            updateActiveCategoryButton(category);
+            renderNews();
+        }
+        
+        function updateActiveCategoryButton(activeCat) {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                const catVal = btn.getAttribute('data-category');
+                if(catVal === activeCat) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+        
+        function performGlobalSearch() {
+            const input = document.getElementById('globalSearchInput');
+            searchKeyword = input.value;
+            currentCategory = "all";
+            updateActiveCategoryButton("all");
+            renderNews();
+        }
+        
+        // 事件绑定与通用功能
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (navbar) navbar.classList.toggle('navbar-scrolled', window.scrollY > 50);
+            const backBtn = document.getElementById('backToTop');
+            if (backBtn) backBtn.classList.toggle('show', window.scrollY > 300);
+        });
+        
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if(menuBtn) menuBtn.onclick = () => mobileMenu.classList.toggle('hidden');
+        
+        const toggleDark = () => { 
+            let isDark = !document.documentElement.classList.contains('dark'); 
+            document.documentElement.classList.toggle('dark', isDark); 
+            ['darkModeIcon','darkModeIconMobile'].forEach(id => { 
+                let el = document.getElementById(id); 
+                if(el) el.className = isDark ? 'fas fa-sun text-primary text-lg' : 'fas fa-moon text-primary text-lg'; 
+            }); 
+            localStorage.setItem('darkMode', isDark); 
+        };
+        let savedDark = localStorage.getItem('darkMode'), prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches, isDark = savedDark === 'true' || (savedDark === null && prefersDark);
+        document.documentElement.classList.toggle('dark', isDark);
+        document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
+        document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
+        
+        function updateMask(ev) { 
+            let el = ev.currentTarget; 
+            let rect = el.getBoundingClientRect(); 
+            let x = (ev.clientX - rect.left) / rect.width; 
+            let y = (ev.clientY - rect.top) / rect.height; 
+            x = Math.min(1, Math.max(0, x)); 
+            y = Math.min(1, Math.max(0, y)); 
+            el.style.setProperty('--x', x * 100 + '%'); 
+            el.style.setProperty('--y', y * 100 + '%'); 
+        }
+        window.updateMask = updateMask;
+        
+        document.getElementById('backToTop')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => setCategory(btn.getAttribute('data-category')));
+        });
+        document.getElementById('globalSearchBtn')?.addEventListener('click', performGlobalSearch);
+        document.getElementById('globalSearchInput')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') performGlobalSearch(); });
+        
+        // 启动: 从网络加载新闻（不含任何米遇安相关条目）
+        loadNewsFromNetwork();
+    </script>
+</body>
+</html>
