@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <title>现代战争推演2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            background: #0a1a2a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        /* 全屏页 */
+        .full-page {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(145deg, #0a2a3a, #051218);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-in-out;
+            animation: pageFadeIn 0.6s ease-out;
+        }
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .page-card {
+            background: rgba(10,26,42,0.95);
+            backdrop-filter: blur(8px);
+            border: 3px solid #2c5282;
+            border-radius: 4px;
+            padding: 30px 40px;
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.7);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 60px rgba(0,0,0,0.9);
+        }
+        .game-title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #7cb8e6;
+            text-shadow: 4px 4px 0 #1e3a5f;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            animation: titleGlow 2s infinite alternate;
+        }
+        @keyframes titleGlow {
+            from { text-shadow: 4px 4px 0 #1e3a5f; }
+            to { text-shadow: 6px 6px 0 #2c5282, 0 0 10px #3b82f6; }
+        }
+        .team-signature {
+            font-size: 42px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 3px 3px 0 #0a1a2a;
+            margin-bottom: 30px;
+            transition: color 0.3s ease;
+        }
+        .team-signature:hover {
+            color: #7cb8e6;
+        }
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .next-btn, .tutorial-btn {
+            background: #2c5282; border: none; border-bottom: 5px solid #1e3a5f; color: white;
+            font-size: 28px; padding: 14px 30px; cursor: pointer; font-weight: bold;
+            border-radius: 4px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            flex: 0 1 auto;
+            min-width: 200px;
+        }
+        .tutorial-btn {
+            background: #1e3a5f;
+            border-bottom-color: #0f2a3f;
+        }
+        .next-btn:hover, .tutorial-btn:hover {
+            transform: scale(1.05);
+            border-bottom-width: 8px;
+        }
+        .next-btn:hover {
+            background: #3a6fa3;
+        }
+        .tutorial-btn:hover {
+            background: #2c5282;
+        }
+        .next-btn:active, .tutorial-btn:active {
+            transform: scale(0.95);
+        }
+        .mode-title { font-size: 40px; color: #9bc0e6; margin-bottom: 30px; }
+        .mode-grid { display: flex; gap: 20px; justify-content: center; }
+        .mode-option {
+            flex: 1 1 220px; background: #0a1a2a; border: 3px solid #2c5282; border-bottom: 8px solid #1e3a5f;
+            color: #9bc0e6; font-size: 30px; padding: 30px 10px; cursor: pointer; font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 4px;
+        }
+        .mode-option:hover {
+            background: #1a2a3a;
+            border-color: #3b82f6;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+        .mode-option.selected {
+            background: #2c5282;
+            color: white;
+            border-color: #7cb8e6;
+            border-bottom-color: #1e3a5f;
+            animation: selectedPulse 0.5s ease-out;
+        }
+        @keyframes selectedPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .start-game-btn {
+            background: #2c5282; border: none; border-bottom: 5px solid #1e3a5f; color: white;
+            font-size: 36px; padding: 18px 60px; margin-top: 40px; cursor: pointer; font-weight: bold;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .start-game-btn:hover {
+            background: #3a6fa3;
+            transform: scale(1.05);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* 教程提示框 - 毛玻璃背景 */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50000;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 30px;
+        }
+        .tutorial-bubble {
+            background: rgba(10,26,42,0.8);
+            backdrop-filter: blur(8px);
+            border: 3px solid #3b82f6;
+            border-radius: 4px;
+            padding: 25px 35px;
+            max-width: 550px;
+            width: 90%;
+            color: #9bc0e6;
+            font-size: 24px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            animation: bubblePop 0.4s ease;
+            pointer-events: auto;
+            border-left: 8px solid #7cb8e6;
+            position: relative;
+            z-index: 50001;
+        }
+        @keyframes bubblePop {
+            from { opacity: 0; transform: translateY(-20px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .tutorial-bubble .title {
+            font-size: 32px;
+            color: #7cb8e6;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .tutorial-bubble .content {
+            margin-bottom: 25px;
+            line-height: 1.5;
+            font-size: 22px;
+        }
+        .tutorial-bubble .button-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .tutorial-bubble .tut-btn {
+            background: #2c5282;
+            border: none;
+            border-bottom: 4px solid #1e3a5f;
+            color: white;
+            font-size: 26px;
+            padding: 12px 30px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            min-width: 140px;
+        }
+        .tutorial-bubble .tut-btn:hover {
+            background: #3a6fa3;
+            transform: scale(1.05);
+        }
+        .tutorial-bubble .tut-btn.secondary {
+            background: #1e3a5f;
+            border-bottom-color: #0f2a3f;
+        }
+        .tutorial-bubble .tut-btn.secondary:hover {
+            background: #2c5282;
+        }
+        .tutorial-highlight {
+            position: relative;
+            z-index: 40001;
+            animation: pulse 1s infinite alternate;
+            box-shadow: 0 0 0 4px #3b82f6, 0 0 15px 5px #3b82f6 !important;
+            border-radius: 4px;
+        }
+        @keyframes pulse {
+            from { box-shadow: 0 0 0 4px #3b82f6, 0 0 15px 5px #3b82f6; }
+            to { box-shadow: 0 0 0 8px #7cb8e6, 0 0 25px 8px #3b82f6; }
+        }
+        /* 自定义国家弹窗 */
+        .name-modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.95); z-index: 25000; align-items: center; justify-content: center;
+            animation: modalBackdropFade 0.3s ease;
+        }
+        @keyframes modalBackdropFade {
+            from { background: rgba(0,0,0,0); }
+            to { background: rgba(0,0,0,0.95); }
+        }
+        .name-content {
+            background: #0a1a2a; border: 4px solid #3b82f6; padding: 50px 60px; text-align: center;
+            max-width: 700px; width: 90%; color: #9bc0e6;
+            border-radius: 4px;
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .name-title { font-size: 42px; color: #7cb8e6; margin-bottom: 30px; }
+        .name-input-group { margin: 30px 0; text-align: left; }
+        .name-label { font-size: 28px; color: #9bc0e6; margin-bottom: 12px; font-weight: bold; }
+        .name-input {
+            width: 100%; background: #051218; border: 3px solid #2c5282; color: white;
+            font-size: 32px; padding: 18px 25px; outline: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .name-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px #3b82f6;
+            transform: scale(1.02);
+        }
+        .name-confirm-btn {
+            background: #2c5282; border-bottom: 6px solid #1e3a5f; color: white; font-size: 36px;
+            padding: 18px 60px; margin-top: 40px; cursor: pointer; font-weight: bold;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .name-confirm-btn:hover {
+            background: #3a6fa3;
+            transform: translateY(-3px);
+            border-bottom-width: 8px;
+        }
+        /* 格子信息弹窗 */
+        .cell-info-modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); z-index: 15000; align-items: center; justify-content: center;
+            animation: modalBackdropFade 0.3s ease;
+        }
+        .cell-info-content {
+            background: #0a1a2a; border: 4px solid #3b82f6; padding: 30px 45px; max-width: 500px;
+            width: 90%; color: #9bc0e6; font-size: 24px;
+            border-radius: 4px;
+            animation: slideInFromBottom 0.4s ease;
+        }
+        @keyframes slideInFromBottom {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .cell-info-title { font-size: 34px; color: #7cb8e6; margin-bottom: 20px; }
+        .cell-info-row { margin: 15px 0; display: flex; align-items: center; gap: 15px; }
+        .cell-info-label { font-weight: bold; color: #7cb8e6; min-width: 110px; font-size: 24px; }
+        .cell-info-value { color: white; font-size: 24px; transition: color 0.3s ease; }
+        .close-info-btn { background: #2c5282; color: white; border-bottom: 4px solid #1e3a5f; font-size: 28px; padding: 12px 40px; margin-top: 25px; cursor: pointer; border-radius: 4px; transition: all 0.2s ease; }
+        .close-info-btn:hover { background: #3a6fa3; transform: scale(1.05); }
+        /* 研发中弹窗 */
+        .custom-modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); z-index: 20000; align-items: center; justify-content: center;
+            animation: modalBackdropFade 0.3s ease;
+        }
+        .custom-modal-content { background: #0a1a2a; border: 4px solid #2c5282; padding: 40px; text-align: center; color: #9bc0e6; font-size: 30px; border-radius: 4px; animation: modalPop 0.4s ease; }
+        .custom-modal-content button {
+            background: #2c5282; color: white; border: none; border-bottom: 4px solid #1e3a5f;
+            font-size: 28px; padding: 10px 40px; margin-top: 20px; cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .custom-modal-content button:hover { background: #3a6fa3; transform: scale(1.05); }
+        /* 规则弹窗 */
+        .rules-modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.85); z-index: 18000; align-items: center; justify-content: center;
+            animation: modalBackdropFade 0.3s ease;
+        }
+        .rules-modal-content {
+            background: #0a1a2a; border: 4px solid #3b82f6; padding: 40px 50px; max-width: 700px;
+            width: 90%; color: #9bc0e6; font-size: 26px; line-height: 1.6;
+            border-radius: 4px;
+            animation: slideInFromBottom 0.4s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .rules-modal-title { font-size: 40px; color: #7cb8e6; margin-bottom: 25px; text-align: center; }
+        .rules-modal-list { list-style-type: none; }
+        .rules-modal-list li { margin: 18px 0; padding-left: 10px; border-left: 5px solid #2c5282; transition: border-left-color 0.3s ease; }
+        .rules-modal-list li:hover { border-left-color: #3b82f6; }
+        .close-rules-btn {
+            background: #2c5282; border-bottom: 5px solid #1e3a5f; color: white; font-size: 30px;
+            padding: 12px 50px; margin-top: 30px; cursor: pointer; border: none; font-weight: bold;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .close-rules-btn:hover { background: #3a6fa3; transform: scale(1.05); }
+        /* 部署武器专用模态框 */
+        .deploy-modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.9); z-index: 30000; align-items: center; justify-content: center;
+            animation: modalBackdropFade 0.3s ease;
+        }
+        .deploy-content {
+            background: #0a1a2a; border: 4px solid #3b82f6; padding: 40px 50px;
+            max-width: 900px; width: 90%; color: #9bc0e6; border-radius: 4px;
+            max-height: 80vh; overflow-y: auto;
+            animation: modalPop 0.4s ease;
+        }
+        .deploy-title { font-size: 36px; color: #7cb8e6; margin-bottom: 25px; text-align: center; }
+        .deploy-item {
+            margin: 20px 0; padding: 20px; border: 1px solid #2c5282; border-radius: 4px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            transition: all 0.3s ease;
+        }
+        .deploy-item:hover {
+            border-color: #3b82f6;
+            transform: translateX(5px);
+            background: rgba(44,82,130,0.2);
+        }
+        .deploy-item-info { font-size: 24px; }
+        .deploy-item-desc { color: #9bc0e6; font-size: 18px; margin-top: 5px; }
+        .deploy-btn { background: #2c5282; color: white; border: none; border-bottom: 4px solid #1e3a5f; padding: 12px 30px; font-size: 24px; cursor: pointer; border-radius: 4px; transition: all 0.2s ease; }
+        .deploy-btn:hover { background: #3a6fa3; transform: scale(1.05) translateY(-2px); }
+        .deploy-btn.disabled { opacity: 0.3; pointer-events: none; }
+        .close-deploy-btn { background: #1e3a5f; color: #9bc0e6; border: 2px solid #2c5282; font-size: 28px; padding: 10px 40px; margin-top: 20px; cursor: pointer; border-radius: 4px; width: fit-content; margin-left: auto; margin-right: auto; transition: all 0.2s ease; }
+        .close-deploy-btn:hover { background: #2c5282; color: white; }
+        /* 游戏主界面 */
+        .game-wrapper {
+            position: fixed; top:0; left:0; width:100vw; height:100vh; overflow: auto;
+            background: #051218; display: none; -webkit-overflow-scrolling: touch;
+            animation: wrapperFade 0.5s ease;
+        }
+        @keyframes wrapperFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .game-container {
+            min-width: 1000px; min-height: 1000px; background: #0a1a2a; border: 2px solid #2c5282;
+            padding: 20px; display: inline-block;
+            transform-origin: 0 0;
+            transition: transform 0.2s ease;
+            border-radius: 4px;
+        }
+        .notification-bar {
+            background: #2c5282; color: #fff; padding: 18px 25px; font-size: 24px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap;
+            margin-bottom: 20px; border-left: 8px solid #1e3a5f; border-right: 8px solid #1e3a5f;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            animation: notificationSlide 0.4s ease;
+        }
+        @keyframes notificationSlide {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .notification-badge { background: #051218; color: #9bc0e6; padding: 8px 24px; font-size: 22px; border-radius: 4px; transition: all 0.3s ease; }
+        .notification-btn { background: #051218; border-bottom: 4px solid #2c5282; color: #9bc0e6; font-size: 22px; padding: 10px 30px; cursor: pointer; font-weight: bold; border-radius: 4px; transition: all 0.2s ease; }
+        .notification-btn:hover:not(:disabled) { background: #1a2a3a; transform: scale(1.05); }
+        .turn-indicator { background: #2c5282; color: white; padding: 12px 20px; font-size: 22px; text-align: center; margin-bottom: 15px; border-radius: 4px; animation: turnPulse 1s infinite alternate; }
+        @keyframes turnPulse {
+            from { box-shadow: 0 0 5px #3b82f6; }
+            to { box-shadow: 0 0 20px #3b82f6; }
+        }
+        .player-count-setup { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; background: #051218; padding: 10px 20px; width: fit-content; color: #9bc0e6; font-size: 22px; border-radius: 4px; transition: all 0.3s ease; }
+        .player-count-btn { background: #2c5282; color: white; border: none; font-size: 28px; width: 44px; height: 44px; cursor: pointer; border-radius: 4px; transition: all 0.2s ease; }
+        .player-count-btn:hover { background: #3a6fa3; transform: scale(1.1); }
+        .players-stack { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; background: #051218; padding: 15px; border-radius: 4px; }
+        .player-card { flex: 1; min-width: 200px; background: #0a1a2a; border: 2px solid #2c5282; padding: 15px; color: #9bc0e6; border-radius: 4px; transition: all 0.3s ease; animation: cardFadeIn 0.5s ease; }
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .player-card.active { border-color: #7cb8e6; box-shadow: 0 0 15px #3b82f6; background: #1a2a3a; transform: scale(1.02); }
+        .player-card.eliminated { opacity: 0.4; filter: grayscale(80%); }
+        .player-name { font-size: 22px; font-weight: bold; color: #7cb8e6; margin-bottom: 6px; }
+        .capital-name { font-size: 18px; color: #9bc0e6; margin-bottom: 8px; font-style: italic; border-bottom: 1px dashed #2c5282; padding-bottom: 4px; }
+        .resource-display { display: flex; flex-wrap: wrap; gap: 8px; background: #051218; padding: 8px; font-size: 15px; border-radius: 4px; }
+        .resource-display div { transition: all 0.3s ease; }
+        .resource-display div:hover { transform: scale(1.1); color: #7cb8e6; }
+        .top-actions { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 15px; gap: 15px; }
+        .rules-btn, .research-btn, .deploy-weapon-btn {
+            font-size: 26px; cursor: pointer; color: #9bc0e6; padding: 15px 25px;
+            background: #0a1a2a; border: 2px solid #2c5282; display: flex; align-items: center; font-weight: bold;
+            flex: 1; justify-content: center; text-align: center;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        .rules-btn:hover, .research-btn:hover, .deploy-weapon-btn:hover {
+            background: #1a2a3a;
+            border-color: #3b82f6;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(59,130,246,0.3);
+        }
+        .rules-btn:active, .research-btn:active, .deploy-weapon-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+        /* 网格 20x20 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(20, 48px);
+            grid-template-rows: repeat(20, 48px);
+            background: #051218;
+            width: fit-content;
+            border: 4px solid #2c5282;
+            border-radius: 4px;
+        }
+        .grid-cell {
+            border: 1px solid rgba(44, 82, 130, 0.4);
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .grid-cell:hover {
+            filter: brightness(1.3);
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(59,130,246,0.5);
+        }
+        .sea { background-color: #2c5282; }
+        .land { background-color: #7cb8e6; }
+        .selected { 
+            background-color: #3b82f6 !important; 
+            border: 3px solid #1e3a5f !important;
+            animation: selectedPulse 1s infinite alternate;
+        }
+        @keyframes selectedPulse {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.3); }
+        }
+        .unit { 
+            background: radial-gradient(circle, #3b82f6, #1e3a5f) !important;
+            animation: unitPulse 1.5s infinite alternate;
+        }
+        @keyframes unitPulse {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.3); }
+        }
+        .player1-land { background-color: #5a67d8 !important; }
+        .player1-capital { background-color: #9f7aea !important; border: 4px solid #c4b5fd; }
+        .player2-land { background-color: #48bb78 !important; }
+        .player2-capital { background-color: #68d391 !important; border: 4px solid #9ae6b4; }
+        .player3-land { background-color: #ed8936 !important; }
+        .player3-capital { background-color: #f6ad55 !important; border: 4px solid #fbd38d; }
+        .player4-land { background-color: #e53e3e !important; }
+        .player4-capital { background-color: #fc8181 !important; border: 4px solid #feb2b2; }
+        .player5-land { background-color: #d53f8c !important; }
+        .player5-capital { background-color: #ed64a6 !important; border: 4px solid #fbb6ce; }
+        .player6-land { background-color: #b794f4 !important; }
+        .player6-capital { background-color: #d6bcfa !important; border: 4px solid #e9d8fd; }
+        .player7-land { background-color: #63b3ed !important; }
+        .player7-capital { background-color: #90cdf4 !important; border: 4px solid #bee3f8; }
+        .player8-land { background-color: #f687b3 !important; }
+        .player8-capital { background-color: #fbb6ce !important; border: 4px solid #fed7e2; }
+        .player9-land { background-color: #a0aec0 !important; }
+        .player9-capital { background-color: #cbd5e0 !important; border: 4px solid #e2e8f0; }
+        .action-panel { margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .action-btn { padding: 12px 24px; border: none; background: #2c5282; color: white; font-weight: bold; font-size: 20px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px; }
+        .action-btn:hover:not(:disabled) { background: #3a6fa3; transform: scale(1.05); }
+        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .action-btn.used { opacity: 0.5; background: #1e3a5f; }
+        .status-text { text-align: center; margin-top: 18px; color: #9bc0e6; font-size: 22px; font-weight: bold; min-height: 60px; transition: all 0.3s ease; }
+        .data-info { margin-top: 20px; font-size: 18px; color: #9bc0e6; background: #051218; padding: 15px; border-radius: 4px; transition: all 0.3s ease; }
+        .modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(10,26,42,0.9); z-index: 1500; align-items: center; justify-content: center;
+            animation: modalBackdropFade 0.3s ease;
+        }
+        .modal-content { background: #0a1a2a; padding: 30px; max-width: 1000px; width: 90%; color: #9bc0e6; border: 3px solid #2c5282; max-height: 80vh; overflow-y: auto; border-radius: 4px; animation: modalPop 0.4s ease; }
+        .loan-item, .research-item {
+            margin: 20px 0; padding: 20px; border: 1px solid #2c5282; display: flex; justify-content: space-between; align-items: center; font-size: 22px; flex-wrap: wrap;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .loan-item:hover, .research-item:hover {
+            border-color: #3b82f6;
+            transform: translateX(5px);
+            background: rgba(44,82,130,0.2);
+        }
+        .buy-btn { background: #2c5282; color: white; border: none; padding: 8px 20px; font-size: 22px; cursor: pointer; margin: 5px; transition: all 0.2s ease; border-radius: 4px; }
+        .buy-btn:hover { background: #3a6fa3; transform: scale(1.05); }
+        .buy-btn.disabled { opacity: 0.3; pointer-events: none; }
+        .close-btn { font-size: 36px; cursor: pointer; float: right; transition: all 0.2s ease; }
+        .close-btn:hover { transform: rotate(90deg); color: #3b82f6; }
+        .loan-warning { color: #3b82f6; font-size: 20px; }
+        .tech-tree { display: flex; flex-direction: column; gap: 15px; }
+        .tech-category { border-left: 5px solid #3b82f6; padding-left: 15px; margin: 10px 0; }
+        .tech-category h3 { color: #7cb8e6; font-size: 28px; margin-bottom: 10px; }
+        .disabled-tech { opacity: 0.5; pointer-events: none; background-color: #1e3a5f; }
+        .tech-note { color: #9bc0e6; font-size: 18px; margin-left: 10px; }
+
+        /* 右下角缩放控制 */
+        .zoom-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            background: rgba(10,26,42,0.8);
+            backdrop-filter: blur(8px);
+            border: 2px solid #2c5282;
+            border-radius: 4px;
+            padding: 12px 18px;
+            z-index: 3000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+            transition: all 0.3s ease;
+            animation: zoomControlsSlide 0.5s ease;
+        }
+        @keyframes zoomControlsSlide {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .zoom-controls:hover {
+            background: rgba(26,42,58,0.9);
+            border-color: #3b82f6;
+        }
+        .zoom-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            background: #0a1a2a;
+            border: 3px solid #3b82f6;
+            color: #7cb8e6;
+            font-size: 36px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+        }
+        .zoom-btn:hover {
+            background: #2c5282;
+            color: white;
+            border-color: #7cb8e6;
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.8);
+        }
+        .zoom-btn.reset-btn {
+            font-size: 30px;
+            background: #1e3a5f;
+            border-color: #9bc0e6;
+            color: #9bc0e6;
+        }
+        .zoom-btn.reset-btn:hover {
+            background: #2c5282;
+            color: white;
+            border-color: #7cb8e6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 自定义国名首都名弹窗 -->
+    <div class="name-modal" id="nameModal">
+        <div class="name-content">
+            <div class="name-title" id="nameModalTitle">⚔️ 玩家 1 请建立你的国家</div>
+            <div class="name-input-group">
+                <label class="name-label">🏰 国家名称：</label>
+                <input class="name-input" id="countryNameInput" type="text" maxlength="20" placeholder="例如：中华帝国">
+            </div>
+            <div class="name-input-group">
+                <label class="name-label">🏛️ 首都名称：</label>
+                <input class="name-input" id="capitalNameInput" type="text" maxlength="20" placeholder="例如：北京">
+            </div>
+            <button class="name-confirm-btn" id="confirmNameBtn">确 立 国 家</button>
+        </div>
+    </div>
+    <!-- 格子信息弹窗 -->
+    <div class="cell-info-modal" id="cellInfoModal">
+        <div class="cell-info-content">
+            <div class="cell-info-title">📋 格子信息</div>
+            <div class="cell-info-row"><span class="cell-info-label">坐标：</span><span class="cell-info-value" id="cellInfoCoords">(0,0)</span></div>
+            <div class="cell-info-row"><span class="cell-info-label">地形：</span><span class="cell-info-value" id="cellInfoTerrain">陆地</span></div>
+            <div class="cell-info-row"><span class="cell-info-label">国家：</span><span class="cell-info-value" id="cellInfoCountry">无</span></div>
+            <div class="cell-info-row"><span class="cell-info-label">首都：</span><span class="cell-info-value" id="cellInfoCapital">否</span></div>
+            <div class="cell-info-row"><span class="cell-info-label">首都名：</span><span class="cell-info-value" id="cellInfoCapitalName">-</span></div>
+            <div class="cell-info-row"><span class="cell-info-label">武器：</span><span class="cell-info-value" id="cellInfoWeapon">无</span></div>
+            <div class="cell-info-row"><span class="cell-info-label">资源状态：</span><span class="cell-info-value" id="cellInfoHarvested">可收集</span></div>
+            <button class="close-info-btn" id="closeCellInfoBtn">关 闭</button>
+        </div>
+    </div>
+    <!-- 研发中弹窗 (原用于模式提示) -->
+    <div class="custom-modal" id="devModal">
+        <div class="custom-modal-content">
+            <div>🔧 正在研发中</div>
+            <div style="margin:20px;">请选择“面对面”游戏</div>
+            <button id="closeDevModal">确 定</button>
+        </div>
+    </div>
+    <!-- 规则弹窗 -->
+    <div class="rules-modal" id="rulesModal">
+        <div class="rules-modal-content">
+            <div class="rules-modal-title">📜 游戏规则</div>
+            <ul class="rules-modal-list">
+                <li>1. 每位玩家初始4格连片陆地，并设立首都。</li>
+                <li>2. 每回合可 部署/移动/收集/扩张/攻击 (仅1次攻击)。扩张可至海上 (100银币)。</li>
+                <li>3. 长按格子查看信息。胜利条件：最后存活/攻占所有首都。</li>
+                <li>4. 每个格子只能收集一次资源。部分陆地格子有铀资源。</li>
+                <li>5. 海军(船/巡洋舰/航母/潜艇/驱逐舰等)只能部署在海上，且永远不能登陆。</li>
+                <li>6. 空军(战斗机/轰炸机/预警机)可部署于陆地或航母上，移动无视地形。</li>
+                <li>7. 导弹/核弹/电磁炮/卫星武器有爆炸范围，攻击时波及范围内所有单位与领土。</li>
+                <li>8. 研发的武器只能由研发者使用，且只能部署一次（消耗品）。</li>
+                <li>9. 首都首次被攻占时，该国家立即灭亡，其所有领土和单位消失。</li>
+                <li>10. 每回合只能发动一次攻击，无论使用何种武器。</li>
+                <li>11. 地图为20x20，陆地海洋各约一半。</li>
+                <li>12. 游戏支持2-9名玩家。</li>
+            </ul>
+            <button class="close-rules-btn" id="closeRulesBtn">知道了</button>
+        </div>
+    </div>
+
+    <!-- 研发弹窗 (科技树) - 超多武器 -->
+    <div class="modal" id="researchModal">
+        <div class="modal-content">
+            <div class="modal-header"><h2 style="font-size:32px;">🔬 科技研发</h2><span class="close-btn" id="closeResearchBtn">&times;</span></div>
+            <div class="tech-tree">
+                <!-- 基础步兵 -->
+                <div class="tech-category">
+                    <h3>👣 基础单位</h3>
+                    <div class="loan-item">
+                        <div><span>步枪兵</span><span class="tech-note">(基础步兵)</span></div>
+                        <button class="buy-btn research-buy disabled" disabled>免费</button>
+                    </div>
+                </div>
+                
+                <!-- 地面单位 -->
+                <div class="tech-category">
+                    <h3>🚀 地面部队 (部署于陆地)</h3>
+                    <div class="loan-item">
+                        <div><span>轻型坦克</span><span class="tech-note">(快速单位)</span></div>
+                        <button class="buy-btn research-buy" data-tech="lightTank" data-cost-silver="150" data-cost-rare="3">研发 (150银,3稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>主战坦克</span><span class="tech-note">(重装甲)</span></div>
+                        <button class="buy-btn research-buy" data-tech="heavyTank" data-cost-silver="300" data-cost-rare="8" data-cost-oil="10">研发 (300银,8稀土,10石油)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>自行火炮</span><span class="tech-note">(远程炮击)</span></div>
+                        <button class="buy-btn research-buy" data-tech="artillery" data-cost-silver="250" data-cost-rare="6" data-cost-oil="15">研发 (250银,6稀土,15石油)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>防空导弹车</span><span class="tech-note">(对空)</span></div>
+                        <button class="buy-btn research-buy" data-tech="aaMissile" data-cost-silver="280" data-cost-rare="7" data-cost-oil="12">研发 (280银,7稀土,12石油)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>步兵战车</span><span class="tech-note">(运兵/支援)</span></div>
+                        <button class="buy-btn research-buy" data-tech="ifv" data-cost-silver="200" data-cost-rare="4" data-cost-oil="8">研发 (200银,4稀土,8石油)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>火箭炮</span><span class="tech-note">(范围1)</span></div>
+                        <button class="buy-btn research-buy" data-tech="rocket" data-cost-silver="350" data-cost-rare="10" data-cost-oil="20" data-cost-gold="1">研发 (350银,10稀土,20石油,1金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>电磁坦克</span><span class="tech-note">(高科技)</span></div>
+                        <button class="buy-btn research-buy" data-tech="empTank" data-cost-silver="500" data-cost-rare="15" data-cost-oil="25" data-cost-diamond="1">研发 (500银,15稀土,25石油,1钻)</button>
+                    </div>
+                </div>
+
+                <!-- 空军单位 -->
+                <div class="tech-category">
+                    <h3>✈️ 空军 (部署陆地/航母，无视地形移动)</h3>
+                    <div class="loan-item">
+                        <div><span>螺旋桨战机</span><span class="tech-note">(早期)</span></div>
+                        <button class="buy-btn research-buy" data-tech="propFighter" data-cost-silver="180" data-cost-oil="15">研发 (180银,15石油)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>喷气式战斗机</span><span class="tech-note">(制空)</span></div>
+                        <button class="buy-btn research-buy" data-tech="jetFighter" data-cost-silver="320" data-cost-oil="25" data-cost-rare="5">研发 (320银,25石油,5稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>战斗轰炸机</span><span class="tech-note">(对地)</span></div>
+                        <button class="buy-btn research-buy" data-tech="fighterBomber" data-cost-silver="380" data-cost-oil="30" data-cost-rare="8">研发 (380银,30石油,8稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>战略轰炸机</span><span class="tech-note">(范围2)</span></div>
+                        <button class="buy-btn research-buy" data-tech="bomber" data-cost-silver="600" data-cost-oil="50" data-cost-rare="12" data-cost-gold="2">研发 (600银,50石油,12稀土,2金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>隐形轰炸机</span><span class="tech-note">(范围2)</span></div>
+                        <button class="buy-btn research-buy" data-tech="stealthBomber" data-cost-silver="800" data-cost-oil="60" data-cost-rare="20" data-cost-diamond="2">研发 (800银,60石油,20稀土,2钻)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>无人机</span><span class="tech-note">(侦察)</span></div>
+                        <button class="buy-btn research-buy" data-tech="drone" data-cost-silver="220" data-cost-oil="18" data-cost-rare="3">研发 (220银,18石油,3稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>预警机</span><span class="tech-note">(视野+1)</span></div>
+                        <button class="buy-btn research-buy" data-tech="awacs" data-cost-silver="450" data-cost-oil="35" data-cost-rare="10">研发 (450银,35石油,10稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>垂直起降战机</span><span class="tech-note">(可舰载)</span></div>
+                        <button class="buy-btn research-buy" data-tech="vtol" data-cost-silver="420" data-cost-oil="30" data-cost-rare="9" data-cost-gold="1">研发 (420银,30石油,9稀土,1金)</button>
+                    </div>
+                </div>
+
+                <!-- 海军单位 -->
+                <div class="tech-category">
+                    <h3>⚓ 海军 (仅部署海洋，永不上陆)</h3>
+                    <div class="loan-item">
+                        <div><span>巡逻艇</span><span class="tech-note">(快速)</span></div>
+                        <button class="buy-btn research-buy" data-tech="patrolBoat" data-cost-silver="120" data-cost-oil="8">研发 (120银,8石油)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>导弹快艇</span><span class="tech-note">(对舰)</span></div>
+                        <button class="buy-btn research-buy" data-tech="missileBoat" data-cost-silver="200" data-cost-oil="15" data-cost-rare="4">研发 (200银,15石油,4稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>驱逐舰</span><span class="tech-note">(多用途)</span></div>
+                        <button class="buy-btn research-buy" data-tech="destroyer" data-cost-silver="350" data-cost-oil="28" data-cost-rare="8">研发 (350银,28石油,8稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>护卫舰</span><span class="tech-note">(反潜)</span></div>
+                        <button class="buy-btn research-buy" data-tech="frigate" data-cost-silver="300" data-cost-oil="24" data-cost-rare="6">研发 (300银,24石油,6稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>潜艇</span><span class="tech-note">(隐形)</span></div>
+                        <button class="buy-btn research-buy" data-tech="submarine" data-cost-silver="400" data-cost-oil="35" data-cost-rare="10" data-cost-uranium="1">研发 (400银,35石油,10稀土,1铀)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>核潜艇</span><span class="tech-note">(范围2)</span></div>
+                        <button class="buy-btn research-buy" data-tech="nukeSub" data-cost-silver="700" data-cost-oil="50" data-cost-rare="18" data-cost-uranium="3" data-cost-gold="2" data-prerequisite="submarine">研发 (700银,50石油,18稀土,3铀,2金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>两栖攻击舰</span><span class="tech-note">(运输)</span></div>
+                        <button class="buy-btn research-buy" data-tech="amphibious" data-cost-silver="480" data-cost-oil="40" data-cost-rare="12" data-cost-diamond="1">研发 (480银,40石油,12稀土,1钻)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>战列舰</span><span class="tech-note">(重炮)</span></div>
+                        <button class="buy-btn research-buy" data-tech="battleship" data-cost-silver="650" data-cost-oil="55" data-cost-rare="20" data-cost-gold="3">研发 (650银,55石油,20稀土,3金)</button>
+                    </div>
+                </div>
+
+                <!-- 导弹系统 (可升级) 带范围 -->
+                <div class="tech-category">
+                    <h3>🚀 导弹系统 (范围递增)</h3>
+                    <div class="loan-item">
+                        <div><span>短程导弹</span><span class="tech-note">(范围1)</span></div>
+                        <button class="buy-btn research-buy" data-tech="missileShort" data-cost-silver="300" data-cost-rare="10" data-cost-oil="15">研发 (300银,10稀土,15石油)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>中程导弹</span><span class="tech-note">(范围2)</span></div>
+                        <button class="buy-btn research-buy" data-tech="missileMedium" data-cost-silver="500" data-cost-rare="20" data-cost-oil="25" data-cost-gold="2" data-prerequisite="missileShort">研发 (500银,20稀土,25石油,2金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>洲际导弹</span><span class="tech-note">(范围3)</span></div>
+                        <button class="buy-btn research-buy" data-tech="missileLong" data-cost-silver="800" data-cost-rare="30" data-cost-oil="40" data-cost-gold="5" data-cost-diamond="2" data-prerequisite="missileMedium">研发 (800银,30稀土,40石油,5金,2钻)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>高超音速导弹</span><span class="tech-note">(范围3, 无视拦截)</span></div>
+                        <button class="buy-btn research-buy" data-tech="hypersonic" data-cost-silver="1200" data-cost-rare="40" data-cost-oil="50" data-cost-gold="8" data-cost-diamond="3" data-prerequisite="missileLong">研发 (1200银,40稀土,50石油,8金,3钻)</button>
+                    </div>
+                </div>
+
+                <!-- 核科技树 带范围 -->
+                <div class="tech-category">
+                    <h3>☢️ 核武器 (大范围)</h3>
+                    <div class="loan-item">
+                        <div><span>核基础设施</span><span class="tech-note">(前置)</span></div>
+                        <button class="buy-btn research-buy" data-tech="nukeInfra" data-cost-silver="500" data-cost-rare="20" data-cost-gold="5">研发 (500银,20稀土,5金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>原子弹</span><span class="tech-note">(范围2)</span></div>
+                        <button class="buy-btn research-buy" data-tech="nuke" data-cost-silver="800" data-cost-rare="30" data-cost-uranium="2" data-prerequisite="nukeInfra">研发 (800银,30稀土,2铀)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>氢弹</span><span class="tech-note">(范围3)</span></div>
+                        <button class="buy-btn research-buy" data-tech="hbomb" data-cost-silver="1500" data-cost-rare="50" data-cost-uranium="5" data-prerequisite="nuke">研发 (1500银,50稀土,5铀)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>中子弹</span><span class="tech-note">(范围2, 只杀单位)</span></div>
+                        <button class="buy-btn research-buy" data-tech="neutronBomb" data-cost-silver="1200" data-cost-rare="40" data-cost-uranium="3" data-cost-gold="4" data-prerequisite="nuke">研发 (1200银,40稀土,3铀,4金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>钴弹</span><span class="tech-note">(范围3, 污染)</span></div>
+                        <button class="buy-btn research-buy" data-tech="cobaltBomb" data-cost-silver="2000" data-cost-rare="70" data-cost-uranium="8" data-cost-diamond="3" data-prerequisite="hbomb">研发 (2000银,70稀土,8铀,3钻)</button>
+                    </div>
+                </div>
+
+                <!-- 未来科技 -->
+                <div class="tech-category">
+                    <h3>🔮 未来武器</h3>
+                    <div class="loan-item">
+                        <div><span>电磁炮</span><span class="tech-note">(范围2, 直线)</span></div>
+                        <button class="buy-btn research-buy" data-tech="railgun" data-cost-silver="1000" data-cost-rare="50" data-cost-oil="30" data-cost-diamond="5" data-cost-gold="10">研发 (1000银,50稀土,30石油,5钻,10金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>激光武器</span><span class="tech-note">(单格, 必中)</span></div>
+                        <button class="buy-btn research-buy" data-tech="laser" data-cost-silver="900" data-cost-rare="40" data-cost-diamond="4" data-cost-gold="8">研发 (900银,40稀土,4钻,8金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>粒子炮</span><span class="tech-note">(范围2)</span></div>
+                        <button class="buy-btn research-buy" data-tech="particle" data-cost-silver="1300" data-cost-rare="60" data-cost-diamond="6" data-cost-uranium="4">研发 (1300银,60稀土,6钻,4铀)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>天基动能武器</span><span class="tech-note">(范围3, 卫星)</span></div>
+                        <button class="buy-btn research-buy" data-tech="rodFromGod" data-cost-silver="2500" data-cost-rare="100" data-cost-diamond="10" data-cost-gold="20" data-cost-uranium="10">研发 (2500银,100稀土,10钻,20金,10铀)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>轨道炮</span><span class="tech-note">(范围3)</span></div>
+                        <button class="buy-btn research-buy" data-tech="orbital" data-cost-silver="1800" data-cost-rare="80" data-cost-diamond="8" data-cost-gold="15" data-cost-uranium="6">研发 (1800银,80稀土,8钻,15金,6铀)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>纳米机器人</span><span class="tech-note">(吞噬单位)</span></div>
+                        <button class="buy-btn research-buy" data-tech="nano" data-cost-silver="1600" data-cost-rare="90" data-cost-diamond="12" data-cost-gold="12">研发 (1600银,90稀土,12钻,12金)</button>
+                    </div>
+                </div>
+
+                <!-- 特殊单位 -->
+                <div class="tech-category">
+                    <h3>🎯 特殊单位</h3>
+                    <div class="loan-item">
+                        <div><span>雷达站</span><span class="tech-note">(视野+2)</span></div>
+                        <button class="buy-btn research-buy" data-tech="radar" data-cost-silver="250" data-cost-rare="8" data-cost-oil="10">研发 (250银,8稀土,10石油)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>干扰器</span><span class="tech-note">(使附近单位无法攻击)</span></div>
+                        <button class="buy-btn research-buy" data-tech="jammer" data-cost-silver="400" data-cost-rare="15" data-cost-oil="20" data-cost-gold="2">研发 (400银,15稀土,20石油,2金)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>医疗兵</span><span class="tech-note">(无攻击力)</span></div>
+                        <button class="buy-btn research-buy" data-tech="medic" data-cost-silver="100" data-cost-rare="2">研发 (100银,2稀土)</button>
+                    </div>
+                    <div class="loan-item">
+                        <div><span>间谍</span><span class="tech-note">(可潜入)</span></div>
+                        <button class="buy-btn research-buy" data-tech="spy" data-cost-silver="200" data-cost-gold="1">研发 (200银,1金)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 部署武器专用弹窗 -->
+    <div class="deploy-modal" id="deployModal">
+        <div class="deploy-content">
+            <div class="deploy-title">🔧 部署武器 (每个武器只能使用一次)</div>
+            <div id="deployWeaponList"></div>
+            <button class="close-deploy-btn" id="closeDeployBtn">取 消</button>
+        </div>
+    </div>
+
+    <!-- 新手教程弹窗 (毛玻璃背景) -->
+    <div class="tutorial-overlay" id="tutorialOverlay" style="display: none;">
+        <div class="tutorial-bubble" id="tutorialBubble">
+            <div class="title" id="tutorialTitle">👋 欢迎新手！</div>
+            <div class="content" id="tutorialContent">点击“下一步”开始学习如何玩现代战争推演2。</div>
+            <div class="button-row">
+                <button class="tut-btn secondary" id="tutorialSkip">跳过教程</button>
+                <button class="tut-btn" id="tutorialNext">下一步</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第1页：团队页 -->
+    <div class="full-page" id="pageTeam">
+        <div class="page-card">
+            <div class="game-title">现代战争推演2</div>
+            <div class="team-signature">made by 米遇安</div>
+            <div class="button-group">
+                <button class="next-btn" id="toLangBtn">进入游戏 ▶</button>
+                <button class="tutorial-btn" id="tutorialStartBtn">📘 新手教程</button>
+            </div>
+        </div>
+    </div>
+    <!-- 第2页：模式选择 -->
+    <div class="full-page" id="pageMode" style="display:none;">
+        <div class="page-card">
+            <div class="mode-title">选择游戏模式</div>
+            <div class="mode-grid">
+                <div class="mode-option" id="modeLocal">👥 面对面</div>
+                <div class="mode-option" id="modeHost">🆕 新建游戏</div>
+                <div class="mode-option" id="modeJoin">🔗 加入游戏</div>
+            </div>
+            <button class="start-game-btn" id="startGameBtn">▶ 开始游戏</button>
+        </div>
+    </div>
+    <!-- 游戏主容器 -->
+    <div class="game-wrapper" id="gameWrapper">
+        <div class="game-container" id="gameContainer">
+            <div class="notification-bar" id="terrainNotification">
+                <div class="notification-text" id="notificationText">🏞️ 请选择你的初始国土 <span class="notification-badge" id="selectedCount">0/4</span></div>
+                <button class="notification-btn" id="confirmTerrainBtn" disabled>确认国土</button>
+            </div>
+            <div class="turn-indicator" id="turnIndicator">🔄 游戏准备中</div>
+            <div class="player-count-setup" id="playerCountSetup">
+                <button class="player-count-btn" id="decreasePlayerBtn">-</button>
+                <span>当前玩家数量：<span id="playerCount">2</span> (最多9人)</span>
+                <button class="player-count-btn" id="increasePlayerBtn">+</button>
+            </div>
+            <div class="players-stack" id="playersStack"></div>
+            <div class="top-actions">
+                <div class="rules-btn" id="rulesBtn">📜 规 则</div>
+                <div class="research-btn" id="researchBtn">🔬 研 发</div>
+                <div class="deploy-weapon-btn" id="deployWeaponBtn">⚙️ 部署武器</div>
+            </div>
+            <div class="main-game">
+                <div class="grid-container" id="grid"></div>
+            </div>
+            <div class="action-panel">
+                <button class="action-btn" id="placeUnitBtn" disabled>步兵</button>
+                <button class="action-btn" id="moveUnitBtn" disabled>移 动</button>
+                <button class="action-btn" id="collectBtn" disabled>收 集</button>
+                <button class="action-btn" id="expandLandBtn" disabled>扩 张</button>
+                <button class="action-btn" id="attackBtn" disabled>⚔️ 攻 击</button>
+                <button class="action-btn" id="endTurnBtn" disabled>结束回合</button>
+            </div>
+            <div class="status-text" id="statusText">请先完成大厅设置</div>
+            <div class="data-info">©米遇安 · 保留所有权利</div>
+        </div>
+    </div>
+
+    <!-- 右下角缩放控制按钮 -->
+    <div class="zoom-controls">
+        <div class="zoom-btn" id="zoomInBtn" title="放大">+</div>
+        <div class="zoom-btn reset-btn" id="zoomResetBtn" title="重置">↺</div>
+        <div class="zoom-btn" id="zoomOutBtn" title="缩小">−</div>
+    </div>
+
+    <script>
+        (function() {
+            // 游戏核心状态
+            const gameState = {
+                playerResources: {},
+                playerNames: {},        // 自定义国名
+                capitalNames: {},       // 首都名
+                currentTurn: 1,
+                totalPlayers: 2,
+                playerLands: {},
+                setupPhase: { 
+                    isSetting: true, 
+                    currentSettingPlayer: 1,
+                    selectedCells: [], 
+                    selectingCapital: false, 
+                    confirmed: false 
+                },
+                selectedCell: null,
+                selectedAction: null,
+                units: new Map(),        // 存储单位 {type, owner}
+                gameMode: null,
+                globalTurnCounter: 0,
+                harvestedCells: new Set(), // 记录已收集资源的格子
+                eliminatedPlayers: new Set(), // 被淘汰的玩家
+                // 研发完成的技术
+                researched: {
+                    lightTank: new Set(),
+                    heavyTank: new Set(),
+                    artillery: new Set(),
+                    aaMissile: new Set(),
+                    ifv: new Set(),
+                    rocket: new Set(),
+                    empTank: new Set(),
+                    propFighter: new Set(),
+                    jetFighter: new Set(),
+                    fighterBomber: new Set(),
+                    bomber: new Set(),
+                    stealthBomber: new Set(),
+                    drone: new Set(),
+                    awacs: new Set(),
+                    vtol: new Set(),
+                    patrolBoat: new Set(),
+                    missileBoat: new Set(),
+                    destroyer: new Set(),
+                    frigate: new Set(),
+                    submarine: new Set(),
+                    nukeSub: new Set(),
+                    amphibious: new Set(),
+                    battleship: new Set(),
+                    missileShort: new Set(),
+                    missileMedium: new Set(),
+                    missileLong: new Set(),
+                    hypersonic: new Set(),
+                    nukeInfra: new Set(),
+                    nuke: new Set(),
+                    hbomb: new Set(),
+                    neutronBomb: new Set(),
+                    cobaltBomb: new Set(),
+                    railgun: new Set(),
+                    laser: new Set(),
+                    particle: new Set(),
+                    rodFromGod: new Set(),
+                    orbital: new Set(),
+                    nano: new Set(),
+                    radar: new Set(),
+                    jammer: new Set(),
+                    medic: new Set(),
+                    spy: new Set()
+                },
+                weaponUsed: new Map(),
+                attackUsedThisTurn: false,
+                pendingWeapon: null,
+                tutorialActive: false,
+                tutorialStep: 0
+            };
+
+            const weaponTerrain = {
+                lightTank: 'land',
+                heavyTank: 'land',
+                artillery: 'land',
+                aaMissile: 'land',
+                ifv: 'land',
+                rocket: 'land',
+                empTank: 'land',
+                propFighter: 'any',
+                jetFighter: 'any',
+                fighterBomber: 'any',
+                bomber: 'any',
+                stealthBomber: 'any',
+                drone: 'any',
+                awacs: 'any',
+                vtol: 'any',
+                patrolBoat: 'sea',
+                missileBoat: 'sea',
+                destroyer: 'sea',
+                frigate: 'sea',
+                submarine: 'sea',
+                nukeSub: 'sea',
+                amphibious: 'sea',
+                battleship: 'sea',
+                missileShort: 'any',
+                missileMedium: 'any',
+                missileLong: 'any',
+                hypersonic: 'any',
+                nukeInfra: 'land',
+                nuke: 'any',
+                hbomb: 'any',
+                neutronBomb: 'any',
+                cobaltBomb: 'any',
+                railgun: 'any',
+                laser: 'any',
+                particle: 'any',
+                rodFromGod: 'any',
+                orbital: 'any',
+                nano: 'any',
+                radar: 'land',
+                jammer: 'any',
+                medic: 'land',
+                spy: 'any',
+                infantry: 'land',
+                tank: 'land',
+                '30w': 'land',
+                ship: 'sea',
+                cruiser: 'sea',
+                carrier: 'sea'
+            };
+
+            const weaponRange = {
+                missileShort: 1,
+                missileMedium: 2,
+                missileLong: 3,
+                hypersonic: 3,
+                nuke: 2,
+                hbomb: 3,
+                neutronBomb: 2,
+                cobaltBomb: 3,
+                railgun: 2,
+                particle: 2,
+                rodFromGod: 3,
+                orbital: 3,
+                rocket: 1,
+                bomber: 2,
+                stealthBomber: 2,
+                nukeSub: 2,
+                artillery: 1
+            };
+
+            // DOM 元素
+            const pageTeam = document.getElementById('pageTeam');
+            const pageMode = document.getElementById('pageMode');
+            const toLangBtn = document.getElementById('toLangBtn');
+            const modeLocal = document.getElementById('modeLocal');
+            const modeHost = document.getElementById('modeHost');
+            const modeJoin = document.getElementById('modeJoin');
+            const startGameBtn = document.getElementById('startGameBtn');
+            const devModal = document.getElementById('devModal');
+            const closeDevModal = document.getElementById('closeDevModal');
+            const gameWrapper = document.getElementById('gameWrapper');
+            const gameContainer = document.getElementById('gameContainer');
+            
+            const notificationBar = document.getElementById('terrainNotification');
+            const notificationText = document.getElementById('notificationText');
+            const selectedCount = document.getElementById('selectedCount');
+            const confirmTerrainBtn = document.getElementById('confirmTerrainBtn');
+            const playerCountSetup = document.getElementById('playerCountSetup');
+            const playersStack = document.getElementById('playersStack');
+            const grid = document.getElementById('grid');
+            const placeUnitBtn = document.getElementById('placeUnitBtn');
+            const moveUnitBtn = document.getElementById('moveUnitBtn');
+            const collectBtn = document.getElementById('collectBtn');
+            const expandLandBtn = document.getElementById('expandLandBtn');
+            const attackBtn = document.getElementById('attackBtn');
+            const endTurnBtn = document.getElementById('endTurnBtn');
+            const statusText = document.getElementById('statusText');
+            const turnIndicator = document.getElementById('turnIndicator');
+            const decreasePlayerBtn = document.getElementById('decreasePlayerBtn');
+            const increasePlayerBtn = document.getElementById('increasePlayerBtn');
+            const playerCountSpan = document.getElementById('playerCount');
+
+            const deployWeaponBtn = document.getElementById('deployWeaponBtn');
+            const deployModal = document.getElementById('deployModal');
+            const deployWeaponList = document.getElementById('deployWeaponList');
+            const closeDeployBtn = document.getElementById('closeDeployBtn');
+
+            const tutorialStartBtn = document.getElementById('tutorialStartBtn');
+            const tutorialOverlay = document.getElementById('tutorialOverlay');
+            const tutorialTitle = document.getElementById('tutorialTitle');
+            const tutorialContent = document.getElementById('tutorialContent');
+            const tutorialSkip = document.getElementById('tutorialSkip');
+            const tutorialNext = document.getElementById('tutorialNext');
+
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
+            const zoomResetBtn = document.getElementById('zoomResetBtn');
+            let currentScale = 1.0;
+            const minScale = 0.5;
+            const maxScale = 2.0;
+
+            const rulesModal = document.getElementById('rulesModal');
+            const rulesBtn = document.getElementById('rulesBtn');
+            const closeRulesBtn = document.getElementById('closeRulesBtn');
+            const researchModal = document.getElementById('researchModal');
+            const researchBtn = document.getElementById('researchBtn');
+            const closeResearchBtn = document.getElementById('closeResearchBtn');
+
+            const nameModal = document.getElementById('nameModal');
+            const nameModalTitle = document.getElementById('nameModalTitle');
+            const countryNameInput = document.getElementById('countryNameInput');
+            const capitalNameInput = document.getElementById('capitalNameInput');
+            const confirmNameBtn = document.getElementById('confirmNameBtn');
+
+            const cellInfoModal = document.getElementById('cellInfoModal');
+            const cellInfoCoords = document.getElementById('cellInfoCoords');
+            const cellInfoTerrain = document.getElementById('cellInfoTerrain');
+            const cellInfoCountry = document.getElementById('cellInfoCountry');
+            const cellInfoCapital = document.getElementById('cellInfoCapital');
+            const cellInfoCapitalName = document.getElementById('cellInfoCapitalName');
+            const cellInfoWeapon = document.getElementById('cellInfoWeapon');
+            const cellInfoHarvested = document.getElementById('cellInfoHarvested');
+            const closeCellInfoBtn = document.getElementById('closeCellInfoBtn');
+
+            // 教程步骤
+            const tutorialSteps = [
+                {
+                    title: '👋 欢迎新手',
+                    content: '欢迎来到现代战争推演2！本教程将带你完成第一个回合。点击“下一步”开始。',
+                    waitFor: null
+                },
+                {
+                    title: '📝 建立国家',
+                    content: '首先，你需要为自己的国家命名并设立首都。在弹出的窗口中输入国家名和首都名，然后点击“确立国家”。',
+                    highlight: () => {
+                        document.getElementById('countryNameInput')?.classList.add('tutorial-highlight');
+                        document.getElementById('capitalNameInput')?.classList.add('tutorial-highlight');
+                        document.getElementById('confirmNameBtn')?.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        document.getElementById('countryNameInput')?.classList.remove('tutorial-highlight');
+                        document.getElementById('capitalNameInput')?.classList.remove('tutorial-highlight');
+                        document.getElementById('confirmNameBtn')?.classList.remove('tutorial-highlight');
+                    },
+                    waitFor: 'nameConfirmed'
+                },
+                {
+                    title: '🗺️ 选择国土',
+                    content: '现在你需要选择4个连成一片的陆地格子作为你的初始国土。点击4个相邻的绿色格子（它们会高亮）。',
+                    waitFor: 'selectLand',
+                    highlight: () => {
+                        document.querySelectorAll('.grid-cell.land').forEach(cell => cell.classList.add('tutorial-highlight'));
+                    },
+                    clearHighlight: () => {
+                        document.querySelectorAll('.grid-cell.land').forEach(cell => cell.classList.remove('tutorial-highlight'));
+                    }
+                },
+                {
+                    title: '👑 设立首都',
+                    content: '很好！现在从你选择的4个格子中点击一个作为首都（它会变成粉色/橙色带边框）。',
+                    waitFor: 'selectCapital',
+                    highlight: () => {
+                        document.querySelectorAll('.grid-cell.selected').forEach(cell => cell.classList.add('tutorial-highlight'));
+                    },
+                    clearHighlight: () => {
+                        document.querySelectorAll('.grid-cell.selected').forEach(cell => cell.classList.remove('tutorial-highlight'));
+                    }
+                },
+                {
+                    title: '✅ 确认国土',
+                    content: '首都已选！现在点击顶部通知栏的“确认国土”按钮完成设置。',
+                    waitFor: 'confirmTerrain',
+                    highlight: () => {
+                        document.getElementById('confirmTerrainBtn')?.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        document.getElementById('confirmTerrainBtn')?.classList.remove('tutorial-highlight');
+                    }
+                },
+                {
+                    title: '🎮 进入回合',
+                    content: '恭喜！你的国家建立了。现在轮到你的回合。接下来学习基本操作。',
+                    waitFor: null
+                },
+                {
+                    title: '🚶 部署步兵',
+                    content: '首先，点击“步兵”按钮，然后点击你的一个领土格子（紫色）部署基础步兵。',
+                    waitFor: 'placeInfantry',
+                    highlight: () => {
+                        placeUnitBtn.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        placeUnitBtn.classList.remove('tutorial-highlight');
+                    }
+                },
+                {
+                    title: '💰 收集资源',
+                    content: '现在点击“收集”按钮，然后点击刚才部署步兵的格子（或者其他你的领土）收集资源。每个格子只能收集一次。',
+                    waitFor: 'collect',
+                    highlight: () => {
+                        collectBtn.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        collectBtn.classList.remove('tutorial-highlight');
+                    }
+                },
+                {
+                    title: '📈 扩张领土',
+                    content: '点击“扩张”按钮，然后点击与你领土相邻的一个陆地或海洋格子（需要100银币）。这会让你的国家变大。',
+                    waitFor: 'expand',
+                    highlight: () => {
+                        expandLandBtn.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        expandLandBtn.classList.remove('tutorial-highlight');
+                    }
+                },
+                {
+                    title: '🔬 研发武器',
+                    content: '点击顶部的“研发”按钮，打开科技树。选择一种武器（例如轻型坦克）进行研发（需要资源）。',
+                    waitFor: 'research',
+                    highlight: () => {
+                        researchBtn.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        researchBtn.classList.remove('tutorial-highlight');
+                    }
+                },
+                {
+                    title: '⚙️ 部署武器',
+                    content: '点击“部署武器”按钮，选择你刚刚研发的武器，然后点击一个领土格子进行部署（每种武器只能使用一次）。',
+                    waitFor: 'deploy',
+                    highlight: () => {
+                        deployWeaponBtn.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        deployWeaponBtn.classList.remove('tutorial-highlight');
+                    }
+                },
+                {
+                    title: '⚔️ 攻击',
+                    content: '最后，点击“攻击”按钮，然后点击一个敌方格子（可以是无主之地或其他玩家）进行攻击。每回合只能攻击一次。',
+                    waitFor: 'attack',
+                    highlight: () => {
+                        attackBtn.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        attackBtn.classList.remove('tutorial-highlight');
+                    }
+                },
+                {
+                    title: '⏭️ 结束回合',
+                    content: '完成所有操作后，点击“结束回合”轮到下一位玩家。你可以继续玩，或者再次点击“新手教程”重新学习。',
+                    waitFor: 'endTurn',
+                    highlight: () => {
+                        endTurnBtn.classList.add('tutorial-highlight');
+                    },
+                    clearHighlight: () => {
+                        endTurnBtn.classList.remove('tutorial-highlight');
+                    }
+                },
+                {
+                    title: '🎉 教程完成',
+                    content: '你已经掌握了基本玩法！享受游戏吧！可以随时点击规则按钮查看详细规则。',
+                    final: true
+                }
+            ];
+
+            function applyScale(scale) {
+                currentScale = Math.min(maxScale, Math.max(minScale, scale));
+                gameContainer.style.transform = `scale(${currentScale})`;
+            }
+
+            zoomInBtn.addEventListener('click', () => applyScale(currentScale + 0.1));
+            zoomOutBtn.addEventListener('click', () => applyScale(currentScale - 0.1));
+            zoomResetBtn.addEventListener('click', () => applyScale(1.0));
+
+            rulesBtn.addEventListener('click', () => { rulesModal.style.display = 'flex'; });
+            closeRulesBtn.addEventListener('click', () => { rulesModal.style.display = 'none'; });
+            window.addEventListener('click', (e) => { if(e.target === rulesModal) rulesModal.style.display = 'none'; });
+
+            researchBtn.addEventListener('click', () => { if(!gameState.setupPhase.isSetting) researchModal.style.display = 'flex'; });
+            closeResearchBtn.addEventListener('click', () => researchModal.style.display = 'none');
+            window.addEventListener('click', (e) => { if(e.target === researchModal) researchModal.style.display = 'none'; });
+
+            closeDeployBtn.addEventListener('click', () => {
+                deployModal.style.display = 'none';
+                gameState.pendingWeapon = null;
+            });
+            window.addEventListener('click', (e) => { if(e.target === deployModal) { deployModal.style.display = 'none'; gameState.pendingWeapon = null; } });
+
+            closeCellInfoBtn.addEventListener('click', () => { cellInfoModal.style.display = 'none'; });
+            window.addEventListener('click', (e) => { if(e.target === cellInfoModal) cellInfoModal.style.display = 'none'; });
+
+            function startTutorial() {
+                gameState.tutorialActive = true;
+                gameState.tutorialStep = 0;
+                gameState.gameMode = 'local';
+                pageTeam.style.display = 'none';
+                pageMode.style.display = 'none';
+                gameWrapper.style.display = 'block';
+                initPlayerData(2);
+                showTutorialStep(0);
+                setTimeout(() => {
+                    showNameModal(1);
+                }, 500);
+            }
+
+            function showTutorialStep(step) {
+                if(!gameState.tutorialActive) return;
+                
+                const s = tutorialSteps[step];
+                if(!s) return;
+                
+                tutorialTitle.textContent = s.title;
+                tutorialContent.textContent = s.content;
+                tutorialOverlay.style.display = 'flex';
+                
+                document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
+                
+                if(s.highlight) s.highlight();
+                
+                if(s.final) {
+                    tutorialNext.textContent = '完成';
+                } else {
+                    tutorialNext.textContent = '下一步';
+                }
+            }
+
+            function nextTutorialStep() {
+                if(!gameState.tutorialActive) return;
+                
+                const currentStep = tutorialSteps[gameState.tutorialStep];
+                if(currentStep && currentStep.clearHighlight) currentStep.clearHighlight();
+                
+                if(gameState.tutorialStep < tutorialSteps.length - 1) {
+                    gameState.tutorialStep++;
+                    showTutorialStep(gameState.tutorialStep);
+                } else {
+                    endTutorial();
+                }
+            }
+
+            function endTutorial() {
+                gameState.tutorialActive = false;
+                tutorialOverlay.style.display = 'none';
+                document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
+            }
+
+            function checkTutorialProgress(action, data) {
+                if(!gameState.tutorialActive) return;
+                
+                const currentStep = tutorialSteps[gameState.tutorialStep];
+                if(!currentStep || !currentStep.waitFor) return;
+                
+                if(currentStep.waitFor === action) {
+                    nextTutorialStep();
+                }
+            }
+
+            tutorialStartBtn.addEventListener('click', startTutorial);
+            tutorialSkip.addEventListener('click', endTutorial);
+            tutorialNext.addEventListener('click', () => {
+                const currentStep = tutorialSteps[gameState.tutorialStep];
+                if(currentStep && !currentStep.waitFor) {
+                    nextTutorialStep();
+                }
+            });
+
+            // 以下是原有的游戏函数，需要集成教程检查
+            function showNameModal(playerId) {
+                nameModalTitle.textContent = `⚔️ 玩家 ${playerId} 请建立你的国家`;
+                countryNameInput.value = gameState.playerNames[playerId] || '';
+                capitalNameInput.value = gameState.capitalNames[playerId] || '';
+                nameModal.style.display = 'flex';
+                
+                const handler = function() {
+                    let country = countryNameInput.value.trim();
+                    let capital = capitalNameInput.value.trim();
+                    if (!country) country = `玩家${playerId}国`;
+                    if (!capital) capital = `首都${playerId}`;
+                    gameState.playerNames[playerId] = country;
+                    gameState.capitalNames[playerId] = capital;
+                    nameModal.style.display = 'none';
+                    renderPlayerCards();
+                    if (playerId === 1) {
+                        startTerrainSetup();
+                        checkTutorialProgress('nameConfirmed');
+                    } else {
+                        statusText.textContent = `${gameState.playerNames[playerId]} 请选择你的国土 (4个连片陆地)`;
+                        updateNotification();
+                    }
+                    confirmNameBtn.removeEventListener('click', handler);
+                };
+                confirmNameBtn.addEventListener('click', handler, { once: true });
+            }
+
+            function startTerrainSetup() {
+                gameState.setupPhase = { isSetting: true, currentSettingPlayer: 1, selectedCells: [], selectingCapital: false, confirmed: false };
+                document.querySelectorAll('.grid-cell').forEach(cell => {
+                    cell.classList.remove('selected','unit','player1-land','player2-land','player3-land','player4-land','player5-land','player6-land','player7-land','player8-land','player9-land','player1-capital','player2-capital','player3-capital','player4-capital','player5-capital','player6-capital','player7-capital','player8-capital','player9-capital');
+                });
+                gameState.harvestedCells.clear();
+                gameState.units.clear();
+                gameState.weaponUsed.clear();
+                gameState.attackUsedThisTurn = false;
+                gameState.eliminatedPlayers.clear();
+                for(let key in gameState.researched) {
+                    gameState.researched[key] = new Set();
+                }
+                generateGrid();
+                updateNotification();
+                updateTurnIndicator();
+                playerCountSetup.style.display = 'flex';
+                renderPlayerCards();
+                statusText.textContent = `${gameState.playerNames[1]} 请选择你的国土 (4个连片陆地)`;
+            }
+
+            function updateTurnIndicator() {
+                if(gameState.setupPhase.isSetting) {
+                    turnIndicator.textContent = `🔄 国土设置阶段 - ${gameState.playerNames[gameState.setupPhase.currentSettingPlayer]} 请设置国土`;
+                    placeUnitBtn.disabled = true; moveUnitBtn.disabled = true; collectBtn.disabled = true; expandLandBtn.disabled = true; attackBtn.disabled = true; endTurnBtn.disabled = true;
+                    researchBtn.style.pointerEvents = 'none'; researchBtn.style.opacity = '0.5';
+                    deployWeaponBtn.style.pointerEvents = 'none'; deployWeaponBtn.style.opacity = '0.5';
+                } else {
+                    if(gameState.eliminatedPlayers.has(gameState.currentTurn)) {
+                        endTurn();
+                        return;
+                    }
+                    
+                    turnIndicator.textContent = `🔄 当前回合：${gameState.playerNames[gameState.currentTurn]}`;
+                    placeUnitBtn.disabled = false; moveUnitBtn.disabled = false; collectBtn.disabled = false; expandLandBtn.disabled = false; 
+                    attackBtn.disabled = gameState.attackUsedThisTurn;
+                    endTurnBtn.disabled = false;
+                    researchBtn.style.pointerEvents = 'auto'; researchBtn.style.opacity = '1';
+                    deployWeaponBtn.style.pointerEvents = 'auto'; deployWeaponBtn.style.opacity = '1';
+                    
+                    if(gameState.attackUsedThisTurn) {
+                        attackBtn.classList.add('used');
+                    } else {
+                        attackBtn.classList.remove('used');
+                    }
+                }
+            }
+
+            function generateGrid() {
+                grid.innerHTML = '';
+                const map = generateBalancedMap();
+                window.uraniumResources = new Set();
+                
+                for(let y=0; y<20; y++) {
+                    for(let x=0; x<20; x++) {
+                        const cell = document.createElement('div');
+                        cell.classList.add('grid-cell');
+                        cell.dataset.x = x; cell.dataset.y = y;
+                        if(map[y][x]===1) cell.classList.add('land'); else cell.classList.add('sea');
+                        
+                        let longPressTimer = null;
+                        let longPressTriggered = false;
+                        
+                        cell.addEventListener('touchstart', (e)=>{
+                            e.preventDefault();
+                            longPressTriggered = false;
+                            longPressTimer = setTimeout(()=>{ longPressTriggered=true; showCellInfo(x,y); }, 500);
+                        });
+                        cell.addEventListener('touchend', (e)=>{
+                            clearTimeout(longPressTimer);
+                            if(!longPressTriggered) handleCellClick(new MouseEvent('click'), x, y, cell);
+                        });
+                        cell.addEventListener('touchcancel', ()=> clearTimeout(longPressTimer));
+                        cell.addEventListener('click', (e)=> handleCellClick(e, x, y, cell));
+                        cell.addEventListener('contextmenu', (e)=>{ e.preventDefault(); showCellInfo(x,y); });
+                        grid.appendChild(cell);
+                    }
+                }
+            }
+
+            function generateBalancedMap() {
+                const size = 20;
+                let map = Array(size).fill().map(()=>Array(size).fill(0));
+                for(let y=0; y<size; y++) for(let x=0; x<size; x++) map[y][x] = Math.random()>0.5?1:0;
+                return map;
+            }
+
+            function handleCellClick(e, x, y, cell) {
+                if(e.ctrlKey || e.button===2) { showCellInfo(x,y); return; }
+                if(gameState.setupPhase.isSetting) { 
+                    handleSetupCellClick(x,y,cell); 
+                    return; 
+                }
+                
+                if(gameState.eliminatedPlayers.has(gameState.currentTurn)) {
+                    statusText.textContent = `❌ 你已被淘汰，无法操作`;
+                    return;
+                }
+                
+                if(gameState.selectedCell) {
+                    const prev = document.querySelector(`[data-x="${gameState.selectedCell.x}"][data-y="${gameState.selectedCell.y}"]`);
+                    if(prev) prev.classList.remove('selected');
+                }
+                gameState.selectedCell = {x,y};
+                cell.classList.add('selected');
+                statusText.textContent = `已选择位置 (${x}, ${y}) - 当前: ${gameState.playerNames[gameState.currentTurn]}`;
+                
+                if(gameState.pendingWeapon) {
+                    deployWeaponToCell(x, y);
+                    return;
+                }
+                
+                if(gameState.selectedAction) {
+                    if(gameState.selectedAction === 'place') placeUnit(x,y);
+                    else if(gameState.selectedAction === 'move') moveUnit(x,y);
+                    else if(gameState.selectedAction === 'collect') collectResources(x,y);
+                    else if(gameState.selectedAction === 'expand') expandLand(x,y);
+                    else if(gameState.selectedAction === 'attack') attackCell(x,y);
+                }
+            }
+
+            function handleSetupCellClick(x,y,cell) {
+                if(!cell.classList.contains('land')) { statusText.textContent = '❌ 只能选择陆地！'; return; }
+                const currentPlayer = gameState.setupPhase.currentSettingPlayer;
+                const key = `${x},${y}`;
+                const obj = {x,y};
+                
+                if(!gameState.setupPhase.selectingCapital) {
+                    if(gameState.setupPhase.selectedCells.some(c=>`${c.x},${c.y}`===key)) {
+                        gameState.setupPhase.selectedCells = gameState.setupPhase.selectedCells.filter(c=>`${c.x},${c.y}`!==key);
+                        cell.classList.remove('selected');
+                        statusText.textContent = '取消选择';
+                    } else {
+                        if(gameState.setupPhase.selectedCells.length >= 4) {
+                            statusText.textContent = '最多选4个格子';
+                            return;
+                        }
+                        gameState.setupPhase.selectedCells.push(obj);
+                        cell.classList.add('selected');
+                        if(!isConnected(gameState.setupPhase.selectedCells)) {
+                            gameState.setupPhase.selectedCells.pop(); cell.classList.remove('selected');
+                            statusText.textContent = '必须连成一片';
+                            return;
+                        }
+                        statusText.textContent = `已选 (${x}, ${y})`;
+                    }
+                    updateNotification();
+                    if(gameState.setupPhase.selectedCells.length === 4) {
+                        gameState.setupPhase.selectingCapital = true;
+                        statusText.textContent = `${gameState.playerNames[currentPlayer]}：请选择首都`;
+                        updateNotification();
+                        checkTutorialProgress('selectLand');
+                    }
+                } else {
+                    if(!gameState.setupPhase.selectedCells.some(c=>`${c.x},${c.y}`===key)) {
+                        statusText.textContent = '必须从已选格子中选择首都';
+                        return;
+                    }
+                    gameState.setupPhase.selectedCells.forEach(c=> {
+                        const prev = document.querySelector(`[data-x="${c.x}"][data-y="${c.y}"]`);
+                        if(prev) prev.classList.remove(`player${currentPlayer}-capital`);
+                    });
+                    gameState.playerLands[currentPlayer].capital = obj;
+                    cell.classList.add(`player${currentPlayer}-capital`);
+                    statusText.textContent = `首都已选 (${x}, ${y})`;
+                    confirmTerrainBtn.disabled = false;
+                    checkTutorialProgress('selectCapital');
+                }
+            }
+
+            function isConnected(cells) {
+                if(cells.length<=1) return true;
+                const set = new Set(cells.map(c=>`${c.x},${c.y}`));
+                const start = cells[0];
+                const visited = new Set(), q=[start];
+                visited.add(`${start.x},${start.y}`);
+                while(q.length) {
+                    const cur = q.shift();
+                    [{x:cur.x-1,y:cur.y},{x:cur.x+1,y:cur.y},{x:cur.x,y:cur.y-1},{x:cur.x,y:cur.y+1}].forEach(n=>{
+                        const k = `${n.x},${n.y}`;
+                        if(set.has(k) && !visited.has(k)) { visited.add(k); q.push(n); }
+                    });
+                }
+                return visited.size === cells.length;
+            }
+
+            function updateNotification() {
+                if(!gameState.setupPhase.isSetting) { notificationBar.style.display = 'none'; return; }
+                notificationBar.style.display = 'flex';
+                const player = gameState.setupPhase.currentSettingPlayer;
+                const count = gameState.setupPhase.selectedCells.length;
+                selectedCount.textContent = `${count}/4`;
+                if(!gameState.setupPhase.selectingCapital) {
+                    notificationText.innerHTML = `<span>👤 ${gameState.playerNames[player]}：请选择4个连成一片的陆地格子</span><span class="notification-badge">${count}/4</span>`;
+                    confirmTerrainBtn.disabled = count !== 4;
+                } else {
+                    notificationText.innerHTML = `<span>👑 ${gameState.playerNames[player]}：请从已选格子中选择首都</span><span class="notification-badge">${count}/4</span>`;
+                    confirmTerrainBtn.disabled = true;
+                }
+            }
+
+            function confirmSetup() {
+                const cur = gameState.setupPhase.currentSettingPlayer;
+                gameState.playerLands[cur].cells = new Set(gameState.setupPhase.selectedCells.map(c=>`${c.x},${c.y}`));
+                gameState.setupPhase.selectedCells.forEach(c=> {
+                    const gc = document.querySelector(`[data-x="${c.x}"][data-y="${c.y}"]`);
+                    if(gc) { gc.classList.add(`player${cur}-land`); gc.classList.remove('selected'); }
+                });
+                const cap = gameState.playerLands[cur].capital;
+                document.querySelector(`[data-x="${cap.x}"][data-y="${cap.y}"]`)?.classList.add(`player${cur}-capital`);
+
+                if(cur >= gameState.totalPlayers) {
+                    gameState.setupPhase.isSetting = false;
+                    gameState.currentTurn = 1;
+                    notificationBar.style.display = 'none';
+                    statusText.textContent = `所有国家建立完成！现在轮到 ${gameState.playerNames[1]}`;
+                    updateTurnIndicator();
+                    renderPlayerCards();
+                    placeUnitBtn.disabled = false; moveUnitBtn.disabled = false; collectBtn.disabled = false; expandLandBtn.disabled = false; attackBtn.disabled = false; endTurnBtn.disabled = false;
+                    checkTutorialProgress('confirmTerrain');
+                    setTimeout(() => {
+                        checkTutorialProgress('setupComplete');
+                    }, 500);
+                } else {
+                    const next = cur + 1;
+                    gameState.setupPhase.currentSettingPlayer = next;
+                    gameState.setupPhase.selectedCells = [];
+                    gameState.setupPhase.selectingCapital = false;
+                    gameState.setupPhase.confirmed = false;
+                    showNameModal(next);
+                    updateNotification();
+                    statusText.textContent = `${gameState.playerNames[next]} 请准备设置国土`;
+                }
+            }
+
+            confirmTerrainBtn.addEventListener('click', confirmSetup);
+
+            function initPlayerData(count) {
+                gameState.totalPlayers = count;
+                gameState.playerResources = {};
+                gameState.playerLands = {};
+                for(let i=1; i<=count; i++) {
+                    if(!gameState.playerNames[i]) gameState.playerNames[i] = `玩家${i}国`;
+                    if(!gameState.capitalNames[i]) gameState.capitalNames[i] = `首都${i}`;
+                }
+                gameState.units.clear();
+                gameState.globalTurnCounter = 0;
+                gameState.harvestedCells.clear();
+                gameState.weaponUsed.clear();
+                gameState.attackUsedThisTurn = false;
+                gameState.eliminatedPlayers.clear();
+                for(let key in gameState.researched) {
+                    gameState.researched[key] = new Set();
+                }
+                for(let i=1; i<=count; i++) {
+                    gameState.playerResources[i] = { silver:200, gold:5, diamond:3, rareEarth:10, oil:20, uranium:2 };
+                    gameState.playerLands[i] = { cells: new Set(), capital: null };
+                }
+                gameState.currentTurn = 1;
+                renderPlayerCards();
+                updateResourceDisplay();
+            }
+
+            function renderPlayerCards() {
+                playersStack.innerHTML = '';
+                for(let i=1; i<=gameState.totalPlayers; i++) {
+                    const card = document.createElement('div');
+                    const isActive = gameState.setupPhase.isSetting ? i === gameState.setupPhase.currentSettingPlayer : i === gameState.currentTurn;
+                    card.className = `player-card ${isActive?'active':''}`;
+                    if(gameState.eliminatedPlayers.has(i)) {
+                        card.classList.add('eliminated');
+                    }
+                    card.innerHTML = `
+                        <div class="player-name">🏳️ ${gameState.playerNames[i]}</div>
+                        <div class="capital-name">🏛️ ${gameState.capitalNames[i]}</div>
+                        <div class="resource-display">
+                            <div>💰 ${gameState.playerResources[i].silver}</div>
+                            <div>🏆 ${gameState.playerResources[i].gold}</div>
+                            <div>💎 ${gameState.playerResources[i].diamond}</div>
+                            <div>🧲 ${gameState.playerResources[i].rareEarth}</div>
+                            <div>⛽ ${gameState.playerResources[i].oil}</div>
+                            <div>☢️ ${gameState.playerResources[i].uranium || 0}</div>
+                        </div>
+                    `;
+                    playersStack.appendChild(card);
+                }
+            }
+
+            function updateResourceDisplay() {
+                document.querySelectorAll('.player-card').forEach((card, idx) => {
+                    if(idx+1 > gameState.totalPlayers) return;
+                    const r = gameState.playerResources[idx+1];
+                    const items = card.querySelectorAll('.resource-display > div');
+                    if(items.length >=6) {
+                        items[0].textContent = `💰 ${r.silver}`;
+                        items[1].textContent = `🏆 ${r.gold}`;
+                        items[2].textContent = `💎 ${r.diamond}`;
+                        items[3].textContent = `🧲 ${r.rareEarth}`;
+                        items[4].textContent = `⛽ ${r.oil}`;
+                        items[5].textContent = `☢️ ${r.uranium || 0}`;
+                    }
+                });
+            }
+
+            function isMyLand(x,y) { 
+                if(gameState.eliminatedPlayers.has(gameState.currentTurn)) return false;
+                return gameState.playerLands[gameState.currentTurn].cells.has(`${x},${y}`); 
+            }
+
+            function placeUnit(x,y) {
+                if(!isMyLand(x,y)) { statusText.textContent = `❌ 只能在自己的领土上部署步兵！`; return; }
+                const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                if(!cell.classList.contains('land')) { statusText.textContent = `❌ 步兵只能部署在陆地`; return; }
+                if(gameState.units.has(`${x},${y}`)) { statusText.textContent = `❌ 该格子已有单位`; return; }
+                gameState.units.set(`${x},${y}`, {type:'infantry', owner:gameState.currentTurn});
+                cell.classList.add('unit');
+                statusText.textContent = `部署步兵 (${x}, ${y})`;
+                gameState.selectedAction = null;
+                placeUnitBtn.classList.remove('active-action');
+                checkTutorialProgress('placeInfantry');
+            }
+
+            function collectResources(x,y) {
+                if(!isMyLand(x,y)) { statusText.textContent = `❌ 只能在自己的领土内收集资源`; return; }
+                const key = `${x},${y}`;
+                if(gameState.harvestedCells.has(key)) {
+                    statusText.textContent = `❌ 该格子的资源已经耗尽，无法再次收集`;
+                    gameState.selectedAction = null;
+                    collectBtn.classList.remove('active-action');
+                    return;
+                }
+                
+                let silver = Math.floor(Math.random()*40)+20;
+                let rare = Math.floor(Math.random()*12)+3;
+                let oil = Math.floor(Math.random()*15)+5;
+                
+                gameState.playerResources[gameState.currentTurn].silver += silver;
+                gameState.playerResources[gameState.currentTurn].rareEarth += rare;
+                gameState.playerResources[gameState.currentTurn].oil += oil;
+                
+                gameState.harvestedCells.add(key);
+                
+                updateResourceDisplay();
+                statusText.textContent = `收集到 ${silver}银 ${rare}稀土 ${oil}石油 (该格子资源已耗尽)`;
+                gameState.selectedAction = null;
+                collectBtn.classList.remove('active-action');
+                checkTutorialProgress('collect');
+            }
+
+            function expandLand(x,y) {
+                const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                const key=`${x},${y}`;
+                for(let i=1;i<=gameState.totalPlayers;i++) {
+                    if(!gameState.eliminatedPlayers.has(i) && gameState.playerLands[i].cells.has(key)) { 
+                        statusText.textContent='❌ 该格子已被其他玩家占领'; return; 
+                    }
+                }
+                const curLands = gameState.playerLands[gameState.currentTurn].cells;
+                const neighbors = [`${x-1},${y}`,`${x+1},${y}`,`${x},${y-1}`,`${x},${y+1}`];
+                if(!neighbors.some(n=>curLands.has(n))) { statusText.textContent='❌ 只能扩张到相邻格子'; return; }
+                if(gameState.playerResources[gameState.currentTurn].silver < 100) { statusText.textContent='❌ 需要100银币'; return; }
+                gameState.playerResources[gameState.currentTurn].silver -= 100;
+                curLands.add(key);
+                cell.classList.add(`player${gameState.currentTurn}-land`);
+                updateResourceDisplay();
+                statusText.textContent = `扩张到 (${x}, ${y})`;
+                gameState.selectedAction = null;
+                expandLandBtn.classList.remove('active-action');
+                checkTutorialProgress('expand');
+            }
+
+            function attackCell(x,y) {
+                if(gameState.attackUsedThisTurn) {
+                    statusText.textContent = `❌ 本回合已经攻击过了`;
+                    gameState.selectedAction = null;
+                    attackBtn.classList.remove('active-action');
+                    return;
+                }
+                
+                const targetKey = `${x},${y}`;
+                if(isMyLand(x,y)) { statusText.textContent = `❌ 不能攻击自己的领土`; return; }
+                
+                let attackerUnitKey = null;
+                for(let [k,u] of gameState.units) {
+                    if(u.owner === gameState.currentTurn) { attackerUnitKey = k; break; }
+                }
+                if(!attackerUnitKey) { statusText.textContent = `❌ 没有可用的单位`; return; }
+                
+                gameState.attackUsedThisTurn = true;
+                gameState.selectedAction = null;
+                attackBtn.classList.remove('active-action');
+                statusText.textContent = `攻击成功！`;
+                updateTurnIndicator();
+                checkTutorialProgress('attack');
+            }
+
+            function deployWeaponToCell(x, y) {
+                if(!isMyLand(x,y)) { 
+                    statusText.textContent = `❌ 只能在自己的领土上部署武器！`; 
+                    gameState.pendingWeapon = null;
+                    return; 
+                }
+                const key = `${x},${y}`;
+                if(gameState.units.has(key)) {
+                    statusText.textContent = `❌ 该格子已有单位`;
+                    gameState.pendingWeapon = null;
+                    return;
+                }
+                
+                const weaponType = gameState.pendingWeapon;
+                const player = gameState.currentTurn;
+                
+                gameState.units.set(key, {type: weaponType, owner: player});
+                gameState.weaponUsed.set(`${player}_${weaponType}`, true);
+                document.querySelector(`[data-x="${x}"][data-y="${y}"]`).classList.add('unit');
+                statusText.textContent = `部署武器到 (${x}, ${y})`;
+                gameState.pendingWeapon = null;
+                deployModal.style.display = 'none';
+                checkTutorialProgress('deploy');
+            }
+
+            function moveUnit(x,y) { }
+            function showCellInfo(x,y) { }
+            function endTurn() { 
+                if(gameState.setupPhase.isSetting) return;
+                gameState.currentTurn = gameState.currentTurn % gameState.totalPlayers + 1;
+                gameState.attackUsedThisTurn = false;
+                updateTurnIndicator();
+                renderPlayerCards();
+                statusText.textContent = `轮到 ${gameState.playerNames[gameState.currentTurn]}`;
+                checkTutorialProgress('endTurn');
+            }
+
+            placeUnitBtn.addEventListener('click', ()=>{ if(!gameState.setupPhase.isSetting) { gameState.selectedAction='place'; statusText.textContent = `请点击你的陆地格子部署步兵`; } });
+            collectBtn.addEventListener('click', ()=>{ if(!gameState.setupPhase.isSetting) { gameState.selectedAction='collect'; statusText.textContent = `请点击你的领土格子收集资源`; } });
+            expandLandBtn.addEventListener('click', ()=>{ if(!gameState.setupPhase.isSetting) { gameState.selectedAction='expand'; statusText.textContent = `请点击相邻格子扩张 (100银币)`; } });
+            attackBtn.addEventListener('click', ()=>{ 
+                if(!gameState.setupPhase.isSetting) { 
+                    if(gameState.attackUsedThisTurn) {
+                        statusText.textContent = `❌ 本回合已经攻击过了`;
+                        return;
+                    }
+                    gameState.selectedAction='attack'; 
+                    statusText.textContent = `请点击敌方格子攻击`; 
+                } 
+            });
+            endTurnBtn.addEventListener('click', endTurn);
+
+            toLangBtn.addEventListener('click', ()=> { 
+                pageTeam.style.display = 'none'; 
+                pageMode.style.display = 'flex'; 
+            });
+
+            modeLocal.addEventListener('click', ()=> { 
+                gameState.gameMode = 'local'; 
+                modeLocal.classList.add('selected');
+                modeHost.classList.remove('selected');
+                modeJoin.classList.remove('selected');
+                startGameBtn.style.display = 'inline-block'; 
+            });
+
+            modeHost.addEventListener('click', ()=> {
+                modeHost.classList.add('selected');
+                modeLocal.classList.remove('selected');
+                modeJoin.classList.remove('selected');
+                devModal.style.display = 'flex';
+                startGameBtn.style.display = 'none';
+            });
+            
+            modeJoin.addEventListener('click', ()=> {
+                modeJoin.classList.add('selected');
+                modeLocal.classList.remove('selected');
+                modeHost.classList.remove('selected');
+                devModal.style.display = 'flex';
+                startGameBtn.style.display = 'none';
+            });
+
+            closeDevModal.addEventListener('click', ()=> {
+                devModal.style.display = 'none';
+                modeHost.classList.remove('selected');
+                modeJoin.classList.remove('selected');
+            });
+
+            startGameBtn.addEventListener('click', ()=> {
+                pageMode.style.display = 'none';
+                gameWrapper.style.display = 'block';
+                initPlayerData(gameState.totalPlayers);
+                showNameModal(1);
+            });
+
+            initPlayerData(2);
+            generateGrid();
+            updateTurnIndicator();
+            playerCountSpan.textContent = '2';
+            playerCountSetup.style.display = 'none';
+            notificationBar.style.display = 'none';
+            applyScale(1.0);
+        })();
+    </script>
+</body>
+</html>
