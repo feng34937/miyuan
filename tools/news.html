@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>米遇安新闻 · 多元资讯 实时更新</title>
+    <title>米遇安新闻 · 实时网络资讯</title>
     <!-- Tailwind + Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -55,7 +55,6 @@
     <style>
         * { scroll-behavior: smooth; }
         
-        /* 直角风格 */
         .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded, button, [class*="rounded-"]:not(.rounded-full):not(.carousel-dot) {
             border-radius: 0px !important;
         }
@@ -63,7 +62,6 @@
             border-radius: 9999px !important;
         }
         
-        /* 导航栏 */
         #navbar {
             position: fixed !important;
             top: 0 !important;
@@ -192,6 +190,14 @@
             border-bottom-color: #5aa9e6;
         }
         
+        .domestic-icon {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .category-btn:hover .domestic-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
         .back-to-top {
             position: fixed;
             bottom: 30px;
@@ -237,6 +243,13 @@
         
         .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
         @media (max-width: 768px) { .container { padding: 0 1rem; } }
+        
+        .error-message {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(0,120,215,0.05);
+            border: 1px solid rgba(0,120,215,0.2);
+        }
     </style>
 </head>
 <body class="font-inter text-dark antialiased">
@@ -268,7 +281,7 @@
                 <h1 class="text-4xl md:text-6xl font-black leading-tight">
                     <span class="dynamic-gradient-text">米遇安新闻</span>
                 </h1>
-                <p class="text-lg md:text-xl max-w-3xl mx-auto mt-5 text-gray-700 dark:text-gray-300">多元视角 · 实时网络资讯</p>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto mt-5 text-gray-700 dark:text-gray-300">实时网络资讯 · 纯净聚合平台</p>
                 <div class="max-w-xl mx-auto mt-8">
                     <div class="flex gap-2">
                         <input type="text" id="globalSearchInput" placeholder="搜索新闻标题或摘要..." class="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary outline-none transition">
@@ -280,7 +293,6 @@
 
         <section class="py-12 md:py-16">
             <div class="container">
-                <!-- 七个选项卡：科技、文化、教育、养生、体育、国际、国内 -->
                 <div class="flex flex-wrap justify-center gap-4 md:gap-6 border-b border-gray-200 dark:border-gray-700 pb-3 mb-10">
                     <button data-category="all" class="category-btn active text-base md:text-lg font-medium transition-all">全部</button>
                     <button data-category="technology" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-microchip mr-1"></i>科技</button>
@@ -289,7 +301,9 @@
                     <button data-category="health" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-heartbeat mr-1"></i>养生</button>
                     <button data-category="sports" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-futbol mr-1"></i>体育</button>
                     <button data-category="international" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-globe mr-1"></i>国际</button>
-                    <button data-category="domestic" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-flag-china mr-1"></i>国内</button>
+                    <button data-category="domestic" class="category-btn text-base md:text-lg font-medium transition-all">
+                        <span class="domestic-icon"><i class="fas fa-landmark mr-1"></i></span>国内
+                    </button>
                 </div>
 
                 <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -301,11 +315,11 @@
 
         <section class="bg-secondary py-16 border-t border-gray-200 dark:border-gray-800">
             <div class="container max-w-4xl mx-auto text-center">
-                <i class="fas fa-globe text-primary text-5xl mb-4"></i>
-                <h2 class="text-3xl font-bold mb-4">聚合优质信源 · 多元资讯平台</h2>
+                <i class="fas fa-rss text-primary text-5xl mb-4"></i>
+                <h2 class="text-3xl font-bold mb-4">实时网络资讯 · 纯净聚合</h2>
                 <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                    米遇安新闻聚合来自权威网络媒体的实时资讯，涵盖科技、文化、教育、养生、体育、国际、国内七大领域。
-                    我们坚持客观、快速、有价值的原则，让每一位读者第一时间了解世界动态。
+                    米遇安新闻实时聚合来自全球权威媒体的最新资讯，涵盖科技、文化、教育、养生、体育、国际、国内七大领域。<br>
+                    所有内容均从网络实时获取，确保信息新鲜、真实、多元。
                 </p>
             </div>
         </section>
@@ -315,12 +329,12 @@
         <div class="container">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <div><h3 class="text-xl font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-sm">致力于实用的工具和有趣的小游戏</p></div>
-                <div><h3 class="font-bold mb-2">新闻板块</h3><ul class="space-y-1 text-sm"><li>科技 · 文化 · 教育</li><li>养生 · 体育 · 国际</li><li>国内 · 深度报道</li></ul></div>
+                <div><h3 class="font-bold mb-2">新闻板块</h3><ul class="space-y-1 text-sm"><li>科技 · 文化 · 教育</li><li>养生 · 体育 · 国际</li><li><i class="fas fa-landmark text-primary mr-1"></i>国内 · 深度报道</li></ul></div>
                 <div><h3 class="font-bold mb-2">快速链接</h3><ul class="space-y-1 text-sm"><li class="footer-link cursor-pointer hover:text-primary transition">关于米遇安</li><li class="footer-link cursor-pointer hover:text-primary transition">核心团队</li><li class="footer-link cursor-pointer hover:text-primary transition">教育分区</li></ul></div>
                 <div><h3 class="font-bold mb-2">联系方式</h3><ul class="space-y-1 text-sm"><li><i class="fas fa-map-marker-alt text-primary w-5"></i> 桂林市第一中学</li><li><i class="fas fa-phone text-primary w-5"></i> +86 152 0773 8425</li><li><i class="fas fa-envelope text-primary w-5"></i> 3493792731@qq.com</li></ul></div>
             </div>
             <div class="border-t border-gray-700 pt-5 text-center text-gray-400 text-xs">
-                <p>&copy; 2026 米遇安新闻 · 数据来自网络公开资讯 | 多元视角 实时更新</p>
+                <p>&copy; 2026 米遇安新闻 · 实时网络聚合 | 纯净资讯 每日更新</p>
                 <div class="flex justify-center gap-5 mt-2">
                     <a href="#" class="legal-link text-gray-400 hover:text-primary transition" onclick="alert('隐私政策与用户协议遵循米遇安官网标准。'); return false;">隐私政策</a>
                     <a href="#" class="legal-link text-gray-400 hover:text-primary transition" onclick="alert('使用本网站即代表同意相关协议。'); return false;">用户协议</a>
@@ -334,15 +348,14 @@
     </div>
 
     <script>
-        // 新闻分类映射
         let currentCategory = "all";
         let searchKeyword = "";
         let allNewsItems = [];
+        let isLoading = false;
         
         const newsGrid = document.getElementById("newsGrid");
         const newsStatus = document.getElementById("newsStatus");
         
-        // 分类标签中文映射
         function getCategoryLabel(cat) {
             const map = { 
                 technology: "科技", 
@@ -356,7 +369,6 @@
             return map[cat] || "资讯";
         }
         
-        // 格式化日期
         function formatRelativeDate(dateStr) {
             try {
                 const date = new Date(dateStr);
@@ -380,7 +392,6 @@
             });
         }
         
-        // 图标映射
         const iconMap = {
             technology: "fa-microchip",
             culture: "fa-palette",
@@ -388,14 +399,13 @@
             health: "fa-heartbeat",
             sports: "fa-futbol",
             international: "fa-globe",
-            domestic: "fa-flag-china"
+            domestic: "fa-landmark"
         };
         
         function getIconForCategory(cat) {
             return iconMap[cat] || "fa-newspaper";
         }
         
-        // 渲染新闻卡片
         function renderNews() {
             let filtered = [...allNewsItems];
             if (currentCategory !== "all") {
@@ -403,43 +413,68 @@
             }
             if (searchKeyword.trim() !== "") {
                 const kw = searchKeyword.trim().toLowerCase();
-                filtered = filtered.filter(item => item.title.toLowerCase().includes(kw) || (item.summary && item.summary.toLowerCase().includes(kw)));
+                filtered = filtered.filter(item => 
+                    item.title.toLowerCase().includes(kw) || 
+                    (item.summary && item.summary.toLowerCase().includes(kw))
+                );
             }
             
             if (filtered.length === 0) {
-                newsGrid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-newspaper text-5xl mb-3 opacity-50"></i><p>没有找到相关新闻，试试其他关键词吧~</p></div>`;
-                newsStatus.innerText = "暂无匹配结果";
+                if (allNewsItems.length === 0 && !isLoading) {
+                    newsGrid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-exclamation-triangle text-5xl mb-3 opacity-50"></i><p>暂无新闻数据，请检查网络连接后刷新页面</p><button onclick="location.reload()" class="btn-primary mt-4">重新加载</button></div>`;
+                } else {
+                    newsGrid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-newspaper text-5xl mb-3 opacity-50"></i><p>没有找到相关新闻，试试其他关键词吧~</p></div>`;
+                }
+                newsStatus.innerText = filtered.length === 0 && allNewsItems.length > 0 ? "暂无匹配结果" : "实时网络资讯";
                 return;
             }
             
-            newsStatus.innerText = `共 ${filtered.length} 条实时资讯 · 多元视角`;
+            newsStatus.innerText = `共 ${filtered.length} 条实时资讯 · 网络聚合`;
             newsGrid.innerHTML = filtered.map((news, idx) => `
                 <div class="news-card p-5 hover-tint flex flex-col" onmousemove="updateMask(event)">
                     <div class="flex items-start justify-between mb-3">
-                        <div class="bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center"><i class="fas ${news.icon || getIconForCategory(news.category)} text-primary text-xl"></i></div>
+                        <div class="bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas ${news.icon || getIconForCategory(news.category)} text-primary text-xl"></i>
+                        </div>
                         <span class="text-xs text-gray-500"><i class="far fa-clock mr-1"></i>${formatRelativeDate(news.pubDate)}</span>
                     </div>
                     <h3 class="text-xl font-bold mb-2 line-clamp-2">${escapeHtml(news.title)}</h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 flex-1">${escapeHtml(news.summary || news.description || "点击阅读全文了解详情")}</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 flex-1">${escapeHtml(news.summary || "点击阅读全文了解详情")}</p>
                     <div class="flex justify-between items-center mt-2 border-t border-gray-100 dark:border-gray-800 pt-3">
-                        <span class="text-xs text-primary font-medium">${getCategoryLabel(news.category)}</span>
+                        <span class="text-xs text-primary font-medium">
+                            ${news.category === "domestic" ? '<i class="fas fa-landmark mr-1"></i>' : (news.category === "education" ? '<i class="fas fa-graduation-cap mr-1"></i>' : (news.category === "health" ? '<i class="fas fa-heartbeat mr-1"></i>' : ''))}${getCategoryLabel(news.category)}
+                        </span>
                         <a href="${news.link}" target="_blank" rel="noopener noreferrer" class="text-primary text-sm font-medium hover:underline transition">阅读全文 <i class="fas fa-external-link-alt ml-1 text-xs"></i></a>
                     </div>
                 </div>
             `).join('');
         }
         
-        // 从网络获取新闻 - 针对七个分类分别获取
+        // 从网络获取新闻 - 仅从真实RSS源获取，无任何预制数据
         async function fetchNetworkNews() {
-            // 针对每个分类使用不同的RSS源
             const sources = [
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml", category: "technology", name: "科技" },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.artnews.com/feed/", category: "culture", name: "文化" },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.chronicle.com/rss/news", category: "education", name: "教育" },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.health.harvard.edu/feed", category: "health", name: "养生健康" },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.espn.com/espn/rss/news", category: "sports", name: "体育" },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml", category: "international", name: "国际" },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://news.sina.com.cn/roll/rollnews_sudoku_0_1.xml", category: "domestic", name: "国内" }
+                // 科技
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml", category: "technology", name: "The Verge", limit: 12 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.wired.com/feed/rss", category: "technology", name: "Wired", limit: 10 },
+                // 文化
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.artnews.com/feed/", category: "culture", name: "Art News", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.smithsonianmag.com/feed/", category: "culture", name: "Smithsonian", limit: 8 },
+                // 教育
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.chronicle.com/rss/news", category: "education", name: "Chronicle", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.edweek.org/rss/feed.xml", category: "education", name: "EdWeek", limit: 8 },
+                // 养生
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.health.harvard.edu/feed", category: "health", name: "Harvard Health", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.medicalnewstoday.com/feed", category: "health", name: "Medical News", limit: 8 },
+                // 体育
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.espn.com/espn/rss/news", category: "sports", name: "ESPN", limit: 12 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.bbc.com/sport/rss", category: "sports", name: "BBC Sport", limit: 10 },
+                // 国际
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml", category: "international", name: "BBC World", limit: 12 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.reuters.com/rssFeed/topNews", category: "international", name: "Reuters", limit: 10 },
+                // 国内
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://news.sina.com.cn/roll/rollnews_sudoku_0_1.xml", category: "domestic", name: "新浪新闻", limit: 12 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=http://www.people.com.cn/rss/politics.xml", category: "domestic", name: "人民网", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://cn.reuters.com/rssNews/CNTopNews", category: "domestic", name: "路透中文", limit: 8 }
             ];
             
             let allArticles = [];
@@ -447,10 +482,11 @@
             try {
                 const fetchPromises = sources.map(async (source) => {
                     try {
-                        const response = await fetch(source.url);
+                        const response = await fetch(source.url, { timeout: 8000 });
+                        if (!response.ok) return [];
                         const data = await response.json();
                         if (data && data.items && Array.isArray(data.items)) {
-                            return data.items.slice(0, 12).map(item => ({
+                            return data.items.slice(0, source.limit || 10).map(item => ({
                                 id: item.guid || item.link,
                                 title: item.title || "无标题",
                                 summary: (item.description || item.content || "").replace(/<[^>]*>/g, '').substring(0, 220),
@@ -467,34 +503,14 @@
                     }
                 });
                 
-                const results = await Promise.all(fetchPromises);
-                for (const articles of results) {
-                    allArticles.push(...articles);
+                const results = await Promise.allSettled(fetchPromises);
+                for (const result of results) {
+                    if (result.status === 'fulfilled' && Array.isArray(result.value)) {
+                        allArticles.push(...result.value);
+                    }
                 }
             } catch(e) {
                 console.error("新闻聚合出错", e);
-            }
-            
-            // 如果网络获取失败或结果太少，补充备用数据（覆盖七大分类）
-            if (allArticles.length < 20) {
-                const backupNews = [
-                    { id: "tech1", title: "人工智能赋能千行百业，大模型应用加速落地", summary: "多家科技公司发布最新AI产品，智能助手成为生产力新工具。", pubDate: new Date().toISOString(), category: "technology", icon: "fa-microchip", link: "#" },
-                    { id: "tech2", title: "中国空间站科学实验取得新进展", summary: "神舟系列任务持续推进，太空育种成果显著。", pubDate: new Date(Date.now() - 86400000).toISOString(), category: "technology", icon: "fa-microchip", link: "#" },
-                    { id: "culture1", title: "故宫博物院推出数字文物库，十万件珍品线上展出", summary: "科技赋能文化传承，公众可在线欣赏高清文物细节。", pubDate: new Date(Date.now() - 172800000).toISOString(), category: "culture", icon: "fa-palette", link: "#" },
-                    { id: "culture2", title: "传统节日焕发新活力，国潮文化引领消费新风尚", summary: "年轻人热衷传统文化体验，汉服、非遗成热门话题。", pubDate: new Date(Date.now() - 259200000).toISOString(), category: "culture", icon: "fa-palette", link: "#" },
-                    { id: "edu1", title: "教育部推进基础教育扩优提质，新增优质学位", summary: "2026年将新建改扩建中小学超千所，缓解学位压力。", pubDate: new Date(Date.now() - 345600000).toISOString(), category: "education", icon: "fa-graduation-cap", link: "#" },
-                    { id: "edu2", title: "高校AI通识课成必修，培养数字时代人才", summary: "多所大学将人工智能素养纳入通识教育体系。", pubDate: new Date(Date.now() - 432000000).toISOString(), category: "education", icon: "fa-graduation-cap", link: "#" },
-                    { id: "health1", title: "春季养生正当时，中医专家支招调理肝气", summary: "饮食清淡、早睡早起、适度运动，助您顺应时节。", pubDate: new Date(Date.now() - 518400000).toISOString(), category: "health", icon: "fa-heartbeat", link: "#" },
-                    { id: "health2", title: "研究显示：每日步行8000步可显著降低心血管风险", summary: "规律运动比高强度间歇训练更适合中老年人。", pubDate: new Date(Date.now() - 604800000).toISOString(), category: "health", icon: "fa-heartbeat", link: "#" },
-                    { id: "sports1", title: "NBA季后赛激战正酣，东西部决赛对阵出炉", summary: "球星对决引爆夏日篮球热潮。", pubDate: new Date(Date.now() - 691200000).toISOString(), category: "sports", icon: "fa-futbol", link: "#" },
-                    { id: "sports2", title: "中国女篮卫冕亚洲杯冠军，年轻阵容闪耀赛场", summary: "新生代球员崭露头角，中国篮球未来可期。", pubDate: new Date(Date.now() - 777600000).toISOString(), category: "sports", icon: "fa-futbol", link: "#" },
-                    { id: "intl1", title: "联合国气候变化大会达成新协议，各国承诺减排", summary: "全球携手应对气候挑战，绿色能源投资持续增长。", pubDate: new Date(Date.now() - 864000000).toISOString(), category: "international", icon: "fa-globe", link: "#" },
-                    { id: "intl2", title: "多国领导人出席G20峰会，聚焦数字经济合作", summary: "推动全球数字治理规则制定，促进包容性增长。", pubDate: new Date(Date.now() - 950400000).toISOString(), category: "international", icon: "fa-globe", link: "#" },
-                    { id: "dom1", title: "一季度国民经济开局良好，GDP同比增长5.2%", summary: "消费市场持续回暖，新动能加快成长。", pubDate: new Date(Date.now() - 1036800000).toISOString(), category: "domestic", icon: "fa-flag-china", link: "#" },
-                    { id: "dom2", title: "国产大飞机C919执飞新航线，旅客体验好评如潮", summary: "舒适性、经济性获市场认可，国产航空制造再上台阶。", pubDate: new Date(Date.now() - 1123200000).toISOString(), category: "domestic", icon: "fa-flag-china", link: "#" }
-                ];
-                // 合并并去重（避免过多重复）
-                allArticles = [...allArticles, ...backupNews];
             }
             
             // 按时间排序
@@ -503,15 +519,27 @@
         }
         
         async function loadNewsFromNetwork() {
+            if (isLoading) return;
+            isLoading = true;
             newsGrid.innerHTML = `<div class="col-span-full flex justify-center py-12"><div class="loader"></div></div>`;
+            newsStatus.innerText = "正在从网络获取最新资讯...";
+            
             try {
                 const networkNews = await fetchNetworkNews();
                 allNewsItems = networkNews;
-                renderNews();
+                
+                if (allNewsItems.length === 0) {
+                    newsGrid.innerHTML = `<div class="col-span-full text-center py-16"><div class="error-message"><i class="fas fa-wifi text-4xl text-primary mb-3"></i><p class="text-gray-600">暂时无法获取新闻，请检查网络连接后刷新重试</p><button onclick="location.reload()" class="btn-primary mt-4">重新加载</button></div></div>`;
+                    newsStatus.innerText = "加载失败，请刷新重试";
+                } else {
+                    renderNews();
+                }
             } catch (err) {
                 console.error("新闻加载异常", err);
-                newsGrid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500"><i class="fas fa-exclamation-triangle text-3xl mb-2"></i><p>新闻加载失败，请检查网络后刷新重试</p></div>`;
-                newsStatus.innerText = "加载失败，稍后重试";
+                newsGrid.innerHTML = `<div class="col-span-full text-center py-16"><div class="error-message"><i class="fas fa-exclamation-triangle text-4xl text-primary mb-3"></i><p class="text-gray-600">新闻加载失败，请检查网络后刷新重试</p><button onclick="location.reload()" class="btn-primary mt-4">重新加载</button></div></div>`;
+                newsStatus.innerText = "加载失败，请刷新重试";
+            } finally {
+                isLoading = false;
             }
         }
         
@@ -539,7 +567,6 @@
             renderNews();
         }
         
-        // 事件绑定
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
             if (navbar) navbar.classList.toggle('navbar-scrolled', window.scrollY > 50);
@@ -584,7 +611,6 @@
         document.getElementById('globalSearchBtn')?.addEventListener('click', performGlobalSearch);
         document.getElementById('globalSearchInput')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') performGlobalSearch(); });
         
-        // 启动加载
         loadNewsFromNetwork();
     </script>
 </body>
