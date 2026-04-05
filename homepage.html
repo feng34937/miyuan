@@ -78,51 +78,78 @@
             border-radius: 9999px !important;
         }
         
-        /* 导航栏 - 更现代 */
+        /* iOS 26 风格玻璃效果 - 增强半透明与模糊 */
+        .glass {
+            background: rgba(255, 255, 255, 0.72) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        }
+        .dark .glass {
+            background: rgba(20, 22, 27, 0.75) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        /* 导航栏宽度适配 - 增加水平内边距，更宽松 */
         #navbar {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            background: rgba(255, 255, 255, 0.94) !important;
-            backdrop-filter: blur(16px) saturate(180%) !important;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
+            background: rgba(255, 255, 255, 0.72) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
             z-index: 100000 !important;
-            padding: 10px 0;
+            padding: 12px 0;
         }
+        /* 深色模式导航栏更适配 */
         .dark #navbar {
-            background: rgba(17, 24, 39, 0.94) !important;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(20, 22, 27, 0.85) !important;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
         }
         .navbar-scrolled {
-            background: rgba(255, 255, 255, 0.98) !important;
+            background: rgba(255, 255, 255, 0.82) !important;
             box-shadow: 0 2px 12px rgba(0,0,0,0.03) !important;
             padding: 8px 0;
         }
         .dark .navbar-scrolled {
-            background: rgba(17, 24, 39, 0.98) !important;
+            background: rgba(20, 22, 27, 0.9) !important;
             box-shadow: 0 2px 12px rgba(0,0,0,0.2) !important;
+        }
+        /* 导航栏内部容器宽度调整 */
+        #navbar .container {
+            max-width: 1400px;
+            padding: 0 2rem;
+        }
+        @media (max-width: 768px) {
+            #navbar .container {
+                padding: 0 1.25rem;
+            }
         }
         
         body {
             margin: 0;
-            padding-top: 70px !important;
+            padding-top: 74px !important;
             background-color: #ffffff;
             transition: background-color 0.3s ease;
         }
         .dark body { background-color: #121212; }
         
-        /* 移动端菜单动画 */
+        /* 移动端菜单玻璃效果 */
         #mobileMenu {
             position: absolute;
             top: 100%;
             left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-top: 0.5px solid rgba(255, 255, 255, 0.3);
             z-index: 99999;
             animation: slideDown 0.2s ease-out;
         }
@@ -130,9 +157,9 @@
             from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .dark #mobileMenu { background: rgba(17, 24, 39, 0.98); border-top: 1px solid rgba(255,255,255,0.05); }
+        .dark #mobileMenu { background: rgba(20, 22, 27, 0.9); border-top: 0.5px solid rgba(255, 255, 255, 0.08); }
         
-        /* 深色模式全局 */
+        /* 深色模式全局优化 */
         .dark .bg-secondary { background-color: #1a1c1e; }
         .dark .bg-white { background-color: #1e1f22; }
         .dark .text-dark { color: #f0f0f0; }
@@ -164,20 +191,29 @@
         @media (min-width: 768px) { .hero-title { font-size: 4rem; } }
         @media (min-width: 1024px) { .hero-title { font-size: 5rem; } }
         
-        /* 卡片悬浮效果 - 增强 */
+        /* 卡片悬浮效果 - 玻璃质感卡片，深色模式更佳 */
         .card-hover {
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
             will-change: transform, box-shadow;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .card-hover {
+            background: rgba(30, 31, 34, 0.85);
+            border: 0.5px solid rgba(255, 255, 255, 0.06);
         }
         .card-hover:hover {
             transform: translateY(-6px);
-            box-shadow: 0 20px 32px -12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,120,215,0.2) !important;
+            box-shadow: 0 20px 32px -12px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,120,215,0.2) !important;
+            background: rgba(255, 255, 255, 0.92);
         }
         .dark .card-hover:hover {
+            background: rgba(40, 42, 48, 0.92);
             box-shadow: 0 20px 32px -12px rgba(0,0,0,0.3), 0 0 0 1px rgba(90,169,230,0.3) !important;
         }
         
-        /* 鼠标靠近光晕 - 细腻 */
+        /* 鼠标靠近光晕 - 保持细腻 */
         .hover-tint {
             position: relative;
             isolation: isolate;
@@ -228,17 +264,18 @@
         .hero-section:hover::before { opacity: 1; }
         .hero-section > * { position: relative; z-index: 2; }
         
-        /* 轮播容器优化 */
+        /* 轮播容器 - 玻璃效果 */
         .carousel-container {
             position: relative;
             max-width: 760px;
             margin: 0 auto;
             overflow: hidden;
-            background: #ffffff;
-            border: 1px solid #eef2f6;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
             transition: box-shadow 0.3s ease;
         }
-        .dark .carousel-container { background: #1e1f22; border-color: #2a2a2a; }
+        .dark .carousel-container { background: rgba(30, 31, 34, 0.8); border-color: rgba(255, 255, 255, 0.06); }
         .carousel-container:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
         .carousel-track { display: flex; transition: transform 0.5s cubic-bezier(0.2, 0.85, 0.4, 1); }
         .carousel-card { flex: 0 0 100%; }
@@ -251,29 +288,29 @@
         .icon-wrapper {
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
             display: inline-block;
-            background: rgba(0,120,215,0.04);
+            background: rgba(0,120,215,0.08);
             padding: 1rem;
             margin-bottom: 1.2rem;
         }
         .carousel-card:hover .icon-wrapper {
             transform: scale(1.02);
-            background: rgba(0,120,215,0.08);
+            background: rgba(0,120,215,0.12);
         }
         
         /* 轮播箭头 */
         .carousel-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             width: 38px; height: 38px;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(4px);
-            border: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
             display: flex; align-items: center; justify-content: center;
             font-size: 1rem; color: #0078D7;
             cursor: pointer; z-index: 20;
             transition: all 0.25s ease;
         }
         .carousel-arrow:hover { background: #0078D7; color: white; border-color: #0078D7; transform: translateY(-50%) scale(1.05); }
-        .dark .carousel-arrow { background: #2d2f31; color: #5aa9e6; border-color: #3a3a3a; }
+        .dark .carousel-arrow { background: rgba(30, 31, 34, 0.85); color: #5aa9e6; border-color: rgba(255, 255, 255, 0.08); }
         .dark .carousel-arrow:hover { background: #5aa9e6; color: #121212; }
         .carousel-arrow.left { left: 12px; }
         .carousel-arrow.right { right: 12px; }
@@ -334,7 +371,7 @@
         .dark .team-avatar { background: #2a2a2a; color: #5aa9e6; }
         .card-hover:hover .team-avatar-wrapper { transform: scale(1.02); }
         
-        /* 按钮优化 */
+        /* 按钮全局优化 - 深色模式完整适配 */
         .btn-primary {
             background: #0078D7;
             color: white;
@@ -348,20 +385,22 @@
         }
         .btn-primary:hover { background: #005a9e; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,120,215,0.25); }
         .dark .btn-primary { background: #5aa9e6; color: #121212; }
-        .dark .btn-primary:hover { background: #7bb3e0; }
+        .dark .btn-primary:hover { background: #7bb3e0; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(90,169,230,0.3); }
         
         .btn-outline {
-            border: 2px solid #0078D7;
+            border: 1.5px solid #0078D7;
             color: #0078D7;
             padding: 0.6rem 1.4rem;
             transition: all 0.25s ease;
             background: transparent;
             font-weight: 500;
         }
-        .btn-outline:hover { background: rgba(0,120,215,0.04); transform: translateY(-2px); }
+        .btn-outline:hover { background: rgba(0,120,215,0.08); transform: translateY(-2px); }
+        .dark .btn-outline { border-color: #5aa9e6; color: #5aa9e6; }
+        .dark .btn-outline:hover { background: rgba(90,169,230,0.15); transform: translateY(-2px); }
         
         .btn-partition {
-            border: 2px solid #0078D7;
+            border: 1.5px solid #0078D7;
             color: #0078D7;
             padding: 0.5rem 1.2rem;
             background: transparent;
@@ -369,17 +408,22 @@
             font-size: 0.85rem;
             font-weight: 500;
         }
-        .btn-partition:hover { background: rgba(0,120,215,0.04); transform: translateY(-2px); }
+        .btn-partition:hover { background: rgba(0,120,215,0.08); transform: translateY(-2px); }
+        .dark .btn-partition { border-color: #5aa9e6; color: #5aa9e6; }
+        .dark .btn-partition:hover { background: rgba(90,169,230,0.15); transform: translateY(-2px); }
         
         .btn-more {
-            border: 2px solid #0078D7;
+            border: 1.5px solid #0078D7;
             color: #0078D7;
             padding: 0.6rem 1.6rem;
             gap: 8px;
             transition: all 0.25s ease;
             font-weight: 500;
+            background: transparent;
         }
         .btn-more:hover { background: #0078D7; color: white; transform: translateY(-2px); gap: 12px; }
+        .dark .btn-more { border-color: #5aa9e6; color: #5aa9e6; }
+        .dark .btn-more:hover { background: #5aa9e6; color: #121212; transform: translateY(-2px); gap: 12px; }
         
         /* 分区页面 */
         .section-page {
@@ -393,7 +437,7 @@
             overflow-y: auto;
             transform: translateX(100%);
             transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
-            padding-top: 70px;
+            padding-top: 74px;
         }
         .dark .section-page { background: #121212; }
         .section-page.active { transform: translateX(0); }
@@ -418,26 +462,32 @@
             align-items: center;
             gap: 6px;
             padding: 5px 12px;
-            background: rgba(0,120,215,0.06);
-            border: 1px solid rgba(0,120,215,0.2);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
             color: #0078D7;
             cursor: pointer;
             transition: all 0.2s ease;
             font-size: 0.85rem;
         }
         .nav-back-button:hover { background: #0078D7; color: white; transform: translateX(-3px); }
+        .dark .nav-back-button { background: rgba(30, 31, 34, 0.7); color: #5aa9e6; border-color: rgba(255, 255, 255, 0.08); }
+        .dark .nav-back-button:hover { background: #5aa9e6; color: #121212; }
         
         /* 游戏分区 */
         .series-card {
-            background: #ffffff;
-            border: 2px solid #0078D7;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid #0078D7;
             padding: 1.5rem 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .series-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -8px rgba(0,120,215,0.15); }
-        .dark .series-card { background: #1e1f22; border-color: #5aa9e6; }
+        .series-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -8px rgba(0,120,215,0.15); background: rgba(255, 255, 255, 0.9); }
+        .dark .series-card { background: rgba(30, 31, 34, 0.8); border-color: #5aa9e6; }
+        .dark .series-card:hover { background: rgba(40, 42, 48, 0.9); }
         .series-icon { font-size: 2.2rem; color: #0078D7; margin-bottom: 0.6rem; }
+        .dark .series-icon { color: #5aa9e6; }
         
         .game-list {
             display: none;
@@ -449,39 +499,48 @@
         }
         .game-list.active { display: grid; animation: folderExpand 0.3s ease-out forwards; }
         .game-item {
-            background: rgba(0,120,215,0.02);
+            background: rgba(0,120,215,0.04);
+            backdrop-filter: blur(8px);
             padding: 1rem;
             text-align: center;
             transition: all 0.25s ease;
-            border: 1px solid rgba(0,120,215,0.08);
+            border: 1px solid rgba(0,120,215,0.1);
         }
-        .game-item:hover { transform: translateY(-3px); background: rgba(0,120,215,0.05); border-color: rgba(0,120,215,0.2); }
+        .game-item:hover { transform: translateY(-3px); background: rgba(0,120,215,0.08); border-color: rgba(0,120,215,0.2); }
+        .dark .game-item { background: rgba(90,169,230,0.06); border-color: rgba(90,169,230,0.15); }
+        .dark .game-item:hover { background: rgba(90,169,230,0.12); }
         .game-name { font-size: 1.1rem; font-weight: 700; color: #0078D7; margin-bottom: 0.3rem; }
+        .dark .game-name { color: #5aa9e6; }
         
-        /* 通用卡片 */
+        /* 通用卡片 - 玻璃效果 */
         .demo-card {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
             padding: 1.8rem 1.2rem;
             text-align: center;
             transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
-            border: 1px solid #eef2f6;
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
         }
-        .demo-card:hover { transform: translateY(-5px); border-color: #0078D7; box-shadow: 0 12px 24px -12px rgba(0,0,0,0.08); }
+        .demo-card:hover { transform: translateY(-5px); border-color: #0078D7; background: rgba(255, 255, 255, 0.85); box-shadow: 0 12px 24px -12px rgba(0,0,0,0.08); }
         .demo-icon { font-size: 2.4rem; color: #0078D7; margin-bottom: 0.8rem; transition: transform 0.3s ease; }
         .demo-card:hover .demo-icon { transform: scale(1.03); }
-        .dark .demo-card { background: #1e1f22; border-color: #2a2a2a; }
+        .dark .demo-card { background: rgba(30, 31, 34, 0.8); border-color: rgba(255, 255, 255, 0.06); }
+        .dark .demo-card:hover { background: rgba(40, 42, 48, 0.9); border-color: #5aa9e6; }
+        .dark .demo-icon { color: #5aa9e6; }
         
         .search-container { max-width: 100%; margin-top: 1rem; }
         .search-input {
             width: 100%;
             padding: 0.6rem 1rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid rgba(0,0,0,0.1);
             font-size: 0.875rem;
             transition: all 0.2s;
-            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
         }
-        .dark .search-input { background: #2a2a2a; border-color: #3a3a3a; color: #f0f0f0; }
+        .dark .search-input { background: rgba(30, 31, 34, 0.8); border-color: rgba(255, 255, 255, 0.1); color: #f0f0f0; }
         .search-input:focus { outline: none; border-color: #0078D7; box-shadow: 0 0 0 2px rgba(0,120,215,0.08); }
+        .dark .search-input:focus { border-color: #5aa9e6; box-shadow: 0 0 0 2px rgba(90,169,230,0.15); }
         .search-btn {
             background: #0078D7;
             color: white;
@@ -492,20 +551,25 @@
             font-size: 0.875rem;
         }
         .search-btn:hover { background: #005a9e; transform: translateY(-1px); }
+        .dark .search-btn { background: #5aa9e6; color: #121212; }
+        .dark .search-btn:hover { background: #7bb3e0; transform: translateY(-1px); }
         
-        /* 鸣谢区域 */
+        /* 鸣谢区域 - 玻璃效果 */
         .thanks-section {
             max-width: 800px;
             margin: 2.5rem auto 0;
             padding: 1.8rem 1.2rem;
-            background: #fafbfc;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
             text-align: center;
             transition: all 0.3s ease;
-            border: 1px solid #eef2f6;
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
         }
-        .thanks-section:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -8px rgba(0,120,215,0.08); border-color: #e2e8f0; }
-        .dark .thanks-section { background: #1a1c1e; border-color: #2a2a2a; }
+        .thanks-section:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.8); border-color: #e2e8f0; }
+        .dark .thanks-section { background: rgba(30, 31, 34, 0.7); border-color: rgba(255, 255, 255, 0.06); }
+        .dark .thanks-section:hover { background: rgba(40, 42, 48, 0.85); }
         .thanks-title { font-size: 1.3rem; font-weight: 700; color: #0078D7; margin-bottom: 0.5rem; }
+        .dark .thanks-title { color: #5aa9e6; }
         .thanks-item {
             display: flex;
             flex-direction: column;
@@ -517,14 +581,19 @@
         .thanks-item:hover { transform: translateY(-3px); }
         .thanks-icon { font-size: 1.8rem; color: #0078D7; transition: transform 0.2s; margin-bottom: 0.2rem; }
         .thanks-item:hover .thanks-icon { transform: scale(1.05); }
+        .dark .thanks-icon { color: #5aa9e6; }
+        .thanks-item span { color: #4b5563; }
+        .dark .thanks-item span { color: #9ca3af; }
         
         .footer-link, .legal-link {
             cursor: pointer;
             transition: all 0.2s ease;
+            color: #9ca3af;
         }
         .footer-link:hover, .legal-link:hover { color: #0078D7 !important; transform: translateX(2px); }
+        .dark .footer-link:hover, .dark .legal-link:hover { color: #5aa9e6 !important; }
         
-        /* 模态框 */
+        /* 模态框玻璃效果 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -532,7 +601,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px);
             z-index: 200000;
             display: flex;
             align-items: center;
@@ -543,7 +612,8 @@
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-container {
-            background: white;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
             width: 90%;
             max-width: 550px;
             max-height: 70vh;
@@ -551,18 +621,28 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
             animation: modalSlideUp 0.2s ease-out forwards;
         }
-        .dark .modal-container { background: #1e1f22; border: 1px solid #2a2a2a; }
-        .modal-header { padding: 0.8rem 1.2rem; border-bottom: 1px solid #eef2f6; display: flex; justify-content: space-between; align-items: center; }
+        .dark .modal-container { background: rgba(30, 31, 34, 0.9); border: 0.5px solid rgba(255, 255, 255, 0.08); }
+        .modal-header { padding: 0.8rem 1.2rem; border-bottom: 0.5px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .dark .modal-header { border-bottom-color: rgba(255,255,255,0.08); }
         .modal-header h2 { font-size: 1.1rem; font-weight: 700; color: #0078D7; margin: 0; }
-        .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 0.5rem; }
+        .dark .modal-header h2 { color: #5aa9e6; }
+        .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 0.5rem; color: #6b7280; }
         .modal-close:hover { color: #0078D7; }
-        .modal-body { padding: 1.2rem; overflow-y: auto; line-height: 1.5; font-size: 0.875rem; }
-        .modal-footer { padding: 0.8rem 1.2rem; border-top: 1px solid #eef2f6; display: flex; justify-content: flex-end; }
+        .dark .modal-close { color: #9ca3af; }
+        .dark .modal-close:hover { color: #5aa9e6; }
+        .modal-body { padding: 1.2rem; overflow-y: auto; line-height: 1.5; font-size: 0.875rem; color: #374151; }
+        .dark .modal-body { color: #d1d5db; }
+        .modal-footer { padding: 0.8rem 1.2rem; border-top: 0.5px solid rgba(0,0,0,0.05); display: flex; justify-content: flex-end; }
+        .dark .modal-footer { border-top-color: rgba(255,255,255,0.08); }
         .modal-footer button { background: #0078D7; color: white; padding: 0.4rem 1rem; border: none; cursor: pointer; font-size: 0.8rem; }
+        .dark .modal-footer button { background: #5aa9e6; color: #121212; }
+        .dark .modal-footer button:hover { background: #7bb3e0; }
         
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        /* 全局容器宽度优化 */
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
         @media (max-width: 768px) { .container { padding: 0 1rem; } }
         
         /* 入场动画 */
@@ -583,11 +663,11 @@
 
     <nav id="navbar" class="transition-all">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-6">
                 <div id="navBackButtonContainer" style="display: none;"><div class="nav-back-button" onclick="closeCurrentSection()"><i class="fas fa-chevron-left"></i> 返回</div></div>
-                <a href="#" class="text-xl font-black text-primary tracking-tight">米遇安</a>
+                <a href="#" class="text-xl font-black text-primary tracking-tight hover:opacity-80 transition">米遇安</a>
             </div>
-            <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
+            <div class="hidden md:flex items-center space-x-7 text-sm font-medium">
                 <a href="#home" class="hover:text-primary transition">首页</a>
                 <a href="#about" class="hover:text-primary transition">关于米遇安</a>
                 <a href="#team" class="hover:text-primary transition">核心成员</a>
@@ -595,14 +675,14 @@
                 <a href="#" onclick="openSection('games'); return false;" class="hover:text-primary transition">游戏分区</a>
                 <a href="#" onclick="openSection('education'); return false;" class="hover:text-primary transition">教育分区</a>
                 <a href="#contact" class="hover:text-primary transition">联系我们</a>
-                <button id="darkModeToggle" class="p-1.5"><i id="darkModeIcon" class="fas fa-moon text-primary text-sm"></i></button>
+                <button id="darkModeToggle" class="p-1.5 ml-2"><i id="darkModeIcon" class="fas fa-moon text-primary text-sm"></i></button>
             </div>
-            <div class="flex items-center gap-3 md:hidden">
+            <div class="flex items-center gap-4 md:hidden">
                 <button id="darkModeToggleMobile"><i id="darkModeIconMobile" class="fas fa-moon text-primary"></i></button>
                 <button id="menuBtn" class="text-lg"><i class="fas fa-bars"></i></button>
             </div>
         </div>
-        <div id="mobileMenu" class="hidden md:hidden"><div class="container py-3 flex flex-col space-y-2 text-sm"><a href="#home" class="hover:text-primary py-1">首页</a><a href="#about" class="hover:text-primary py-1">关于米遇安</a><a href="#team" class="hover:text-primary py-1">核心成员</a><a href="#" onclick="openSection('tools'); return false;" class="hover:text-primary py-1">工具分区</a><a href="#" onclick="openSection('games'); return false;" class="hover:text-primary py-1">游戏分区</a><a href="#" onclick="openSection('education'); return false;" class="hover:text-primary py-1">教育分区</a><a href="#contact" class="hover:text-primary py-1">联系我们</a></div></div>
+        <div id="mobileMenu" class="hidden md:hidden"><div class="container py-4 flex flex-col space-y-3 text-sm"><a href="#home" class="hover:text-primary py-1">首页</a><a href="#about" class="hover:text-primary py-1">关于米遇安</a><a href="#team" class="hover:text-primary py-1">核心成员</a><a href="#" onclick="openSection('tools'); return false;" class="hover:text-primary py-1">工具分区</a><a href="#" onclick="openSection('games'); return false;" class="hover:text-primary py-1">游戏分区</a><a href="#" onclick="openSection('education'); return false;" class="hover:text-primary py-1">教育分区</a><a href="#contact" class="hover:text-primary py-1">联系我们</a></div></div>
     </nav>
 
     <main>
@@ -642,7 +722,7 @@
             </div>
         </section>
 
-        <section id="team" class="py-16 md:py-20 bg-secondary"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">核心成员</h2><p class="text-center text-gray-600 text-sm mb-8">五名元老，各司其职</p><div class="grid grid-cols-2 md:grid-cols-5 gap-5"><div class="bg-white p-4 text-center card-hover hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">凤</div></div><h3 class="font-bold">凤峰</h3><p class="text-primary text-xs">团长 / 产品架构师</p></div><div class="bg-white p-4 text-center card-hover hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">陈</div></div><h3 class="font-bold">陈思齐</h3><p class="text-primary text-xs">测试 / 质量保障</p></div><div class="bg-white p-4 text-center card-hover hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">孙</div></div><h3 class="font-bold">孙语宸</h3><p class="text-primary text-xs">产品运营</p></div><div class="bg-white p-4 text-center card-hover hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">蒋</div></div><h3 class="font-bold">蒋筳瀚</h3><p class="text-primary text-xs">内容策划</p></div><div class="bg-white p-4 text-center card-hover hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">莫</div></div><h3 class="font-bold">莫子妍</h3><p class="text-primary text-xs">社区运营</p></div></div></div></section>
+        <section id="team" class="py-16 md:py-20 bg-secondary"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">核心成员</h2><p class="text-center text-gray-600 text-sm mb-8">五名元老，各司其职</p><div class="grid grid-cols-2 md:grid-cols-5 gap-5"><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">凤</div></div><h3 class="font-bold">凤峰</h3><p class="text-primary text-xs">团长 / 产品架构师</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">陈</div></div><h3 class="font-bold">陈思齐</h3><p class="text-primary text-xs">测试 / 质量保障</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">孙</div></div><h3 class="font-bold">孙语宸</h3><p class="text-primary text-xs">产品运营</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">蒋</div></div><h3 class="font-bold">蒋筳瀚</h3><p class="text-primary text-xs">内容策划</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">莫</div></div><h3 class="font-bold">莫子妍</h3><p class="text-primary text-xs">社区运营</p></div></div></div></section>
 
         <section id="contact" class="py-16 md:py-20"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">保持联系</h2><p class="text-center text-gray-600 text-sm mb-8">任何想法、合作或疑问，欢迎找到我们</p><div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-4 bg-secondary p-5"><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="fas fa-map-marker-alt text-primary"></i></div><div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="fas fa-phone text-primary"></i></div><div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="fas fa-envelope text-primary"></i></div><div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div></div></div>
             <div class="thanks-section hover-tint" onmousemove="updateMask(event)"><h3 class="thanks-title">特别鸣谢</h3><p class="text-gray-500 text-xs mb-3">感谢以下平台与个人的支持</p><div class="flex flex-wrap justify-center gap-2"><div class="thanks-item" onclick="window.open('https://github.com','_blank')"><i class="fab fa-github thanks-icon"></i><span class="text-xs">GitHub</span></div><div class="thanks-item" onclick="window.open('https://www.microsoft.com','_blank')"><i class="fab fa-microsoft thanks-icon"></i><span class="text-xs">Microsoft</span></div><div class="thanks-item" onclick="window.open('https://chat.openai.com','_blank')"><i class="fas fa-comment-dots thanks-icon"></i><span class="text-xs">ChatGPT</span></div><div class="thanks-item" onclick="window.open('https://www.deepseek.com','_blank')"><i class="fas fa-brain thanks-icon"></i><span class="text-xs">DeepSeek</span></div><div class="thanks-item" onclick="window.open('https://www.wps.cn','_blank')"><i class="fas fa-file-alt thanks-icon"></i><span class="text-xs">金山办公</span></div><div class="thanks-item"><i class="fas fa-user-graduate thanks-icon"></i><span class="text-xs">钟平</span></div><div class="thanks-item"><i class="fas fa-user-circle thanks-icon"></i><span class="text-xs">吴彦泽</span></div></div></div></div></section>
@@ -652,7 +732,7 @@
 
     <div id="toolsSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1><p class="text-center text-gray-600 text-sm mb-5">实用工具 · 高效便捷</p><div class="grid gap-4 md:grid-cols-2"><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-newspaper demo-icon"></i><h3 class="text-lg font-bold mb-1">米遇安新闻</h3><p class="text-xs text-gray-500 mb-2">聚焦校园内外，传递新鲜资讯。</p><button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/news', '_blank')">阅读新闻</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-search demo-icon"></i><h3 class="text-lg font-bold mb-1">米遇安搜索</h3><p class="text-xs text-gray-500 mb-2">快速搜索全网信息。</p><div class="flex gap-2"><input type="text" id="searchInput" class="search-input flex-1 text-sm" placeholder="输入关键词..." onkeypress="handleSearchKeypress(event)"><button onclick="performSearch()" class="search-btn text-sm">搜索</button></div></div></div></div></div>
     <div id="gamesSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">游戏分区</h1><p class="text-center text-gray-600 text-sm mb-4">探索精彩游戏世界</p><div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList()"><i class="fas fa-folder-open series-icon"></i><h2 class="text-lg font-bold">现代战争推演系列</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="fas fa-chevron-down mt-1 text-primary transition-transform" id="seriesArrow"></i></div><div id="gameList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-gamepad text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演1</div><button class="btn-primary text-xs mt-1 opacity-60 cursor-default" style="background:#6c757d">线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-crosshairs text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演2</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modernwarefare_2', '_blank')">点击试玩</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-rocket text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演3</div><span class="text-primary text-xs">研发中</span></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-bolt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代冲突</div><button class="btn-primary text-xs mt-1 opacity-60 cursor-default" style="background:#6c757d">线下参与</button></div></div></div></div>
-    <div id="educationSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">教育分区</h1><p class="text-center text-gray-600 text-sm mb-4">启迪智慧 · 传承文化</p><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-landmark demo-icon"></i><h3 class="text-xl font-bold mb-2">米遇安文化</h3><p class="text-gray-600 text-sm leading-relaxed mb-3">米遇安文化致力于传播优秀的教育理念，融合传统智慧与现代科技，为学习者提供有深度、有温度的文化内容。</p><div class="border-t pt-3 mt-2 text-left"><h4 class="font-bold text-primary text-sm">📖 文化理念</h4><p class="text-xs text-gray-600">以人为本 · 融合创新 · 传承经典</p><h4 class="font-bold text-primary text-sm mt-2">🎯 未来计划</h4><p class="text-xs text-gray-600">文化讲座、在线课程、读书会敬请期待。</p></div><button class="btn-primary text-sm mt-4" onclick="window.open('https://feng34937.github.io/miyuan/education/culture', '_blank')">了解更多 →</button></div></div></div>
+    <div id="educationSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">教育分区</h1><p class="text-center text-gray-600 text-sm mb-4">启迪智慧 · 传承文化</p><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-landmark demo-icon"></i><h3 class="text-xl font-bold mb-2">米遇安文化</h3><p class="text-gray-600 text-sm leading-relaxed mb-3">米遇安文化致力于传播优秀的教育理念，融合传统智慧与现代科技，为学习者提供有深度、有温度的文化内容。</p><button class="btn-primary text-sm mt-4" onclick="window.open('https://feng34937.github.io/miyuan/education/culture', '_blank')">了解更多 →</button></div></div></div>
     <div id="othersSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">其他分区</h1><p class="text-center text-gray-600 text-sm mb-4">更多精彩内容</p><div class="grid gap-4 md:grid-cols-2"><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-users demo-icon"></i><h3 class="text-base font-bold">同学信息收集</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://forms.office.com/...', '_blank')">立即使用</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-briefcase demo-icon"></i><h3 class="text-base font-bold">米遇安招聘</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://sway.cloud.microsoft/s/CG8U19PLYKAlBl1k/embed', '_blank')">查看职位</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-rocket demo-icon"></i><h3 class="text-base font-bold">成为公测成员</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://forms.office.com/...', '_blank')">立即报名</button></div></div></div></div>
 
     <script>
