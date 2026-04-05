@@ -1958,6 +1958,23 @@
                 showNameModal(1);
             });
 
+            // 玩家数量调整逻辑
+            function updatePlayerCount(delta) {
+                if(gameState.setupPhase.isSetting) {
+                    let newCount = gameState.totalPlayers + delta;
+                    if(newCount >= 2 && newCount <= 9) {
+                        gameState.totalPlayers = newCount;
+                        playerCountSpan.textContent = gameState.totalPlayers;
+                        initPlayerData(gameState.totalPlayers);
+                        // 重新开始国土设置，清除当前进度
+                        startTerrainSetup();
+                    }
+                }
+            }
+
+            decreasePlayerBtn.addEventListener('click', () => updatePlayerCount(-1));
+            increasePlayerBtn.addEventListener('click', () => updatePlayerCount(1));
+
             initPlayerData(2);
             generateGrid();
             updateTurnIndicator();
