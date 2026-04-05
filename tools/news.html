@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>米遇安新闻 · 实时网络资讯</title>
     <!-- Tailwind + Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -41,12 +41,17 @@
                         fadeInUp: {
                             '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        adSlide: {
+                            '0%': { opacity: '0', transform: 'translateX(20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
                         }
                     },
                     animation: {
                         float: 'float 5s ease-in-out infinite',
-                        gradientShift: 'gradientShift 6s ease infinite',
-                        fadeInUp: 'fadeInUp 0.5s ease forwards',
+                        gradientShift: 'gradientShift 8s ease infinite',
+                        fadeInUp: 'fadeInUp 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) forwards',
+                        adSlide: 'adSlide 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards',
                     }
                 }
             }
@@ -55,11 +60,24 @@
     <style>
         * { scroll-behavior: smooth; }
         
-        .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded, button, [class*="rounded-"]:not(.rounded-full):not(.carousel-dot) {
+        .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded, button, [class*="rounded-"]:not(.rounded-full):not(.team-avatar-wrapper):not(.team-avatar):not(.carousel-dot):not(.ad-dot) {
             border-radius: 0px !important;
         }
-        .rounded-full, .carousel-dot {
+        .rounded-full, .team-avatar-wrapper, .team-avatar, .carousel-dot, .timeline-item::before, .ad-dot {
             border-radius: 9999px !important;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.72) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        }
+        .dark .glass {
+            background: rgba(20, 22, 27, 0.75) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
         }
         
         #navbar {
@@ -68,29 +86,31 @@
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            background: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(16px) saturate(180%) !important;
-            border-bottom: 1px solid rgba(0,0,0,0.06);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+            background: rgba(255, 255, 255, 0.72) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
             z-index: 100000 !important;
-            padding: 12px 0;
+            padding: 10px 0;
         }
         .dark #navbar {
-            background: rgba(17, 24, 39, 0.88) !important;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(20, 22, 27, 0.85) !important;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
         }
         .navbar-scrolled {
-            background: rgba(255, 255, 255, 0.96) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+            background: rgba(255, 255, 255, 0.82) !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03) !important;
+            padding: 8px 0;
         }
         .dark .navbar-scrolled {
-            background: rgba(17, 24, 39, 0.96) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+            background: rgba(20, 22, 27, 0.9) !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2) !important;
         }
         
         body {
             margin: 0;
-            padding-top: 74px !important;
+            padding-top: 70px !important;
             background-color: #ffffff;
             transition: background-color 0.3s ease;
         }
@@ -101,22 +121,22 @@
             top: 100%;
             left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-top: 0.5px solid rgba(255, 255, 255, 0.3);
             z-index: 99999;
-            animation: slideDown 0.25s ease-out;
+            animation: slideDown 0.2s ease-out;
         }
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .dark #mobileMenu { background: rgba(17, 24, 39, 0.96); border-top: 1px solid rgba(255,255,255,0.05); }
+        .dark #mobileMenu { background: rgba(20, 22, 27, 0.9); border-top: 0.5px solid rgba(255, 255, 255, 0.08); }
         
-        .dark .bg-secondary { background-color: #1e1f22; }
+        .dark .bg-secondary { background-color: #1a1c1e; }
         .dark .bg-white { background-color: #1e1f22; }
         .dark .text-dark { color: #f0f0f0; }
-        .dark .text-gray-600, .dark .text-gray-700 { color: #b0b0b0 !important; }
+        .dark .text-gray-600, .dark .text-gray-700 { color: #a0a0a0 !important; }
         .dark .text-primary { color: #5aa9e6 !important; }
         
         .dynamic-gradient-text {
@@ -125,27 +145,34 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: gradientShift 6s ease infinite;
+            animation: gradientShift 8s ease infinite;
             font-weight: 900;
+            display: inline-block;
         }
         
+        .hero-title { font-size: 3rem; line-height: 1.2; }
+        @media (min-width: 768px) { .hero-title { font-size: 4rem; } }
+        @media (min-width: 1024px) { .hero-title { font-size: 5rem; } }
+        
         .news-card {
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
             will-change: transform, box-shadow;
-            background: white;
-            border: 1px solid rgba(0,120,215,0.12);
-        }
-        .news-card:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 20px 30px -12px rgba(0,120,215,0.2) !important;
-            border-color: rgba(0,120,215,0.4);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
         }
         .dark .news-card {
-            background: #1e1f22;
-            border-color: rgba(90,169,230,0.15);
+            background: rgba(30, 31, 34, 0.85);
+            border: 0.5px solid rgba(255, 255, 255, 0.06);
+        }
+        .news-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 32px -12px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,120,215,0.2) !important;
+            background: rgba(255, 255, 255, 0.92);
         }
         .dark .news-card:hover {
-            box-shadow: 0 20px 30px -12px rgba(90,169,230,0.25) !important;
+            background: rgba(40, 42, 48, 0.92);
+            box-shadow: 0 20px 32px -12px rgba(0,0,0,0.3), 0 0 0 1px rgba(90,169,230,0.3) !important;
         }
         
         .hover-tint {
@@ -158,22 +185,43 @@
             position: absolute;
             inset: 0;
             background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
-                        rgba(0, 120, 215, 0.2) 0%,
-                        rgba(0, 120, 215, 0.05) 45%,
+                        rgba(0, 120, 215, 0.28) 0%,
+                        rgba(0, 120, 215, 0.08) 45%,
                         transparent 75%);
             opacity: 0;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.45s cubic-bezier(0.2, 0.9, 0.4, 1);
             pointer-events: none;
             z-index: 1;
         }
         .dark .hover-tint::before {
             background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
-                        rgba(90, 169, 230, 0.3) 0%,
-                        rgba(90, 169, 230, 0.1) 45%,
+                        rgba(90, 169, 230, 0.32) 0%,
+                        rgba(90, 169, 230, 0.12) 45%,
                         transparent 75%);
         }
         .hover-tint:hover::before { opacity: 1; }
         .hover-tint > * { position: relative; z-index: 2; }
+        
+        .hero-section {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--hero-x, 50%) var(--hero-y, 50%), 
+                        rgba(0, 120, 215, 0.2) 0%,
+                        rgba(0, 120, 215, 0.05) 50%,
+                        transparent 80%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .hero-section:hover::before { opacity: 1; }
+        .hero-section > * { position: relative; z-index: 2; }
         
         .category-btn {
             transition: all 0.25s ease;
@@ -190,44 +238,73 @@
             border-bottom-color: #5aa9e6;
         }
         
-        .domestic-icon {
-            display: inline-block;
+        .ad-container {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
         }
-        .category-btn:hover .domestic-icon {
-            transform: scale(1.1) rotate(5deg);
+        .dark .ad-container {
+            background: rgba(30, 31, 34, 0.8);
+            border: 0.5px solid rgba(255, 255, 255, 0.06);
         }
-        
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 46px;
-            height: 46px;
-            background: #0078D7;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .ad-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            background: rgba(255, 255, 255, 0.85);
+        }
+        .dark .ad-container:hover {
+            background: rgba(40, 42, 48, 0.9);
+        }
+        .ad-tag {
+            background: rgba(0, 120, 215, 0.12);
+            color: #0078D7;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            letter-spacing: 1px;
+            border: 0.5px solid rgba(0, 120, 215, 0.2);
+        }
+        .dark .ad-tag {
+            background: rgba(90, 169, 230, 0.15);
+            color: #5aa9e6;
+        }
+        .ad-switch-btn {
+            background: rgba(0, 120, 215, 0.1);
+            border: 0.5px solid rgba(0, 120, 215, 0.2);
+            transition: all 0.2s ease;
             cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            z-index: 9999;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        .back-to-top.show {
-            opacity: 1;
-            visibility: visible;
+        .ad-switch-btn:hover {
+            background: rgba(0, 120, 215, 0.2);
+            transform: scale(1.02);
         }
-        .back-to-top:hover {
-            background: #005a9e;
-            transform: translateY(-3px);
+        .ad-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #cbd5e1;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
-        .dark .back-to-top {
-            background: #5aa9e6;
-            color: #121212;
+        .ad-dot.active {
+            width: 18px;
+            background-color: #0078D7 !important;
+            border-radius: 0px !important;
         }
+        .dark .ad-dot.active { background-color: #5aa9e6 !important; }
+        
+        .btn-primary {
+            background: rgba(0, 120, 215, 0.9);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 0.6rem 1.4rem;
+            transition: all 0.25s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        .btn-primary:hover { background: #005a9e; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,120,215,0.25); }
+        .dark .btn-primary { background: rgba(90, 169, 230, 0.9); color: #121212; }
         
         .loader {
             border: 3px solid rgba(0,120,215,0.2);
@@ -239,17 +316,31 @@
             margin: 2rem auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .dark .loader { border-top-color: #5aa9e6; }
         
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
         @media (max-width: 768px) { .container { padding: 0 1rem; } }
         
-        .error-message {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(0,120,215,0.05);
-            border: 1px solid rgba(0,120,215,0.2);
+        .back-to-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 120, 215, 0.85);
+            backdrop-filter: blur(12px);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 9999;
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
         }
+        .back-to-top.show { opacity: 1; visibility: visible; }
+        .back-to-top:hover { background: #005a9e; transform: translateY(-3px); }
     </style>
 </head>
 <body class="font-inter text-dark antialiased">
@@ -257,67 +348,100 @@
     <nav id="navbar" class="transition-all">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <a href="#" class="text-2xl font-black text-primary tracking-tight hover:scale-105 transition-transform">米遇安 · 新闻</a>
+                <a href="#" class="text-xl font-black text-primary tracking-tight">米遇安 · 新闻</a>
             </div>
-            <div class="hidden md:flex items-center space-x-7 text-[0.95rem] font-medium">
-                <a href="#" class="hover:text-primary transition-all relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full">首页</a>
-                <button id="darkModeToggle" class="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"><i id="darkModeIcon" class="fas fa-moon text-primary text-lg"></i></button>
+            <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <a href="#" class="hover:text-primary transition">首页</a>
+                <button id="darkModeToggle" class="p-1.5"><i id="darkModeIcon" class="fas fa-moon text-primary text-sm"></i></button>
             </div>
             <div class="flex items-center gap-3 md:hidden">
-                <button id="darkModeToggleMobile" class="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"><i id="darkModeIconMobile" class="fas fa-moon text-primary text-lg"></i></button>
-                <button id="menuBtn" class="text-2xl text-dark hover:text-primary"><i class="fas fa-bars"></i></button>
+                <button id="darkModeToggleMobile"><i id="darkModeIconMobile" class="fas fa-moon text-primary"></i></button>
+                <button id="menuBtn" class="text-lg"><i class="fas fa-bars"></i></button>
             </div>
         </div>
         <div id="mobileMenu" class="hidden md:hidden">
-            <div class="container py-5 flex flex-col space-y-4 text-base font-medium">
-                <a href="#" class="hover:text-primary py-1 transition">首页</a>
+            <div class="container py-3 flex flex-col space-y-2 text-sm">
+                <a href="#" class="hover:text-primary py-1">首页</a>
             </div>
         </div>
     </nav>
 
     <main>
-        <section class="bg-secondary py-12 md:py-16 border-b border-gray-200 dark:border-gray-800">
-            <div class="container text-center">
-                <h1 class="text-4xl md:text-6xl font-black leading-tight">
-                    <span class="dynamic-gradient-text">米遇安新闻</span>
-                </h1>
-                <p class="text-lg md:text-xl max-w-3xl mx-auto mt-5 text-gray-700 dark:text-gray-300">实时网络资讯 · 纯净聚合平台</p>
+        <section class="bg-secondary py-12 md:py-16 border-b border-gray-200 dark:border-gray-800 hero-section" onmousemove="updateHeroMask(event)" onmouseleave="resetHeroMask(event)">
+            <div class="container text-center relative z-10">
+                <h1 class="hero-title font-black"><span class="dynamic-gradient-text">米遇安新闻</span></h1>
+                <p class="text-base md:text-lg max-w-2xl mx-auto mt-4 text-gray-600 dark:text-gray-300">实时网络资讯 · 纯净聚合平台</p>
                 <div class="max-w-xl mx-auto mt-8">
                     <div class="flex gap-2">
-                        <input type="text" id="globalSearchInput" placeholder="搜索新闻标题或摘要..." class="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary outline-none transition">
-                        <button id="globalSearchBtn" class="btn-primary px-6"><i class="fas fa-search mr-2"></i>搜索</button>
+                        <input type="text" id="globalSearchInput" placeholder="搜索新闻标题或摘要..." class="flex-1 px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:border-primary outline-none transition text-sm">
+                        <button id="globalSearchBtn" class="btn-primary px-5 text-sm"><i class="fas fa-search mr-1"></i>搜索</button>
                     </div>
                 </div>
             </div>
         </section>
 
+        <div class="container mx-auto mt-6 mb-4" id="adContainer">
+            <div id="ad1" class="ad-container relative p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover-tint animate-adSlide" onmousemove="updateMask(event)">
+                <div class="flex items-center gap-4">
+                    <div class="ad-tag font-semibold text-xs"><i class="fas fa-bullhorn mr-1"></i> 广告 · 4月2日</div>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10"><i class="fas fa-shield-alt text-primary text-xl"></i></div>
+                </div>
+                <div class="flex-1 text-center md:text-left">
+                    <h3 class="font-bold text-base md:text-lg text-primary">暗区突围 · 停服更新公告</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">为了提供更稳定的游戏体验，暗区突围将于4月2日凌晨进行停服维护。</p>
+                    <p class="text-xs text-gray-400 mt-0.5">编辑：曾宸浩</p>
+                </div>
+                <button onclick="event.stopPropagation(); window.open('#', '_blank');" class="btn-primary text-sm px-4 py-1.5">查看详情 <i class="fas fa-arrow-right ml-1 text-xs"></i></button>
+            </div>
+            <div id="ad2" class="ad-container relative p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover-tint animate-adSlide" style="display: none;" onmousemove="updateMask(event)">
+                <div class="flex items-center gap-4">
+                    <div class="ad-tag font-semibold text-xs"><i class="fas fa-ad mr-1"></i> 限时免费</div>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10"><i class="fas fa-megaphone text-primary text-xl"></i></div>
+                </div>
+                <div class="flex-1 text-center md:text-left">
+                    <h3 class="font-bold text-base md:text-lg text-primary">米遇安官网 · 广告位免费招租</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">品牌曝光 | 产品推广 | 合作洽谈，限时免费入驻，欢迎联系！</p>
+                    <p class="text-xs text-gray-400 mt-0.5">邮箱：3493792731@qq.com</p>
+                </div>
+                <button onclick="event.stopPropagation(); window.open('mailto:3493792731@qq.com?subject=广告合作咨询', '_blank');" class="btn-primary text-sm px-4 py-1.5">立即咨询 <i class="fas fa-envelope ml-1 text-xs"></i></button>
+            </div>
+            <div class="flex items-center justify-between mt-3">
+                <div class="flex gap-2">
+                    <div class="ad-dot active" data-ad="1" onclick="switchAd(1)"></div>
+                    <div class="ad-dot" data-ad="2" onclick="switchAd(2)"></div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="prevAdBtn" class="ad-switch-btn w-7 h-7 flex items-center justify-center rounded-full text-primary text-xs"><i class="fas fa-chevron-left"></i></button>
+                    <button id="nextAdBtn" class="ad-switch-btn w-7 h-7 flex items-center justify-center rounded-full text-primary text-xs"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+
         <section class="py-12 md:py-16">
             <div class="container">
                 <div class="flex flex-wrap justify-center gap-4 md:gap-6 border-b border-gray-200 dark:border-gray-700 pb-3 mb-10">
-                    <button data-category="all" class="category-btn active text-base md:text-lg font-medium transition-all">全部</button>
-                    <button data-category="technology" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-microchip mr-1"></i>科技</button>
-                    <button data-category="culture" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-palette mr-1"></i>文化</button>
-                    <button data-category="education" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-graduation-cap mr-1"></i>教育</button>
-                    <button data-category="health" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-heartbeat mr-1"></i>养生</button>
-                    <button data-category="sports" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-futbol mr-1"></i>体育</button>
-                    <button data-category="international" class="category-btn text-base md:text-lg font-medium transition-all"><i class="fas fa-globe mr-1"></i>国际</button>
-                    <button data-category="domestic" class="category-btn text-base md:text-lg font-medium transition-all">
-                        <span class="domestic-icon"><i class="fas fa-landmark mr-1"></i></span>国内
-                    </button>
+                    <button data-category="all" class="category-btn active text-sm md:text-base font-medium transition-all">全部</button>
+                    <button data-category="technology" class="category-btn text-sm md:text-base font-medium transition-all"><i class="fas fa-microchip mr-1"></i>科技</button>
+                    <button data-category="culture" class="category-btn text-sm md:text-base font-medium transition-all"><i class="fas fa-palette mr-1"></i>文化</button>
+                    <button data-category="education" class="category-btn text-sm md:text-base font-medium transition-all"><i class="fas fa-graduation-cap mr-1"></i>教育</button>
+                    <button data-category="health" class="category-btn text-sm md:text-base font-medium transition-all"><i class="fas fa-heartbeat mr-1"></i>养生</button>
+                    <button data-category="sports" class="category-btn text-sm md:text-base font-medium transition-all"><i class="fas fa-futbol mr-1"></i>体育</button>
+                    <button data-category="international" class="category-btn text-sm md:text-base font-medium transition-all"><i class="fas fa-globe mr-1"></i>国际</button>
+                    <button data-category="domestic" class="category-btn text-sm md:text-base font-medium transition-all"><i class="fas fa-landmark mr-1"></i>国内</button>
                 </div>
 
-                <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="col-span-full flex justify-center py-12"><div class="loader"></div></div>
                 </div>
-                <div class="text-center mt-8" id="newsStatus"></div>
+                <div class="text-center mt-6 text-sm text-gray-500" id="newsStatus"></div>
             </div>
         </section>
 
         <section class="bg-secondary py-16 border-t border-gray-200 dark:border-gray-800">
             <div class="container max-w-4xl mx-auto text-center">
-                <i class="fas fa-rss text-primary text-5xl mb-4"></i>
-                <h2 class="text-3xl font-bold mb-4">实时网络资讯 · 纯净聚合</h2>
-                <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                <i class="fas fa-rss text-primary text-4xl mb-3"></i>
+                <h2 class="text-2xl font-bold mb-3">实时网络资讯 · 纯净聚合</h2>
+                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                     米遇安新闻实时聚合来自全球权威媒体的最新资讯，涵盖科技、文化、教育、养生、体育、国际、国内七大领域。<br>
                     所有内容均从网络实时获取，确保信息新鲜、真实、多元。
                 </p>
@@ -325,47 +449,71 @@
         </section>
     </main>
 
-    <footer class="bg-dark text-white py-10">
+    <footer class="bg-dark text-white py-8">
         <div class="container">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                <div><h3 class="text-xl font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-sm">致力于实用的工具和有趣的小游戏</p></div>
-                <div><h3 class="font-bold mb-2">新闻板块</h3><ul class="space-y-1 text-sm"><li>科技 · 文化 · 教育</li><li>养生 · 体育 · 国际</li><li><i class="fas fa-landmark text-primary mr-1"></i>国内 · 深度报道</li></ul></div>
-                <div><h3 class="font-bold mb-2">快速链接</h3><ul class="space-y-1 text-sm"><li class="footer-link cursor-pointer hover:text-primary transition">关于米遇安</li><li class="footer-link cursor-pointer hover:text-primary transition">核心团队</li><li class="footer-link cursor-pointer hover:text-primary transition">教育分区</li></ul></div>
-                <div><h3 class="font-bold mb-2">联系方式</h3><ul class="space-y-1 text-sm"><li><i class="fas fa-map-marker-alt text-primary w-5"></i> 桂林市第一中学</li><li><i class="fas fa-phone text-primary w-5"></i> +86 152 0773 8425</li><li><i class="fas fa-envelope text-primary w-5"></i> 3493792731@qq.com</li></ul></div>
+            <div class="grid md:grid-cols-4 gap-5 mb-5">
+                <div><h3 class="text-base font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-xs">实时新闻 · 多元视角</p></div>
+                <div><h3 class="font-bold mb-2 text-xs">新闻板块</h3><ul class="space-y-1 text-xs"><li>科技 · 文化 · 教育</li><li>养生 · 体育 · 国际</li><li><i class="fas fa-landmark text-primary mr-1"></i>国内 · 深度报道</li></ul></div>
+                <div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li class="footer-link cursor-pointer hover:text-primary transition">关于米遇安</li><li class="footer-link cursor-pointer hover:text-primary transition">核心团队</li></ul></div>
+                <div><h3 class="font-bold mb-2 text-xs">联系方式</h3><ul class="space-y-1 text-xs"><li><i class="fas fa-map-marker-alt w-4"></i> 桂林市第一中学</li><li><i class="fas fa-envelope w-4"></i> 3493792731@qq.com</li></ul></div>
             </div>
-            <div class="border-t border-gray-700 pt-5 text-center text-gray-400 text-xs">
+            <div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs">
                 <p>&copy; 2026 米遇安新闻 · 实时网络聚合 | 纯净资讯 每日更新</p>
-                <div class="flex justify-center gap-5 mt-2">
-                    <a href="#" class="legal-link text-gray-400 hover:text-primary transition" onclick="alert('隐私政策与用户协议遵循米遇安官网标准。'); return false;">隐私政策</a>
-                    <a href="#" class="legal-link text-gray-400 hover:text-primary transition" onclick="alert('使用本网站即代表同意相关协议。'); return false;">用户协议</a>
-                </div>
             </div>
         </div>
     </footer>
 
-    <div class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up text-xl"></i>
-    </div>
+    <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
 
     <script>
         let currentCategory = "all";
         let searchKeyword = "";
         let allNewsItems = [];
         let isLoading = false;
+        let currentAd = 1;
+        let adAutoPlayInterval = null;
         
         const newsGrid = document.getElementById("newsGrid");
         const newsStatus = document.getElementById("newsStatus");
         
+        function switchAd(adNumber) {
+            const ad1 = document.getElementById('ad1');
+            const ad2 = document.getElementById('ad2');
+            const dots = document.querySelectorAll('.ad-dot');
+            if (adNumber === 1) { ad1.style.display = 'flex'; ad2.style.display = 'none'; }
+            else { ad1.style.display = 'none'; ad2.style.display = 'flex'; }
+            currentAd = adNumber;
+            dots.forEach((dot, idx) => { if (idx + 1 === adNumber) dot.classList.add('active'); else dot.classList.remove('active'); });
+        }
+        function nextAd() { switchAd(currentAd === 1 ? 2 : 1); }
+        function prevAd() { switchAd(currentAd === 1 ? 2 : 1); }
+        function startAdAutoPlay() { if (adAutoPlayInterval) clearInterval(adAutoPlayInterval); adAutoPlayInterval = setInterval(nextAd, 5000); }
+        function stopAdAutoPlay() { if (adAutoPlayInterval) { clearInterval(adAutoPlayInterval); adAutoPlayInterval = null; } }
+        
+        const adContainerEl = document.getElementById('adContainer');
+        if (adContainerEl) {
+            adContainerEl.addEventListener('mouseenter', stopAdAutoPlay);
+            adContainerEl.addEventListener('mouseleave', startAdAutoPlay);
+        }
+        document.getElementById('prevAdBtn')?.addEventListener('click', () => { prevAd(); stopAdAutoPlay(); startAdAutoPlay(); });
+        document.getElementById('nextAdBtn')?.addEventListener('click', () => { nextAd(); stopAdAutoPlay(); startAdAutoPlay(); });
+        
+        function updateHeroMask(ev) {
+            const hero = ev.currentTarget;
+            const rect = hero.getBoundingClientRect();
+            const x = (ev.clientX - rect.left) / rect.width;
+            const y = (ev.clientY - rect.top) / rect.height;
+            hero.style.setProperty('--hero-x', Math.min(1, Math.max(0, x)) * 100 + '%');
+            hero.style.setProperty('--hero-y', Math.min(1, Math.max(0, y)) * 100 + '%');
+        }
+        function resetHeroMask(ev) {
+            const hero = ev.currentTarget;
+            hero.style.setProperty('--hero-x', '50%');
+            hero.style.setProperty('--hero-y', '50%');
+        }
+        
         function getCategoryLabel(cat) {
-            const map = { 
-                technology: "科技", 
-                culture: "文化", 
-                education: "教育", 
-                health: "养生", 
-                sports: "体育", 
-                international: "国际", 
-                domestic: "国内" 
-            };
+            const map = { technology: "科技", culture: "文化", education: "教育", health: "养生", sports: "体育", international: "国际", domestic: "国内" };
             return map[cat] || "资讯";
         }
         
@@ -401,95 +549,81 @@
             international: "fa-globe",
             domestic: "fa-landmark"
         };
-        
-        function getIconForCategory(cat) {
-            return iconMap[cat] || "fa-newspaper";
-        }
+        function getIconForCategory(cat) { return iconMap[cat] || "fa-newspaper"; }
         
         function renderNews() {
             let filtered = [...allNewsItems];
-            if (currentCategory !== "all") {
-                filtered = filtered.filter(item => item.category === currentCategory);
-            }
+            if (currentCategory !== "all") filtered = filtered.filter(item => item.category === currentCategory);
             if (searchKeyword.trim() !== "") {
                 const kw = searchKeyword.trim().toLowerCase();
-                filtered = filtered.filter(item => 
-                    item.title.toLowerCase().includes(kw) || 
-                    (item.summary && item.summary.toLowerCase().includes(kw))
-                );
+                filtered = filtered.filter(item => item.title.toLowerCase().includes(kw) || (item.summary && item.summary.toLowerCase().includes(kw)));
             }
-            
             if (filtered.length === 0) {
-                if (allNewsItems.length === 0 && !isLoading) {
-                    newsGrid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-exclamation-triangle text-5xl mb-3 opacity-50"></i><p>暂无新闻数据，请检查网络连接后刷新页面</p><button onclick="location.reload()" class="btn-primary mt-4">重新加载</button></div>`;
-                } else {
-                    newsGrid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-newspaper text-5xl mb-3 opacity-50"></i><p>没有找到相关新闻，试试其他关键词吧~</p></div>`;
-                }
+                newsGrid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-newspaper text-4xl mb-2 opacity-50"></i><p class="text-sm">没有找到相关新闻，试试其他关键词吧~</p></div>`;
                 newsStatus.innerText = filtered.length === 0 && allNewsItems.length > 0 ? "暂无匹配结果" : "实时网络资讯";
                 return;
             }
-            
             newsStatus.innerText = `共 ${filtered.length} 条实时资讯 · 网络聚合`;
-            newsGrid.innerHTML = filtered.map((news, idx) => `
-                <div class="news-card p-5 hover-tint flex flex-col" onmousemove="updateMask(event)">
+            newsGrid.innerHTML = filtered.map((news) => `
+                <div class="news-card p-4 hover-tint flex flex-col" onmousemove="updateMask(event)">
                     <div class="flex items-start justify-between mb-3">
-                        <div class="bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center">
-                            <i class="fas ${news.icon || getIconForCategory(news.category)} text-primary text-xl"></i>
-                        </div>
+                        <div class="bg-primary/10 p-2 rounded-full w-9 h-9 flex items-center justify-center"><i class="fas ${news.icon || getIconForCategory(news.category)} text-primary text-base"></i></div>
                         <span class="text-xs text-gray-500"><i class="far fa-clock mr-1"></i>${formatRelativeDate(news.pubDate)}</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-2 line-clamp-2">${escapeHtml(news.title)}</h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 flex-1">${escapeHtml(news.summary || "点击阅读全文了解详情")}</p>
-                    <div class="flex justify-between items-center mt-2 border-t border-gray-100 dark:border-gray-800 pt-3">
-                        <span class="text-xs text-primary font-medium">
-                            ${news.category === "domestic" ? '<i class="fas fa-landmark mr-1"></i>' : (news.category === "education" ? '<i class="fas fa-graduation-cap mr-1"></i>' : (news.category === "health" ? '<i class="fas fa-heartbeat mr-1"></i>' : ''))}${getCategoryLabel(news.category)}
-                        </span>
-                        <a href="${news.link}" target="_blank" rel="noopener noreferrer" class="text-primary text-sm font-medium hover:underline transition">阅读全文 <i class="fas fa-external-link-alt ml-1 text-xs"></i></a>
+                    <h3 class="text-base font-bold mb-1 line-clamp-2">${escapeHtml(news.title)}</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-xs mb-3 line-clamp-3 flex-1">${escapeHtml(news.summary || "点击阅读全文了解详情")}</p>
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                        <span class="text-xs text-primary font-medium">${getCategoryLabel(news.category)}</span>
+                        <a href="${news.link}" target="_blank" class="text-primary text-xs font-medium hover:underline">阅读全文 <i class="fas fa-external-link-alt ml-1 text-xs"></i></a>
                     </div>
                 </div>
             `).join('');
         }
         
-        // 从网络获取新闻 - 仅从真实RSS源获取，无任何预制数据
+        // 优化的新闻源 - 教育、养生、国内使用高质量RSS源，无任何预制数据
         async function fetchNetworkNews() {
             const sources = [
                 // 科技
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml", category: "technology", name: "The Verge", limit: 12 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.wired.com/feed/rss", category: "technology", name: "Wired", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml", category: "technology", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.wired.com/feed/rss", category: "technology", limit: 8 },
                 // 文化
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.artnews.com/feed/", category: "culture", name: "Art News", limit: 10 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.smithsonianmag.com/feed/", category: "culture", name: "Smithsonian", limit: 8 },
-                // 教育
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.chronicle.com/rss/news", category: "education", name: "Chronicle", limit: 10 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.edweek.org/rss/feed.xml", category: "education", name: "EdWeek", limit: 8 },
-                // 养生
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.health.harvard.edu/feed", category: "health", name: "Harvard Health", limit: 10 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.medicalnewstoday.com/feed", category: "health", name: "Medical News", limit: 8 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.artnews.com/feed/", category: "culture", limit: 8 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.smithsonianmag.com/feed/", category: "culture", limit: 8 },
+                // 教育 - 使用高质量教育新闻源
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.chronicle.com/rss/news", category: "education", limit: 12 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.edweek.org/rss/feed.xml", category: "education", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.insidehighered.com/rss.xml", category: "education", limit: 8 },
+                // 养生 - 使用专业健康养生新闻源
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.health.harvard.edu/feed", category: "health", limit: 12 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.medicalnewstoday.com/featured/feed", category: "health", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.webmd.com/rss.xml", category: "health", limit: 8 },
                 // 体育
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.espn.com/espn/rss/news", category: "sports", name: "ESPN", limit: 12 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.bbc.com/sport/rss", category: "sports", name: "BBC Sport", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.espn.com/espn/rss/news", category: "sports", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.bbc.com/sport/rss", category: "sports", limit: 8 },
                 // 国际
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml", category: "international", name: "BBC World", limit: 12 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.reuters.com/rssFeed/topNews", category: "international", name: "Reuters", limit: 10 },
-                // 国内
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://news.sina.com.cn/roll/rollnews_sudoku_0_1.xml", category: "domestic", name: "新浪新闻", limit: 12 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=http://www.people.com.cn/rss/politics.xml", category: "domestic", name: "人民网", limit: 10 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://cn.reuters.com/rssNews/CNTopNews", category: "domestic", name: "路透中文", limit: 8 }
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml", category: "international", limit: 12 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.reuters.com/rssFeed/topNews", category: "international", limit: 10 },
+                // 国内 - 使用多个国内权威新闻源
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://news.sina.com.cn/roll/rollnews_sudoku_0_1.xml", category: "domestic", limit: 15 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=http://www.people.com.cn/rss/politics.xml", category: "domestic", limit: 12 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://cn.reuters.com/rssNews/CNTopNews", category: "domestic", limit: 10 },
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.xinhuanet.com/rss/rollnews.xml", category: "domestic", limit: 10 }
             ];
             
             let allArticles = [];
-            
             try {
                 const fetchPromises = sources.map(async (source) => {
                     try {
-                        const response = await fetch(source.url, { timeout: 8000 });
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 8000);
+                        const response = await fetch(source.url, { signal: controller.signal });
+                        clearTimeout(timeoutId);
                         if (!response.ok) return [];
                         const data = await response.json();
-                        if (data && data.items && Array.isArray(data.items)) {
-                            return data.items.slice(0, source.limit || 10).map(item => ({
-                                id: item.guid || item.link,
+                        if (data?.items && Array.isArray(data.items)) {
+                            return data.items.slice(0, source.limit).map(item => ({
                                 title: item.title || "无标题",
-                                summary: (item.description || item.content || "").replace(/<[^>]*>/g, '').substring(0, 220),
+                                summary: (item.description || item.content || "").replace(/<[^>]*>/g, '').substring(0, 200),
                                 pubDate: item.pubDate || new Date().toISOString(),
                                 link: item.link || "#",
                                 category: source.category,
@@ -498,22 +632,25 @@
                         }
                         return [];
                     } catch (err) {
-                        console.warn(`获取源 ${source.name} 失败:`, err);
+                        console.warn(`获取源 ${source.category} 失败:`, err);
                         return [];
                     }
                 });
-                
                 const results = await Promise.allSettled(fetchPromises);
                 for (const result of results) {
                     if (result.status === 'fulfilled' && Array.isArray(result.value)) {
                         allArticles.push(...result.value);
                     }
                 }
-            } catch(e) {
-                console.error("新闻聚合出错", e);
-            }
+            } catch(e) { console.error("新闻聚合出错", e); }
             
-            // 按时间排序
+            // 去重（基于标题）
+            const uniqueMap = new Map();
+            for (const article of allArticles) {
+                const key = article.title.substring(0, 80);
+                if (!uniqueMap.has(key)) uniqueMap.set(key, article);
+            }
+            allArticles = Array.from(uniqueMap.values());
             allArticles.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
             return allArticles;
         }
@@ -522,95 +659,75 @@
             if (isLoading) return;
             isLoading = true;
             newsGrid.innerHTML = `<div class="col-span-full flex justify-center py-12"><div class="loader"></div></div>`;
-            newsStatus.innerText = "正在从网络获取最新资讯...";
-            
             try {
                 const networkNews = await fetchNetworkNews();
                 allNewsItems = networkNews;
-                
                 if (allNewsItems.length === 0) {
-                    newsGrid.innerHTML = `<div class="col-span-full text-center py-16"><div class="error-message"><i class="fas fa-wifi text-4xl text-primary mb-3"></i><p class="text-gray-600">暂时无法获取新闻，请检查网络连接后刷新重试</p><button onclick="location.reload()" class="btn-primary mt-4">重新加载</button></div></div>`;
+                    newsGrid.innerHTML = `<div class="col-span-full text-center py-12"><div class="glass p-6"><i class="fas fa-wifi text-3xl text-primary mb-2"></i><p class="text-sm">暂时无法获取新闻，请检查网络后刷新</p><button onclick="location.reload()" class="btn-primary text-sm mt-3">重新加载</button></div></div>`;
                     newsStatus.innerText = "加载失败，请刷新重试";
-                } else {
-                    renderNews();
-                }
+                } else { renderNews(); }
             } catch (err) {
                 console.error("新闻加载异常", err);
-                newsGrid.innerHTML = `<div class="col-span-full text-center py-16"><div class="error-message"><i class="fas fa-exclamation-triangle text-4xl text-primary mb-3"></i><p class="text-gray-600">新闻加载失败，请检查网络后刷新重试</p><button onclick="location.reload()" class="btn-primary mt-4">重新加载</button></div></div>`;
+                newsGrid.innerHTML = `<div class="col-span-full text-center py-12"><div class="glass p-6"><i class="fas fa-exclamation-triangle text-3xl text-primary mb-2"></i><p class="text-sm">加载失败，请刷新重试</p></div></div>`;
                 newsStatus.innerText = "加载失败，请刷新重试";
-            } finally {
-                isLoading = false;
-            }
+            } finally { isLoading = false; }
         }
         
         function setCategory(category) {
             currentCategory = category;
             searchKeyword = "";
             document.getElementById('globalSearchInput').value = "";
-            updateActiveCategoryButton(category);
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if(btn.getAttribute('data-category') === category) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
             renderNews();
         }
         
-        function updateActiveCategoryButton(activeCat) {
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                const catVal = btn.getAttribute('data-category');
-                if(catVal === activeCat) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
-        }
-        
         function performGlobalSearch() {
-            const input = document.getElementById('globalSearchInput');
-            searchKeyword = input.value;
+            searchKeyword = document.getElementById('globalSearchInput').value;
             currentCategory = "all";
-            updateActiveCategoryButton("all");
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.category-btn[data-category="all"]')?.classList.add('active');
             renderNews();
         }
         
         window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (navbar) navbar.classList.toggle('navbar-scrolled', window.scrollY > 50);
-            const backBtn = document.getElementById('backToTop');
-            if (backBtn) backBtn.classList.toggle('show', window.scrollY > 300);
+            document.getElementById('navbar')?.classList.toggle('navbar-scrolled', window.scrollY > 30);
+            document.getElementById('backToTop')?.classList.toggle('show', window.scrollY > 300);
         });
+        document.getElementById('backToTop')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         
-        const menuBtn = document.getElementById('menuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
+        const menuBtn = document.getElementById('menuBtn'), mobileMenu = document.getElementById('mobileMenu');
         if(menuBtn) menuBtn.onclick = () => mobileMenu.classList.toggle('hidden');
         
-        const toggleDark = () => { 
-            let isDark = !document.documentElement.classList.contains('dark'); 
-            document.documentElement.classList.toggle('dark', isDark); 
-            ['darkModeIcon','darkModeIconMobile'].forEach(id => { 
-                let el = document.getElementById(id); 
-                if(el) el.className = isDark ? 'fas fa-sun text-primary text-lg' : 'fas fa-moon text-primary text-lg'; 
-            }); 
-            localStorage.setItem('darkMode', isDark); 
+        const toggleDark = () => {
+            let isDark = !document.documentElement.classList.contains('dark');
+            document.documentElement.classList.toggle('dark', isDark);
+            localStorage.setItem('darkMode', isDark);
         };
-        let savedDark = localStorage.getItem('darkMode'), prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches, isDark = savedDark === 'true' || (savedDark === null && prefersDark);
-        document.documentElement.classList.toggle('dark', isDark);
+        let savedDark = localStorage.getItem('darkMode'), prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedDark === 'true' || (savedDark === null && prefersDark)) document.documentElement.classList.add('dark');
         document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
         document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
         
-        function updateMask(ev) { 
-            let el = ev.currentTarget; 
-            let rect = el.getBoundingClientRect(); 
-            let x = (ev.clientX - rect.left) / rect.width; 
-            let y = (ev.clientY - rect.top) / rect.height; 
-            x = Math.min(1, Math.max(0, x)); 
-            y = Math.min(1, Math.max(0, y)); 
-            el.style.setProperty('--x', x * 100 + '%'); 
-            el.style.setProperty('--y', y * 100 + '%'); 
+        function updateMask(ev) {
+            let el = ev.currentTarget, rect = el.getBoundingClientRect();
+            let x = (ev.clientX - rect.left) / rect.width, y = (ev.clientY - rect.top) / rect.height;
+            el.style.setProperty('--x', Math.min(1, Math.max(0, x)) * 100 + '%');
+            el.style.setProperty('--y', Math.min(1, Math.max(0, y)) * 100 + '%');
         }
         window.updateMask = updateMask;
+        window.updateHeroMask = updateHeroMask;
+        window.resetHeroMask = resetHeroMask;
         
-        document.getElementById('backToTop')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => setCategory(btn.getAttribute('data-category')));
+            btn.addEventListener('click', () => setCategory(btn.getAttribute('data-category')));
         });
         document.getElementById('globalSearchBtn')?.addEventListener('click', performGlobalSearch);
         document.getElementById('globalSearchInput')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') performGlobalSearch(); });
         
+        startAdAutoPlay();
         loadNewsFromNetwork();
     </script>
 </body>
