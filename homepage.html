@@ -491,7 +491,7 @@
         .dark .nav-back-button { background: rgba(30, 31, 34, 0.7); color: #5aa9e6; border-color: rgba(255, 255, 255, 0.08); }
         .dark .nav-back-button:hover { background: #5aa9e6; color: #121212; }
         
-        /* 游戏分区 */
+        /* 游戏分区文件夹卡片 */
         .series-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
@@ -726,7 +726,7 @@
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-handshake text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">米遇安第一次集体会议</h4><p class="text-gray-600 text-sm mb-4">成功召开并圆满结束！确立了未来发展方向与团队协作机制。</p><button class="btn-primary text-sm" onclick="alert('米遇安第一次集体会议于2026年3月28日成功召开')">了解详情</button></div></div>
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-newspaper text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">米遇安新闻</h4><p class="text-gray-600 text-sm mb-4">聚焦校园内外，传递新鲜资讯。</p><button class="btn-primary text-sm" onclick="window.open('https://feng34937.github.io/miyuan/tools/news', '_blank')">阅读新闻</button></div></div>
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-ad text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">广告位免费招租</h4><p class="text-gray-600 text-sm mb-4">米遇安官网广告位限时免费开放，欢迎洽谈。</p><button class="btn-primary text-sm" onclick="alert('广告位招租请联系邮箱：3493792731@qq.com')">立即咨询</button></div></div>
-                            <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-gamepad text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">现代战争推演2</h4><p class="text-gray-600 text-sm mb-4">全新版本现已发布，战术升级。</p><button class="btn-primary text-sm" onclick="window.open('https://feng34937.github.io/miyuan/games/modernwarefare_2', '_blank')">点击试玩</button></div></div>
+                            <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-gamepad text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">现代战争推演2</h4><p class="text-gray-600 text-sm mb-4">全新版本现已发布，战术升级。</p><button class="btn-primary text-sm" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/2', '_blank')">点击试玩</button></div></div>
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-users text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">同学信息收集</h4><p class="text-gray-600 text-sm mb-4">希望我们一起走过共同岁月。</p><button class="btn-primary text-sm" onclick="window.open('https://forms.office.com/...', '_blank')">点击查看</button></div></div>
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-briefcase text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">米遇安招聘</h4><p class="text-gray-600 text-sm mb-4">加入我们，共创未来。</p><button class="btn-primary text-sm" onclick="window.open('https://sway.cloud.microsoft/s/CG8U19PLYKAlBl1k/embed', '_blank')">查看职位</button></div></div>
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-rocket text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">公测成员招募</h4><p class="text-gray-600 text-sm mb-4">抢先体验最新产品。</p><button class="btn-primary text-sm" onclick="window.open('https://forms.office.com/...', '_blank')">立即报名</button></div></div>
@@ -748,21 +748,97 @@
     </main>
 
     <div id="toolsSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1><p class="text-center text-gray-600 text-sm mb-5">实用工具 · 高效便捷</p><div class="grid gap-4 md:grid-cols-2"><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-newspaper demo-icon"></i><h3 class="text-lg font-bold mb-1">米遇安新闻</h3><p class="text-xs text-gray-500 mb-2">聚焦校园内外，传递新鲜资讯。</p><button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/news', '_blank')">阅读新闻</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-search demo-icon"></i><h3 class="text-lg font-bold mb-1">米遇安搜索</h3><p class="text-xs text-gray-500 mb-2">快速搜索全网信息。</p><div class="flex gap-2"><input type="text" id="searchInput" class="search-input flex-1 text-sm" placeholder="输入关键词..." onkeypress="handleSearchKeypress(event)"><button onclick="performSearch()" class="search-btn text-sm">搜索</button></div></div></div></div></div>
-    <div id="gamesSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">游戏分区</h1><p class="text-center text-gray-600 text-sm mb-4">探索精彩游戏世界</p><div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList()"><i class="fas fa-folder-open series-icon"></i><h2 class="text-lg font-bold">现代战争推演系列</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="fas fa-chevron-down mt-1 text-primary transition-transform" id="seriesArrow"></i></div><div id="gameList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-gamepad text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演1</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-crosshairs text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演2</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modernwarefare_2', '_blank')">点击试玩</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-rocket text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演3</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-bolt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代冲突</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div></div></div></div>
+    <div id="gamesSection" class="section-page">
+        <div class="section-content p-5 max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-primary text-center">游戏分区</h1>
+            <p class="text-center text-gray-600 text-sm mb-4">探索精彩游戏世界</p>
+            
+            <!-- 现代战争推演系列文件夹 -->
+            <div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList('warfareList')">
+                <i class="fas fa-folder-open series-icon"></i>
+                <h2 class="text-lg font-bold">现代战争推演系列</h2>
+                <p class="text-gray-500 text-xs">点击展开/收起</p>
+                <i class="fas fa-chevron-down mt-1 text-primary transition-transform" id="warfareArrow"></i>
+            </div>
+            <div id="warfareList" class="game-list">
+                <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-gamepad text-xl text-primary mb-1"></i>
+                    <div class="game-name text-sm">现代战争推演1</div>
+                    <button class="btn-disabled text-xs mt-1">请在线下参与</button>
+                </div>
+                <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-crosshairs text-xl text-primary mb-1"></i>
+                    <div class="game-name text-sm">现代战争推演2</div>
+                    <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/2', '_blank')">点击试玩</button>
+                </div>
+                <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-rocket text-xl text-primary mb-1"></i>
+                    <div class="game-name text-sm">现代战争推演3</div>
+                    <button class="btn-disabled text-xs mt-1">请在线下参与</button>
+                </div>
+                <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-bolt text-xl text-primary mb-1"></i>
+                    <div class="game-name text-sm">现代冲突</div>
+                    <button class="btn-disabled text-xs mt-1">请在线下参与</button>
+                </div>
+            </div>
+            
+            <!-- 棋类游戏合集文件夹（新增） -->
+            <div class="series-card hover-tint mt-5" onmousemove="updateMask(event)" onclick="toggleGameList('chessList')">
+                <i class="fas fa-chess-board series-icon"></i>
+                <h2 class="text-lg font-bold">棋类游戏合集</h2>
+                <p class="text-gray-500 text-xs">点击展开/收起</p>
+                <i class="fas fa-chevron-down mt-1 text-primary transition-transform" id="chessArrow"></i>
+            </div>
+            <div id="chessList" class="game-list">
+                <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-chess-board text-xl text-primary mb-1"></i>
+                    <div class="game-name text-sm">五子棋游戏</div>
+                    <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/gomoku', '_blank')">开始对弈</button>
+                </div>
+                <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-chess text-xl text-primary mb-1"></i>
+                    <div class="game-name text-sm">象棋游戏</div>
+                    <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chinese', '_blank')">开始对弈</button>
+                </div>
+                <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-chess text-xl text-primary mb-1"></i>
+                    <div class="game-name text-sm">围棋游戏</div>
+                    <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/go', '_blank')">开始对弈</button>
+                </div>
+                <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-chess-queen text-xl text-primary mb-1"></i>
+                    <div class="game-name text-sm">国际象棋游戏</div>
+                    <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/usual', '_blank')">开始对弈</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="educationSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">教育分区</h1><p class="text-center text-gray-600 text-sm mb-4">启迪智慧 · 传承文化</p><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-landmark demo-icon"></i><h3 class="text-xl font-bold mb-2">米遇安文化</h3><p class="text-gray-600 text-sm leading-relaxed mb-3">米遇安文化致力于传播优秀的教育理念，融合传统智慧与现代科技，为学习者提供有深度、有温度的文化内容。</p><button class="btn-primary text-sm mt-4" onclick="window.open('https://feng34937.github.io/miyuan/education/culture', '_blank')">了解更多 →</button></div></div></div>
     <div id="othersSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">其他分区</h1><p class="text-center text-gray-600 text-sm mb-4">更多精彩内容</p><div class="grid gap-4 md:grid-cols-2"><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-users demo-icon"></i><h3 class="text-base font-bold">同学信息收集</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://forms.office.com/...', '_blank')">立即使用</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-briefcase demo-icon"></i><h3 class="text-base font-bold">米遇安招聘</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://sway.cloud.microsoft/s/CG8U19PLYKAlBl1k/embed', '_blank')">查看职位</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-rocket demo-icon"></i><h3 class="text-base font-bold">成为公测成员</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://forms.office.com/...', '_blank')">立即报名</button></div></div></div></div>
 
     <script>
+        // 搜索功能
         function performSearch(){ let q=document.getElementById('searchInput').value.trim(); if(!q){ alert('请输入关键词'); return; } window.open(`https://www.bing.com/search?q=${encodeURIComponent(q)}`,'_blank'); }
         function handleSearchKeypress(e){ if(e.key==='Enter') performSearch(); }
+        
+        // 隐私政策和用户协议弹窗
         function showPrivacyPolicy(){ document.getElementById('modalTitle').innerHTML='隐私政策'; document.getElementById('modalBody').innerHTML='<p class="text-sm">米遇安团队重视您的隐私。我们不会将个人信息用于商业目的。数据仅用于内部沟通与产品优化。</p><p class="text-sm mt-2">如有疑问，请联系：3493792731@qq.com</p><p class="text-xs text-gray-500 mt-3">更新日期：2026年3月28日</p>'; document.getElementById('legalModal').classList.add('active'); document.body.style.overflow='hidden'; }
         function showUserAgreement(){ document.getElementById('modalTitle').innerHTML='用户协议'; document.getElementById('modalBody').innerHTML='<p class="text-sm">使用本网站即表示您同意遵守相关法律法规，不进行任何违法活动。本网站内容版权归米遇安团队所有。</p><p class="text-sm mt-2">如有疑问，请联系：3493792731@qq.com</p><p class="text-xs text-gray-500 mt-3">更新日期：2026年3月28日</p>'; document.getElementById('legalModal').classList.add('active'); document.body.style.overflow='hidden'; }
         function closeModal(e){ if(e && e.target!==document.getElementById('legalModal') && !e.target.classList?.contains('modal-close') && !e.target.closest?.('.modal-footer button')) { if(e.target===document.getElementById('legalModal')){ document.getElementById('legalModal').classList.remove('active'); document.body.style.overflow=''; } return; } document.getElementById('legalModal').classList.remove('active'); document.body.style.overflow=''; }
+        
+        // 导航栏滚动效果
         window.addEventListener('scroll',()=>document.getElementById('navbar')?.classList.toggle('navbar-scrolled',window.scrollY>30));
+        
+        // 移动端菜单
         const menuBtn=document.getElementById('menuBtn'),mobileMenu=document.getElementById('mobileMenu'); if(menuBtn) menuBtn.onclick=()=>mobileMenu.classList.toggle('hidden');
+        
+        // 深色模式切换
         const toggleDark=()=>{ let isDark=!document.documentElement.classList.contains('dark'); document.documentElement.classList.toggle('dark',isDark); ['darkModeIcon','darkModeIconMobile'].forEach(id=>{ let el=document.getElementById(id); if(el) el.className=isDark?'fas fa-sun text-primary text-sm':'fas fa-moon text-primary text-sm'; }); localStorage.setItem('darkMode',isDark); };
         let savedDark=localStorage.getItem('darkMode'), prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches, isDark=savedDark==='true'||(savedDark===null&&prefersDark);
         document.documentElement.classList.toggle('dark',isDark); document.getElementById('darkModeToggle')?.addEventListener('click',toggleDark); document.getElementById('darkModeToggleMobile')?.addEventListener('click',toggleDark);
+        
+        // 轮播图逻辑
         let currentSlide=0,totalSlides=7,track=document.getElementById('carouselTrack'),autoPlayInterval;
         function updateCarousel(){ if(track) track.style.transform=`translateX(-${currentSlide*100}%)`; document.querySelectorAll('.carousel-dot').forEach((d,i)=>d.classList.toggle('active',i===currentSlide)); }
         window.goToSlide=function(i){ if(i>=0&&i<totalSlides){ currentSlide=i; updateCarousel(); resetAutoPlay(); } };
@@ -775,12 +851,35 @@
         let carouselContainer=document.querySelector('.carousel-container'); if(carouselContainer){ carouselContainer.addEventListener('mouseenter',()=>clearInterval(autoPlayInterval)); carouselContainer.addEventListener('mouseleave',startAutoPlay); }
         const dotsContainer=document.getElementById('carouselDotsContainer'); if(dotsContainer){ for(let i=0;i<totalSlides;i++){ let dot=document.createElement('button'); dot.className='carousel-dot'; dot.onclick=()=>goToSlide(i); dotsContainer.appendChild(dot); } }
         updateCarousel(); startAutoPlay();
-        let isGameListOpen=false,gameList=document.getElementById('gameList'),seriesArrow=document.getElementById('seriesArrow');
-        window.toggleGameList=function(){ isGameListOpen=!isGameListOpen; if(isGameListOpen){ gameList.classList.add('active'); seriesArrow.style.transform='rotate(180deg)'; } else{ gameList.classList.remove('active'); seriesArrow.style.transform='rotate(0deg)'; } };
+        
+        // 游戏列表展开/收起（支持多个独立文件夹）
+        let openStates = {
+            warfareList: false,
+            chessList: false
+        };
+        
+        window.toggleGameList = function(listId) {
+            const listElement = document.getElementById(listId);
+            const arrowElement = document.getElementById(listId.replace('List', 'Arrow'));
+            if (!listElement || !arrowElement) return;
+            
+            openStates[listId] = !openStates[listId];
+            if (openStates[listId]) {
+                listElement.classList.add('active');
+                arrowElement.style.transform = 'rotate(180deg)';
+            } else {
+                listElement.classList.remove('active');
+                arrowElement.style.transform = 'rotate(0deg)';
+            }
+        };
+        
+        // 鼠标靠近光晕效果
         function updateMask(ev){ let el=ev.currentTarget,rect=el.getBoundingClientRect(),x=(ev.clientX-rect.left)/rect.width,y=(ev.clientY-rect.top)/rect.height; x=Math.min(1,Math.max(0,x)); y=Math.min(1,Math.max(0,y)); el.style.setProperty('--x',x*100+'%'); el.style.setProperty('--y',y*100+'%'); }
         function updateHeroMask(ev){ let hero=ev.currentTarget,rect=hero.getBoundingClientRect(),x=(ev.clientX-rect.left)/rect.width,y=(ev.clientY-rect.top)/rect.height; hero.style.setProperty('--hero-x',Math.min(1,Math.max(0,x))*100+'%'); hero.style.setProperty('--hero-y',Math.min(1,Math.max(0,y))*100+'%'); }
         function resetHeroMask(ev){ let hero=ev.currentTarget; hero.style.setProperty('--hero-x','50%'); hero.style.setProperty('--hero-y','50%'); }
         window.updateMask=updateMask; window.updateHeroMask=updateHeroMask; window.resetHeroMask=resetHeroMask;
+        
+        // 分区页面切换
         let currentOpenSection=null;
         function openSection(s){ let el=document.getElementById(s+'Section'),overlay=document.getElementById('pageOverlay'),back=document.getElementById('navBackButtonContainer'); if(el){ currentOpenSection=s; if(back) back.style.display='block'; el.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow='hidden'; } }
         function closeSection(s){ let el=document.getElementById(s+'Section'),overlay=document.getElementById('pageOverlay'),back=document.getElementById('navBackButtonContainer'); if(el){ if(back) back.style.display='none'; el.classList.remove('active'); overlay.classList.remove('active'); currentOpenSection=null; document.body.style.overflow=''; } }
