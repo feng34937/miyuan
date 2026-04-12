@@ -243,6 +243,7 @@
             backdrop-filter: blur(16px);
             border: 0.5px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         .dark .ad-container {
             background: rgba(30, 31, 34, 0.8);
@@ -381,18 +382,21 @@
         </section>
 
         <div class="container mx-auto mt-6 mb-4" id="adContainer">
-            <div id="ad1" class="ad-container relative p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover-tint animate-adSlide" onmousemove="updateMask(event)">
+            <!-- 广告1：更新为米遇安官网探索入口 -->
+            <div id="ad1" class="ad-container relative p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover-tint animate-adSlide" onmousemove="updateMask(event)" onclick="window.open('https://feng34937.github.io/miyuan/homepage', '_blank')">
                 <div class="flex items-center gap-4">
-                    <div class="ad-tag font-semibold text-xs"><i class="fas fa-bullhorn mr-1"></i> 广告 · 4月2日</div>
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10"><i class="fas fa-shield-alt text-primary text-xl"></i></div>
+                    <div class="ad-tag font-semibold text-xs"><i class="fas fa-star mr-1"></i> 推荐探索</div>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10"><i class="fas fa-compass text-primary text-xl"></i></div>
                 </div>
                 <div class="flex-1 text-center md:text-left">
-                    <h3 class="font-bold text-base md:text-lg text-primary">暗区突围 · 停服更新公告</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">为了提供更稳定的游戏体验，暗区突围将于4月2日凌晨进行停服维护。</p>
-                    <p class="text-xs text-gray-400 mt-0.5">编辑：曾宸浩</p>
+                    <h3 class="font-bold text-base md:text-lg text-primary">欢迎探索米遇安</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">发现更多创意工具、精彩游戏与教育文化内容</p>
+                    <p class="text-xs text-primary mt-0.5 font-mono break-all">https://feng34937.github.io/miyuan/homepage</p>
                 </div>
-                <button onclick="event.stopPropagation(); window.open('#', '_blank');" class="btn-primary text-sm px-4 py-1.5">查看详情 <i class="fas fa-arrow-right ml-1 text-xs"></i></button>
+                <div class="btn-primary text-sm px-4 py-1.5 pointer-events-none">立即前往 <i class="fas fa-external-link-alt ml-1 text-xs"></i></div>
             </div>
+
+            <!-- 广告2：免费广告位招租 -->
             <div id="ad2" class="ad-container relative p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover-tint animate-adSlide" style="display: none;" onmousemove="updateMask(event)">
                 <div class="flex items-center gap-4">
                     <div class="ad-tag font-semibold text-xs"><i class="fas fa-ad mr-1"></i> 限时免费</div>
@@ -405,6 +409,7 @@
                 </div>
                 <button onclick="event.stopPropagation(); window.open('mailto:3493792731@qq.com?subject=广告合作咨询', '_blank');" class="btn-primary text-sm px-4 py-1.5">立即咨询 <i class="fas fa-envelope ml-1 text-xs"></i></button>
             </div>
+
             <div class="flex items-center justify-between mt-3">
                 <div class="flex gap-2">
                     <div class="ad-dot active" data-ad="1" onclick="switchAd(1)"></div>
@@ -580,34 +585,25 @@
             `).join('');
         }
         
-        // 优化的新闻源 - 教育、养生、国内使用高质量RSS源，无任何预制数据
         async function fetchNetworkNews() {
             const sources = [
-                // 科技
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml", category: "technology", limit: 10 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.wired.com/feed/rss", category: "technology", limit: 8 },
-                // 文化
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.artnews.com/feed/", category: "culture", limit: 8 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.smithsonianmag.com/feed/", category: "culture", limit: 8 },
-                // 教育 - 使用高质量教育新闻源
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.chronicle.com/rss/news", category: "education", limit: 12 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.edweek.org/rss/feed.xml", category: "education", limit: 10 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.insidehighered.com/rss.xml", category: "education", limit: 8 },
-                // 养生 - 使用专业健康养生新闻源
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.health.harvard.edu/feed", category: "health", limit: 12 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.medicalnewstoday.com/featured/feed", category: "health", limit: 10 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.webmd.com/rss.xml", category: "health", limit: 8 },
-                // 体育
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.espn.com/espn/rss/news", category: "sports", limit: 10 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.bbc.com/sport/rss", category: "sports", limit: 8 },
-                // 国际
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml", category: "international", limit: 12 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.reuters.com/rssFeed/topNews", category: "international", limit: 10 },
-                // 国内 - 使用多个国内权威新闻源
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=https://news.sina.com.cn/roll/rollnews_sudoku_0_1.xml", category: "domestic", limit: 15 },
                 { url: "https://api.rss2json.com/v1/api.json?rss_url=http://www.people.com.cn/rss/politics.xml", category: "domestic", limit: 12 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://cn.reuters.com/rssNews/CNTopNews", category: "domestic", limit: 10 },
-                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.xinhuanet.com/rss/rollnews.xml", category: "domestic", limit: 10 }
+                { url: "https://api.rss2json.com/v1/api.json?rss_url=https://cn.reuters.com/rssNews/CNTopNews", category: "domestic", limit: 10 }
             ];
             
             let allArticles = [];
@@ -631,20 +627,13 @@
                             }));
                         }
                         return [];
-                    } catch (err) {
-                        console.warn(`获取源 ${source.category} 失败:`, err);
-                        return [];
-                    }
+                    } catch (err) { return []; }
                 });
                 const results = await Promise.allSettled(fetchPromises);
                 for (const result of results) {
-                    if (result.status === 'fulfilled' && Array.isArray(result.value)) {
-                        allArticles.push(...result.value);
-                    }
+                    if (result.status === 'fulfilled') allArticles.push(...result.value);
                 }
-            } catch(e) { console.error("新闻聚合出错", e); }
-            
-            // 去重（基于标题）
+            } catch(e) { console.error(e); }
             const uniqueMap = new Map();
             for (const article of allArticles) {
                 const key = article.title.substring(0, 80);
@@ -664,12 +653,9 @@
                 allNewsItems = networkNews;
                 if (allNewsItems.length === 0) {
                     newsGrid.innerHTML = `<div class="col-span-full text-center py-12"><div class="glass p-6"><i class="fas fa-wifi text-3xl text-primary mb-2"></i><p class="text-sm">暂时无法获取新闻，请检查网络后刷新</p><button onclick="location.reload()" class="btn-primary text-sm mt-3">重新加载</button></div></div>`;
-                    newsStatus.innerText = "加载失败，请刷新重试";
                 } else { renderNews(); }
             } catch (err) {
-                console.error("新闻加载异常", err);
                 newsGrid.innerHTML = `<div class="col-span-full text-center py-12"><div class="glass p-6"><i class="fas fa-exclamation-triangle text-3xl text-primary mb-2"></i><p class="text-sm">加载失败，请刷新重试</p></div></div>`;
-                newsStatus.innerText = "加载失败，请刷新重试";
             } finally { isLoading = false; }
         }
         
