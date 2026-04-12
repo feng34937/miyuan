@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>国际象棋 · 经典对弈</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Windows 10 默认蓝色
+                        primary: '#0078D7',
+                        secondary: '#F3F6F9',
+                        boardLight: '#F0D9B5',
+                        boardDark: '#B58863',
+                        accent: '#106EBE',
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .piece-shadow {
+                filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.2));
+            }
+            .btn-hover {
+                transition: all 0.15s ease;
+            }
+            .btn-hover:hover {
+                background-color: #005a9e;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .modal-transition {
+                transition: opacity 0.2s ease, transform 0.2s ease;
+            }
+            /* 所有圆角强制为0 */
+            .rounded-0 {
+                border-radius: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#e6e9ed] min-h-screen flex flex-col items-center justify-center p-4 font-sans">
+
+<div class="max-w-6xl w-full bg-white shadow-2xl overflow-hidden border border-gray-300" style="border-radius: 0;">
+    
+    <!-- 头部：Windows 10 风格 -->
+    <div class="bg-primary text-white p-5 text-center" style="border-radius: 0;">
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight flex items-center justify-center gap-3">
+            <i class="fa-solid fa-chess-queen text-amber-200"></i>
+            国际象棋
+            <i class="fa-solid fa-chess-queen text-amber-200"></i>
+        </h1>
+        <p class="text-white/80 mt-1 text-base font-light">国际象棋 · 经典规则 · 双人对战</p>
+    </div>
+
+    <!-- 主体区域 -->
+    <div class="p-6 md:p-8 flex flex-col lg:flex-row gap-8 bg-[#fafafa]">
+        
+        <!-- 棋盘区域 -->
+        <div class="flex-1 flex flex-col items-center">
+            <div class="relative w-full max-w-2xl aspect-square shadow-lg border-2 border-gray-300 bg-white" style="border-radius: 0;">
+                <canvas id="chessCanvas" class="w-full h-full block cursor-pointer"></canvas>
+                <!-- 状态浮层 -->
+                <div class="absolute bottom-2 left-2 bg-black/50 backdrop-blur-sm text-white px-3 py-1 text-sm font-medium pointer-events-none flex items-center gap-1" style="border-radius: 0;">
+                    <span id="turnIndicatorSmall"><i class="fa-regular fa-circle"></i> 白方走子</span>
+                </div>
+            </div>
+            
+            <!-- 棋局状态条 -->
+            <div id="gameStatusBar" class="mt-4 w-full max-w-2xl bg-white border border-gray-300 p-3 flex items-center justify-between shadow-sm" style="border-radius: 0;">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-chess-board text-xl text-primary"></i>
+                        <span class="font-semibold text-gray-800" id="statusMessage">白方走子</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm bg-gray-100 px-3 py-1 border border-gray-300" style="border-radius: 0;"><span id="moveCountDisplay">0</span> 回合</span>
+                    <span class="text-sm font-mono bg-gray-800 text-white px-3 py-1 border border-gray-700" style="border-radius: 0;" id="timerDisplay">00:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧信息面板 -->
+        <div class="w-full lg:w-80 flex flex-col gap-5">
+            <!-- 当前对局卡片 -->
+            <div class="bg-white p-5 shadow-md border border-gray-300" style="border-radius: 0;">
+                <h2 class="text-lg font-bold mb-3 flex items-center text-primary">
+                    <i class="fa-solid fa-chess-pawn mr-2"></i>对局信息
+                </h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">执白方</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-white border-2 border-gray-400 flex items-center justify-center piece-shadow" style="border-radius: 0;">
+                                <i class="fa-solid fa-chess-queen text-gray-700 text-xl"></i>
+                            </div>
+                            <span class="font-medium">白棋</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">执黑方</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gray-800 border-2 border-gray-700 flex items-center justify-center piece-shadow" style="border-radius: 0;">
+                                <i class="fa-solid fa-chess-queen text-white text-xl"></i>
+                            </div>
+                            <span class="font-medium">黑棋</span>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-300 pt-2 mt-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">当前走子</span>
+                            <span class="font-bold text-primary" id="currentTurnText">白方</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 吃子记录 -->
+            <div class="bg-white p-5 shadow-md border border-gray-300" style="border-radius: 0;">
+                <h2 class="text-md font-semibold mb-2 flex items-center">
+                    <i class="fa-solid fa-skull mr-2 text-red-600"></i>被吃棋子
+                </h2>
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">白方损失</div>
+                        <div id="capturedByBlack" class="flex flex-wrap gap-1 min-h-[2rem] text-2xl"></div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">黑方损失</div>
+                        <div id="capturedByWhite" class="flex flex-wrap gap-1 min-h-[2rem] text-2xl"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则简述 -->
+            <div class="bg-[#f0f4f8] p-5 border border-gray-300" style="border-radius: 0;">
+                <h3 class="font-semibold mb-2 flex items-center text-gray-800"><i class="fa-solid fa-scroll mr-2 text-primary"></i>经典规则</h3>
+                <ul class="text-sm text-gray-700 space-y-1">
+                    <li class="flex items-start"><i class="fa-solid fa-circle text-[8px] mt-2 mr-2 text-primary"></i>白方先行，轮流走子</li>
+                    <li class="flex items-start"><i class="fa-solid fa-circle text-[8px] mt-2 mr-2 text-primary"></i>点击棋子显示可走位置</li>
+                    <li class="flex items-start"><i class="fa-solid fa-circle text-[8px] mt-2 mr-2 text-primary"></i>将死对方王即为胜利</li>
+                    <li class="flex items-start"><i class="fa-solid fa-circle text-[8px] mt-2 mr-2 text-primary"></i>包含王车易位、吃过路兵</li>
+                </ul>
+            </div>
+
+            <!-- 控制按钮组 -->
+            <div class="flex flex-wrap gap-3 mt-2">
+                <button id="newGameBtn" class="flex-1 bg-primary hover:bg-primary/90 text-white py-3 px-4 font-medium btn-hover flex items-center justify-center gap-2 border border-primary shadow-sm" style="border-radius: 0;">
+                    <i class="fa-solid fa-rotate-right"></i>新一局
+                </button>
+                <button id="undoBtn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 font-medium btn-hover flex items-center justify-center gap-2 border border-gray-300" style="border-radius: 0;">
+                    <i class="fa-solid fa-arrow-left"></i>悔棋
+                </button>
+            </div>
+            <p class="text-xs text-center text-gray-500 mt-2">© 2026 国际象棋 · 经典重现</p>
+        </div>
+    </div>
+</div>
+
+<!-- 胜利/结束模态框 (直角风格) -->
+<div id="endGameModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden opacity-0 modal-transition">
+    <div class="bg-white p-8 max-w-md w-full mx-4 shadow-2xl border border-gray-400" style="border-radius: 0;" id="modalContent">
+        <div class="text-center">
+            <div class="w-20 h-20 bg-amber-100 flex items-center justify-center mx-auto mb-4 border-2 border-yellow-600" style="border-radius: 0;">
+                <i class="fa-solid fa-crown text-4xl text-yellow-600"></i>
+            </div>
+            <h2 class="text-3xl font-bold mb-2" id="winnerAnnouncement">白方获胜</h2>
+            <p class="text-gray-600 mb-6" id="victoryDetail">将死！精彩的胜利。</p>
+            <button id="modalNewGameBtn" class="bg-primary hover:bg-primary/90 text-white py-3 px-8 font-medium btn-hover w-full border border-primary" style="border-radius: 0;">
+                开始新对局
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        "use strict";
+
+        // ---------- 国际象棋引擎 (完整规则) ----------
+        const BOARD_SIZE = 8;
+        
+        // 棋子类型
+        const EMPTY = 0;
+        const KING = 1, QUEEN = 2, ROOK = 3, BISHOP = 4, KNIGHT = 5, PAWN = 6;
+        // 颜色: 白色为 8, 黑色为 16 (方便位运算)
+        const WHITE = 8;
+        const BLACK = 16;
+        
+        // 初始棋盘 (FEN风格表示)
+        function createInitialBoard() {
+            const b = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(0));
+            // 黑方 (顶部)
+            b[0] = [ROOK|BLACK, KNIGHT|BLACK, BISHOP|BLACK, QUEEN|BLACK, KING|BLACK, BISHOP|BLACK, KNIGHT|BLACK, ROOK|BLACK];
+            b[1] = Array(BOARD_SIZE).fill(PAWN|BLACK);
+            // 白方 (底部)
+            b[6] = Array(BOARD_SIZE).fill(PAWN|WHITE);
+            b[7] = [ROOK|WHITE, KNIGHT|WHITE, BISHOP|WHITE, QUEEN|WHITE, KING|WHITE, BISHOP|WHITE, KNIGHT|WHITE, ROOK|WHITE];
+            return b;
+        }
+
+        // 游戏状态
+        let board = createInitialBoard();
+        let currentColor = WHITE;        // 白方先走
+        let gameOver = false;
+        let winner = null;               // 'white', 'black', 'draw'
+        
+        // 历史记录 (用于悔棋)
+        let history = [];
+        
+        // 选中的格子
+        let selectedRow = -1, selectedCol = -1;
+        let validMoves = [];             // 存储当前选中棋子的合法走法 {toRow, toCol}
+        
+        // 易位权限
+        let whiteKingMoved = false, blackKingMoved = false;
+        let whiteRookMoved = [false, false]; // 0: A车(后翼), 1: H车(王翼)
+        let blackRookMoved = [false, false];
+        
+        // 吃过路兵目标 (列索引, 仅当上一回合有兵前进两格)
+        let enPassantTarget = null;       // { row, col } 或 null
+        
+        // 被吃棋子记录
+        let capturedPieces = { white: [], black: [] };
+        
+        // 计时
+        let timerSeconds = 0;
+        let timerInterval = null;
+        
+        // DOM 元素
+        const canvas = document.getElementById('chessCanvas');
+        const ctx = canvas.getContext('2d');
+        const statusMessage = document.getElementById('statusMessage');
+        const turnIndicatorSmall = document.getElementById('turnIndicatorSmall');
+        const currentTurnText = document.getElementById('currentTurnText');
+        const moveCountDisplay = document.getElementById('moveCountDisplay');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const capturedByWhiteDiv = document.getElementById('capturedByWhite');
+        const capturedByBlackDiv = document.getElementById('capturedByBlack');
+        const endGameModal = document.getElementById('endGameModal');
+        const modalContent = document.getElementById('modalContent');
+        const winnerAnnouncement = document.getElementById('winnerAnnouncement');
+        const victoryDetail = document.getElementById('victoryDetail');
+        
+        // 按钮
+        const newGameBtn = document.getElementById('newGameBtn');
+        const undoBtn = document.getElementById('undoBtn');
+        const modalNewGameBtn = document.getElementById('modalNewGameBtn');
+
+        // ---------- 辅助函数 ----------
+        function getPieceColor(piece) {
+            return piece & 0x18; // 24 = 16+8
+        }
+        function getPieceType(piece) {
+            return piece & 0x7;
+        }
+        function isWhite(piece) { return getPieceColor(piece) === WHITE; }
+        function isBlack(piece) { return getPieceColor(piece) === BLACK; }
+        
+        // 更新UI状态文字
+        function updateStatusText() {
+            if (gameOver) {
+                if (winner === 'white') {
+                    statusMessage.innerText = '白方胜利！';
+                    turnIndicatorSmall.innerHTML = '<i class="fa-solid fa-crown"></i> 白胜';
+                    currentTurnText.innerText = '终局';
+                } else if (winner === 'black') {
+                    statusMessage.innerText = '黑方胜利！';
+                    turnIndicatorSmall.innerHTML = '<i class="fa-solid fa-crown"></i> 黑胜';
+                    currentTurnText.innerText = '终局';
+                } else {
+                    statusMessage.innerText = '和棋';
+                    turnIndicatorSmall.innerHTML = '<i class="fa-solid fa-handshake"></i> 和棋';
+                    currentTurnText.innerText = '和棋';
+                }
+            } else {
+                const colorName = currentColor === WHITE ? '白方' : '黑方';
+                statusMessage.innerText = `${colorName}走子`;
+                turnIndicatorSmall.innerHTML = currentColor === WHITE ? '<i class="fa-regular fa-circle"></i> 白方走子' : '<i class="fa-regular fa-circle"></i> 黑方走子';
+                currentTurnText.innerText = colorName;
+            }
+            moveCountDisplay.innerText = history.length;
+        }
+
+        // 计时器
+        function startTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if(!gameOver) {
+                    timerSeconds++;
+                    const m = Math.floor(timerSeconds / 60).toString().padStart(2,'0');
+                    const s = (timerSeconds % 60).toString().padStart(2,'0');
+                    timerDisplay.innerText = `${m}:${s}`;
+                }
+            }, 1000);
+        }
+        
+        // 重置游戏
+        function resetGame() {
+            board = createInitialBoard();
+            currentColor = WHITE;
+            gameOver = false;
+            winner = null;
+            selectedRow = selectedCol = -1;
+            validMoves = [];
+            history = [];
+            whiteKingMoved = blackKingMoved = false;
+            whiteRookMoved = [false, false];
+            blackRookMoved = [false, false];
+            enPassantTarget = null;
+            capturedPieces = { white: [], black: [] };
+            timerSeconds = 0;
+            timerDisplay.innerText = '00:00';
+            updateCapturedDisplay();
+            drawBoard();
+            updateStatusText();
+            hideModal();
+            startTimer();
+        }
+
+        function hideModal() {
+            endGameModal.classList.add('hidden');
+            endGameModal.classList.remove('opacity-100');
+            modalContent.classList.add('scale-95');
+        }
+
+        function showWinModal(winnerColor) {
+            gameOver = true;
+            winner = winnerColor;
+            updateStatusText();
+            const msg = winnerColor === 'white' ? '白方将死黑王，获胜！' : '黑方将死白王，获胜！';
+            winnerAnnouncement.innerText = winnerColor === 'white' ? '白方获胜' : '黑方获胜';
+            victoryDetail.innerText = msg;
+            endGameModal.classList.remove('hidden');
+            setTimeout(() => {
+                endGameModal.classList.add('opacity-100');
+                modalContent.classList.remove('scale-95');
+            }, 20);
+            if(timerInterval) clearInterval(timerInterval);
+        }
+
+        function showDrawModal(reason) {
+            gameOver = true;
+            winner = 'draw';
+            updateStatusText();
+            winnerAnnouncement.innerText = '和棋';
+            victoryDetail.innerText = reason || '双方和棋';
+            endGameModal.classList.remove('hidden');
+            setTimeout(() => {
+                endGameModal.classList.add('opacity-100');
+                modalContent.classList.remove('scale-95');
+            }, 20);
+            if(timerInterval) clearInterval(timerInterval);
+        }
+
+        // 更新吃子显示
+        function updateCapturedDisplay() {
+            const pieceMap = { [PAWN]: '♙', [KNIGHT]: '♘', [BISHOP]: '♗', [ROOK]: '♖', [QUEEN]: '♕' };
+            capturedByWhiteDiv.innerHTML = capturedPieces.white.map(t => pieceMap[t] || '').join('');
+            capturedByBlackDiv.innerHTML = capturedPieces.black.map(t => pieceMap[t] || '').join('');
+        }
+
+        // ---------- 合法性检查核心 ----------
+        function isWithinBoard(r, c) { return r>=0 && r<8 && c>=0 && c<8; }
+        
+        // 检查是否被将军 (针对指定颜色)
+        function isKingInCheck(color, boardState) {
+            // 找到王
+            let kingPos = null;
+            for(let r=0; r<8; r++) for(let c=0; c<8; c++) {
+                if(boardState[r][c] !== 0 && getPieceType(boardState[r][c]) === KING && getPieceColor(boardState[r][c]) === color) {
+                    kingPos = [r,c]; break;
+                }
+            }
+            if(!kingPos) return true;
+            const [kr, kc] = kingPos;
+            const opponent = color === WHITE ? BLACK : WHITE;
+            // 遍历对手棋子看是否能攻击王
+            for(let r=0; r<8; r++) for(let c=0; c<8; c++) {
+                const piece = boardState[r][c];
+                if(piece && getPieceColor(piece) === opponent) {
+                    if(canAttack(piece, r, c, kr, kc, boardState)) return true;
+                }
+            }
+            return false;
+        }
+
+        // 判断棋子能否攻击目标格 (忽略己方遮挡等, 只判断攻击线)
+        function canAttack(piece, fr, fc, tr, tc, boardState) {
+            const type = getPieceType(piece);
+            const color = getPieceColor(piece);
+            const dr = tr - fr, dc = tc - fc;
+            const absDr = Math.abs(dr), absDc = Math.abs(dc);
+            
+            if(type === PAWN) {
+                const dir = color === WHITE ? -1 : 1;
+                if(dr === dir && absDc === 1) return true;
+                return false;
+            }
+            if(type === KNIGHT) return (absDr===2 && absDc===1) || (absDr===1 && absDc===2);
+            if(type === BISHOP) return absDr === absDc && absDr>0 && clearPath(fr,fc,tr,tc,boardState);
+            if(type === ROOK) return (dr===0 || dc===0) && clearPath(fr,fc,tr,tc,boardState);
+            if(type === QUEEN) return (dr===0||dc===0||absDr===absDc) && clearPath(fr,fc,tr,tc,boardState);
+            if(type === KING) return absDr<=1 && absDc<=1;
+            return false;
+        }
+
+        function clearPath(r1,c1,r2,c2,board) {
+            const dr = Math.sign(r2-r1), dc = Math.sign(c2-c1);
+            let r = r1+dr, c = c1+dc;
+            while(r!==r2 || c!==c2) {
+                if(board[r][c] !== 0) return false;
+                r+=dr; c+=dc;
+            }
+            return true;
+        }
+
+        // 生成所有合法走法 (不包含移动后己方被将军)
+        function generateLegalMoves(fromRow, fromCol) {
+            const piece = board[fromRow][fromCol];
+            if(!piece || getPieceColor(piece) !== currentColor) return [];
+            const moves = [];
+            const type = getPieceType(piece);
+            const color = getPieceColor(piece);
+            
+            const addIfLegal = (toR, toC, special=null) => {
+                if(!isWithinBoard(toR, toC)) return;
+                const target = board[toR][toC];
+                if(target && getPieceColor(target) === color) return;
+                // 模拟移动
+                const newBoard = board.map(row => [...row]);
+                newBoard[toR][toC] = piece;
+                newBoard[fromRow][fromCol] = 0;
+                if(!isKingInCheck(color, newBoard)) {
+                    moves.push({toRow: toR, toCol: toC, special});
+                }
+            };
+
+            if(type === PAWN) {
+                const dir = color === WHITE ? -1 : 1;
+                const startRow = color === WHITE ? 6 : 1;
+                // 前进一步
+                if(isWithinBoard(fromRow+dir, fromCol) && board[fromRow+dir][fromCol]===0) {
+                    addIfLegal(fromRow+dir, fromCol);
+                    if(fromRow === startRow && board[fromRow+2*dir][fromCol]===0)
+                        addIfLegal(fromRow+2*dir, fromCol, {enPassant: fromCol});
+                }
+                // 吃子
+                [[dir, -1], [dir, 1]].forEach(([dr,dc]) => {
+                    const nr=fromRow+dr, nc=fromCol+dc;
+                    if(isWithinBoard(nr,nc)) {
+                        if(board[nr][nc] && getPieceColor(board[nr][nc])!==color) addIfLegal(nr,nc);
+                        // 吃过路兵
+                        if(enPassantTarget && enPassantTarget.row === nr && enPassantTarget.col === nc) {
+                            const newB = board.map(r=>[...r]);
+                            newB[fromRow][fromCol]=0; newB[nr][nc]=piece; newB[fromRow][nc]=0;
+                            if(!isKingInCheck(color, newB)) moves.push({toRow:nr, toCol:nc, special:'enPassant'});
+                        }
+                    }
+                });
+            } else if(type === KNIGHT) {
+                [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(([dr,dc])=> {
+                    addIfLegal(fromRow+dr, fromCol+dc);
+                });
+            } else {
+                const dirs = type===BISHOP? [[1,1],[1,-1],[-1,1],[-1,-1]] : 
+                            type===ROOK? [[1,0],[-1,0],[0,1],[0,-1]] :
+                            type===QUEEN? [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]] :
+                            type===KING? [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]] : [];
+                dirs.forEach(([dr,dc]) => {
+                    let r=fromRow+dr, c=fromCol+dc;
+                    if(type===KING) { addIfLegal(r,c); return; }
+                    while(isWithinBoard(r,c)) {
+                        const t = board[r][c];
+                        if(t===0) { addIfLegal(r,c); }
+                        else { if(getPieceColor(t)!==color) addIfLegal(r,c); break; }
+                        r+=dr; c+=dc;
+                    }
+                });
+                // 王车易位
+                if(type===KING && !((color===WHITE&&whiteKingMoved)||(color===BLACK&&blackKingMoved))) {
+                    const row = color===WHITE?7:0;
+                    if(!isKingInCheck(color, board)) {
+                        // 王翼
+                        if(!(color===WHITE?whiteRookMoved[1]:blackRookMoved[1]) && board[row][5]===0 && board[row][6]===0) {
+                            if(!isSquareAttacked(row,5,color) && !isSquareAttacked(row,6,color))
+                                addIfLegal(row,6, {castle: 'king'});
+                        }
+                        // 后翼
+                        if(!(color===WHITE?whiteRookMoved[0]:blackRookMoved[0]) && board[row][1]===0 && board[row][2]===0 && board[row][3]===0) {
+                            if(!isSquareAttacked(row,2,color) && !isSquareAttacked(row,3,color))
+                                addIfLegal(row,2, {castle: 'queen'});
+                        }
+                    }
+                }
+            }
+            return moves;
+        }
+
+        function isSquareAttacked(r,c,color) {
+            const opp = color===WHITE?BLACK:WHITE;
+            for(let i=0;i<8;i++) for(let j=0;j<8;j++) {
+                const p = board[i][j];
+                if(p && getPieceColor(p)===opp && canAttack(p,i,j,r,c,board)) return true;
+            }
+            return false;
+        }
+
+        // 执行移动 (包括更新状态)
+        function applyMove(fromRow, fromCol, toRow, toCol, special) {
+            const piece = board[fromRow][fromCol];
+            const color = getPieceColor(piece);
+            const captured = board[toRow][toCol];
+            
+            // 记录吃子
+            if(captured) {
+                const capType = getPieceType(captured);
+                if(color === WHITE) capturedPieces.black.push(capType);
+                else capturedPieces.white.push(capType);
+            }
+            
+            // 移动
+            board[toRow][toCol] = piece;
+            board[fromRow][fromCol] = 0;
+            
+            // 吃过路兵
+            if(special === 'enPassant') {
+                const pawnRow = color===WHITE ? toRow+1 : toRow-1;
+                board[pawnRow][toCol] = 0;
+            }
+            // 王车易位
+            if(special?.castle) {
+                const row = color===WHITE?7:0;
+                if(special.castle === 'king') {
+                    board[row][5] = board[row][7]; board[row][7] = 0;
+                } else {
+                    board[row][3] = board[row][0]; board[row][0] = 0;
+                }
+            }
+            
+            // 更新易位标记
+            if(getPieceType(piece) === KING) {
+                if(color===WHITE) whiteKingMoved=true; else blackKingMoved=true;
+            }
+            if(getPieceType(piece) === ROOK) {
+                if(color===WHITE) { if(fromCol===0) whiteRookMoved[0]=true; if(fromCol===7) whiteRookMoved[1]=true; }
+                else { if(fromCol===0) blackRookMoved[0]=true; if(fromCol===7) blackRookMoved[1]=true; }
+            }
+            
+            // 吃过路兵目标
+            if(getPieceType(piece)===PAWN && Math.abs(toRow-fromRow)===2)
+                enPassantTarget = { row: (fromRow+toRow)/2, col: fromCol };
+            else enPassantTarget = null;
+            
+            // 兵升变 (简化为自动升后)
+            if(getPieceType(piece)===PAWN && (toRow===0||toRow===7)) {
+                board[toRow][toCol] = QUEEN | color;
+            }
+            
+            updateCapturedDisplay();
+        }
+
+        // 检查是否将死/无子可动
+        function checkGameOver() {
+            let hasMove = false;
+            for(let r=0;r<8;r++) for(let c=0;c<8;c++) {
+                if(board[r][c] && getPieceColor(board[r][c])===currentColor) {
+                    if(generateLegalMoves(r,c).length>0) { hasMove=true; break; }
+                }
+            }
+            if(!hasMove) {
+                if(isKingInCheck(currentColor, board)) showWinModal(currentColor===WHITE?'black':'white');
+                else showDrawModal('无子可动 · 和棋');
+            }
+        }
+
+        // ---------- 绘制 ----------
+        function drawBoard() {
+            const size = canvas.width = canvas.height = 600;
+            const sq = size/8;
+            ctx.clearRect(0,0,size,size);
+            // 棋盘格
+            for(let r=0;r<8;r++) for(let c=0;c<8;c++) {
+                ctx.fillStyle = (r+c)%2===0 ? '#F0D9B5' : '#B58863';
+                ctx.fillRect(c*sq, r*sq, sq, sq);
+            }
+            // 高亮
+            if(selectedRow!==-1) {
+                ctx.fillStyle = 'rgba(0,120,215,0.3)'; ctx.fillRect(selectedCol*sq, selectedRow*sq, sq, sq);
+            }
+            validMoves.forEach(m => { ctx.fillStyle = 'rgba(0,120,215,0.2)'; ctx.fillRect(m.toCol*sq, m.toRow*sq, sq, sq); });
+            // 棋子
+            for(let r=0;r<8;r++) for(let c=0;c<8;c++) {
+                const piece = board[r][c]; if(!piece) continue;
+                drawPiece(r,c,piece,sq);
+            }
+        }
+
+        function drawPiece(r,c,piece,sq) {
+            const x = c*sq+sq/2, y = r*sq+sq/2;
+            ctx.font = `bold ${sq*0.65}px "Segoe UI", "Arial", sans-serif`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            const isWhitePiece = isWhite(piece);
+            ctx.shadowColor = '#00000055'; ctx.shadowBlur = 8;
+            ctx.fillStyle = isWhitePiece ? '#f8f9fa' : '#1e1e2f';
+            const symbols = { [KING]:'♚', [QUEEN]:'♛', [ROOK]:'♜', [BISHOP]:'♝', [KNIGHT]:'♞', [PAWN]:'♟' };
+            let char = symbols[getPieceType(piece)] || '';
+            ctx.fillText(char, x, y-2);
+            ctx.shadowBlur = 0;
+        }
+
+        // ---------- 事件 ----------
+        canvas.addEventListener('click', (e) => {
+            if(gameOver) return;
+            const rect = canvas.getBoundingClientRect();
+            const sq = rect.width/8;
+            const col = Math.floor((e.clientX-rect.left)/sq);
+            const row = Math.floor((e.clientY-rect.top)/sq);
+            if(row<0||row>7||col<0||col>7) return;
+            
+            const piece = board[row][col];
+            // 选中己方棋子
+            if(piece && getPieceColor(piece) === currentColor) {
+                selectedRow = row; selectedCol = col;
+                validMoves = generateLegalMoves(row, col);
+                drawBoard();
+                return;
+            }
+            // 移动
+            if(selectedRow!==-1) {
+                const move = validMoves.find(m => m.toRow===row && m.toCol===col);
+                if(move) {
+                    history.push({from:[selectedRow,selectedCol], to:[row,col], board: board.map(r=>[...r]), enPassant: enPassantTarget, wkm:whiteKingMoved, bkm:blackKingMoved, wr: [...whiteRookMoved], br:[...blackRookMoved]});
+                    applyMove(selectedRow, selectedCol, row, col, move.special);
+                    currentColor = currentColor===WHITE?BLACK:WHITE;
+                    selectedRow=selectedCol=-1; validMoves=[];
+                    drawBoard();
+                    updateStatusText();
+                    checkGameOver();
+                } else { selectedRow=-1; validMoves=[]; drawBoard(); }
+            }
+        });
+
+        undoBtn.addEventListener('click', ()=>{
+            if(gameOver || history.length===0) return;
+            const last = history.pop();
+            board = last.board.map(r=>[...r]);
+            whiteKingMoved = last.wkm; blackKingMoved = last.bkm;
+            whiteRookMoved = [...last.wr]; blackRookMoved = [...last.br];
+            enPassantTarget = last.enPassant;
+            currentColor = currentColor===WHITE?BLACK:WHITE;
+            gameOver = false; winner = null;
+            selectedRow=selectedCol=-1; validMoves=[];
+            capturedPieces = {white:[], black:[]}; // 简化: 吃子重置, 可优化
+            drawBoard(); updateStatusText(); updateCapturedDisplay();
+        });
+
+        newGameBtn.addEventListener('click', resetGame);
+        modalNewGameBtn.addEventListener('click', ()=>{ hideModal(); resetGame(); });
+        
+        // 初始化
+        resetGame();
+        startTimer();
+        drawBoard();
+    })();
+</script>
+</body>
+</html>
