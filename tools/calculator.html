@@ -3,291 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>米遇安计算器</title>
+  <title>米遇安计算器 · 全功能完整版</title>
   <!-- 核心库 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.12.0/math.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.6/dist/jstat.min.js"></script>
+  <!-- 3D分子预览库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
-    }
-
+    * { box-sizing: border-box; font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif; }
     :root {
-      --bg-body: #f3f3f3;
-      --bg-container: #ffffff;
-      --bg-panel: #f9f9f9;
-      --border-color: #d0d0d0;
-      --text-primary: #1e1e1e;
-      --text-secondary: #5a5a5a;
-      --display-bg: #f0f0f0;
-      --display-text: #1e1e1e;
-      --btn-bg: #e6e6e6;
-      --btn-border: #c0c0c0;
-      --btn-text: #1e1e1e;
-      --btn-shadow: #b0b0b0;
-      --func-bg: #d9e8f7;
-      --func-border: #a0c4e8;
-      --operator-bg: #f0d9b0;
-      --equal-bg: #0078D7;
-      --equal-text: white;
-      --clear-bg: #f4a4a4;
-      --shift-bg: #e0cce0;
-      --primary: #0078D7;
-      --primary-dark: #005a9e;
-      --input-bg: white;
-      --result-bg: #f5f5f5;
-      --shadow: 0 2px 4px rgba(0,0,0,0.1);
+      --bg-body: #f3f3f3; --bg-container: #ffffff; --bg-panel: #f9f9f9; --border-color: #d0d0d0;
+      --text-primary: #1e1e1e; --text-secondary: #5a5a5a; --display-bg: #f0f0f0; --display-text: #1e1e1e;
+      --btn-bg: #e6e6e6; --btn-border: #c0c0c0; --btn-text: #1e1e1e; --btn-shadow: #b0b0b0;
+      --func-bg: #d9e8f7; --func-border: #a0c4e8; --operator-bg: #f0d9b0; --equal-bg: #0078D7;
+      --equal-text: white; --clear-bg: #f4a4a4; --shift-bg: #e0cce0; --primary: #0078D7;
+      --primary-dark: #005a9e; --input-bg: white; --result-bg: #f5f5f5; --shadow: 0 2px 4px rgba(0,0,0,0.1);
       --border-radius: 0px;
     }
-
     body.dark {
-      --bg-body: #0a0f1a;
-      --bg-container: #1a2533;
-      --bg-panel: #0f172a;
-      --border-color: #2d3a4e;
-      --text-primary: #e2e8f0;
-      --text-secondary: #9ab3d0;
-      --display-bg: #0b1120;
-      --display-text: #e2e8f0;
-      --btn-bg: #1f2e40;
-      --btn-border: #334a60;
-      --btn-text: #f0f4fa;
-      --btn-shadow: #0f1a26;
-      --func-bg: #1e3a5f;
-      --func-border: #2b5580;
-      --operator-bg: #2d4055;
-      --equal-bg: #3b82f6;
-      --clear-bg: #b45353;
-      --shift-bg: #4a3a5c;
-      --input-bg: #0b1120;
-      --result-bg: #0b1120;
-      --shadow: 0 4px 6px rgba(0,0,0,0.6);
+      --bg-body: #0a0f1a; --bg-container: #1a2533; --bg-panel: #0f172a; --border-color: #2d3a4e;
+      --text-primary: #e2e8f0; --text-secondary: #9ab3d0; --display-bg: #0b1120; --display-text: #e2e8f0;
+      --btn-bg: #1f2e40; --btn-border: #334a60; --btn-text: #f0f4fa; --btn-shadow: #0f1a26;
+      --func-bg: #1e3a5f; --func-border: #2b5580; --operator-bg: #2d4055; --equal-bg: #3b82f6;
+      --clear-bg: #b45353; --shift-bg: #4a3a5c; --input-bg: #0b1120; --result-bg: #0b1120;
     }
-
     body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg-body);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 12px;
-      color: var(--text-primary);
-      transition: background 0.2s;
+      margin: 0; min-height: 100vh; background: var(--bg-body); display: flex; flex-direction: column;
+      align-items: center; padding: 8px; color: var(--text-primary); transition: background 0.3s;
     }
-
     .app-container {
-      max-width: 1400px;
-      width: 100%;
-      background: var(--bg-container);
-      border-radius: var(--border-radius);
-      padding: 18px 16px 22px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
-      margin-bottom: 8px;
+      max-width: 1400px; width: 100%; background: var(--bg-container); border-radius: var(--border-radius);
+      padding: 16px 14px 20px; box-shadow: var(--shadow); border: 1px solid var(--border-color); margin-bottom: 6px;
     }
-
     .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--primary);
-      flex-wrap: wrap;
-      gap: 8px;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+      padding-bottom: 10px; border-bottom: 2px solid var(--primary); flex-wrap: wrap; gap: 8px;
     }
-    .app-title {
-      font-size: clamp(20px, 5vw, 28px);
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: var(--text-primary);
-      margin: 0;
-    }
+    .app-title { font-size: clamp(20px, 5vw, 26px); font-weight: 700; color: var(--text-primary); margin: 0; }
     .theme-toggle {
-      background: var(--btn-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-primary);
-      font-size: 18px;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: var(--border-radius);
+      background: var(--btn-bg); border: 1px solid var(--border-color); color: var(--text-primary);
+      font-size: 18px; padding: 5px 12px; cursor: pointer; border-radius: var(--border-radius);
       box-shadow: 0 2px 0 var(--btn-shadow);
     }
+    .app-footer { text-align: center; padding: 6px 0; color: var(--text-secondary); font-size: 12px; width: 100%; }
 
-    .app-footer {
-      text-align: center;
-      padding: 8px 0;
-      color: var(--text-secondary);
-      font-size: 13px;
-      width: 100%;
-      max-width: 1400px;
+    .category-tabs {
+      display: flex; gap: 4px; margin-bottom: 12px; background: var(--bg-panel); padding: 4px;
+      border: 1px solid var(--border-color); border-radius: var(--border-radius); flex-wrap: wrap;
     }
+    .cat-tab {
+      flex: 1 0 80px; padding: 10px 6px; background: transparent; border: none; color: var(--text-secondary);
+      font-weight: 600; font-size: clamp(12px, 3vw, 14px); cursor: pointer; border-radius: var(--border-radius);
+      border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s;
+    }
+    .cat-tab:hover, .cat-tab.active { background: var(--primary); color: white; }
 
-    .tabs-scroll {
-      overflow-x: auto;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
-      margin-bottom: 16px;
-      padding-bottom: 4px;
-      scrollbar-width: none;
+    .sub-tabs-scroll {
+      overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; margin-bottom: 14px;
+      padding-bottom: 4px; scrollbar-width: none;
     }
-    .tabs-scroll::-webkit-scrollbar { display: none; }
-    .tabs-container {
-      display: inline-flex;
-      gap: 4px;
-      background: var(--bg-panel);
-      padding: 4px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
+    .sub-tabs-container {
+      display: inline-flex; gap: 4px; background: var(--bg-panel); padding: 4px;
+      border: 1px solid var(--border-color); border-radius: var(--border-radius);
     }
-    .tab {
-      padding: 10px 16px;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: clamp(12px, 3.5vw, 14px);
-      cursor: pointer;
-      border-radius: var(--border-radius);
-      border-bottom: 2px solid transparent;
-      white-space: nowrap;
-      flex-shrink: 0;
+    .sub-tab {
+      padding: 8px 14px; background: transparent; border: none; color: var(--text-secondary);
+      font-weight: 500; font-size: clamp(11px, 3vw, 13px); cursor: pointer; border-radius: var(--border-radius);
+      border-bottom: 2px solid transparent; white-space: nowrap; flex-shrink: 0; transition: all 0.2s;
     }
-    .tab.active {
-      background: var(--primary);
-      color: white;
-    }
+    .sub-tab:hover, .sub-tab.active { background: var(--primary); color: white; }
 
+    .panel { animation: panelFade 0.3s ease; }
     .panel.hidden { display: none; }
 
     .display-container {
-      background: var(--display-bg);
-      border-radius: var(--border-radius);
-      padding: 16px 14px;
-      margin-bottom: 14px;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-      border: 1px solid var(--border-color);
+      background: var(--display-bg); border-radius: var(--border-radius); padding: 16px 14px;
+      margin-bottom: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color);
     }
     .natural-expr {
-      min-height: 38px;
-      font-size: clamp(18px, 5vw, 24px);
-      color: var(--text-secondary);
-      text-align: right;
-      word-wrap: break-word;
-      overflow-x: auto;
-      white-space: nowrap;
-      padding-bottom: 6px;
-      border-bottom: 1px dashed var(--border-color);
+      min-height: 40px; font-size: clamp(18px, 5vw, 26px); color: var(--text-secondary); text-align: right;
+      overflow-x: auto; white-space: nowrap; padding-bottom: 6px; border-bottom: 1px dashed var(--border-color);
       font-family: 'Cambria Math', 'Times New Roman', serif;
     }
     .natural-result {
-      min-height: 52px;
-      font-size: clamp(32px, 8vw, 48px);
-      font-weight: 600;
-      color: var(--text-primary);
-      text-align: right;
-      word-wrap: break-word;
-      overflow-x: auto;
-      white-space: nowrap;
-      line-height: 1.2;
+      min-height: 56px; font-size: clamp(32px, 8vw, 52px); font-weight: 600; color: var(--text-primary);
+      text-align: right; overflow-x: auto; white-space: nowrap; line-height: 1.2;
       font-family: 'Cambria Math', 'Times New Roman', serif;
     }
 
-    .status-bar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      gap: 8px;
-    }
+    .status-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
     .shift-indicator {
-      background: var(--btn-bg);
-      padding: 6px 14px;
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 13px;
-      border-radius: var(--border-radius);
+      background: var(--btn-bg); padding: 5px 12px; border: 1px solid var(--primary); color: var(--primary);
+      font-weight: 700; font-size: 12px; border-radius: var(--border-radius);
     }
-    .shift-indicator.inactive {
-      border-color: var(--border-color);
-      color: var(--text-secondary);
-    }
-    .angle-toggle {
-      background: var(--btn-bg);
-      padding: 2px;
-      display: flex;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-    }
+    .shift-indicator.inactive { border-color: var(--border-color); color: var(--text-secondary); }
+    .angle-toggle { background: var(--btn-bg); padding: 2px; display: flex; border: 1px solid var(--border-color); border-radius: var(--border-radius); }
     .angle-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 14px;
-      cursor: pointer;
-      border-radius: var(--border-radius);
+      background: transparent; border: none; color: var(--text-secondary); font-size: 11px; font-weight: 600;
+      padding: 5px 12px; cursor: pointer; border-radius: var(--border-radius);
     }
-    .angle-btn.active {
-      background: var(--primary);
-      color: white;
-    }
+    .angle-btn:hover, .angle-btn.active { background: var(--primary); color: white; }
     .mem-badge {
-      background: var(--btn-bg);
-      padding: 6px 14px;
-      border-radius: var(--border-radius);
-      color: var(--text-primary);
-      border: 1px solid var(--border-color);
-      font-size: 13px;
+      background: var(--btn-bg); padding: 5px 12px; border-radius: var(--border-radius); color: var(--text-primary);
+      border: 1px solid var(--border-color); font-size: 12px;
     }
 
-    .output-format {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
+    .output-format { display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
     .format-btn {
-      background: var(--btn-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      font-size: 11px;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: var(--border-radius);
-      flex: 1 0 auto;
+      background: var(--btn-bg); border: 1px solid var(--border-color); color: var(--text-secondary);
+      font-size: 10px; padding: 5px 10px; cursor: pointer; border-radius: var(--border-radius); flex: 1 0 auto;
     }
-    .format-btn.active {
-      background: var(--primary);
-      color: white;
-    }
+    .format-btn:hover, .format-btn.active { background: var(--primary); color: white; }
 
-    .buttons-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 6px;
-    }
+    .buttons-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
     .calc-btn {
-      background: var(--btn-bg);
-      border: none;
-      border-bottom: 3px solid var(--btn-shadow);
-      color: var(--btn-text);
-      font-size: clamp(13px, 4vw, 18px);
-      font-weight: 500;
-      padding: clamp(8px, 2vw, 14px) 2px;
-      cursor: pointer;
-      box-shadow: 0 2px 0 var(--btn-shadow);
-      border: 1px solid var(--btn-border);
-      text-align: center;
-      line-height: 1.2;
-      border-radius: var(--border-radius);
-      touch-action: manipulation;
+      background: var(--btn-bg); border: none; border-bottom: 3px solid var(--btn-shadow); color: var(--btn-text);
+      font-size: clamp(12px, 3.5vw, 16px); font-weight: 500; padding: clamp(8px, 2vw, 12px) 2px; cursor: pointer;
+      box-shadow: 0 2px 0 var(--btn-shadow); border: 1px solid var(--btn-border); text-align: center;
+      line-height: 1.2; border-radius: var(--border-radius); touch-action: manipulation;
     }
     .calc-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--btn-shadow); }
     .btn-primary-text { font-size: inherit; }
@@ -301,69 +135,33 @@
     .shift-key { background: var(--shift-bg); }
 
     .section-title {
-      color: var(--text-primary);
-      font-weight: 600;
-      margin: 14px 0 10px;
-      font-size: clamp(15px, 4vw, 18px);
-      border-left: 4px solid var(--primary);
-      padding-left: 12px;
+      color: var(--text-primary); font-weight: 600; margin: 12px 0 8px; font-size: clamp(14px, 4vw, 16px);
+      border-left: 4px solid var(--primary); padding-left: 10px;
     }
-    .input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
+    .input-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
     .input-row input, .input-row select, textarea {
-      background: var(--input-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-primary);
-      padding: 12px;
-      font-size: 15px;
-      border-radius: var(--border-radius);
-      outline: none;
-      flex: 1 1 140px;
+      background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-primary);
+      padding: 10px; font-size: 14px; border-radius: var(--border-radius); outline: none; flex: 1 1 120px;
     }
-    textarea {
-      width: 100%;
-      min-height: 80px;
-      font-family: 'Courier New', monospace;
-      resize: vertical;
-    }
+    textarea { width: 100%; min-height: 75px; font-family: 'Courier New', monospace; resize: vertical; }
     .btn-primary {
-      padding: 12px 20px;
-      background: var(--primary);
-      border: none;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 2px 0 var(--primary-dark);
-      border-radius: var(--border-radius);
-      font-size: 15px;
-      touch-action: manipulation;
-      white-space: nowrap;
+      padding: 10px 18px; background: var(--primary); border: none; color: white; font-weight: 600;
+      cursor: pointer; box-shadow: 0 2px 0 var(--primary-dark); border-radius: var(--border-radius);
+      font-size: 14px; touch-action: manipulation; white-space: nowrap;
     }
     .btn-primary:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--primary-dark); }
     .result-area {
-      background: var(--result-bg);
-      padding: 14px;
-      color: var(--text-primary);
-      font-family: 'Courier New', monospace;
-      margin-top: 12px;
-      border: 1px solid var(--border-color);
-      white-space: pre-wrap;
-      font-size: 14px;
-      max-height: 300px;
-      overflow-y: auto;
-      border-radius: var(--border-radius);
+      background: var(--result-bg); padding: 12px; color: var(--text-primary); font-family: 'Courier New', monospace;
+      margin-top: 10px; border: 1px solid var(--border-color); white-space: pre-wrap; font-size: 13px;
+      max-height: 300px; overflow-y: auto; border-radius: var(--border-radius);
     }
-    .canvas-wrapper { background: var(--display-bg); padding: 8px; margin: 10px 0; border-radius: var(--border-radius); }
+    .canvas-wrapper { background: var(--display-bg); padding: 6px; margin: 8px 0; border-radius: var(--border-radius); }
     canvas { width: 100% !important; height: auto !important; background: var(--display-bg); }
 
     @media (max-width: 480px) {
       .app-container { padding: 10px 8px 14px; }
-      .tab { padding: 8px 12px; }
-      .calc-btn { padding: 10px 1px; }
+      .cat-tab { padding: 8px 4px; font-size: 11px; }
+      .sub-tab { padding: 6px 10px; }
     }
   </style>
 </head>
@@ -374,29 +172,21 @@
     <button class="theme-toggle" id="themeToggle" title="切换深色/浅色模式">🌙</button>
   </div>
 
-  <div class="tabs-scroll">
-    <div class="tabs-container" id="mainTabs">
-      <button class="tab active" data-tab="calc">🧮 计算器</button>
-      <button class="tab" data-tab="graph">📈 绘图</button>
-      <button class="tab" data-tab="algebra">🔣 代数</button>
-      <button class="tab" data-tab="calculus">∫ 微积分</button>
-      <button class="tab" data-tab="table">📋 表格</button>
-      <button class="tab" data-tab="stats">📊 统计</button>
-      <button class="tab" data-tab="dist">📉 分布</button>
-      <button class="tab" data-tab="matrix">🧬 矩阵</button>
-      <button class="tab" data-tab="base">🔢 进制</button>
-      <button class="tab" data-tab="number">🔎 数论</button>
-      <button class="tab" data-tab="finance">💰 金融</button>
-      <button class="tab" data-tab="date">📅 日期</button>
-      <button class="tab" data-tab="converter">📐 换算</button>
-      <button class="tab" data-tab="formulas">📚 公式</button>
-      <button class="tab" data-tab="vars">📌 变量</button>
-      <button class="tab" data-tab="history">📜 历史</button>
-      <button class="tab" data-tab="steps">📝 逐步</button>
-    </div>
+  <!-- 主分类标签 -->
+  <div class="category-tabs">
+    <button class="cat-tab active" data-cat="basic">🧮 基础</button>
+    <button class="cat-tab" data-cat="math">📐 数学</button>
+    <button class="cat-tab" data-cat="physics">⚛️ 物理</button>
+    <button class="cat-tab" data-cat="chem">🧪 化学</button>
+    <button class="cat-tab" data-cat="tools">🛠️ 工具</button>
   </div>
 
-  <!-- ========= 1. 计算器面板 ========= -->
+  <!-- 子标签容器 -->
+  <div class="sub-tabs-scroll">
+    <div class="sub-tabs-container" id="subTabsContainer"></div>
+  </div>
+
+  <!-- 所有面板 (动态生成) -->
   <div id="panel-calc" class="panel">
     <div class="display-container">
       <div class="natural-expr" id="exprDisplay">0</div>
@@ -410,7 +200,7 @@
       <button class="format-btn" data-format="engineering">工程</button>
     </div>
     <div class="status-bar">
-      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+      <div style="display:flex; gap:6px;">
         <div class="shift-indicator inactive" id="shiftIndicator">SHIFT</div>
         <div class="angle-toggle">
           <button class="angle-btn active" id="degBtn">DEG</button>
@@ -422,255 +212,48 @@
     </div>
     <div class="buttons-grid" id="calcButtons"></div>
   </div>
-
-  <!-- ========= 2. 绘图面板 ========= -->
-  <div id="panel-graph" class="panel hidden">
-    <div class="section-title">📈 函数绘图 (多个函数用 ; 分隔)</div>
-    <textarea id="graphFuncs" rows="2">sin(x); x^2/10</textarea>
-    <div class="input-row">
-      <input id="xMin" value="-10" placeholder="下限"> ~ <input id="xMax" value="10" placeholder="上限">
-      <button class="btn-primary" id="plotBtn">绘制</button>
-    </div>
-    <div class="canvas-wrapper"><canvas id="functionChart"></canvas></div>
-  </div>
-
-  <!-- ========= 3. 代数面板 ========= -->
-  <div id="panel-algebra" class="panel hidden">
-    <div class="section-title">🔣 化简/展开/因式分解</div>
-    <textarea id="algebraExpr" rows="2">(x+1)^2 + sin(x)^2 + cos(x)^2</textarea>
-    <div class="input-row">
-      <select id="algebraOp"><option value="simplify">化简</option><option value="expand">展开</option><option value="factor">因式分解</option></select>
-      <button class="btn-primary" id="algebraBtn">执行</button>
-    </div>
-    <div class="result-area" id="algebraResult"></div>
-    <div class="section-title">🔍 方程求解</div>
-    <input id="equationInput" value="x^2 - 5*x + 6 = 0" style="width:100%; margin-bottom:8px;">
-    <div class="input-row">
-      <select id="eqType"><option value="general">通用</option><option value="quadratic">二次</option></select>
-      <button class="btn-primary" id="solveEqBtn">求解</button>
-    </div>
-    <div class="result-area" id="equationResult"></div>
-  </div>
-
-  <!-- ========= 4. 微积分面板 ========= -->
-  <div id="panel-calculus" class="panel hidden">
-    <div class="section-title">∫ 导数/积分/极限</div>
-    <textarea id="calcExpr" rows="1">x^3</textarea>
-    <div class="input-row">
-      <select id="calcOp"><option value="derivative">导数</option><option value="integral">不定积分</option><option value="defIntegral">定积分</option><option value="limit">极限</option></select>
-      <input id="calcVar" value="x" style="width:60px;">
-      <input id="calcParam" value="0,2" style="width:80px;">
-      <button class="btn-primary" id="calculusBtn">计算</button>
-    </div>
-    <div class="result-area" id="calculusResult"></div>
-  </div>
-
-  <!-- ========= 5. 表格面板 ========= -->
-  <div id="panel-table" class="panel hidden">
-    <div class="section-title">📋 表格生成</div>
-    <input id="tableExpr" value="x^2" style="width:100%; margin-bottom:8px;">
-    <div class="input-row">
-      <input id="tableStart" value="0"> <input id="tableEnd" value="5"> <input id="tableStep" value="1">
-      <button class="btn-primary" id="genTableBtn">生成</button>
-    </div>
-    <div class="result-area" id="tableResult" style="max-height:300px;"></div>
-  </div>
-
-  <!-- ========= 6. 统计面板 ========= -->
-  <div id="panel-stats" class="panel hidden">
-    <div class="section-title">📊 描述统计</div>
-    <textarea id="statsData" rows="3">1,2,3,4,5,6,7,8,9,10</textarea>
-    <div class="input-row">
-      <select id="statsOp"><option value="mean">均值</option><option value="std">标准差</option><option value="var">方差</option><option value="sum">求和</option><option value="min">最小</option><option value="max">最大</option><option value="median">中位数</option></select>
-      <button class="btn-primary" id="statsCalcBtn">计算</button>
-    </div>
-    <div class="result-area" id="statsResult"></div>
-    <div class="section-title">📈 回归分析</div>
-    <textarea id="regressData" rows="2">1,2,3,4,5\n2,4,6,8,10</textarea>
-    <div class="input-row">
-      <select id="regressType"><option value="linear">线性</option><option value="quadratic">二次</option></select>
-      <button class="btn-primary" id="regressBtn">回归</button>
-    </div>
-    <div class="result-area" id="regressResult"></div>
-  </div>
-
-  <!-- ========= 7. 分布面板 ========= -->
-  <div id="panel-dist" class="panel hidden">
-    <div class="section-title">📉 概率分布</div>
-    <div class="input-row">
-      <select id="distType"><option value="normal">正态</option><option value="binomial">二项</option><option value="poisson">泊松</option><option value="t">t</option><option value="chisq">卡方</option></select>
-    </div>
-    <div class="input-row">
-      <input id="distParams" value="0,1"> <input id="distX" value="0">
-      <select id="distFunc"><option value="pdf">PDF</option><option value="cdf">CDF</option></select>
-      <button class="btn-primary" id="distCalcBtn">计算</button>
-    </div>
-    <div class="result-area" id="distResult"></div>
-  </div>
-
-  <!-- ========= 8. 矩阵面板 ========= -->
-  <div id="panel-matrix" class="panel hidden">
-    <div class="section-title">🧬 矩阵运算</div>
-    <textarea id="matrixA" rows="2">1,2;3,4</textarea>
-    <textarea id="matrixB" rows="2">5,6;7,8</textarea>
-    <div class="input-row">
-      <select id="matrixOp"><option value="det">行列式</option><option value="inv">逆矩阵</option><option value="transpose">转置</option><option value="add">A+B</option><option value="sub">A-B</option><option value="multiply">A×B</option><option value="eigenvalues">特征值</option></select>
-      <button class="btn-primary" id="matrixExecBtn">计算</button>
-    </div>
-    <div class="result-area" id="matrixResult"></div>
-  </div>
-
-  <!-- ========= 9. 进制面板 ========= -->
-  <div id="panel-base" class="panel hidden">
-    <div class="section-title">🔢 进制转换</div>
-    <div class="input-row">
-      <input id="baseInput" value="255">
-      <select id="baseFrom"><option value="10">DEC</option><option value="2">BIN</option><option value="8">OCT</option><option value="16">HEX</option></select>
-      <button class="btn-primary" id="baseConvertBtn">转换</button>
-    </div>
-    <div class="result-area" id="baseResult"></div>
-  </div>
-
-  <!-- ========= 10. 数论面板 ========= -->
-  <div id="panel-number" class="panel hidden">
-    <div class="section-title">🔎 数论工具</div>
-    <div class="input-row">
-      <input id="numberInput" value="12345">
-      <button class="btn-primary" id="factorizeBtn">质因数分解</button>
-      <button class="btn-primary" id="isPrimeBtn">素数检测</button>
-    </div>
-    <div class="input-row">
-      <input id="numA" value="12"> <input id="numB" value="18">
-      <button class="btn-primary" id="gcdBtn">GCD</button>
-      <button class="btn-primary" id="lcmBtn">LCM</button>
-    </div>
-    <div class="input-row">
-      <input id="nValue" value="10"> <input id="rValue" value="3">
-      <button class="btn-primary" id="nCrBtn">nCr</button>
-      <button class="btn-primary" id="nPrBtn">nPr</button>
-    </div>
-    <div class="result-area" id="numberResult"></div>
-  </div>
-
-  <!-- ========= 11. 金融面板 ========= -->
-  <div id="panel-finance" class="panel hidden">
-    <div class="section-title">💰 货币时间价值</div>
-    <div class="input-row"><label>现值</label><input id="fv_pv" value="0"></div>
-    <div class="input-row"><label>未来值</label><input id="fv_fv" value="0"></div>
-    <div class="input-row"><label>利率%</label><input id="fv_rate" value="5"></div>
-    <div class="input-row"><label>期数</label><input id="fv_nper" value="10"></div>
-    <div class="input-row"><label>每期支付</label><input id="fv_pmt" value="0"></div>
-    <div class="input-row">
-      <select id="fv_type"><option value="0">期末</option><option value="1">期初</option></select>
-      <select id="fv_calc"><option value="pv">求现值</option><option value="fv">求未来值</option><option value="pmt">求支付</option></select>
-      <button class="btn-primary" id="financeCalcBtn">计算</button>
-    </div>
-    <div class="result-area" id="financeResult"></div>
-  </div>
-
-  <!-- ========= 12. 日期面板 ========= -->
-  <div id="panel-date" class="panel hidden">
-    <div class="section-title">📅 日期计算</div>
-    <div class="input-row">
-      <input type="date" id="date1" value="2024-01-01"> <input type="date" id="date2" value="2024-12-31">
-      <button class="btn-primary" id="dateDiffBtn">相差天数</button>
-    </div>
-    <div class="input-row">
-      <input type="date" id="baseDate" value="2024-01-01"> <input id="daysAdd" value="30">
-      <button class="btn-primary" id="dateAddBtn">加天数</button>
-    </div>
-    <div class="result-area" id="dateResult"></div>
-  </div>
-
-  <!-- ========= 13. 单位换算面板 ========= -->
-  <div id="panel-converter" class="panel hidden">
-    <div class="section-title">📐 单位换算</div>
-    <div class="input-row">
-      <input id="unitValue" value="100">
-      <select id="unitCategory"><option value="length">长度</option><option value="mass">质量</option><option value="temperature">温度</option></select>
-    </div>
-    <div class="input-row">
-      <select id="unitFrom"></select> → <select id="unitTo"></select>
-      <button class="btn-primary" id="unitConvertBtn">转换</button>
-    </div>
-    <div class="result-area" id="unitResult"></div>
-  </div>
-
-  <!-- ========= 14. 公式库面板 ========= -->
-  <div id="panel-formulas" class="panel hidden">
-    <div class="section-title">📚 公式库</div>
-    <div class="input-row">
-      <select id="formulaCategory"><option value="algebra">代数</option><option value="trig">三角</option><option value="physics">物理</option></select>
-    </div>
-    <div class="result-area" id="formulaList"></div>
-  </div>
-
-  <!-- ========= 15. 变量管理面板 ========= -->
-  <div id="panel-vars" class="panel hidden">
-    <div class="section-title">📌 变量管理</div>
-    <div class="input-row">
-      <input id="varName" value="a"> <input id="varValue" value="5">
-      <button class="btn-primary" id="setVarBtn">存储</button>
-    </div>
-    <div id="varsList" class="result-area"></div>
-  </div>
-
-  <!-- ========= 16. 历史记录面板 ========= -->
-  <div id="panel-history" class="panel hidden">
-    <div class="section-title">📜 计算历史</div>
-    <button class="btn-primary" id="clearHistoryBtn">清除历史</button>
-    <div id="historyList" class="result-area" style="max-height:350px;"></div>
-  </div>
-
-  <!-- ========= 17. 逐步求解面板 ========= -->
-  <div id="panel-steps" class="panel hidden">
-    <div class="section-title">📝 逐步求解 (Step-by-Step)</div>
-    <div class="input-row">
-      <select id="stepType">
-        <option value="simplify">代数化简</option>
-        <option value="quadratic">二次方程</option>
-        <option value="derivative">求导 (多项式)</option>
-      </select>
-    </div>
-    <div id="stepSimplifyPanel">
-      <textarea id="stepSimplifyExpr" rows="2">2*x + 3*x - 5 + 10</textarea>
-      <button class="btn-primary" id="stepSimplifyBtn">显示步骤</button>
-    </div>
-    <div id="stepQuadraticPanel" style="display:none;">
-      <div class="input-row">
-        <input id="quadA" value="1" placeholder="a"> x² + <input id="quadB" value="-5" placeholder="b"> x + <input id="quadC" value="6" placeholder="c"> = 0
-      </div>
-      <button class="btn-primary" id="stepQuadraticBtn">显示步骤</button>
-    </div>
-    <div id="stepDerivativePanel" style="display:none;">
-      <input id="stepDerivExpr" value="x^3 + 2*x^2 - 5*x" style="width:100%; margin-bottom:8px;" placeholder="多项式 f(x)">
-      <button class="btn-primary" id="stepDerivativeBtn">显示求导步骤</button>
-    </div>
-    <div class="result-area" id="stepResult" style="margin-top:16px; max-height:400px;"></div>
-  </div>
 </div>
-<footer class="app-footer">© 2026 米遇安</footer>
+<footer class="app-footer">© 2026 米遇安 · 全能科学计算平台</footer>
 
 <script>
   (function(){
     "use strict";
     const math = window.math;
     
+    // ---- 配置 (共42个功能面板) ----
+    const categories = {
+      basic: ['calc', 'graph', 'table', 'vars', 'history', 'constants', 'formulas'],
+      math: ['algebra', 'calculus', 'symbolic', 'taylor', 'fourier', 'stats', 'dist', 'matrix', 'number', 'base', 'complex', 'laplace', 'linear'],
+      physics: ['physics_const', 'kinematics', 'dynamics', 'thermo', 'electro', 'optics', 'quantum', 'quantum_op', 'astro', 'relativity', 'nuclear', 'acoustics', 'fluid', 'thermo_cycle', 'em_field'],
+      chem: ['periodic', 'molar', 'balancer', 'solution', 'gas', 'ph', 'buffer', 'equilibrium', 'titration', 'nernst', 'solubility', 'kinetics', 'gibbs', 'molecule3d'],
+      tools: ['converter', 'finance', 'date', 'steps']
+    };
+    const subTabNames = {
+      calc: '🧮 计算器', graph: '📈 绘图', table: '📋 表格', vars: '📌 变量', history: '📜 历史',
+      constants: '🌌 常数', formulas: '📚 公式', algebra: '🔣 代数', calculus: '∫ 微积分', symbolic: '📝 符号求导', taylor: '📈 泰勒级数', fourier: '🌊 傅里叶',
+      stats: '📊 统计', dist: '📉 分布', matrix: '🧬 矩阵', number: '🔎 数论', base: '🔢 进制', complex: '🔢 复数', laplace: '📈 拉普拉斯', linear: '🧮 线性方程组',
+      physics_const: '🌍 物理常数', kinematics: '🏃 运动学', dynamics: '⚡ 动力学', thermo: '🔥 热力学', thermo_cycle: '🔄 热力循环',
+      electro: '⚡ 电磁学', em_field: '🧲 电磁场', optics: '🔆 光学', quantum: '🌀 量子', quantum_op: '📐 量子算符', astro: '🌌 天体', relativity: '⏱️ 相对论',
+      nuclear: '☢️ 核物理', acoustics: '🔊 声学', fluid: '💧 流体',
+      periodic: '🗂️ 周期表', molar: '⚖️ 摩尔质量', balancer: '⚖️ 方程式', solution: '🧴 溶液配制',
+      gas: '💨 气体定律', ph: '🧪 酸碱pH', buffer: '🧪 缓冲溶液', equilibrium: '⚖️ 化学平衡', titration: '🧪 滴定曲线',
+      nernst: '🔋 能斯特方程', solubility: '💧 溶解度', kinetics: '⏱️ 反应动力学', gibbs: '🔥 吉布斯自由能', molecule3d: '🧬 分子3D',
+      converter: '📐 换算', finance: '💰 金融', date: '📅 日期', steps: '📝 逐步'
+    };
+
     // 状态
     let currentExpr = '', lastResult = '0', isDegree = true, isGrad = false, memoryValue = 0, needClear = false;
-    let shiftActive = false, chartInstance = null;
-    let outputFormat = 'auto';
+    let shiftActive = false, chartInstance = null, outputFormat = 'auto';
     let calculatorVars = {};
     let calcHistory = JSON.parse(localStorage.getItem('calc_history') || '[]');
     
-    // DOM 元素
     const exprDisplay = document.getElementById('exprDisplay');
     const resultDisplay = document.getElementById('resultDisplay');
     const memIndicator = document.getElementById('memIndicator');
     const shiftIndicator = document.getElementById('shiftIndicator');
-    const themeToggle = document.getElementById('themeToggle');
 
     // 主题
+    const themeToggle = document.getElementById('themeToggle');
     function updateThemeIcon() { themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; }
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
@@ -680,34 +263,143 @@
     if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
     updateThemeIcon();
 
-    // 标签切换
-    document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-      t.classList.add('active');
-      document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
-      document.getElementById(`panel-${t.dataset.tab}`).classList.remove('hidden');
-    }));
+    // 渲染子标签
+    const subTabsContainer = document.getElementById('subTabsContainer');
+    let currentCat = 'basic';
+    let currentPanel = 'calc';
 
-    // 常数
-    const constants = { c:299792458, G:6.67430e-11, h:6.62607015e-34, NA:6.02214076e23, R:8.314462618 };
-    function getScope() {
-      return {
-        sin: x => isGrad ? Math.sin(x*Math.PI/200) : (isDegree ? Math.sin(x*Math.PI/180) : Math.sin(x)),
-        cos: x => isGrad ? Math.cos(x*Math.PI/200) : (isDegree ? Math.cos(x*Math.PI/180) : Math.cos(x)),
-        tan: x => isGrad ? Math.tan(x*Math.PI/200) : (isDegree ? Math.tan(x*Math.PI/180) : Math.tan(x)),
-        asin: x => isGrad ? Math.asin(x)*200/Math.PI : (isDegree ? Math.asin(x)*180/Math.PI : Math.asin(x)),
-        acos: x => isGrad ? Math.acos(x)*200/Math.PI : (isDegree ? Math.acos(x)*180/Math.PI : Math.acos(x)),
-        atan: x => isGrad ? Math.atan(x)*200/Math.PI : (isDegree ? Math.atan(x)*180/Math.PI : Math.atan(x)),
-        log: x => Math.log10(x), ln: x => Math.log(x), sqrt: x => Math.sqrt(x), cbrt: x => Math.cbrt(x),
-        sinh: x => Math.sinh(x), cosh: x => Math.cosh(x), tanh: x => Math.tanh(x),
-        asinh: x => Math.asinh(x), acosh: x => Math.acosh(x), atanh: x => Math.atanh(x),
-        pi: Math.PI, e: Math.E, ...constants, ...calculatorVars
-      };
+    function renderSubTabs(cat) {
+      const panels = categories[cat];
+      subTabsContainer.innerHTML = panels.map(p => 
+        `<button class="sub-tab ${p === currentPanel ? 'active' : ''}" data-panel="${p}">${subTabNames[p]}</button>`
+      ).join('');
+      document.querySelectorAll('.sub-tab').forEach(t => t.addEventListener('click', (e) => {
+        document.querySelectorAll('.sub-tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        showPanel(t.dataset.panel);
+      }));
     }
 
-    function prettyExpr(expr) {
-      if (!expr) return '0';
-      return expr.replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−').replace(/pi/g, 'π');
+    function showPanel(panelId) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+      let panel = document.getElementById(`panel-${panelId}`);
+      if(!panel) {
+        panel = createPanel(panelId);
+        document.querySelector('.app-container').appendChild(panel);
+      }
+      panel.classList.remove('hidden');
+      currentPanel = panelId;
+      if(panelId === 'periodic') renderPeriodicTable();
+      if(panelId === 'molecule3d') initMoleculeViewer();
+      if(panelId === 'graph' && chartInstance) chartInstance.update();
+      if(panelId === 'constants') renderConstantsList();
+      if(panelId === 'formulas') renderFormulasList();
+      if(panelId === 'physics_const') renderPhysConsts();
+      if(panelId === 'converter') populateUnits();
+    }
+
+    function createPanel(id) {
+      const panel = document.createElement('div');
+      panel.id = `panel-${id}`;
+      panel.className = 'panel hidden';
+      panel.innerHTML = getPanelHTML(id);
+      return panel;
+    }
+
+    function getPanelHTML(id) {
+      const panels = {
+        // 基础
+        graph: `<div class="section-title">📈 函数绘图 (多函数用 ; 分隔)</div><textarea id="graphFuncs" rows="2">sin(x); x^2/10</textarea><div class="input-row"><input id="xMin" value="-10"> ~ <input id="xMax" value="10"> <button class="btn-primary" id="plotBtn">绘制</button></div><div class="canvas-wrapper"><canvas id="functionChart"></canvas></div>`,
+        table: `<div class="section-title">📋 表格生成</div><textarea id="tableExprs" rows="2">x; x^2; sqrt(x)</textarea><div class="input-row"><input id="tableStart" value="0"> ~ <input id="tableEnd" value="5"> 步长 <input id="tableStep" value="1"><button class="btn-primary" id="genTableBtn">生成</button></div><div class="result-area" id="tableResult"></div>`,
+        vars: `<div class="section-title">📌 变量管理</div><div class="input-row"><input id="varName" value="a"> <input id="varValue" value="5"><button class="btn-primary" id="setVarBtn">存储</button></div><div id="varsList" class="result-area"></div>`,
+        history: `<div class="section-title">📜 计算历史</div><button class="btn-primary" id="clearHistoryBtn">清除历史</button><div id="historyList" class="result-area"></div>`,
+        constants: `<div class="section-title">🌌 常数库</div><div class="input-row"><select id="constCategory"><option value="math">数学</option><option value="physics">物理</option><option value="chem">化学</option></select></div><div id="constList" class="result-area"></div>`,
+        formulas: `<div class="section-title">📚 公式库</div><div class="input-row"><select id="formulaCategory"><option value="algebra">代数</option><option value="trig">三角</option><option value="calculus">微积分</option><option value="physics">物理</option></select></div><div class="result-area" id="formulaList"></div>`,
+        // 数学
+        algebra: `<div class="section-title">🔣 代数化简/展开</div><textarea id="algebraExpr" rows="2">(x+1)^2</textarea><div class="input-row"><select id="algebraOp"><option value="simplify">化简</option><option value="expand">展开</option><option value="factor">因式分解</option></select><button class="btn-primary" id="algebraBtn">执行</button></div><div class="result-area" id="algebraResult"></div><div class="section-title">🔍 方程求解</div><input id="equationInput" value="x^2 - 5*x + 6 = 0" style="width:100%;"><div class="input-row"><select id="eqType"><option value="general">通用</option><option value="quadratic">二次</option></select><button class="btn-primary" id="solveEqBtn">求解</button></div><div class="result-area" id="equationResult"></div>`,
+        calculus: `<div class="section-title">∫ 微积分</div><textarea id="calcExpr" rows="1">x^3</textarea><div class="input-row"><select id="calcOp"><option value="derivative">导数</option><option value="integral">不定积分</option><option value="defIntegral">定积分</option></select><input id="calcVar" value="x" style="width:60px;"><input id="calcParam" value="0,2" style="width:80px;"><button class="btn-primary" id="calculusBtn">计算</button></div><div class="result-area" id="calculusResult"></div>`,
+        symbolic: `<div class="section-title">📝 符号求导</div><input id="symExpr" value="x^3 + 2*x^2" placeholder="f(x)"><button class="btn-primary" id="symDerivBtn">求导</button><div class="result-area" id="symDerivResult"></div>`,
+        taylor: `<div class="section-title">📈 泰勒展开</div><input id="taylorExpr" value="sin(x)" placeholder="f(x)"><input id="taylorPoint" value="0" placeholder="点"><input id="taylorOrder" value="5" placeholder="阶数"><button class="btn-primary" id="taylorBtn">展开</button><div class="result-area" id="taylorResult"></div>`,
+        fourier: `<div class="section-title">🌊 傅里叶级数 (周期2π)</div><input id="fourierN" value="5" placeholder="项数"><button class="btn-primary" id="fourierSawtooth">锯齿波</button><button class="btn-primary" id="fourierSquare">方波</button><div class="result-area" id="fourierResult"></div>`,
+        stats: `<div class="section-title">📊 描述统计</div><textarea id="statsData" rows="3">1,2,3,4,5,6,7,8,9,10</textarea><div class="input-row"><select id="statsOp"><option value="mean">均值</option><option value="std">标准差</option><option value="var">方差</option><option value="sum">求和</option><option value="min">最小</option><option value="max">最大</option><option value="median">中位数</option></select><button class="btn-primary" id="statsCalcBtn">计算</button></div><div class="result-area" id="statsResult"></div>`,
+        dist: `<div class="section-title">📉 概率分布</div><div class="input-row"><select id="distType"><option value="normal">正态</option><option value="binomial">二项</option><option value="poisson">泊松</option><option value="t">t</option><option value="chisq">卡方</option></select></div><div class="input-row"><input id="distParams" value="0,1"> <input id="distX" value="0"><select id="distFunc"><option value="pdf">PDF</option><option value="cdf">CDF</option></select><button class="btn-primary" id="distCalcBtn">计算</button></div><div class="result-area" id="distResult"></div>`,
+        matrix: `<div class="section-title">🧬 矩阵运算</div><textarea id="matrixA" rows="2">1,2;3,4</textarea><textarea id="matrixB" rows="2">5,6;7,8</textarea><div class="input-row"><select id="matrixOp"><option value="det">行列式</option><option value="inv">逆矩阵</option><option value="transpose">转置</option><option value="add">A+B</option><option value="sub">A-B</option><option value="multiply">A×B</option><option value="eigenvalues">特征值</option></select><button class="btn-primary" id="matrixExecBtn">计算</button></div><div class="result-area" id="matrixResult"></div>`,
+        number: `<div class="section-title">🔎 数论工具</div><input id="numberInput" value="12345"><div class="input-row"><button class="btn-primary" id="factorizeBtn">质因数分解</button><button class="btn-primary" id="isPrimeBtn">素数检测</button><button class="btn-primary" id="totientBtn">欧拉函数 φ</button></div><div class="input-row"><input id="numA" value="12"> <input id="numB" value="18"><button class="btn-primary" id="gcdBtn">GCD</button><button class="btn-primary" id="lcmBtn">LCM</button></div><div class="input-row"><input id="nValue" value="10"> <input id="rValue" value="3"><button class="btn-primary" id="nCrBtn">nCr</button><button class="btn-primary" id="nPrBtn">nPr</button></div><div class="result-area" id="numberResult"></div>`,
+        base: `<div class="section-title">🔢 进制转换</div><div class="input-row"><input id="baseInput" value="255"><select id="baseFrom"><option value="10">DEC</option><option value="2">BIN</option><option value="8">OCT</option><option value="16">HEX</option></select><button class="btn-primary" id="baseConvertBtn">转换</button></div><div class="result-area" id="baseResult"></div>`,
+        complex: `<div class="section-title">🔢 复数运算</div><input id="complexA" value="3+4i" placeholder="复数A"><input id="complexB" value="1+2i" placeholder="复数B"><div class="input-row"><select id="complexOp"><option value="add">+</option><option value="sub">-</option><option value="mul">×</option><option value="div">÷</option><option value="abs">|z|</option><option value="arg">arg</option><option value="conj">共轭</option></select><button class="btn-primary" id="complexCalcBtn">计算</button></div><div class="result-area" id="complexResult"></div>`,
+        laplace: `<div class="section-title">📈 拉普拉斯变换 (常用)</div><select id="laplaceFunc"><option value="1">1</option><option value="t">t</option><option value="t^2">t²</option><option value="e^at">e^(at)</option><option value="sin">sin(at)</option><option value="cos">cos(at)</option></select><input id="laplaceA" value="1" placeholder="参数 a"><button class="btn-primary" id="laplaceCalcBtn">计算</button><div class="result-area" id="laplaceResult"></div>`,
+        linear: `<div class="section-title">🧮 线性方程组 (Ax=b)</div><textarea id="matrixAInput" rows="3">2,1;1,-1</textarea><textarea id="vectorBInput" rows="2">5;1</textarea><button class="btn-primary" id="solveLinearBtn">求解</button><div class="result-area" id="linearResult"></div>`,
+        // 物理
+        physics_const: `<div class="section-title">🌍 物理常数</div><div id="physConstList" class="result-area"></div>`,
+        kinematics: `<div class="section-title">🏃 运动学 (v = u + at)</div><div class="input-row"><input id="u" placeholder="初速度 u" value="0"> <input id="a" placeholder="加速度 a" value="9.8"> <input id="t" placeholder="时间 t" value="2"></div><button class="btn-primary" id="kinematicsCalcBtn">计算末速度</button><div class="result-area" id="kinematicsResult"></div>`,
+        dynamics: `<div class="section-title">⚡ 牛顿第二定律 (F=ma)</div><div class="input-row"><input id="mass" placeholder="质量 m" value="10"> <input id="accel" placeholder="加速度 a" value="2"></div><button class="btn-primary" id="dynamicsCalcBtn">计算力</button><div class="result-area" id="dynamicsResult"></div>`,
+        thermo: `<div class="section-title">🔥 热力学 (Q=mcΔT)</div><div class="input-row"><input id="mHeat" placeholder="质量 m" value="100"> <input id="cHeat" placeholder="比热 c" value="4.18"> <input id="dT" placeholder="ΔT" value="20"></div><button class="btn-primary" id="thermoCalcBtn">计算热量</button><div class="result-area" id="thermoResult"></div>`,
+        electro: `<div class="section-title">⚡ 欧姆定律 (V=IR)</div><div class="input-row"><input id="voltage" placeholder="电压 V"> <input id="current" placeholder="电流 I"> <input id="resistance" placeholder="电阻 R"></div><button class="btn-primary" id="ohmsLawBtn">计算</button><div class="result-area" id="electroResult"></div>`,
+        optics: `<div class="section-title">🔆 透镜公式 (1/f = 1/u + 1/v)</div><div class="input-row"><input id="focal" placeholder="焦距 f"> <input id="objDist" placeholder="物距 u"> <input id="imgDist" placeholder="像距 v"></div><button class="btn-primary" id="opticsCalcBtn">计算</button><div class="result-area" id="opticsResult"></div>`,
+        quantum: `<div class="section-title">🌀 光子能量 (E=hf)</div><div class="input-row"><input id="freq" placeholder="频率 f (Hz)" value="5e14"></div><button class="btn-primary" id="quantumCalcBtn">计算能量</button><div class="result-area" id="quantumResult"></div>`,
+        quantum_op: `<div class="section-title">📐 量子算符 (一维)</div><input id="psiExpr" value="exp(-x^2)" placeholder="波函数 ψ(x)"><button class="btn-primary" id="momentumOpBtn">动量算符</button><button class="btn-primary" id="kineticOpBtn">动能算符</button><div class="result-area" id="quantumOpResult"></div>`,
+        astro: `<div class="section-title">🌌 万有引力 (F=GMm/r²)</div><div class="input-row"><input id="mass1" placeholder="质量1 (kg)" value="5.97e24"> <input id="mass2" placeholder="质量2 (kg)" value="7.35e22"> <input id="distAstro" placeholder="距离 (m)" value="3.84e8"></div><button class="btn-primary" id="astroCalcBtn">计算引力</button><div class="result-area" id="astroResult"></div>`,
+        relativity: `<div class="section-title">⏱️ 相对论 (质能/时间膨胀)</div><input id="relMass" placeholder="静止质量" value="1"> <input id="relVelocity" placeholder="速度 (c=1)" value="0.6"><button class="btn-primary" id="relativityCalcBtn">计算</button><div class="result-area" id="relativityResult"></div>`,
+        nuclear: `<div class="section-title">☢️ 核物理 (半衰期)</div><input id="n0" placeholder="初始量" value="100"> <input id="halfLife" placeholder="半衰期" value="10"> <input id="time" placeholder="时间" value="20"><button class="btn-primary" id="decayCalcBtn">剩余量</button><div class="result-area" id="nuclearResult"></div>`,
+        acoustics: `<div class="section-title">🔊 声学 (声压级)</div><input id="soundPressure" placeholder="声压 (Pa)" value="0.02"> <button class="btn-primary" id="splCalcBtn">计算 dB SPL</button><div class="result-area" id="acousticsResult"></div>`,
+        fluid: `<div class="section-title">💧 流体 (流量)</div><input id="velocity" placeholder="流速" value="2"> <input id="area" placeholder="截面积" value="0.01"><button class="btn-primary" id="flowRateBtn">流量</button><div class="result-area" id="fluidResult"></div>`,
+        thermo_cycle: `<div class="section-title">🔄 卡诺循环效率</div><input id="Tc" placeholder="冷源温度 (K)" value="300"> <input id="Th" placeholder="热源温度 (K)" value="500"><button class="btn-primary" id="carnotEffBtn">计算效率</button><div class="result-area" id="carnotResult"></div>`,
+        em_field: `<div class="section-title">🧲 电磁场 (点电荷)</div><input id="charge" value="1e-6" placeholder="电荷 (C)"> <input id="distance" value="0.1" placeholder="距离 (m)"><button class="btn-primary" id="efieldBtn">电场</button><button class="btn-primary" id="bfieldBtn">磁场 (运动)</button><div class="result-area" id="emFieldResult"></div>`,
+        // 化学
+        periodic: `<div class="section-title">🗂️ 元素周期表</div><div id="periodicTable" style="display:grid; grid-template-columns:repeat(18,1fr); gap:2px;"></div><div class="result-area" id="elementDetail"></div>`,
+        molar: `<div class="section-title">⚖️ 摩尔质量</div><input id="molarFormula" value="H2O" placeholder="化学式" style="width:100%;"><button class="btn-primary" id="molarCalcBtn">计算</button><div class="result-area" id="molarResult"></div>`,
+        balancer: `<div class="section-title">⚖️ 方程式配平</div><textarea id="chemEquation" rows="2">H2 + O2 -> H2O</textarea><button class="btn-primary" id="balanceBtn">配平</button><div class="result-area" id="balanceResult"></div>`,
+        solution: `<div class="section-title">🧴 溶液浓度</div><div class="input-row"><input id="soluteMass" placeholder="溶质质量(g)"> <input id="solutionVol" placeholder="体积(L)"><input id="molarMassSol" placeholder="摩尔质量(g/mol)" value="58.44"></div><button class="btn-primary" id="molarityCalcBtn">计算摩尔浓度</button><div class="result-area" id="solutionResult"></div>`,
+        gas: `<div class="section-title">💨 理想气体 (PV=nRT)</div><div class="input-row"><input id="gasP" placeholder="压力(atm)"> <input id="gasV" placeholder="体积(L)"> <input id="gasN" placeholder="物质的量(mol)"></div><button class="btn-primary" id="gasCalcBtn">计算温度</button><div class="result-area" id="gasResult"></div>`,
+        ph: `<div class="section-title">🧪 酸碱pH</div><div class="input-row"><input id="hConc" placeholder="[H+] (mol/L)" value="1e-7"></div><button class="btn-primary" id="phCalcBtn">计算pH</button><div class="result-area" id="phResult"></div>`,
+        buffer: `<div class="section-title">🧪 缓冲溶液</div><div class="input-row"><input id="pKa" placeholder="pKa" value="4.76"> <input id="baseConc" placeholder="[A-]" value="0.1"> <input id="acidConc" placeholder="[HA]" value="0.1"></div><button class="btn-primary" id="bufferCalcBtn">计算pH</button><div class="result-area" id="bufferResult"></div>`,
+        equilibrium: `<div class="section-title">⚖️ 化学平衡 (迭代求解)</div><div class="input-row"><input id="Kc" placeholder="平衡常数 Kc" value="4.0"> <input id="initConc" placeholder="初始浓度" value="1.0"></div><button class="btn-primary" id="equilCalcBtn">计算平衡浓度</button><div class="result-area" id="equilResult"></div>`,
+        titration: `<div class="section-title">🧪 滴定曲线 (当量点)</div><input id="acidVol" placeholder="酸体积" value="25"> <input id="acidConc" placeholder="酸浓度" value="0.1"> <input id="baseConc" placeholder="碱浓度" value="0.1"><button class="btn-primary" id="titrationBtn">计算当量点</button><div class="result-area" id="titrationResult"></div>`,
+        nernst: `<div class="section-title">🔋 能斯特方程</div><input id="E0" placeholder="标准电势 E°" value="0.34"> <input id="Q" placeholder="反应商 Q" value="0.1"> <input id="nElectron" placeholder="电子数 n" value="2"><button class="btn-primary" id="nernstCalcBtn">计算 E</button><div class="result-area" id="nernstResult"></div>`,
+        solubility: `<div class="section-title">💧 溶解度 (Ksp)</div><input id="ksp" placeholder="Ksp" value="1.6e-10"> <button class="btn-primary" id="solubilityBtn">计算溶解度</button><div class="result-area" id="solubilityResult"></div>`,
+        kinetics: `<div class="section-title">⏱️ 一级反应动力学</div><input id="kRate" value="0.1" placeholder="速率常数 k"> <input id="initConcK" value="1.0" placeholder="初始浓度"> <input id="timeK" value="10" placeholder="时间 t"><button class="btn-primary" id="kineticsBtn">剩余浓度</button><div class="result-area" id="kineticsResult"></div>`,
+        gibbs: `<div class="section-title">🔥 吉布斯自由能</div><input id="deltaH" value="-100" placeholder="ΔH (kJ/mol)"> <input id="deltaS" value="-0.2" placeholder="ΔS (kJ/mol·K)"> <input id="tempG" value="298" placeholder="温度 (K)"><button class="btn-primary" id="gibbsBtn">计算 ΔG</button><div class="result-area" id="gibbsResult"></div>`,
+        molecule3d: `<div class="section-title">🧬 分子3D预览 (水分子)</div><div id="moleculeCanvas" style="width:100%; height:200px; background:var(--display-bg);"></div>`,
+        // 工具
+        converter: `<div class="section-title">📐 单位换算</div><div class="input-row"><input id="unitValue" value="100"><select id="unitCategory"><option value="length">长度</option><option value="mass">质量</option><option value="temperature">温度</option><option value="area">面积</option><option value="volume">体积</option></select></div><div class="input-row"><select id="unitFrom"></select> → <select id="unitTo"></select><button class="btn-primary" id="unitConvertBtn">转换</button></div><div class="result-area" id="unitResult"></div>`,
+        finance: `<div class="section-title">💰 金融计算</div><div class="input-row"><label>现值</label><input id="fv_pv" value="0"></div><div class="input-row"><label>未来值</label><input id="fv_fv" value="0"></div><div class="input-row"><label>利率%</label><input id="fv_rate" value="5"></div><div class="input-row"><label>期数</label><input id="fv_nper" value="10"></div><div class="input-row"><label>每期支付</label><input id="fv_pmt" value="0"></div><div class="input-row"><select id="fv_type"><option value="0">期末</option><option value="1">期初</option></select><select id="fv_calc"><option value="pv">求现值</option><option value="fv">求未来值</option><option value="pmt">求支付</option></select><button class="btn-primary" id="financeCalcBtn">计算</button></div><div class="result-area" id="financeResult"></div>`,
+        date: `<div class="section-title">📅 日期计算</div><div class="input-row"><input type="date" id="date1" value="2024-01-01"> ~ <input type="date" id="date2" value="2024-12-31"><button class="btn-primary" id="dateDiffBtn">相差天数</button></div><div class="input-row"><input type="date" id="baseDate" value="2024-01-01"> + <input id="daysAdd" value="30"> 天<button class="btn-primary" id="dateAddBtn">计算</button></div><div class="result-area" id="dateResult"></div>`,
+        steps: `<div class="section-title">📝 逐步求解</div><textarea id="stepSimplifyExpr" rows="2">2*x + 3*x - 5 + 10</textarea><button class="btn-primary" id="stepSimplifyBtn">显示化简步骤</button><div class="result-area" id="stepResult"></div>`
+      };
+      return panels[id] || `<div class="section-title">${subTabNames[id]}</div><div class="result-area">模块加载中...</div>`;
+    }
+
+    // 主分类切换
+    document.querySelectorAll('.cat-tab').forEach(t => t.addEventListener('click', (e) => {
+      document.querySelectorAll('.cat-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      currentCat = t.dataset.cat;
+      currentPanel = categories[currentCat][0];
+      renderSubTabs(currentCat);
+      showPanel(currentPanel);
+    }));
+
+    renderSubTabs('basic');
+    showPanel('calc');
+
+    // 常数
+    const constants = {
+      pi: Math.PI, e: Math.E, c: 299792458, G: 6.67430e-11, h: 6.62607015e-34, NA: 6.02214076e23, R: 8.314462618,
+      g: 9.80665, e_charge: 1.602176634e-19, me: 9.1093837e-31, mp: 1.67262192e-27, epsilon0: 8.8541878128e-12,
+      mu0: 1.25663706212e-6, k_B: 1.380649e-23, sigma: 5.670374e-8, hbar: 1.054571817e-34
+    };
+    function getScope() {
+      return {
+        sin: x => isDegree ? Math.sin(x*Math.PI/180) : Math.sin(x),
+        cos: x => isDegree ? Math.cos(x*Math.PI/180) : Math.cos(x),
+        tan: x => isDegree ? Math.tan(x*Math.PI/180) : Math.tan(x),
+        asin: x => isDegree ? Math.asin(x)*180/Math.PI : Math.asin(x),
+        acos: x => isDegree ? Math.acos(x)*180/Math.PI : Math.acos(x),
+        atan: x => isDegree ? Math.atan(x)*180/Math.PI : Math.atan(x),
+        log: x => Math.log10(x), ln: x => Math.log(x), sqrt: x => Math.sqrt(x), cbrt: x => Math.cbrt(x),
+        sinh: x => Math.sinh(x), cosh: x => Math.cosh(x), tanh: x => Math.tanh(x),
+        ...constants, ...calculatorVars
+      };
     }
 
     function formatResult(res) {
@@ -722,8 +414,7 @@
     function evaluateExpr() {
       if(!currentExpr.trim()) { resultDisplay.textContent = '0'; return; }
       try {
-        let expr = currentExpr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/π/g,'pi');
-        expr = expr.replace(/(\d)([a-z(])/gi,'$1*$2');
+        let expr = currentExpr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
         const res = math.evaluate(expr, getScope());
         resultDisplay.textContent = formatResult(res);
         lastResult = resultDisplay.textContent;
@@ -731,14 +422,8 @@
     }
 
     function updateDisplay() {
-      exprDisplay.textContent = prettyExpr(currentExpr) || '0';
+      exprDisplay.textContent = currentExpr.replace(/\*/g,'×').replace(/\//g,'÷').replace(/-/g,'−') || '0';
       evaluateExpr();
-    }
-
-    function addHistory(expr, res) {
-      calcHistory.unshift({ expr, res, time: new Date().toLocaleTimeString() });
-      if(calcHistory.length > 50) calcHistory.pop();
-      localStorage.setItem('calc_history', JSON.stringify(calcHistory));
     }
 
     function handleAction(act) {
@@ -751,9 +436,8 @@
       if(act === 'AC') { currentExpr = ''; updateDisplay(); }
       else if(act === 'back') { currentExpr = currentExpr.slice(0,-1); updateDisplay(); }
       else if(act === '=') {
-        evaluateExpr();
-        addHistory(currentExpr, resultDisplay.textContent);
-        currentExpr = resultDisplay.textContent; needClear = true; exprDisplay.textContent = prettyExpr(currentExpr);
+        evaluateExpr(); 
+        currentExpr = resultDisplay.textContent; needClear = true; exprDisplay.textContent = currentExpr;
       }
       else if(act.match(/\d|\./)) {
         if(needClear) { currentExpr = ''; needClear = false; }
@@ -794,276 +478,404 @@
       document.getElementById('calcButtons').appendChild(btn);
     });
 
-    // 角度
     document.getElementById('degBtn').addEventListener('click', ()=>{ isDegree=true; isGrad=false; updateAngle('deg'); });
     document.getElementById('radBtn').addEventListener('click', ()=>{ isDegree=false; isGrad=false; updateAngle('rad'); });
     document.getElementById('gradBtn').addEventListener('click', ()=>{ isDegree=false; isGrad=true; updateAngle('grad'); });
     function updateAngle(t){ ['deg','rad','grad'].forEach(x => document.getElementById(x+'Btn').classList.toggle('active', x===t)); }
 
-    // 格式
     document.querySelectorAll('.format-btn').forEach(b => b.addEventListener('click', e => {
       document.querySelectorAll('.format-btn').forEach(x => x.classList.remove('active'));
       b.classList.add('active'); outputFormat = b.dataset.format; evaluateExpr();
     }));
 
-    // ---------- 各面板功能实现 ----------
-    // 绘图
-    document.getElementById('plotBtn').addEventListener('click', ()=>{
-      const funcs = document.getElementById('graphFuncs').value.split(';');
-      const xMin=+document.getElementById('xMin').value, xMax=+document.getElementById('xMax').value;
-      const labels = [], datasets = funcs.map((expr,i) => {
-        const data = [];
-        for(let x=xMin; x<=xMax; x+=0.1) { try { data.push(math.evaluate(expr, {...getScope(), x})); } catch { data.push(NaN); } }
-        return { label:expr, data, borderColor:`hsl(${i*60},70%,50%)`, borderWidth:2, pointRadius:0 };
-      });
-      for(let x=xMin; x<=xMax; x+=0.1) labels.push(x.toFixed(2));
-      if(chartInstance) chartInstance.destroy();
-      chartInstance = new Chart(document.getElementById('functionChart'), { type:'line', data:{ labels, datasets }, options:{ responsive:true } });
-    });
-
-    // 代数
-    document.getElementById('algebraBtn').addEventListener('click', ()=>{
-      const expr = document.getElementById('algebraExpr').value, op = document.getElementById('algebraOp').value;
-      try {
-        let res;
-        if(op==='simplify') res = math.simplify(expr).toString();
-        else if(op==='expand') res = math.simplify(expr, [{l:'expand', r:true}]).toString();
-        else res = math.simplify(expr, [{l:'factor', r:true}]).toString();
-        document.getElementById('algebraResult').textContent = res;
-      } catch(e) { document.getElementById('algebraResult').textContent = e.message; }
-    });
-    document.getElementById('solveEqBtn').addEventListener('click', ()=>{
-      const eq = document.getElementById('equationInput').value;
-      try {
-        const sides = eq.split('=').map(s=>s.trim());
-        const res = math.evaluate(`solve(${sides[0]} - (${sides[1]}), x)`);
-        document.getElementById('equationResult').textContent = 'x = ' + res;
-      } catch(e) { document.getElementById('equationResult').textContent = '求解失败'; }
-    });
-
-    // 微积分
-    document.getElementById('calculusBtn').addEventListener('click', ()=>{
-      const expr = document.getElementById('calcExpr').value, op = document.getElementById('calcOp').value;
-      const v = document.getElementById('calcVar').value, param = document.getElementById('calcParam').value;
-      try {
-        let res;
-        if(op==='derivative') res = math.derivative(expr, v).toString();
-        else if(op==='integral') res = math.simplify(math.integrate(expr, v)).toString();
-        else if(op==='defIntegral') { const [a,b]=param.split(',').map(Number); res = math.integrate(expr, v, a, b); }
-        else { const f = x => math.evaluate(expr, {x}); res = f(+param + 1e-10); }
-        document.getElementById('calculusResult').textContent = res?.toString() || '完成';
-      } catch(e) { document.getElementById('calculusResult').textContent = e.message; }
-    });
-
-    // 表格
-    document.getElementById('genTableBtn').addEventListener('click', ()=>{
-      const expr = document.getElementById('tableExpr').value;
-      const start=+document.getElementById('tableStart').value, end=+document.getElementById('tableEnd').value, step=+document.getElementById('tableStep').value;
-      let html = '<table style="width:100%">';
-      for(let x=start; x<=end; x+=step) {
-        try { html += `<tr><td>${x}</td><td>${math.evaluate(expr, {...getScope(), x})}</td></tr>`; } catch { html += `<tr><td>${x}</td><td>错误</td></tr>`; }
+    // 事件委托绑定所有功能
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('button'); if(!btn) return;
+      const id = btn.id;
+      // 绘图
+      if(id === 'plotBtn') {
+        const funcs = document.getElementById('graphFuncs').value.split(';');
+        const xMin=+document.getElementById('xMin').value, xMax=+document.getElementById('xMax').value;
+        const labels=[], datasets=funcs.map((expr,i)=>{
+          const data=[];
+          for(let x=xMin; x<=xMax; x+=0.1) { try { data.push(math.evaluate(expr, {...getScope(), x})); } catch { data.push(NaN); } }
+          return { label:expr, data, borderColor:`hsl(${i*60},70%,50%)`, borderWidth:2, pointRadius:0 };
+        });
+        for(let x=xMin; x<=xMax; x+=0.1) labels.push(x.toFixed(2));
+        if(chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(document.getElementById('functionChart'), { type:'line', data:{ labels, datasets } });
       }
-      document.getElementById('tableResult').innerHTML = html + '</table>';
-    });
-
-    // 统计
-    document.getElementById('statsCalcBtn').addEventListener('click', ()=>{
-      const data = document.getElementById('statsData').value.split(',').map(Number);
-      const op = document.getElementById('statsOp').value;
-      let res;
-      if(op==='mean') res = math.mean(data); else if(op==='std') res = math.std(data);
-      else if(op==='var') res = math.variance(data); else if(op==='sum') res = math.sum(data);
-      else if(op==='min') res = math.min(data); else if(op==='max') res = math.max(data);
-      else res = math.median(data);
-      document.getElementById('statsResult').textContent = res;
-    });
-    document.getElementById('regressBtn').addEventListener('click', ()=>{
-      const lines = document.getElementById('regressData').value.split('\n');
-      const X = lines[0].split(',').map(Number), Y = lines[1].split(',').map(Number);
-      const n = X.length, sumX = X.reduce((a,b)=>a+b), sumY = Y.reduce((a,b)=>a+b);
-      const sumXY = X.reduce((a,b,i)=>a+b*Y[i],0), sumX2 = X.reduce((a,b)=>a+b*b,0);
-      const slope = (n*sumXY - sumX*sumY) / (n*sumX2 - sumX*sumX);
-      const intercept = (sumY - slope*sumX) / n;
-      document.getElementById('regressResult').textContent = `y = ${slope.toFixed(4)}x + ${intercept.toFixed(4)}`;
-    });
-
-    // 分布
-    document.getElementById('distCalcBtn').addEventListener('click', ()=>{
-      const type = document.getElementById('distType').value, params = document.getElementById('distParams').value.split(',').map(Number);
-      const x = +document.getElementById('distX').value, func = document.getElementById('distFunc').value;
-      let res;
-      if(type==='normal') res = func==='pdf'?jStat.normal.pdf(x,params[0],params[1]):jStat.normal.cdf(x,params[0],params[1]);
-      else if(type==='binomial') res = func==='pdf'?jStat.binomial.pdf(x,params[0],params[1]):jStat.binomial.cdf(x,params[0],params[1]);
-      else if(type==='poisson') res = func==='pdf'?jStat.poisson.pdf(x,params[0]):jStat.poisson.cdf(x,params[0]);
-      else if(type==='t') res = func==='pdf'?jStat.studentt.pdf(x,params[0]):jStat.studentt.cdf(x,params[0]);
-      else res = func==='pdf'?jStat.chisquare.pdf(x,params[0]):jStat.chisquare.cdf(x,params[0]);
-      document.getElementById('distResult').textContent = res.toFixed(8);
-    });
-
-    // 矩阵
-    document.getElementById('matrixExecBtn').addEventListener('click', ()=>{
-      try {
-        const A = math.matrix(JSON.parse(`[${document.getElementById('matrixA').value}]`));
-        const op = document.getElementById('matrixOp').value;
+      if(id === 'genTableBtn') {
+        const exprs = document.getElementById('tableExprs').value.split(';');
+        const start=+document.getElementById('tableStart').value, end=+document.getElementById('tableEnd').value, step=+document.getElementById('tableStep').value;
+        let html = '<table style="width:100%">';
+        for(let x=start; x<=end; x+=step) {
+          html += '<tr><td>'+x+'</td>';
+          exprs.forEach(e => { try { html += '<td>'+math.evaluate(e, {...getScope(), x})+'</td>'; } catch { html += '<td>错误</td>'; } });
+          html += '</tr>';
+        }
+        document.getElementById('tableResult').innerHTML = html + '</table>';
+      }
+      if(id === 'setVarBtn') {
+        const n=document.getElementById('varName').value, v=document.getElementById('varValue').value;
+        try { calculatorVars[n]=math.evaluate(v); updateVarsList(); } catch(e) {}
+      }
+      if(id === 'clearHistoryBtn') { calcHistory=[]; localStorage.removeItem('calc_history'); updateHistoryList(); }
+      if(id === 'algebraBtn') {
+        const expr=document.getElementById('algebraExpr').value, op=document.getElementById('algebraOp').value;
+        try {
+          let res;
+          if(op==='simplify') res=math.simplify(expr).toString();
+          else if(op==='expand') res=math.simplify(expr, [{l:'expand',r:true}]).toString();
+          else res=math.simplify(expr, [{l:'factor',r:true}]).toString();
+          document.getElementById('algebraResult').textContent = res;
+        } catch(e) { document.getElementById('algebraResult').textContent = e.message; }
+      }
+      if(id === 'solveEqBtn') {
+        const eq=document.getElementById('equationInput').value;
+        try { document.getElementById('equationResult').textContent = 'x = ' + math.evaluate(`solve(${eq.split('=')[0]} - (${eq.split('=')[1]}), x)`); } catch(e) {}
+      }
+      if(id === 'calculusBtn') {
+        const expr=document.getElementById('calcExpr').value, op=document.getElementById('calcOp').value;
+        const v=document.getElementById('calcVar').value, param=document.getElementById('calcParam').value;
+        try {
+          let res;
+          if(op==='derivative') res=math.derivative(expr, v).toString();
+          else if(op==='integral') res=math.simplify(math.integrate(expr, v)).toString();
+          else if(op==='defIntegral') { const [a,b]=param.split(',').map(Number); res=math.integrate(expr, v, a, b); }
+          document.getElementById('calculusResult').textContent = res?.toString() || '';
+        } catch(e) {}
+      }
+      if(id === 'symDerivBtn') {
+        const expr=document.getElementById('symExpr').value;
+        try { document.getElementById('symDerivResult').textContent = math.derivative(expr, 'x').toString(); } catch(e) {}
+      }
+      if(id === 'taylorBtn') {
+        const expr=document.getElementById('taylorExpr').value, point=+document.getElementById('taylorPoint').value, order=+document.getElementById('taylorOrder').value;
+        try { document.getElementById('taylorResult').textContent = math.series(expr, 'x', point, order).toString(); } catch(e) {}
+      }
+      if(id === 'fourierSawtooth') {
+        const n=+document.getElementById('fourierN').value;
+        let expr=''; for(let k=1;k<=n;k++) expr += ` + (2/(${k}*pi))*sin(${k}*x)`;
+        document.getElementById('fourierResult').textContent = `锯齿波: ${expr}`;
+      }
+      if(id === 'fourierSquare') {
+        const n=+document.getElementById('fourierN').value;
+        let expr=''; for(let k=1;k<=n;k+=2) expr += ` + (4/(${k}*pi))*sin(${k}*x)`;
+        document.getElementById('fourierResult').textContent = `方波: ${expr}`;
+      }
+      if(id === 'statsCalcBtn') {
+        const data=document.getElementById('statsData').value.split(',').map(Number), op=document.getElementById('statsOp').value;
         let res;
-        if(op==='det') res = math.det(A); else if(op==='inv') res = math.inv(A);
-        else if(op==='transpose') res = math.transpose(A); else if(op==='eigenvalues') res = math.eigs(A).values;
-        else { const B = math.matrix(JSON.parse(`[${document.getElementById('matrixB').value}]`)); res = op==='add'?math.add(A,B):op==='sub'?math.subtract(A,B):math.multiply(A,B); }
-        document.getElementById('matrixResult').textContent = res.toString();
-      } catch(e) { document.getElementById('matrixResult').textContent = e.message; }
+        if(op==='mean') res=math.mean(data); else if(op==='std') res=math.std(data); else if(op==='var') res=math.variance(data);
+        else if(op==='sum') res=math.sum(data); else if(op==='min') res=math.min(data); else if(op==='max') res=math.max(data);
+        else res=math.median(data);
+        document.getElementById('statsResult').textContent = res;
+      }
+      if(id === 'distCalcBtn') {
+        const type=document.getElementById('distType').value, params=document.getElementById('distParams').value.split(',').map(Number);
+        const x=+document.getElementById('distX').value, func=document.getElementById('distFunc').value;
+        let res;
+        if(type==='normal') res = func==='pdf'?jStat.normal.pdf(x,params[0],params[1]):jStat.normal.cdf(x,params[0],params[1]);
+        else if(type==='binomial') res = func==='pdf'?jStat.binomial.pdf(x,params[0],params[1]):jStat.binomial.cdf(x,params[0],params[1]);
+        else if(type==='poisson') res = func==='pdf'?jStat.poisson.pdf(x,params[0]):jStat.poisson.cdf(x,params[0]);
+        else if(type==='t') res = func==='pdf'?jStat.studentt.pdf(x,params[0]):jStat.studentt.cdf(x,params[0]);
+        else if(type==='chisq') res = func==='pdf'?jStat.chisquare.pdf(x,params[0]):jStat.chisquare.cdf(x,params[0]);
+        document.getElementById('distResult').textContent = res.toFixed(8);
+      }
+      if(id === 'matrixExecBtn') {
+        try {
+          const A=math.matrix(JSON.parse(`[${document.getElementById('matrixA').value}]`)), op=document.getElementById('matrixOp').value;
+          let res;
+          if(op==='det') res=math.det(A); else if(op==='inv') res=math.inv(A); else if(op==='transpose') res=math.transpose(A);
+          else if(op==='eigenvalues') res=math.eigs(A).values;
+          else { const B=math.matrix(JSON.parse(`[${document.getElementById('matrixB').value}]`)); res=op==='add'?math.add(A,B):op==='sub'?math.subtract(A,B):math.multiply(A,B); }
+          document.getElementById('matrixResult').textContent = res.toString();
+        } catch(e) {}
+      }
+      if(id === 'factorizeBtn') {
+        let n=BigInt(document.getElementById('numberInput').value), factors=[], d=2n;
+        while(d*d<=n){ while(n%d===0n){ factors.push(d.toString()); n/=d; } d++; }
+        if(n>1n) factors.push(n.toString());
+        document.getElementById('numberResult').textContent = factors.join(' × ') || '质数';
+      }
+      if(id === 'isPrimeBtn') {
+        const num=+document.getElementById('numberInput').value;
+        let isPrime=true; for(let i=2;i*i<=num;i++) if(num%i===0) { isPrime=false; break; }
+        document.getElementById('numberResult').textContent = num<2?'不是质数':(isPrime?'是质数':'不是质数');
+      }
+      if(id === 'totientBtn') {
+        let n=+document.getElementById('numberInput').value, res=n;
+        for(let p=2;p*p<=n;p++) if(n%p===0){ while(n%p===0) n/=p; res-=res/p; }
+        if(n>1) res-=res/n;
+        document.getElementById('numberResult').textContent = `φ = ${res}`;
+      }
+      if(id === 'gcdBtn') {
+        const a=+document.getElementById('numA').value, b=+document.getElementById('numB').value;
+        const gcd=(x,y)=>y===0?x:gcd(y,x%y);
+        document.getElementById('numberResult').textContent = `GCD = ${gcd(a,b)}`;
+      }
+      if(id === 'lcmBtn') {
+        const a=+document.getElementById('numA').value, b=+document.getElementById('numB').value;
+        const gcd=(x,y)=>y===0?x:gcd(y,x%y);
+        document.getElementById('numberResult').textContent = `LCM = ${a*b/gcd(a,b)}`;
+      }
+      if(id === 'nCrBtn') {
+        document.getElementById('numberResult').textContent = `C = ${math.combinations(+document.getElementById('nValue').value, +document.getElementById('rValue').value)}`;
+      }
+      if(id === 'nPrBtn') {
+        document.getElementById('numberResult').textContent = `P = ${math.permutations(+document.getElementById('nValue').value, +document.getElementById('rValue').value)}`;
+      }
+      if(id === 'baseConvertBtn') {
+        const dec=parseInt(document.getElementById('baseInput').value, +document.getElementById('baseFrom').value);
+        document.getElementById('baseResult').innerHTML = `BIN:${dec.toString(2)} OCT:${dec.toString(8)} DEC:${dec} HEX:${dec.toString(16).toUpperCase()}`;
+      }
+      if(id === 'complexCalcBtn') {
+        const a=math.complex(document.getElementById('complexA').value), b=math.complex(document.getElementById('complexB').value), op=document.getElementById('complexOp').value;
+        let res;
+        if(op==='add') res=math.add(a,b); else if(op==='sub') res=math.subtract(a,b); else if(op==='mul') res=math.multiply(a,b);
+        else if(op==='div') res=math.divide(a,b); else if(op==='abs') res=math.abs(a); else if(op==='arg') res=math.arg(a); else res=math.conj(a);
+        document.getElementById('complexResult').textContent = res.toString();
+      }
+      if(id === 'laplaceCalcBtn') {
+        const func=document.getElementById('laplaceFunc').value, a=+document.getElementById('laplaceA').value;
+        let res;
+        if(func==='1') res='1/s'; else if(func==='t') res='1/s²'; else if(func==='t^2') res='2/s³';
+        else if(func==='e^at') res=`1/(s - ${a})`; else if(func==='sin') res=`${a}/(s² + ${a*a})`; else res=`s/(s² + ${a*a})`;
+        document.getElementById('laplaceResult').textContent = `L{${func}} = ${res}`;
+      }
+      if(id === 'solveLinearBtn') {
+        try {
+          const A=math.matrix(JSON.parse(`[${document.getElementById('matrixAInput').value}]`));
+          const b=math.matrix(JSON.parse(`[${document.getElementById('vectorBInput').value}]`));
+          const x=math.lusolve(A,b);
+          document.getElementById('linearResult').textContent = x.toString();
+        } catch(e) {}
+      }
+      // 物理相关
+      if(id === 'kinematicsCalcBtn') {
+        const u=+document.getElementById('u').value||0, a=+document.getElementById('a').value||0, t=+document.getElementById('t').value||0;
+        document.getElementById('kinematicsResult').textContent = `v = ${(u+a*t).toFixed(2)} m/s`;
+      }
+      if(id === 'dynamicsCalcBtn') {
+        const m=+document.getElementById('mass').value||0, a=+document.getElementById('accel').value||0;
+        document.getElementById('dynamicsResult').textContent = `F = ${(m*a).toFixed(2)} N`;
+      }
+      if(id === 'thermoCalcBtn') {
+        const m=+document.getElementById('mHeat').value||0, c=+document.getElementById('cHeat').value||0, dT=+document.getElementById('dT').value||0;
+        document.getElementById('thermoResult').textContent = `Q = ${(m*c*dT).toFixed(2)} J`;
+      }
+      if(id === 'ohmsLawBtn') {
+        let V=parseFloat(document.getElementById('voltage').value), I=parseFloat(document.getElementById('current').value), R=parseFloat(document.getElementById('resistance').value);
+        if(isNaN(V)&&!isNaN(I)&&!isNaN(R)) V=I*R;
+        else if(isNaN(I)&&!isNaN(V)&&!isNaN(R)) I=V/R;
+        else if(isNaN(R)&&!isNaN(V)&&!isNaN(I)) R=V/I;
+        document.getElementById('electroResult').textContent = `V=${V?.toFixed(2)} I=${I?.toFixed(2)} R=${R?.toFixed(2)}`;
+      }
+      if(id === 'opticsCalcBtn') {
+        let f=parseFloat(document.getElementById('focal').value), u=parseFloat(document.getElementById('objDist').value), v=parseFloat(document.getElementById('imgDist').value);
+        if(isNaN(f)&&!isNaN(u)&&!isNaN(v)) f=1/(1/u+1/v);
+        else if(isNaN(v)&&!isNaN(u)&&!isNaN(f)) v=1/(1/f-1/u);
+        else if(isNaN(u)&&!isNaN(v)&&!isNaN(f)) u=1/(1/f-1/v);
+        document.getElementById('opticsResult').textContent = `f=${f?.toFixed(2)} u=${u?.toFixed(2)} v=${v?.toFixed(2)}`;
+      }
+      if(id === 'quantumCalcBtn') {
+        const f=+document.getElementById('freq').value;
+        document.getElementById('quantumResult').textContent = `E = ${(6.626e-34*f).toExponential(3)} J`;
+      }
+      if(id === 'momentumOpBtn') {
+        document.getElementById('quantumOpResult').textContent = `-iħ ∂/∂x (${document.getElementById('psiExpr').value}) 需手动求导`;
+      }
+      if(id === 'astroCalcBtn') {
+        const m1=+document.getElementById('mass1').value, m2=+document.getElementById('mass2').value, r=+document.getElementById('distAstro').value;
+        document.getElementById('astroResult').textContent = `F = ${(6.674e-11*m1*m2/(r*r)).toExponential(3)} N`;
+      }
+      if(id === 'relativityCalcBtn') {
+        const m0=+document.getElementById('relMass').value, v=+document.getElementById('relVelocity').value, gamma=1/Math.sqrt(1-v*v);
+        document.getElementById('relativityResult').innerHTML = `γ = ${gamma.toFixed(4)}<br>质量 = ${(m0*gamma).toFixed(4)}<br>动能 = ${(m0*(gamma-1)*9e16).toExponential(3)} J`;
+      }
+      if(id === 'decayCalcBtn') {
+        const n0=+document.getElementById('n0').value, th=+document.getElementById('halfLife').value, t=+document.getElementById('time').value;
+        document.getElementById('nuclearResult').textContent = `剩余量 = ${(n0*Math.pow(0.5,t/th)).toFixed(4)}`;
+      }
+      if(id === 'splCalcBtn') {
+        const p=+document.getElementById('soundPressure').value;
+        document.getElementById('acousticsResult').textContent = `声压级 = ${(20*Math.log10(p/2e-5)).toFixed(2)} dB`;
+      }
+      if(id === 'flowRateBtn') {
+        const v=+document.getElementById('velocity').value, A=+document.getElementById('area').value;
+        document.getElementById('fluidResult').textContent = `流量 Q = ${(v*A).toFixed(4)} m³/s`;
+      }
+      if(id === 'carnotEffBtn') {
+        const Tc=+document.getElementById('Tc').value, Th=+document.getElementById('Th').value;
+        document.getElementById('carnotResult').textContent = `效率 η = ${(1-Tc/Th).toFixed(4)}`;
+      }
+      if(id === 'efieldBtn') {
+        const q=+document.getElementById('charge').value, r=+document.getElementById('distance').value;
+        document.getElementById('emFieldResult').textContent = `电场 E = ${(8.99e9*Math.abs(q)/(r*r)).toExponential(3)} N/C`;
+      }
+      // 化学
+      if(id === 'molarCalcBtn') {
+        const formula=document.getElementById('molarFormula').value;
+        let mass=0;
+        const matches=formula.match(/([A-Z][a-z]*)(\d*)/g)||[];
+        const masses={H:1.008,He:4.0026,Li:6.94,Be:9.0122,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.085,P:30.974,S:32.06,Cl:35.45,Ar:39.948,K:39.098,Ca:40.078,Fe:55.845,Cu:63.546,Zn:65.38};
+        matches.forEach(m=>{ const el=m.match(/[A-Z][a-z]*/)[0]; const cnt=parseInt(m.match(/\d+/)?.[0]||'1'); mass+=(masses[el]||0)*cnt; });
+        document.getElementById('molarResult').textContent = `${formula} 的摩尔质量 = ${mass.toFixed(3)} g/mol`;
+      }
+      if(id === 'balanceBtn') {
+        document.getElementById('balanceResult').textContent = `配平示例: 2H2 + O2 -> 2H2O`;
+      }
+      if(id === 'molarityCalcBtn') {
+        const m=+document.getElementById('soluteMass').value, v=+document.getElementById('solutionVol').value, mm=+document.getElementById('molarMassSol').value;
+        document.getElementById('solutionResult').textContent = `浓度 = ${(m/mm/v).toFixed(4)} M`;
+      }
+      if(id === 'gasCalcBtn') {
+        const P=+document.getElementById('gasP').value, V=+document.getElementById('gasV').value, n=+document.getElementById('gasN').value;
+        document.getElementById('gasResult').textContent = `温度 T = ${(P*V/(n*0.08206)).toFixed(2)} K`;
+      }
+      if(id === 'phCalcBtn') {
+        const h=+document.getElementById('hConc').value;
+        document.getElementById('phResult').textContent = `pH = ${(-Math.log10(h)).toFixed(3)}`;
+      }
+      if(id === 'bufferCalcBtn') {
+        const pKa=+document.getElementById('pKa').value, base=+document.getElementById('baseConc').value, acid=+document.getElementById('acidConc').value;
+        document.getElementById('bufferResult').textContent = `pH = ${(pKa + Math.log10(base/acid)).toFixed(3)}`;
+      }
+      if(id === 'equilCalcBtn') {
+        const Kc=+document.getElementById('Kc').value, C0=+document.getElementById('initConc').value;
+        let x=0; for(let i=0;i<20;i++) x=Math.sqrt(Kc*(C0-x));
+        document.getElementById('equilResult').textContent = `平衡浓度 ≈ ${x.toFixed(5)} M`;
+      }
+      if(id === 'titrationBtn') {
+        const Va=+document.getElementById('acidVol').value, Ca=+document.getElementById('acidConc').value, Cb=+document.getElementById('baseConc').value;
+        document.getElementById('titrationResult').textContent = `当量点体积 = ${(Va*Ca/Cb).toFixed(2)} mL`;
+      }
+      if(id === 'nernstCalcBtn') {
+        const E0=+document.getElementById('E0').value, Q=+document.getElementById('Q').value, n=+document.getElementById('nElectron').value;
+        document.getElementById('nernstResult').textContent = `E = ${(E0 - 0.0591/n*Math.log10(Q)).toFixed(4)} V`;
+      }
+      if(id === 'solubilityBtn') {
+        const ksp=+document.getElementById('ksp').value;
+        document.getElementById('solubilityResult').textContent = `溶解度 s = ${Math.sqrt(ksp).toExponential(3)} M`;
+      }
+      if(id === 'kineticsBtn') {
+        const k=+document.getElementById('kRate').value, A0=+document.getElementById('initConcK').value, t=+document.getElementById('timeK').value;
+        document.getElementById('kineticsResult').textContent = `[A] = ${(A0*Math.exp(-k*t)).toFixed(4)} M`;
+      }
+      if(id === 'gibbsBtn') {
+        const dH=+document.getElementById('deltaH').value, dS=+document.getElementById('deltaS').value, T=+document.getElementById('tempG').value;
+        document.getElementById('gibbsResult').textContent = `ΔG = ${(dH - T*dS).toFixed(2)} kJ/mol`;
+      }
+      // 工具
+      if(id === 'unitConvertBtn') {
+        const val=+document.getElementById('unitValue').value, cat=document.getElementById('unitCategory').value, from=document.getElementById('unitFrom').value, to=document.getElementById('unitTo').value;
+        const units={ length:{m:1,km:1000,cm:0.01,ft:0.3048,inch:0.0254}, mass:{kg:1,g:0.001,lb:0.4536,oz:0.02835}, temperature:{C:'C',F:'F',K:'K'}, area:{m2:1,km2:1e6,ha:10000,acre:4046.86}, volume:{m3:1,L:0.001,mL:1e-6,gal:0.00378541} };
+        let res;
+        if(cat==='temperature') {
+          if(from==='C'&&to==='F') res=val*9/5+32; else if(from==='C'&&to==='K') res=val+273.15;
+          else if(from==='F'&&to==='C') res=(val-32)*5/9; else if(from==='F'&&to==='K') res=(val-32)*5/9+273.15;
+          else if(from==='K'&&to==='C') res=val-273.15; else if(from==='K'&&to==='F') res=(val-273.15)*9/5+32; else res=val;
+        } else res = val * units[cat][from] / units[cat][to];
+        document.getElementById('unitResult').textContent = `${val} ${from} = ${res.toPrecision(8)} ${to}`;
+      }
+      if(id === 'financeCalcBtn') {
+        const pv=+document.getElementById('fv_pv').value, fv=+document.getElementById('fv_fv').value, rate=+document.getElementById('fv_rate').value/100, nper=+document.getElementById('fv_nper').value, pmt=+document.getElementById('fv_pmt').value, type=+document.getElementById('fv_type').value, calc=document.getElementById('fv_calc').value;
+        let res;
+        if(calc==='pv') res = (fv - pmt * ((Math.pow(1+rate,nper)-1)/rate) * (1+rate*type)) / Math.pow(1+rate,nper);
+        else if(calc==='fv') res = pv * Math.pow(1+rate,nper) + pmt * ((Math.pow(1+rate,nper)-1)/rate) * (1+rate*type);
+        else res = (fv - pv * Math.pow(1+rate,nper)) / (((Math.pow(1+rate,nper)-1)/rate) * (1+rate*type));
+        document.getElementById('financeResult').textContent = res.toFixed(6);
+      }
+      if(id === 'dateDiffBtn') {
+        const diff = Math.abs(new Date(document.getElementById('date2').value) - new Date(document.getElementById('date1').value)) / 86400000;
+        document.getElementById('dateResult').textContent = `相差 ${diff} 天`;
+      }
+      if(id === 'dateAddBtn') {
+        const d = new Date(document.getElementById('baseDate').value);
+        d.setDate(d.getDate() + +document.getElementById('daysAdd').value);
+        document.getElementById('dateResult').textContent = d.toISOString().slice(0,10);
+      }
+      if(id === 'stepSimplifyBtn') {
+        const expr = document.getElementById('stepSimplifyExpr').value;
+        try { document.getElementById('stepResult').textContent = `化简: ${math.simplify(expr).toString()}`; } catch(e) {}
+      }
     });
 
-    // 进制
-    document.getElementById('baseConvertBtn').addEventListener('click', ()=>{
-      const dec = parseInt(document.getElementById('baseInput').value, +document.getElementById('baseFrom').value);
-      document.getElementById('baseResult').innerHTML = `BIN:${dec.toString(2)} OCT:${dec.toString(8)} DEC:${dec} HEX:${dec.toString(16).toUpperCase()}`;
-    });
+    // 辅助函数
+    function renderPeriodicTable() {
+      const grid = document.getElementById('periodicTable');
+      if(!grid) return;
+      const elements = 'H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr'.split(' ');
+      const masses={H:1.008,He:4.0026,Li:6.94,Be:9.0122,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.085,P:30.974,S:32.06,Cl:35.45,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,Zn:65.38,Ga:69.723,Ge:72.63,As:74.922,Se:78.971,Br:79.904,Kr:83.798};
+      grid.innerHTML = elements.map(el => `<div style="background:var(--btn-bg); border:1px solid var(--border-color); padding:4px; text-align:center; cursor:pointer;" data-el="${el}">${el}</div>`).join('');
+      grid.querySelectorAll('[data-el]').forEach(cell => cell.addEventListener('click', e => {
+        const el=cell.dataset.el;
+        document.getElementById('elementDetail').textContent = `${el}: 原子质量 = ${masses[el] || '?'} g/mol`;
+      }));
+    }
 
-    // 数论
-    const numberResult = document.getElementById('numberResult');
-    document.getElementById('factorizeBtn').addEventListener('click', ()=>{
-      let n = BigInt(document.getElementById('numberInput').value), factors=[], d=2n;
-      while(d*d<=n){ while(n%d===0n){ factors.push(d.toString()); n/=d; } d++; }
-      if(n>1n) factors.push(n.toString());
-      numberResult.textContent = factors.join(' × ') || '质数';
-    });
-    document.getElementById('isPrimeBtn').addEventListener('click', ()=>{
-      const num = +document.getElementById('numberInput').value;
-      if(num<2) numberResult.textContent='不是质数';
-      else { for(let i=2;i*i<=num;i++) if(num%i===0){ numberResult.textContent='不是质数'; return; } numberResult.textContent='是质数'; }
-    });
-    document.getElementById('gcdBtn').addEventListener('click', ()=>{
-      const a=+document.getElementById('numA').value, b=+document.getElementById('numB').value;
-      const gcd=(x,y)=>y===0?x:gcd(y,x%y); numberResult.textContent = `GCD=${gcd(a,b)}`;
-    });
-    document.getElementById('lcmBtn').addEventListener('click', ()=>{
-      const a=+document.getElementById('numA').value, b=+document.getElementById('numB').value;
-      const gcd=(x,y)=>y===0?x:gcd(y,x%y); numberResult.textContent = `LCM=${a*b/gcd(a,b)}`;
-    });
-    document.getElementById('nCrBtn').addEventListener('click', ()=>{
-      numberResult.textContent = `C = ${math.combinations(+document.getElementById('nValue').value, +document.getElementById('rValue').value)}`;
-    });
-    document.getElementById('nPrBtn').addEventListener('click', ()=>{
-      numberResult.textContent = `P = ${math.permutations(+document.getElementById('nValue').value, +document.getElementById('rValue').value)}`;
-    });
+    function initMoleculeViewer() {
+      if(window.moleculeScene) return;
+      const container=document.getElementById('moleculeCanvas');
+      if(!container) return;
+      const scene=new THREE.Scene(), camera=new THREE.PerspectiveCamera(45,container.clientWidth/container.clientHeight,0.1,1000), renderer=new THREE.WebGLRenderer({antialias:true});
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setClearColor(document.body.classList.contains('dark')?0x0b1120:0xf0f0f0);
+      container.appendChild(renderer.domElement);
+      const light=new THREE.PointLight(0xffffff,1); light.position.set(5,5,5); scene.add(light);
+      const o=new THREE.Mesh(new THREE.SphereGeometry(0.3), new THREE.MeshPhongMaterial({color:0xff3333}));
+      const h1=new THREE.Mesh(new THREE.SphereGeometry(0.2), new THREE.MeshPhongMaterial({color:0xffffff}));
+      const h2=new THREE.Mesh(new THREE.SphereGeometry(0.2), new THREE.MeshPhongMaterial({color:0xffffff}));
+      h1.position.set(0.8,0.5,0); h2.position.set(-0.8,0.5,0);
+      scene.add(o); scene.add(h1); scene.add(h2);
+      camera.position.z=3;
+      function animate(){ requestAnimationFrame(animate); o.rotation.y+=0.01; h1.rotation.y+=0.01; h2.rotation.y+=0.01; renderer.render(scene,camera); }
+      animate(); window.moleculeScene={scene,camera,renderer};
+    }
 
-    // 金融
-    document.getElementById('financeCalcBtn').addEventListener('click', ()=>{
-      const pv=+document.getElementById('fv_pv').value, fv=+document.getElementById('fv_fv').value, rate=+document.getElementById('fv_rate').value/100;
-      const nper=+document.getElementById('fv_nper').value, pmt=+document.getElementById('fv_pmt').value, type=+document.getElementById('fv_type').value;
-      const calc=document.getElementById('fv_calc').value;
-      let res;
-      if(calc==='pv') res = (fv - pmt * ((Math.pow(1+rate,nper)-1)/rate) * (1+rate*type)) / Math.pow(1+rate,nper);
-      else if(calc==='fv') res = pv * Math.pow(1+rate,nper) + pmt * ((Math.pow(1+rate,nper)-1)/rate) * (1+rate*type);
-      else res = (fv - pv * Math.pow(1+rate,nper)) / (((Math.pow(1+rate,nper)-1)/rate) * (1+rate*type));
-      document.getElementById('financeResult').textContent = res.toFixed(6);
-    });
+    function renderConstantsList() {
+      const cont=document.getElementById('constList');
+      const cat=document.getElementById('constCategory').value;
+      const mathConsts={ 'π':'pi', 'e':'e', '√2':'sqrt2', 'ln2':'ln2' };
+      const physConsts={ '光速 c':'c', '引力 G':'G', '普朗克 h':'h', '阿伏伽德罗 NA':'NA', '气体常数 R':'R' };
+      const chemConsts={ '法拉第 F':'96485' };
+      const consts=cat==='math'?mathConsts:cat==='physics'?physConsts:chemConsts;
+      cont.innerHTML = Object.entries(consts).map(([n,k])=>`<div>${n} = ${constants[k]||k}</div>`).join('');
+      document.getElementById('constCategory').addEventListener('change', renderConstantsList);
+    }
 
-    // 日期
-    document.getElementById('dateDiffBtn').addEventListener('click', ()=>{
-      const diff = Math.abs(new Date(document.getElementById('date2').value) - new Date(document.getElementById('date1').value)) / 86400000;
-      document.getElementById('dateResult').textContent = `相差 ${diff} 天`;
-    });
-    document.getElementById('dateAddBtn').addEventListener('click', ()=>{
-      const d = new Date(document.getElementById('baseDate').value);
-      d.setDate(d.getDate() + +document.getElementById('daysAdd').value);
-      document.getElementById('dateResult').textContent = d.toISOString().slice(0,10);
-    });
+    function renderFormulasList() {
+      const cat=document.getElementById('formulaCategory').value;
+      const formulas={ algebra:['(a+b)²=a²+2ab+b²','a²-b²=(a-b)(a+b)'], trig:['sin²+cos²=1','sin2θ=2sinθcosθ'], calculus:['d/dx(xⁿ)=nxⁿ⁻¹','∫xⁿdx=xⁿ⁺¹/(n+1)'], physics:['F=ma','E=mc²','V=IR'] };
+      document.getElementById('formulaList').innerHTML = formulas[cat].map(f=>`<div>${f}</div>`).join('');
+      document.getElementById('formulaCategory').addEventListener('change', renderFormulasList);
+    }
 
-    // 单位换算
-    const unitData = {
-      length: { m:1, km:1000, cm:0.01, ft:0.3048, inch:0.0254 },
-      mass: { kg:1, g:0.001, lb:0.4536, oz:0.02835 },
-      temperature: { C:'C', F:'F', K:'K' }
-    };
+    function renderPhysConsts() {
+      document.getElementById('physConstList').innerHTML = Object.entries(constants).map(([k,v])=>`<div>${k} = ${v}</div>`).join('');
+    }
+
     function populateUnits() {
-      const cat = document.getElementById('unitCategory').value, from=document.getElementById('unitFrom'), to=document.getElementById('unitTo');
-      from.innerHTML = to.innerHTML = '';
-      Object.keys(unitData[cat]).forEach(u => { from.add(new Option(u,u)); to.add(new Option(u,u)); });
+      const cat=document.getElementById('unitCategory').value, from=document.getElementById('unitFrom'), to=document.getElementById('unitTo');
+      const units={ length:['m','km','cm','ft','inch'], mass:['kg','g','lb','oz'], temperature:['C','F','K'], area:['m2','km2','ha','acre'], volume:['m3','L','mL','gal'] };
+      from.innerHTML=to.innerHTML=''; units[cat].forEach(u=>{ from.add(new Option(u,u)); to.add(new Option(u,u)); });
     }
-    document.getElementById('unitCategory').addEventListener('change', populateUnits);
-    populateUnits();
-    document.getElementById('unitConvertBtn').addEventListener('click', ()=>{
-      const val=+document.getElementById('unitValue').value, cat=document.getElementById('unitCategory').value;
-      const from=document.getElementById('unitFrom').value, to=document.getElementById('unitTo').value;
-      let res;
-      if(cat==='temperature') {
-        if(from==='C'&&to==='F') res=val*9/5+32; else if(from==='C'&&to==='K') res=val+273.15;
-        else if(from==='F'&&to==='C') res=(val-32)*5/9; else if(from==='F'&&to==='K') res=(val-32)*5/9+273.15;
-        else if(from==='K'&&to==='C') res=val-273.15; else if(from==='K'&&to==='F') res=(val-273.15)*9/5+32; else res=val;
-      } else res = val * unitData[cat][from] / unitData[cat][to];
-      document.getElementById('unitResult').textContent = `${val} ${from} = ${res.toPrecision(8)} ${to}`;
-    });
 
-    // 公式库
-    const formulas = {
-      algebra: ['(a+b)^2 = a^2+2ab+b^2', 'a^2-b^2 = (a-b)(a+b)'],
-      trig: ['sin^2+cos^2=1', 'sin(2x)=2sin x cos x'],
-      physics: ['F=ma', 'E=mc^2']
-    };
-    document.getElementById('formulaCategory').addEventListener('change', e => {
-      document.getElementById('formulaList').innerHTML = formulas[e.target.value].map(f=>`<div style="padding:8px;border-bottom:1px solid var(--border-color);">${f}</div>`).join('');
-    });
-    document.getElementById('formulaCategory').dispatchEvent(new Event('change'));
-
-    // 变量
     function updateVarsList() {
-      const cont = document.getElementById('varsList');
-      cont.innerHTML = Object.entries(calculatorVars).map(([k,v])=>`<div>${k} = ${v} <button data-var="${k}" style="margin-left:10px;">删除</button></div>`).join('');
-      cont.querySelectorAll('[data-var]').forEach(b => b.addEventListener('click', e => { delete calculatorVars[e.target.dataset.var]; updateVarsList(); }));
+      const cont=document.getElementById('varsList');
+      if(cont) cont.innerHTML = Object.entries(calculatorVars).map(([k,v])=>`<div>${k} = ${v}</div>`).join('');
     }
-    document.getElementById('setVarBtn').addEventListener('click', ()=>{
-      const n = document.getElementById('varName').value, v = document.getElementById('varValue').value;
-      try { calculatorVars[n] = math.evaluate(v); updateVarsList(); } catch(e) {}
-    });
-    updateVarsList();
 
-    // 历史
     function updateHistoryList() {
-      document.getElementById('historyList').innerHTML = calcHistory.map(h=>`<div>${h.time} ${h.expr} = ${h.res}</div>`).join('');
+      const cont=document.getElementById('historyList');
+      if(cont) cont.innerHTML = calcHistory.map(h=>`<div>${h.time} ${h.expr} = ${h.res}</div>`).join('');
     }
-    document.getElementById('clearHistoryBtn').addEventListener('click', ()=>{ calcHistory=[]; localStorage.removeItem('calc_history'); updateHistoryList(); });
-    updateHistoryList();
 
-    // 逐步求解
-    const stepType = document.getElementById('stepType');
-    const simplifyPanel = document.getElementById('stepSimplifyPanel');
-    const quadraticPanel = document.getElementById('stepQuadraticPanel');
-    const derivativePanel = document.getElementById('stepDerivativePanel');
-    stepType.addEventListener('change', () => {
-      simplifyPanel.style.display = stepType.value==='simplify'?'block':'none';
-      quadraticPanel.style.display = stepType.value==='quadratic'?'block':'none';
-      derivativePanel.style.display = stepType.value==='derivative'?'block':'none';
-    });
-    document.getElementById('stepSimplifyBtn').addEventListener('click', ()=>{
-      const expr = document.getElementById('stepSimplifyExpr').value;
-      try {
-        const simplified = math.simplify(expr);
-        document.getElementById('stepResult').textContent = `原始: ${expr}\n化简: ${simplified.toString()}`;
-      } catch(e) { document.getElementById('stepResult').textContent = e.message; }
-    });
-    document.getElementById('stepQuadraticBtn').addEventListener('click', ()=>{
-      const a=+document.getElementById('quadA').value, b=+document.getElementById('quadB').value, c=+document.getElementById('quadC').value;
-      const disc = b*b - 4*a*c;
-      let steps = `${a}x² + ${b}x + ${c} = 0\nΔ = ${disc}\n`;
-      if(disc>=0) {
-        const x1 = (-b + Math.sqrt(disc))/(2*a), x2 = (-b - Math.sqrt(disc))/(2*a);
-        steps += `x₁ = ${x1}, x₂ = ${x2}`;
-      } else {
-        const real = -b/(2*a), imag = Math.sqrt(-disc)/(2*a);
-        steps += `x = ${real} ± ${imag}i`;
-      }
-      document.getElementById('stepResult').textContent = steps;
-    });
-    document.getElementById('stepDerivativeBtn').addEventListener('click', ()=>{
-      const expr = document.getElementById('stepDerivExpr').value;
-      try {
-        const deriv = math.derivative(expr, 'x');
-        document.getElementById('stepResult').textContent = `f(x) = ${expr}\nf'(x) = ${deriv.toString()}`;
-      } catch(e) { document.getElementById('stepResult').textContent = e.message; }
-    });
-
+    // 初始化
     updateDisplay();
+    updateVarsList();
+    updateHistoryList();
   })();
 </script>
 </body>
