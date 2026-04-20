@@ -10,6 +10,58 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* CSS 变量 —— 浅色模式 (默认) */
+    :root {
+      --bg-gradient-start: #d4e9ff;
+      --bg-gradient-end: #b0d9f5;
+      --app-bg: rgba(255, 255, 255, 0.65);
+      --app-border: rgba(255, 255, 255, 0.7);
+      --text-primary: #1e293b;
+      --text-heading: #0b2b44;
+      --text-secondary: #3e5e7c;
+      --card-bg: rgba(255, 255, 255, 0.4);
+      --card-border: rgba(255, 255, 255, 0.7);
+      --detail-icon-bg: rgba(255, 255, 255, 0.7);
+      --detail-icon-color: #2266aa;
+      --button-bg: rgba(255, 255, 255, 0.85);
+      --button-shadow: 0 4px 8px rgba(0, 20, 40, 0.08);
+      --input-bg: white;
+      --input-text: #1e293b;
+      --status-bg: rgba(255, 255, 255, 0.5);
+      --shadow-color: rgba(0, 20, 40, 0.1);
+      --footer-opacity: 0.9;
+      --temp-color: #0a2a44;
+      --grid-value-color: #0b2b44;
+      --forecast-item-bg: rgba(255, 255, 255, 0.4);
+      --index-card-bg: rgba(255, 255, 255, 0.4);
+    }
+
+    /* 深色模式变量 */
+    .dark-mode {
+      --bg-gradient-start: #1a2a3a;
+      --bg-gradient-end: #0f1a24;
+      --app-bg: rgba(20, 30, 40, 0.75);
+      --app-border: rgba(60, 80, 100, 0.6);
+      --text-primary: #e2e8f0;
+      --text-heading: #d0e0f0;
+      --text-secondary: #b0c4de;
+      --card-bg: rgba(30, 45, 60, 0.5);
+      --card-border: rgba(80, 110, 140, 0.5);
+      --detail-icon-bg: rgba(50, 70, 90, 0.8);
+      --detail-icon-color: #8ab4f8;
+      --button-bg: rgba(40, 55, 70, 0.9);
+      --button-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      --input-bg: #2a3a4a;
+      --input-text: #e0e8f0;
+      --status-bg: rgba(30, 45, 60, 0.6);
+      --shadow-color: rgba(0, 0, 0, 0.3);
+      --footer-opacity: 1;
+      --temp-color: #d0e4ff;
+      --grid-value-color: #cbd5e1;
+      --forecast-item-bg: rgba(40, 60, 80, 0.5);
+      --index-card-bg: rgba(40, 60, 80, 0.5);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -24,8 +76,9 @@
       justify-content: center;
       padding: 1.2rem;
       margin: 0;
-      color: #1e293b;
-      background: #aaccdd;
+      color: var(--text-primary);
+      background: linear-gradient(145deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      transition: background 0.3s ease;
     }
 
     /* 直角风格统治 */
@@ -42,23 +95,24 @@
     .status-message,
     .update-time,
     .city-quick button,
-    .footer-note span {
+    .footer-note span,
+    .theme-toggle {
       border-radius: 0 !important;
     }
 
     .weather-app {
       max-width: 680px;
       width: 100%;
-      background: rgba(255, 255, 255, 0.65);
+      background: var(--app-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: 8px 8px 0 rgba(0, 20, 40, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: 8px 8px 0 var(--shadow-color), 0 4px 12px rgba(0, 0, 0, 0.05);
       padding: 1.8rem 1.6rem;
-      border: 1px solid rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--app-border);
       position: relative;
       overflow: hidden;
       z-index: 2;
-      transition: box-shadow 0.2s;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
 
     /* Canvas 背景层 */
@@ -80,6 +134,14 @@
       z-index: 3;
     }
 
+    /* 标题行 + 主题切换 */
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+    }
+
     h1 {
       font-weight: 600;
       font-size: 2rem;
@@ -87,15 +149,34 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 1.2rem;
-      color: #0b2b44;
-      text-shadow: 0 2px 3px rgba(255, 255, 255, 0.6);
+      color: var(--text-heading);
+      text-shadow: 0 2px 3px rgba(255, 255, 255, 0.3);
+      margin: 0;
     }
     h1 i {
       color: #3b82f6;
       font-size: 1.8rem;
-      background: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.4);
       padding: 6px;
+    }
+
+    .theme-toggle {
+      background: var(--button-bg);
+      border: 1px solid var(--app-border);
+      color: var(--text-primary);
+      font-size: 1.4rem;
+      padding: 8px 12px;
+      cursor: pointer;
+      box-shadow: var(--button-shadow);
+      backdrop-filter: blur(4px);
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .theme-toggle:hover {
+      background: var(--card-bg);
+      transform: scale(1.05);
     }
 
     .search-section {
@@ -106,16 +187,17 @@
     .search-wrapper {
       flex: 1;
       display: flex;
-      background: white;
+      background: var(--input-bg);
       padding: 4px 4px 4px 18px;
       align-items: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.9), 0 4px 8px rgba(0, 20, 40, 0.08);
+      box-shadow: inset 0 0 0 1px var(--app-border), 0 4px 8px var(--shadow-color);
+      transition: box-shadow 0.2s;
     }
     .search-wrapper:focus-within {
       box-shadow: inset 0 0 0 2px #3b82f6, 0 6px 12px rgba(59,130,246,0.15);
     }
     .search-wrapper i {
-      color: #6b7b8f;
+      color: var(--text-secondary);
       margin-right: 8px;
     }
     #city-input {
@@ -126,7 +208,7 @@
       font-weight: 500;
       padding: 12px 0;
       background: transparent;
-      color: #1e293b;
+      color: var(--input-text);
     }
     #city-input::placeholder {
       color: #94a3b8;
@@ -134,25 +216,24 @@
     }
 
     button {
-      background: white;
+      background: var(--button-bg);
       border: none;
       padding: 0 20px;
       font-weight: 600;
       font-size: 1rem;
-      color: #1e3a5f;
+      color: var(--text-heading);
       display: flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 4px 8px rgba(0, 20, 40, 0.08), inset 0 0 0 1px rgba(255,255,255,0.7);
+      box-shadow: var(--button-shadow);
       cursor: pointer;
       backdrop-filter: blur(4px);
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(255,255,255,0.6);
+      border: 1px solid var(--app-border);
       white-space: nowrap;
       transition: 0.15s;
     }
     button:hover {
-      background: #ffffff;
+      background: var(--card-bg);
       box-shadow: 0 8px 16px rgba(59,130,246,0.15), inset 0 0 0 1px #bdd6ff;
       transform: scale(1.02);
     }
@@ -166,17 +247,16 @@
     .city-quick button {
       padding: 8px 16px;
       font-size: 0.9rem;
-      background: rgba(255,255,255,0.7);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      background: var(--button-bg);
     }
 
     .weather-card {
-      background: rgba(255, 255, 255, 0.4);
+      background: var(--card-bg);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       padding: 1.6rem 1.4rem;
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      box-shadow: inset 0 1px 4px #ffffff, 0 10px 20px -5px rgba(0,20,40,0.1);
+      border: 1px solid var(--card-border);
+      box-shadow: inset 0 1px 4px rgba(255,255,255,0.1), 0 10px 20px -5px var(--shadow-color);
     }
 
     .location-header {
@@ -188,16 +268,17 @@
     .city-name {
       font-size: 1.9rem;
       font-weight: 650;
-      color: #0a2538;
+      color: var(--text-heading);
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .update-time {
       font-size: 0.75rem;
-      background: rgba(255,255,255,0.6);
+      background: var(--card-bg);
       padding: 4px 10px;
-      border: 1px solid rgba(255,255,255,0.8);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
     }
 
     .weather-main {
@@ -214,19 +295,19 @@
     .temp-value {
       font-size: 4.2rem;
       font-weight: 650;
-      color: #0a2a44;
+      color: var(--temp-color);
       line-height: 1;
     }
     .temp-unit {
       font-size: 1.8rem;
       font-weight: 500;
-      color: #2c425c;
+      color: var(--text-secondary);
     }
     .weather-icon-large {
       font-size: 4rem;
       color: #2c4e6e;
-      filter: drop-shadow(0 6px 8px rgba(44, 78, 110, 0.15));
-      background: rgba(255,255,240,0.3);
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+      background: rgba(255,255,240,0.2);
       width: 80px;
       height: 80px;
       display: flex;
@@ -238,7 +319,7 @@
       font-size: 1.4rem;
       font-weight: 500;
       margin-bottom: 24px;
-      color: #1e405e;
+      color: var(--text-heading);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -248,10 +329,10 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
-      background: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
       padding: 20px 16px;
       backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.6);
+      border: 1px solid var(--card-border);
     }
     .detail-item {
       display: flex;
@@ -261,12 +342,12 @@
     .detail-icon {
       width: 40px;
       height: 40px;
-      background: rgba(255,255,255,0.7);
+      background: var(--detail-icon-bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #2266aa;
-      border: 1px solid rgba(255,255,255,0.8);
+      color: var(--detail-icon-color);
+      border: 1px solid var(--card-border);
     }
     .detail-info {
       display: flex;
@@ -276,32 +357,32 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       font-weight: 600;
-      color: #3e5e7c;
+      color: var(--text-secondary);
     }
     .detail-value {
       font-size: 1.3rem;
       font-weight: 650;
-      color: #0b2b44;
+      color: var(--grid-value-color);
       line-height: 1.3;
     }
     .detail-unit {
       font-size: 0.75rem;
       font-weight: 500;
-      color: #4a667f;
+      color: var(--text-secondary);
     }
 
     /* 生活指数网格 */
     .indices-section {
       margin-top: 20px;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.6);
+      border: 1px solid var(--card-border);
       padding: 16px;
     }
     .indices-title {
       font-size: 1.1rem;
       font-weight: 650;
-      color: #0a2a44;
+      color: var(--text-heading);
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -313,44 +394,44 @@
       gap: 12px;
     }
     .index-card {
-      background: rgba(255,255,255,0.4);
+      background: var(--index-card-bg);
       padding: 12px 8px;
       text-align: center;
-      border: 1px solid rgba(255,255,255,0.5);
+      border: 1px solid var(--card-border);
     }
     .index-icon {
       font-size: 1.4rem;
-      color: #2266aa;
+      color: var(--detail-icon-color);
       margin-bottom: 4px;
     }
     .index-name {
       font-size: 0.8rem;
       font-weight: 600;
-      color: #3e5e7c;
+      color: var(--text-secondary);
     }
     .index-value {
       font-size: 1.1rem;
       font-weight: 650;
-      color: #0b2b44;
+      color: var(--grid-value-color);
       margin: 4px 0;
     }
     .index-desc {
       font-size: 0.7rem;
-      color: #5a7188;
+      color: var(--text-secondary);
     }
 
     /* 15日预报区域 */
     .forecast-section {
       margin-top: 20px;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.6);
+      border: 1px solid var(--card-border);
       padding: 16px;
     }
     .forecast-title {
       font-size: 1.1rem;
       font-weight: 650;
-      color: #0a2a44;
+      color: var(--text-heading);
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -364,30 +445,30 @@
     }
     .forecast-item {
       flex: 0 0 90px;
-      background: rgba(255,255,255,0.4);
+      background: var(--forecast-item-bg);
       padding: 12px 6px;
       text-align: center;
-      border: 1px solid rgba(255,255,255,0.5);
+      border: 1px solid var(--card-border);
     }
     .forecast-date {
       font-size: 0.75rem;
       font-weight: 600;
-      color: #1e405e;
+      color: var(--text-secondary);
       margin-bottom: 6px;
     }
     .forecast-icon {
       font-size: 1.4rem;
-      color: #2266aa;
+      color: var(--detail-icon-color);
       margin: 4px 0;
     }
     .forecast-temp {
       font-size: 1.1rem;
       font-weight: 650;
-      color: #0b2b44;
+      color: var(--grid-value-color);
     }
     .forecast-desc {
       font-size: 0.65rem;
-      color: #5a7188;
+      color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -396,12 +477,13 @@
     .status-message {
       text-align: center;
       padding: 28px 10px;
-      background: rgba(255,255,255,0.5);
-      border: 1px solid rgba(255,255,255,0.6);
+      background: var(--status-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
     }
     .error-message {
-      color: #b91c1c;
-      background: rgba(255, 240, 240, 0.8);
+      color: #f87171;
+      background: rgba(80, 30, 30, 0.5);
     }
 
     .footer-note {
@@ -409,15 +491,15 @@
       display: flex;
       justify-content: space-between;
       font-size: 0.75rem;
-      color: #1e3a5f;
-      opacity: 0.9;
+      color: var(--text-primary);
+      opacity: var(--footer-opacity);
     }
 
     .spinner {
       width: 28px;
       height: 28px;
       border: 3px solid rgba(59,130,246,0.15);
-      border-top-color: #1e4a7a;
+      border-top-color: #3b82f6;
       border-radius: 50% !important;
       animation: spin 0.8s linear infinite;
       display: inline-block;
@@ -431,10 +513,16 @@
 <div class="weather-app" id="weatherAppContainer">
   <canvas id="weather-canvas"></canvas>
 
-  <h1>
-    <i class="fas fa-cloud-sun-rain"></i> 
-    米遇安天气
-  </h1>
+  <!-- 头部：标题 + 主题切换 -->
+  <div class="header-row">
+    <h1>
+      <i class="fas fa-cloud-sun-rain"></i> 
+      米遇安天气
+    </h1>
+    <button class="theme-toggle" id="theme-toggle-btn" title="切换深色/浅色模式">
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
 
   <div class="search-section">
     <div class="search-wrapper">
@@ -557,6 +645,7 @@
 
     const indicesContainer = document.getElementById('indices-container');
     const forecastContainer = document.getElementById('forecast-container');
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
 
     let currentAbortController = null;
     let currentWeatherCode = 0;
@@ -574,7 +663,34 @@
       }
     });
 
-    // ----- 天气背景粒子系统 (保持不变) -----
+    // ----- 主题切换逻辑 -----
+    function initTheme() {
+      const savedTheme = localStorage.getItem('miyutianqi_theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        document.body.classList.remove('dark-mode');
+        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+    }
+
+    function toggleTheme() {
+      if (document.body.classList.contains('dark-mode')) {
+        document.body.classList.remove('dark-mode');
+        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        localStorage.setItem('miyutianqi_theme', 'light');
+      } else {
+        document.body.classList.add('dark-mode');
+        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        localStorage.setItem('miyutianqi_theme', 'dark');
+      }
+      // 粒子背景可能需要适应深色？保持原样也可以
+    }
+
+    themeToggleBtn.addEventListener('click', toggleTheme);
+
+    // ----- 天气背景粒子系统 (不变) -----
     function initParticlesForWeather(code) {
       const count = Math.floor((canvasWidth * canvasHeight) / 4500) || 30;
       particles = [];
@@ -799,9 +915,8 @@
       return dirs[Math.round(deg / 45) % 8];
     }
 
-    // ----- 生活指数计算（基于当前天气数据）-----
+    // ----- 生活指数计算 -----
     function calculateIndices(temp, humidity, windSpeed, weatherCode, uvIndex) {
-      // 穿衣指数: 1-8级 (1=炎热/短袖, 8=严寒/羽绒服)
       let clothingLevel = 1;
       if (temp >= 33) clothingLevel = 1;
       else if (temp >= 28) clothingLevel = 2;
@@ -823,57 +938,45 @@
         8: { level: '严寒', desc: '厚羽绒服、保暖内衣' }
       };
       
-      // 出行指数: 1-5级 (1=适宜, 5=不适宜)
-      let travelScore = 5;
       const isRainy = (weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82) || weatherCode === 95 || weatherCode === 96 || weatherCode === 99;
       const isSnowy = weatherCode >= 71 && weatherCode <= 77;
       const isFoggy = weatherCode === 45 || weatherCode === 48;
       
+      let travelScore = 5;
       if (!isRainy && !isSnowy && !isFoggy && windSpeed < 20 && temp >= 15 && temp <= 30) travelScore = 1;
       else if (!isRainy && !isSnowy && !isFoggy && windSpeed < 30 && temp >= 10 && temp <= 35) travelScore = 2;
       else if (isRainy || windSpeed >= 30) travelScore = 4;
       else if (isSnowy || isFoggy) travelScore = 3;
       else travelScore = 3;
+      const travelMap = { 1: '适宜', 2: '较适宜', 3: '一般', 4: '较不宜', 5: '不适宜' };
       
-      const travelMap = {
-        1: '适宜', 2: '较适宜', 3: '一般', 4: '较不宜', 5: '不适宜'
-      };
-      
-      // 感冒指数: 1-4级 (1=少发, 4=极易发)
       let coldLevel = 1;
       if (temp < 10 && windSpeed > 15) coldLevel = 4;
       else if (temp < 15 && windSpeed > 10) coldLevel = 3;
       else if (temp < 20 && windSpeed > 8) coldLevel = 2;
       else coldLevel = 1;
-      
       const coldMap = { 1: '少发', 2: '较易发', 3: '易发', 4: '极易发' };
       
-      // 运动指数: 1-3级 (1=适宜, 3=不宜)
       let sportLevel = 1;
       if (isRainy || isSnowy || windSpeed > 20 || temp > 35 || temp < 5) sportLevel = 3;
       else if (windSpeed > 12 || temp > 30 || temp < 10) sportLevel = 2;
       else sportLevel = 1;
-      
       const sportMap = { 1: '适宜', 2: '较适宜', 3: '不宜' };
       
-      // 紫外线指数: 1-5级
       let uvLevel = 1;
       if (uvIndex >= 8) uvLevel = 5;
       else if (uvIndex >= 6) uvLevel = 4;
       else if (uvIndex >= 4) uvLevel = 3;
       else if (uvIndex >= 2) uvLevel = 2;
       else uvLevel = 1;
-      
       const uvMap = { 1: '最弱', 2: '弱', 3: '中等', 4: '强', 5: '很强' };
       
-      // 舒适度指数: 1-7级
       let comfortLevel = 1;
       if (temp >= 18 && temp <= 26 && humidity >= 40 && humidity <= 70) comfortLevel = 1;
       else if (temp >= 15 && temp <= 30 && humidity >= 30 && humidity <= 80) comfortLevel = 2;
       else if (temp >= 10 && temp <= 35) comfortLevel = 3;
       else if (temp < 5 || temp > 38) comfortLevel = 7;
       else comfortLevel = 4;
-      
       const comfortMap = { 1: '舒适', 2: '较舒适', 3: '一般', 4: '较不舒适', 5: '不舒适', 6: '很不舒适', 7: '极不舒适' };
       
       return {
@@ -906,14 +1009,12 @@
       `).join('');
     }
 
-    // ----- 渲染15日预报 -----
     function renderForecast(dailyData) {
       const { time, temperature_2m_max, temperature_2m_min, weather_code } = dailyData;
       if (!time || time.length === 0) {
         forecastContainer.innerHTML = '<div class="forecast-item">暂无预报数据</div>';
         return;
       }
-      
       const daysToShow = Math.min(15, time.length);
       let html = '';
       for (let i = 0; i < daysToShow; i++) {
@@ -924,7 +1025,6 @@
         const meta = getWeatherMeta(code);
         const maxTemp = temperature_2m_max[i]?.toFixed(0) || '--';
         const minTemp = temperature_2m_min[i]?.toFixed(0) || '--';
-        
         html += `
           <div class="forecast-item">
             <div class="forecast-date">${month}/${day}</div>
@@ -937,7 +1037,6 @@
       forecastContainer.innerHTML = html;
     }
 
-    // ----- 天气数据获取与渲染 -----
     function setUIState(state) {
       loadingState.classList.add('hidden');
       weatherCard.classList.add('hidden');
@@ -1002,11 +1101,8 @@
         weatherIconContainer.innerHTML = `<i class="fas ${meta.icon}" style="color:${meta.color}"></i>`;
       }
 
-      // 计算并渲染生活指数
       const indices = calculateIndices(temp, hum, wind, code, uv);
       renderIndices(indices);
-      
-      // 渲染15日预报
       renderForecast(daily);
 
       setUIState('card');
@@ -1092,7 +1188,6 @@
       );
     }
 
-    // 自动定位并加载
     function autoLocateOnLoad() {
       if (!navigator.geolocation) { handleSearch('北京'); return; }
       navigator.geolocation.getCurrentPosition(
@@ -1141,13 +1236,13 @@
       startAnimation();
     });
 
-    // 初始化
+    // 初始化主题 & 天气
     window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
       resizeCanvas();
       autoLocateOnLoad();
     });
 
-    // 清理
     window.addEventListener('beforeunload', () => stopAnimation());
   })();
 </script>
