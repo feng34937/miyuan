@@ -723,7 +723,6 @@
                         <button class="carousel-arrow left" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
                         <button class="carousel-arrow right" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
                         <div class="carousel-track" id="carouselTrack">
-                            <!-- 已将第一次集体会议改为第三次集体会议 -->
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-handshake text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">米遇安第三次集体会议</h4><p class="text-gray-600 text-sm mb-4">成功召开并圆满结束！确立了未来发展方向与团队协作机制。</p><button class="btn-primary text-sm" onclick="alert('米遇安第三次集体会议于2026年4月成功召开，团队未来可期！')">了解详情</button></div></div>
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-newspaper text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">米遇安新闻</h4><p class="text-gray-600 text-sm mb-4">聚焦校园内外，传递新鲜资讯。</p><button class="btn-primary text-sm" onclick="window.open('https://feng34937.github.io/miyuan/tools/news', '_blank')">阅读新闻</button></div></div>
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)"><div class="card-content"><div class="icon-wrapper"><i class="fas fa-ad text-primary text-4xl"></i></div><h4 class="text-xl font-bold text-primary mb-2">广告位免费招租</h4><p class="text-gray-600 text-sm mb-4">米遇安官网广告位限时免费开放，欢迎洽谈。</p><button class="btn-primary text-sm" onclick="alert('广告位招租请联系邮箱：3493792731@qq.com')">立即咨询</button></div></div>
@@ -748,12 +747,12 @@
         <footer class="bg-dark text-white py-8"><div class="container"><div class="grid md:grid-cols-4 gap-5 mb-5"><div><h3 class="text-base font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-xs">实用工具 · 有趣游戏 · 教育文化</p></div><div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link">首页</a></li><li><a href="#about" class="footer-link">关于米遇安</a></li><li><a href="#team" class="footer-link">核心成员</a></li><li><a href="#" onclick="openSection('tools'); return false;" class="footer-link">工具分区</a></li><li><a href="#" onclick="openSection('games'); return false;" class="footer-link">游戏分区</a></li><li><a href="#" onclick="openSection('education'); return false;" class="footer-link">教育分区</a></li><li><a href="#contact" class="footer-link">联系我们</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">产品系列</h3><ul class="space-y-1 text-xs"><li><a class="footer-link cursor-pointer" onclick="openSection('tools')">工具分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('games')">游戏分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('education')">教育分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('others')">其他分区</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">联系方式</h3><ul class="space-y-1 text-xs"><li><i class="fas fa-map-marker-alt w-4"></i> 桂林市第一中学</li><li><i class="fas fa-phone w-4"></i> +86 152 0773 8425</li><li><i class="fas fa-envelope w-4"></i> 3493792731@qq.com</li></ul></div></div><div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p>&copy; 2026 米遇安 · 保留所有权利</p><div class="flex justify-center gap-4 mt-1"><a href="#" onclick="showPrivacyPolicy(); return false;" class="legal-link">隐私政策</a><a href="#" onclick="showUserAgreement(); return false;" class="legal-link">用户协议</a></div></div></div></footer>
     </main>
 
-    <!-- 工具分区 - 新增米遇安天气卡片，四列响应式布局 -->
+    <!-- 工具分区 - 新增米遇安时钟和米遇安日历，六卡片响应式布局 -->
     <div id="toolsSection" class="section-page">
         <div class="section-content p-5 max-w-6xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1>
             <p class="text-center text-gray-600 text-sm mb-6">实用工具 · 高效便捷</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 <!-- 米遇安新闻 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="fas fa-newspaper demo-icon"></i>
@@ -780,12 +779,26 @@
                     <p class="text-xs text-gray-500 mb-3">便捷计算，快速完成数学运算。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calculator', '_blank')">打开计算器</button>
                 </div>
-                <!-- 米遇安天气（新增） -->
+                <!-- 米遇安天气 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="fas fa-cloud-sun demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安天气</h3>
                     <p class="text-xs text-gray-500 mb-3">实时天气，出行必备。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/weather', '_blank')">查看天气</button>
+                </div>
+                <!-- 米遇安时钟（新增） -->
+                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-clock demo-icon"></i>
+                    <h3 class="text-lg font-bold mb-1">米遇安时钟</h3>
+                    <p class="text-xs text-gray-500 mb-3">精准时间，世界时钟。</p>
+                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/clock', '_blank')">查看时钟</button>
+                </div>
+                <!-- 米遇安日历（新增） -->
+                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
+                    <i class="fas fa-calendar-alt demo-icon"></i>
+                    <h3 class="text-lg font-bold mb-1">米遇安日历</h3>
+                    <p class="text-xs text-gray-500 mb-3">日期管理，日程提醒。</p>
+                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calendar', '_blank')">打开日历</button>
                 </div>
             </div>
         </div>
