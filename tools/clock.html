@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>米遇安时钟</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+      margin: 0;
+      color: #1e293b;
+      background: #aaccdd;
+    }
+
+    /* 直角风格 */
+    .clock-app,
+    .clock-app *,
+    .mode-tabs button,
+    .search-wrapper,
+    button,
+    .card-panel,
+    .details-grid,
+    .detail-icon,
+    .status-message,
+    .update-time,
+    .city-quick button,
+    .footer-note span,
+    .timer-input input {
+      border-radius: 0 !important;
+    }
+
+    .clock-app {
+      max-width: 700px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 8px 8px 0 rgba(0, 20, 40, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 1.8rem 1.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      position: relative;
+      z-index: 2;
+      transition: box-shadow 0.2s;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2rem;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      color: #0b2b44;
+      text-shadow: 0 2px 3px rgba(255, 255, 255, 0.6);
+    }
+    h1 i {
+      color: #3b82f6;
+      font-size: 1.8rem;
+      background: rgba(255,255,255,0.5);
+      padding: 6px;
+    }
+
+    /* 功能切换标签 */
+    .mode-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: rgba(255,255,255,0.3);
+      padding: 6px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .mode-tabs button {
+      flex: 1;
+      padding: 10px 5px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: #1e3a5f;
+      backdrop-filter: none;
+      border: 1px solid transparent;
+      transition: 0.15s;
+      justify-content: center;
+    }
+    .mode-tabs button i {
+      margin-right: 6px;
+    }
+    .mode-tabs button.active {
+      background: rgba(255,255,255,0.8);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), 0 2px 4px rgba(0,20,40,0.05);
+      border-color: rgba(255,255,255,0.9);
+      color: #0b2b44;
+    }
+
+    /* 时钟专属控件区 */
+    #clock-controls {
+      margin-bottom: 16px;
+    }
+    .search-section {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .search-wrapper {
+      flex: 1;
+      display: flex;
+      background: white;
+      padding: 4px 4px 4px 18px;
+      align-items: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.9), 0 4px 8px rgba(0, 20, 40, 0.08);
+    }
+    .search-wrapper:focus-within {
+      box-shadow: inset 0 0 0 2px #3b82f6, 0 6px 12px rgba(59,130,246,0.15);
+    }
+    .search-wrapper i {
+      color: #6b7b8f;
+      margin-right: 8px;
+    }
+    #city-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 12px 0;
+      background: transparent;
+      color: #1e293b;
+    }
+    #city-input::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+
+    button {
+      background: white;
+      border: none;
+      padding: 0 20px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #1e3a5f;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 8px rgba(0, 20, 40, 0.08), inset 0 0 0 1px rgba(255,255,255,0.7);
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255,255,255,0.6);
+      white-space: nowrap;
+      transition: 0.15s;
+    }
+    button:hover {
+      background: #ffffff;
+      box-shadow: 0 8px 16px rgba(59,130,246,0.15), inset 0 0 0 1px #bdd6ff;
+      transform: scale(1.02);
+    }
+
+    .city-quick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .city-quick button {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .city-quick button.active-tz {
+      background: #1e3a5f;
+      color: white;
+      border-color: #1e3a5f;
+    }
+
+    /* 卡片通用 */
+    .card-panel {
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 1.6rem 1.4rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: inset 0 1px 4px #ffffff, 0 10px 20px -5px rgba(0,20,40,0.1);
+    }
+
+    .location-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .city-name {
+      font-size: 1.9rem;
+      font-weight: 650;
+      color: #0a2538;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .update-time {
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.6);
+      padding: 4px 10px;
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .clock-main {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 15px 0 20px;
+    }
+    .time-section {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .time-value {
+      font-size: 4.2rem;
+      font-weight: 650;
+      color: #0a2a44;
+      line-height: 1;
+    }
+    .seconds-blink {
+      font-size: 2.2rem;
+      font-weight: 400;
+      margin-left: 5px;
+      color: #2e5a7f;
+    }
+    .date-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 5px 0 15px;
+    }
+    .full-date {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #1e405e;
+    }
+    .weekday {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #0b3b5e;
+    }
+
+    /* 表盘 */
+    .analog-clock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .analog-canvas {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      margin: 0 auto;
+      filter: drop-shadow(0 8px 12px rgba(0,20,40,0.15));
+    }
+    .analog-city {
+      margin-top: 15px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #0a2a44;
+    }
+    .analog-digital {
+      font-size: 1.8rem;
+      font-weight: 500;
+      margin-top: 5px;
+      color: #1e3a5f;
+    }
+
+    /* 秒表/计时器 */
+    .stopwatch-display, .timer-display {
+      font-size: 4rem;
+      font-weight: 650;
+      color: #0a2a44;
+      text-align: center;
+      margin: 20px 0;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 4px;
+    }
+    .timer-input-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .timer-input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .timer-input label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #3e5e7c;
+      margin-bottom: 4px;
+    }
+    .timer-input input {
+      width: 80px;
+      padding: 10px;
+      font-size: 1.5rem;
+      text-align: center;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.9);
+      font-weight: 600;
+      color: #0b2b44;
+      outline: none;
+    }
+    .timer-input input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+    }
+    .control-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .control-buttons button {
+      padding: 12px 24px;
+      font-size: 1.1rem;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background: rgba(255,255,255,0.2);
+      padding: 20px 16px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.6);
+      margin-top: 20px;
+    }
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .detail-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2266aa;
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+    .detail-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .detail-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #3e5e7c;
+    }
+    .detail-value {
+      font-size: 1.3rem;
+      font-weight: 650;
+      color: #0b2b44;
+      line-height: 1.3;
+    }
+    .detail-unit {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #4a667f;
+    }
+
+    .status-message {
+      text-align: center;
+      padding: 28px 10px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .error-message {
+      color: #b91c1c;
+      background: rgba(255, 240, 240, 0.8);
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #1e3a5f;
+      opacity: 0.9;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(59,130,246,0.15);
+      border-top-color: #1e4a7a;
+      border-radius: 50% !important;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+    .timer-ended { color: #b91c1c !important; }
+
+    @media (max-width: 480px) {
+      .clock-app { padding: 1.2rem; }
+      .time-value { font-size: 3.2rem; }
+      .stopwatch-display, .timer-display { font-size: 2.8rem; }
+      .timer-input input { width: 60px; font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="clock-app" id="clockAppContainer">
+  <!-- 粒子背景已移除，保留毛玻璃效果 -->
+
+  <h1>
+    <i class="fas fa-clock"></i> 
+    米遇安时钟
+  </h1>
+
+  <!-- 功能模式切换 -->
+  <div class="mode-tabs" id="mode-tabs">
+    <button data-mode="clock" class="active"><i class="fas fa-clock"></i> 时钟</button>
+    <button data-mode="analog"><i class="fas fa-circle"></i> 表盘</button>
+    <button data-mode="stopwatch"><i class="fas fa-stopwatch"></i> 秒表</button>
+    <button data-mode="timer"><i class="fas fa-hourglass-end"></i> 计时器</button>
+  </div>
+
+  <!-- 时钟专属控件区 -->
+  <div id="clock-controls">
+    <div class="search-section">
+      <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="city-input" placeholder="搜索城市… (例如 东京, London)" value="本地" autocomplete="off" />
+      </div>
+      <button id="search-btn"><i class="fas fa-magnifying-glass"></i> 查询</button>
+      <button id="locate-btn" title="定位我"><i class="fas fa-location-dot"></i></button>
+    </div>
+    <div class="city-quick" id="timezone-quick">
+      <button data-tz="local" class="active-tz"><i class="fas fa-location-dot"></i> 本地</button>
+      <button data-tz="America/New_York">纽约</button>
+      <button data-tz="Europe/London">伦敦</button>
+      <button data-tz="Asia/Tokyo">东京</button>
+      <button data-tz="Australia/Sydney">悉尼</button>
+      <button data-tz="Asia/Dubai">迪拜</button>
+      <button data-tz="America/Los_Angeles">洛杉矶</button>
+    </div>
+  </div>
+
+  <!-- ========= 时钟面板 ========= -->
+  <div id="clock-panel" class="card-panel">
+    <div id="loading-state" class="status-message"><span class="spinner"></span> 同步时间…</div>
+    <div id="clock-card-content" class="hidden">
+      <div class="location-header">
+        <div class="city-name"><i class="fas fa-globe"></i><span id="display-city">本地时区</span></div>
+        <div class="update-time" id="update-time">刚刚更新</div>
+      </div>
+      <div class="clock-main">
+        <div class="time-section">
+          <span class="time-value" id="time-display">--:--</span>
+          <span class="seconds-blink" id="seconds-display">:--</span>
+        </div>
+      </div>
+      <div class="date-section">
+        <span class="full-date" id="full-date">2026年4月20日</span>
+        <span class="weekday" id="weekday">星期日</span>
+      </div>
+      <div class="details-grid" id="clock-details-grid">
+        <!-- 动态填充 -->
+      </div>
+    </div>
+    <div id="clock-error" class="status-message error-message hidden"><i class="fas fa-circle-exclamation"></i> <span id="error-text">无法获取时间</span></div>
+  </div>
+
+  <!-- ========= 表盘面板 ========= -->
+  <div id="analog-panel" class="card-panel hidden">
+    <div class="analog-clock-container">
+      <canvas id="analog-canvas" class="analog-canvas" width="320" height="320"></canvas>
+      <div class="analog-city" id="analog-city-name">本地时区</div>
+      <div class="analog-digital" id="analog-digital-time">--:--:--</div>
+    </div>
+  </div>
+
+  <!-- ========= 秒表面板 ========= -->
+  <div id="stopwatch-panel" class="card-panel hidden">
+    <div style="text-align:center;margin-bottom:10px;"><i class="fas fa-stopwatch" style="font-size:2.5rem;color:#1e3a5f;"></i></div>
+    <div class="stopwatch-display" id="stopwatch-display">00:00.00</div>
+    <div class="control-buttons">
+      <button id="sw-start"><i class="fas fa-play"></i> 开始</button>
+      <button id="sw-pause"><i class="fas fa-pause"></i> 暂停</button>
+      <button id="sw-reset"><i class="fas fa-undo-alt"></i> 重置</button>
+    </div>
+  </div>
+
+  <!-- ========= 计时器面板 ========= -->
+  <div id="timer-panel" class="card-panel hidden">
+    <div style="text-align:center;margin-bottom:10px;"><i class="fas fa-hourglass-end" style="font-size:2.5rem;color:#1e3a5f;"></i></div>
+    <div class="timer-display" id="timer-display">05:00</div>
+    <div class="timer-input-group">
+      <div class="timer-input"><label>时</label><input type="number" id="timer-hours" min="0" max="23" value="0"></div>
+      <div class="timer-input"><label>分</label><input type="number" id="timer-minutes" min="0" max="59" value="5"></div>
+      <div class="timer-input"><label>秒</label><input type="number" id="timer-seconds" min="0" max="59" value="0"></div>
+    </div>
+    <div class="control-buttons">
+      <button id="timer-start"><i class="fas fa-play"></i> 开始</button>
+      <button id="timer-pause"><i class="fas fa-pause"></i> 暂停</button>
+      <button id="timer-reset"><i class="fas fa-undo-alt"></i> 重置</button>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span><i class="far fa-clock"></i> 时光粒子 · 此刻永恒</span>
+    <span>©2026 米遇安</span>
+  </div>
+</div>
+
+<script>
+  (function(){
+    "use strict";
+
+    // ----- DOM 元素 -----
+    const container = document.getElementById('clockAppContainer');
+    
+    const modeTabs = document.querySelectorAll('.mode-tabs button');
+    const clockPanel = document.getElementById('clock-panel');
+    const analogPanel = document.getElementById('analog-panel');
+    const stopwatchPanel = document.getElementById('stopwatch-panel');
+    const timerPanel = document.getElementById('timer-panel');
+    const clockControls = document.getElementById('clock-controls');
+    
+    // 时钟子元素
+    const loadingState = document.getElementById('loading-state');
+    const clockCardContent = document.getElementById('clock-card-content');
+    const clockError = document.getElementById('clock-error');
+    const errorText = document.getElementById('error-text');
+    const displayCity = document.getElementById('display-city');
+    const updateTimeSpan = document.getElementById('update-time');
+    const timeDisplay = document.getElementById('time-display');
+    const secondsDisplay = document.getElementById('seconds-display');
+    const fullDateSpan = document.getElementById('full-date');
+    const weekdaySpan = document.getElementById('weekday');
+    const detailsGrid = document.getElementById('clock-details-grid');
+    
+    const cityInput = document.getElementById('city-input');
+    const searchBtn = document.getElementById('search-btn');
+    const locateBtn = document.getElementById('locate-btn');
+    const tzButtons = document.querySelectorAll('.city-quick button');
+    
+    // 表盘元素
+    const analogCanvas = document.getElementById('analog-canvas');
+    const analogCtx = analogCanvas.getContext('2d');
+    const analogCityName = document.getElementById('analog-city-name');
+    const analogDigitalTime = document.getElementById('analog-digital-time');
+    
+    // 秒表元素
+    const swDisplay = document.getElementById('stopwatch-display');
+    const swStart = document.getElementById('sw-start');
+    const swPause = document.getElementById('sw-pause');
+    const swReset = document.getElementById('sw-reset');
+    
+    // 计时器元素
+    const timerDisplay = document.getElementById('timer-display');
+    const timerHours = document.getElementById('timer-hours');
+    const timerMinutes = document.getElementById('timer-minutes');
+    const timerSeconds = document.getElementById('timer-seconds');
+    const timerStart = document.getElementById('timer-start');
+    const timerPause = document.getElementById('timer-pause');
+    const timerReset = document.getElementById('timer-reset');
+
+    // 状态变量
+    let currentMode = 'clock';
+    let currentTimezone = 'local';
+    let currentLocationName = '本地时区';
+    let clockInterval = null;
+    let abortController = null;
+    
+    // 秒表
+    let swInterval = null, swRunning = false, swTime = 0, swLastTimestamp = 0;
+    // 计时器
+    let timerInterval = null, timerRunning = false, timerRemaining = 300;
+    // 表盘动画
+    let analogAnimFrame = null;
+
+    // ----- 模式切换 -----
+    function setMode(mode) {
+      currentMode = mode;
+      modeTabs.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+      clockPanel.classList.toggle('hidden', mode !== 'clock');
+      analogPanel.classList.toggle('hidden', mode !== 'analog');
+      stopwatchPanel.classList.toggle('hidden', mode !== 'stopwatch');
+      timerPanel.classList.toggle('hidden', mode !== 'timer');
+      clockControls.classList.toggle('hidden', mode !== 'clock');
+      
+      if (mode === 'clock') updateClock();
+      if (mode === 'analog') startAnalogAnimation();
+      else stopAnalogAnimation();
+      if (mode !== 'stopwatch' && swRunning) pauseStopwatch();
+      if (mode !== 'timer' && timerRunning) pauseTimer();
+    }
+
+    modeTabs.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+
+    // ----- 时钟核心逻辑 -----
+    function formatOffset(min) {
+      const sign = min >= 0 ? '+' : '-';
+      const abs = Math.abs(min);
+      return `UTC${sign}${Math.floor(abs/60)}${abs%60 ? ':' + (abs%60).toString().padStart(2,'0') : ''}`;
+    }
+
+    function getTzOffsetMinutes(tz, d) {
+      if (tz === 'local') return -d.getTimezoneOffset();
+      const utc = new Date(d.toLocaleString('en-US', { timeZone: 'UTC' }));
+      const tzDate = new Date(d.toLocaleString('en-US', { timeZone: tz }));
+      return (tzDate - utc) / 60000;
+    }
+
+    function getTzAbbr(tz, d) {
+      try {
+        return new Intl.DateTimeFormat('en', { timeZone: tz, timeZoneName: 'short' }).formatToParts(d).find(p => p.type === 'timeZoneName')?.value || tz;
+      } catch { return tz; }
+    }
+
+    function getCurrentTzDate() {
+      const now = new Date();
+      if (currentTimezone === 'local') return now;
+      try {
+        const f = new Intl.DateTimeFormat('en-US', { timeZone: currentTimezone, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12: false });
+        const parts = f.formatToParts(now);
+        const vals = {};
+        parts.forEach(p => { if (p.type !== 'literal') vals[p.type] = parseInt(p.value,10); });
+        return new Date(vals.year, vals.month-1, vals.day, vals.hour, vals.minute, vals.second);
+      } catch { return now; }
+    }
+
+    function updateClock() {
+      if (currentMode !== 'clock') return;
+      const d = getCurrentTzDate();
+      const now = new Date();
+      const offset = (currentTimezone === 'local') ? -d.getTimezoneOffset() : getTzOffsetMinutes(currentTimezone, now);
+      
+      displayCity.textContent = currentLocationName;
+      updateTimeSpan.textContent = `更新 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+      timeDisplay.textContent = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+      secondsDisplay.textContent = `:${d.getSeconds().toString().padStart(2,'0')}`;
+      
+      const dateFmt = new Intl.DateTimeFormat('zh-CN', { timeZone: currentTimezone==='local'?undefined:currentTimezone, year:'numeric', month:'long', day:'numeric' });
+      const weekFmt = new Intl.DateTimeFormat('zh-CN', { timeZone: currentTimezone==='local'?undefined:currentTimezone, weekday:'long' });
+      fullDateSpan.textContent = dateFmt.format(d);
+      weekdaySpan.textContent = weekFmt.format(d);
+      
+      const year = d.getFullYear();
+      const start = new Date(year,0,1);
+      const dayOfYear = Math.floor((d - start)/86400000)+1;
+      const firstThu = new Date(year,0,4);
+      const weekNum = Math.ceil((((d - firstThu)/86400000) + firstThu.getDay() + 1)/7);
+      let isDst = '否';
+      if (currentTimezone !== 'local') {
+        const jan = new Date(year,0,1), jul = new Date(year,6,1);
+        isDst = (getTzOffsetMinutes(currentTimezone,jan) !== getTzOffsetMinutes(currentTimezone,jul)) ? '是' : '否';
+      } else {
+        const jan = new Date(year,0,1), jul = new Date(year,6,1);
+        isDst = (jan.getTimezoneOffset() !== jul.getTimezoneOffset()) ? '是' : '否';
+      }
+      const abbr = currentTimezone==='local' ? getTzAbbr(Intl.DateTimeFormat().resolvedOptions().timeZone, now) : getTzAbbr(currentTimezone, now);
+      const beijingDiff = ((offset-480)/60).toFixed(1);
+      const iana = currentTimezone==='local' ? Intl.DateTimeFormat().resolvedOptions().timeZone : currentTimezone;
+      
+      detailsGrid.innerHTML = `
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-day"></i></div><div class="detail-info"><span class="detail-label">年·第几天</span><span class="detail-value">${dayOfYear}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-week"></i></div><div class="detail-info"><span class="detail-label">周数</span><span class="detail-value">${weekNum}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-sun"></i></div><div class="detail-info"><span class="detail-label">夏令时</span><span class="detail-value">${isDst}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-clock"></i></div><div class="detail-info"><span class="detail-label">时区缩写</span><span class="detail-value">${abbr}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-hourglass-start"></i></div><div class="detail-info"><span class="detail-label">Unix时间戳</span><span class="detail-value">${Math.floor(d.getTime()/1000)}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-moon"></i></div><div class="detail-info"><span class="detail-label">年进度</span><span class="detail-value">${((d-start)/(new Date(year+1,0,1)-start)*100).toFixed(2)}<span class="detail-unit">%</span></span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-arrows-left-right"></i></div><div class="detail-info"><span class="detail-label">时差(北京)</span><span class="detail-value">${beijingDiff==0?'相同':(beijingDiff>0?'+'+beijingDiff:beijingDiff)+'h'}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-map-pin"></i></div><div class="detail-info"><span class="detail-label">UTC偏移</span><span class="detail-value">${offset}<span class="detail-unit">分钟</span></span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-globe-asia"></i></div><div class="detail-info"><span class="detail-label">IANA时区</span><span class="detail-value">${iana}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-stopwatch"></i></div><div class="detail-info"><span class="detail-label">毫秒时间</span><span class="detail-value">${d.getTime()}</span></div></div>
+      `;
+      
+      loadingState.classList.add('hidden');
+      clockCardContent.classList.remove('hidden');
+      clockError.classList.add('hidden');
+    }
+
+    function setTimezone(tz, name = null) {
+      currentTimezone = tz;
+      currentLocationName = name || (tz==='local'?'本地时区':tz.replace(/_/g,' ').replace(/\/.*\//,''));
+      updateClock();
+      tzButtons.forEach(btn => btn.classList.toggle('active-tz', btn.dataset.tz === tz));
+      if (currentMode === 'analog') drawAnalogClock();
+    }
+
+    // 搜索与定位
+    async function searchCity(city) {
+      if (!city.trim()) { clockError.classList.remove('hidden'); errorText.textContent='请输入城市'; return; }
+      loadingState.classList.remove('hidden'); clockCardContent.classList.add('hidden'); clockError.classList.add('hidden');
+      if (abortController) abortController.abort();
+      abortController = new AbortController();
+      try {
+        const resp = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=zh&format=json`, { signal: abortController.signal });
+        const data = await resp.json();
+        if (!data.results?.length) throw new Error('未找到城市');
+        const r = data.results[0];
+        if (!r.timezone) throw new Error('无时区信息');
+        let display = r.name;
+        if (r.admin1) display += `, ${r.admin1}`;
+        else if (r.country) display += `, ${r.country}`;
+        setTimezone(r.timezone, display);
+        cityInput.value = display;
+      } catch(e) {
+        if (e.name !== 'AbortError') { clockError.classList.remove('hidden'); errorText.textContent = e.message; loadingState.classList.add('hidden'); }
+      } finally { abortController = null; }
+    }
+
+    function manualLocate() {
+      if (!navigator.geolocation) { clockError.classList.remove('hidden'); errorText.textContent='不支持定位'; return; }
+      loadingState.classList.remove('hidden'); clockCardContent.classList.add('hidden'); clockError.classList.add('hidden');
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const lat = pos.coords.latitude, lon = pos.coords.longitude;
+        let name = '我的位置';
+        try {
+          const rev = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=12`, { headers: {'User-Agent':'MiyuAnClock'} });
+          const d = await rev.json();
+          if (d?.address) {
+            const a = d.address;
+            name = a.city || a.town || a.village || a.suburb || a.county || a.state || '我的位置';
+            if (a.country && name !== a.country) name += `, ${a.country}`;
+          }
+        } catch(e) {}
+        setTimezone('local', name);
+        cityInput.value = name;
+      }, err => { clockError.classList.remove('hidden'); errorText.textContent='定位失败'; loadingState.classList.add('hidden'); }, { timeout:8000 });
+    }
+
+    // 表盘绘制 (精致版)
+    function drawAnalogClock() {
+      const d = getCurrentTzDate();
+      const h = d.getHours(), m = d.getMinutes(), s = d.getSeconds(), ms = d.getMilliseconds();
+      const smoothSec = s + ms/1000;
+      const w = analogCanvas.width, hh = analogCanvas.height;
+      const cx = w/2, cy = hh/2, r = w*0.42;
+      analogCtx.clearRect(0,0,w,hh);
+      
+      // 外圈
+      analogCtx.shadowColor = 'rgba(0,20,40,0.3)'; analogCtx.shadowBlur=12; analogCtx.shadowOffsetX=2; analogCtx.shadowOffsetY=2;
+      const gradOut = analogCtx.createRadialGradient(cx-5,cy-5,2,cx,cy,r+12);
+      gradOut.addColorStop(0,'#e6edf5'); gradOut.addColorStop(0.7,'#b0c4de'); gradOut.addColorStop(1,'#8faec9');
+      analogCtx.beginPath(); analogCtx.arc(cx,cy,r+10,0,2*Math.PI); analogCtx.fillStyle=gradOut; analogCtx.fill();
+      analogCtx.shadowBlur=0; analogCtx.shadowOffsetX=0; analogCtx.shadowOffsetY=0;
+      analogCtx.strokeStyle='#2c4e6e'; analogCtx.lineWidth=2.5; analogCtx.stroke();
+      
+      const gradFace = analogCtx.createRadialGradient(cx-8,cy-8,5,cx,cy,r);
+      gradFace.addColorStop(0,'#ffffff'); gradFace.addColorStop(0.6,'#f0f6fe'); gradFace.addColorStop(1,'#d9e6f2');
+      analogCtx.beginPath(); analogCtx.arc(cx,cy,r,0,2*Math.PI); analogCtx.fillStyle=gradFace; analogCtx.fill();
+      analogCtx.strokeStyle='#2c4e6e'; analogCtx.lineWidth=2; analogCtx.stroke();
+      
+      // 刻度
+      for(let i=0;i<60;i++) {
+        const ang = i*6*Math.PI/180;
+        const isHour = i%5===0;
+        const ir = isHour ? r-12 : r-6, or = r-2;
+        analogCtx.beginPath();
+        analogCtx.moveTo(cx+Math.sin(ang)*ir, cy-Math.cos(ang)*ir);
+        analogCtx.lineTo(cx+Math.sin(ang)*or, cy-Math.cos(ang)*or);
+        analogCtx.lineWidth = isHour?3.5:1.8;
+        analogCtx.strokeStyle = isHour?'#0a2a44':'#3a5a7a';
+        analogCtx.stroke();
+      }
+      analogCtx.font='bold 18px "Inter", sans-serif'; analogCtx.fillStyle='#0a2a44'; analogCtx.textAlign='center'; analogCtx.textBaseline='middle';
+      for(let i=1;i<=12;i++) {
+        const ang = i*30*Math.PI/180;
+        analogCtx.fillText(i.toString(), cx+Math.sin(ang)*(r-28), cy-Math.cos(ang)*(r-28));
+      }
+      
+      // 时针
+      const hAng = ((h%12)*30 + m*0.5 + smoothSec*0.00833) * Math.PI/180;
+      analogCtx.beginPath(); analogCtx.moveTo(cx,cy); analogCtx.lineTo(cx+Math.sin(hAng)*r*0.52, cy-Math.cos(hAng)*r*0.52);
+      analogCtx.lineWidth=7; const hGrad = analogCtx.createLinearGradient(cx-4,cy-4,cx+6,cy+6); hGrad.addColorStop(0,'#1e3a5f'); hGrad.addColorStop(1,'#2c5a7a');
+      analogCtx.strokeStyle=hGrad; analogCtx.shadowBlur=6; analogCtx.shadowColor='rgba(0,0,0,0.2)'; analogCtx.stroke();
+      
+      // 分针
+      const mAng = (m*6 + smoothSec*0.1) * Math.PI/180;
+      analogCtx.beginPath(); analogCtx.moveTo(cx,cy); analogCtx.lineTo(cx+Math.sin(mAng)*r*0.72, cy-Math.cos(mAng)*r*0.72);
+      analogCtx.lineWidth=4.5; const mGrad = analogCtx.createLinearGradient(cx-3,cy-3,cx+5,cy+5); mGrad.addColorStop(0,'#2c4e6e'); mGrad.addColorStop(1,'#3e6a8a');
+      analogCtx.strokeStyle=mGrad; analogCtx.stroke();
+      
+      // 秒针
+      const sAng = smoothSec*6 * Math.PI/180;
+      analogCtx.beginPath(); analogCtx.moveTo(cx-Math.sin(sAng)*18, cy+Math.cos(sAng)*18); analogCtx.lineTo(cx+Math.sin(sAng)*r*0.88, cy-Math.cos(sAng)*r*0.88);
+      analogCtx.lineWidth=2.2; analogCtx.strokeStyle='#c0392b'; analogCtx.shadowColor='#c0392b80'; analogCtx.stroke();
+      analogCtx.beginPath(); analogCtx.arc(cx-Math.sin(sAng)*14, cy+Math.cos(sAng)*14, 4, 0, 2*Math.PI); analogCtx.fillStyle='#c0392b'; analogCtx.fill();
+      
+      analogCtx.shadowBlur=0;
+      analogCtx.beginPath(); analogCtx.arc(cx,cy,8,0,2*Math.PI); const cGrad = analogCtx.createRadialGradient(cx-3,cy-3,1,cx,cy,8); cGrad.addColorStop(0,'#f0f0f0'); cGrad.addColorStop(1,'#8a9eb5');
+      analogCtx.fillStyle=cGrad; analogCtx.fill(); analogCtx.strokeStyle='#1e3a5f'; analogCtx.lineWidth=1.5; analogCtx.stroke();
+      analogCtx.beginPath(); analogCtx.arc(cx,cy,3,0,2*Math.PI); analogCtx.fillStyle='#0a2a44'; analogCtx.fill();
+      
+      analogCityName.textContent = currentLocationName;
+      analogDigitalTime.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    function analogAnimationLoop() {
+      if (currentMode !== 'analog') return;
+      drawAnalogClock();
+      analogAnimFrame = requestAnimationFrame(analogAnimationLoop);
+    }
+    function startAnalogAnimation() {
+      if (analogAnimFrame) cancelAnimationFrame(analogAnimFrame);
+      analogAnimFrame = requestAnimationFrame(analogAnimationLoop);
+    }
+    function stopAnalogAnimation() {
+      if (analogAnimFrame) { cancelAnimationFrame(analogAnimFrame); analogAnimFrame = null; }
+    }
+
+    // 秒表逻辑
+    function formatSw(ms) {
+      const m = Math.floor(ms/60000), s = Math.floor((ms%60000)/1000), cs = Math.floor((ms%1000)/10);
+      return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${cs.toString().padStart(2,'0')}`;
+    }
+    function stepSw(ts) {
+      if (!swRunning) return;
+      if (swLastTimestamp===0) swLastTimestamp = ts;
+      swTime += ts - swLastTimestamp;
+      swLastTimestamp = ts;
+      swDisplay.textContent = formatSw(swTime);
+      swInterval = requestAnimationFrame(stepSw);
+    }
+    function startStopwatch() { if(swRunning) return; swRunning=true; swLastTimestamp=0; swInterval=requestAnimationFrame(stepSw); }
+    function pauseStopwatch() { swRunning=false; if(swInterval) { cancelAnimationFrame(swInterval); swInterval=null; } }
+    function resetStopwatch() { pauseStopwatch(); swTime=0; swDisplay.textContent=formatSw(0); }
+
+    // 计时器逻辑
+    function formatTimer(sec) {
+      const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
+      return h>0?`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`:`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+    function updateTimerDisplay() {
+      timerDisplay.textContent = formatTimer(timerRemaining);
+      timerDisplay.classList.toggle('timer-ended', timerRemaining<=0);
+    }
+    function setTimerFromInputs() {
+      const h=parseInt(timerHours.value)||0, m=parseInt(timerMinutes.value)||0, s=parseInt(timerSeconds.value)||0;
+      timerRemaining = h*3600+m*60+s; updateTimerDisplay();
+    }
+    function timerTick() {
+      if (!timerRunning) return;
+      if (timerRemaining>0) { timerRemaining--; updateTimerDisplay(); if(timerRemaining===0) { try{new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f38=').play();}catch(e){} pauseTimer(); } }
+      else pauseTimer();
+    }
+    function startTimer() {
+      if (timerRunning) return;
+      if (timerRemaining<=0) setTimerFromInputs();
+      if (timerRemaining<=0) return;
+      timerRunning=true; timerInterval=setInterval(timerTick,1000);
+    }
+    function pauseTimer() { timerRunning=false; if(timerInterval) clearInterval(timerInterval); timerInterval=null; }
+    function resetTimer() { pauseTimer(); setTimerFromInputs(); timerDisplay.classList.remove('timer-ended'); }
+
+    // 事件绑定
+    searchBtn.addEventListener('click', ()=>searchCity(cityInput.value));
+    cityInput.addEventListener('keypress', e=>{ if(e.key==='Enter') searchBtn.click(); });
+    locateBtn.addEventListener('click', manualLocate);
+    tzButtons.forEach(btn => btn.addEventListener('click', ()=>{
+      const tz = btn.dataset.tz;
+      setTimezone(tz, tz==='local'?'本地时区':btn.textContent.trim());
+      cityInput.value = tz==='local'?'本地':btn.textContent.trim();
+    }));
+    swStart.addEventListener('click', startStopwatch);
+    swPause.addEventListener('click', pauseStopwatch);
+    swReset.addEventListener('click', resetStopwatch);
+    timerStart.addEventListener('click', startTimer);
+    timerPause.addEventListener('click', pauseTimer);
+    timerReset.addEventListener('click', resetTimer);
+    timerHours.addEventListener('input', resetTimer);
+    timerMinutes.addEventListener('input', resetTimer);
+    timerSeconds.addEventListener('input', resetTimer);
+    setTimerFromInputs();
+
+    function initialize() {
+      setMode('clock');
+      setTimezone('local', '本地时区');
+      clockInterval = setInterval(() => { if (currentMode==='clock') updateClock(); }, 500);
+    }
+
+    window.addEventListener('DOMContentLoaded', initialize);
+    window.addEventListener('beforeunload', ()=>{
+      stopAnalogAnimation();
+      clearInterval(clockInterval);
+      if(swInterval) cancelAnimationFrame(swInterval);
+      if(timerInterval) clearInterval(timerInterval);
+    });
+  })();
+</script>
+</body>
+</html>
