@@ -18,7 +18,7 @@
     }
     body.dark { background: #1a2a3a; }
 
-    /* 直角统治 */
+    /* 直角风格 */
     .clock-app,
     .clock-app *,
     .search-wrapper,
@@ -27,7 +27,10 @@
     .details-grid,
     .detail-icon,
     .mode-tabs button,
-    .timer-input input {
+    .timer-input input,
+    .world-city,
+    .city-modal-content,
+    .city-item {
       border-radius: 0 !important;
     }
 
@@ -52,7 +55,6 @@
     }
     .clock-app > *:not(#clock-canvas) { position: relative; z-index: 3; }
 
-    /* 标题行 (包含主题切换) */
     .header-row {
       display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.4rem;
     }
@@ -82,7 +84,6 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
 
-    /* 工具栏风格 (类似日历) */
     .toolbar-row {
       display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; align-items: center;
     }
@@ -124,7 +125,6 @@
     }
     body.dark button:hover { background: #2a445e; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
 
-    /* 模式切换标签 (类似日历的view-toggle) */
     .mode-tabs {
       display: flex; gap: 2px; background: rgba(255,255,255,0.3); padding: 4px;
       border: 1px solid rgba(255,255,255,0.5);
@@ -139,7 +139,6 @@
     }
     body.dark .mode-tabs button.active { background: #2a445e; color: white; box-shadow: inset 0 0 0 2px #7aa9ff; }
 
-    /* 快捷时区按钮 (类似日历的city-quick) */
     .city-quick {
       display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
     }
@@ -156,6 +155,7 @@
       background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px);
       padding: 1.8rem 1.6rem; border: 1px solid rgba(255, 255, 255, 0.7);
       box-shadow: inset 0 1px 5px #ffffff, 0 12px 24px -8px rgba(0,20,40,0.15);
+      margin-bottom: 8px;
     }
     body.dark .card-panel {
       background: rgba(25, 45, 65, 0.5); border-color: #3a5a7a;
@@ -182,49 +182,100 @@
     .full-date, .weekday { font-size: 1.3rem; color: #1e405e; }
     body.dark .full-date, body.dark .weekday { color: #c7dbf5; }
 
-    /* 表盘 */
-    .analog-canvas { max-width: 320px; margin: 0 auto; filter: drop-shadow(0 8px 12px rgba(0,20,40,0.15)); }
-    .analog-city { font-size: 1.4rem; font-weight: 600; color: #0a2a44; margin-top: 15px; }
-    .analog-digital { font-size: 1.8rem; color: #1e3a5f; margin-top: 5px; }
-    body.dark .analog-city, body.dark .analog-digital { color: #d4e4f0; }
-
-    .stopwatch-display, .timer-display {
-      font-size: 4rem; font-weight: 650; color: #0a2a44; text-align: center; margin: 20px 0;
-      font-variant-numeric: tabular-nums;
-    }
-    body.dark .stopwatch-display, body.dark .timer-display { color: #e0edff; }
-    .timer-input-group { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
-    .timer-input input {
-      width: 80px; padding: 10px; font-size: 1.5rem; text-align: center;
-      background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9);
-      font-weight: 600; color: #0b2b44;
-    }
-    body.dark .timer-input input { background: #1d3145; border-color: #4a6f92; color: #e0edff; }
-    .control-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
-
     .details-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-      background: rgba(255,255,255,0.2); padding: 20px 16px;
-      backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.6);
-      margin-top: 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      background: rgba(255,255,255,0.2); padding: 16px; backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.6); margin-top: 20px;
     }
     body.dark .details-grid { background: rgba(20,35,50,0.4); border-color: #3a5a7a; }
-    .detail-item { display: flex; align-items: center; gap: 12px; }
+    .detail-item { display: flex; align-items: center; gap: 10px; }
     .detail-icon {
-      width: 40px; height: 40px; background: rgba(255,255,255,0.7);
-      display: flex; align-items: center; justify-content: center; color: #2266aa;
-      border: 1px solid rgba(255,255,255,0.8);
+      width: 36px; height: 36px; background: rgba(255,255,255,0.7); display: flex;
+      align-items: center; justify-content: center; color: #2266aa;
+      border: 1px solid rgba(255,255,255,0.8); font-size: 0.9rem;
     }
     body.dark .detail-icon { background: rgba(40,65,90,0.8); border-color: #4f7393; color: #8ab2f0; }
-    .detail-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; color: #3e5e7c; }
-    .detail-value { font-size: 1.3rem; font-weight: 650; color: #0b2b44; }
+    .detail-info { display: flex; flex-direction: column; }
+    .detail-label { font-size: 0.7rem; text-transform: uppercase; font-weight: 600; color: #3e5e7c; }
+    .detail-value { font-size: 1.1rem; font-weight: 650; color: #0b2b44; line-height: 1.3; }
     body.dark .detail-value { color: #deecfe; }
 
-    .footer-note {
-      margin-top: 22px; display: flex; justify-content: space-between;
-      font-size: 0.75rem; color: #1e3a5f; border-top: 1px solid rgba(255,255,255,0.5); padding-top: 12px;
+    /* 世界时钟 */
+    .world-clock-section {
+      margin-top: 20px; background: rgba(255,255,255,0.2); backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.6); padding: 12px;
     }
-    body.dark .footer-note { color: #bdd1e5; border-top-color: #3a5a7a; }
+    body.dark .world-clock-section { background: rgba(20,35,50,0.4); border-color: #3a5a7a; }
+    .world-clock-title {
+      font-size: 0.85rem; font-weight: 650; color: #1e405e; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .world-clock-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+    .world-city {
+      flex: 0 0 100px; background: rgba(255,255,255,0.5); padding: 10px 6px;
+      text-align: center; border: 1px solid rgba(255,255,255,0.7); backdrop-filter: blur(4px);
+    }
+    body.dark .world-city { background: rgba(40,65,90,0.6); border-color: #4a6a8a; }
+    .world-city-name { font-size: 0.75rem; font-weight: 600; color: #1e3a5f; }
+    body.dark .world-city-name { color: #c0d2ea; }
+    .world-city-time { font-size: 1.1rem; font-weight: 650; color: #0a2a44; }
+    body.dark .world-city-time { color: #e0edff; }
+
+    /* 城市选择模态 */
+    .city-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.15); backdrop-filter: blur(6px);
+    }
+    .city-modal-content {
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+      width: 90%; max-width: 600px; max-height: 80vh; padding: 24px;
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 10px 10px 0 rgba(0,20,40,0.15);
+      display: flex; flex-direction: column;
+    }
+    body.dark .city-modal-content {
+      background: rgba(30,50,70,0.96); border-color: #5a7a9a;
+      box-shadow: 10px 10px 0 rgba(0,0,0,0.3); color: #e0edf5;
+    }
+    .city-modal-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+    }
+    .city-modal-header h3 { font-weight: 650; color: #0b2b44; }
+    body.dark .city-modal-header h3 { color: #e0edf5; }
+    .close-btn {
+      background: transparent; border: none; font-size: 1.5rem; cursor: pointer;
+      color: #1e3a5f; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      box-shadow: none; padding: 0;
+    }
+    body.dark .close-btn { color: #e0edf5; }
+    .city-search-wrapper {
+      margin-bottom: 12px; display: flex; background: white; padding: 2px 2px 2px 12px;
+      align-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    body.dark .city-search-wrapper {
+      background: #1e3347; border-color: #3a5a7a;
+    }
+    .city-search-wrapper i { color: #6b7b8f; margin-right: 8px; }
+    .city-search-wrapper input {
+      width: 100%; border: none; outline: none; font-size: 1rem; padding: 10px 0;
+      background: transparent; color: #1e293b;
+    }
+    body.dark .city-search-wrapper input { color: #e2ecf5; }
+    .city-list {
+      flex: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+      margin-top: 8px;
+    }
+    .city-item {
+      padding: 10px 12px; cursor: pointer; background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.7); transition: 0.1s;
+      font-weight: 500; color: #0f2f4a; display: flex; justify-content: space-between; align-items: center;
+    }
+    body.dark .city-item { background: rgba(40,65,90,0.6); border-color: #4a6a8a; color: #d4e4f0; }
+    .city-item:hover { background: rgba(255,255,255,0.9); border-color: #8ab2f0; }
+    .city-item small { font-size: 0.7rem; color: #5a7188; }
+    body.dark .city-item small { color: #a0b9d6; }
 
     .hidden { display: none !important; }
     .timer-ended { color: #b91c1c !important; }
@@ -241,11 +292,10 @@
     </button>
   </div>
 
-  <!-- 工具栏：搜索 + 模式切换 -->
   <div class="toolbar-row">
     <div class="search-wrapper">
       <i class="fas fa-search"></i>
-      <input type="text" id="city-input" placeholder="搜索城市… (例如 东京, London)" value="本地" autocomplete="off" />
+      <input type="text" id="city-input" placeholder="搜索城市…" value="本地" autocomplete="off" />
       <button id="search-btn" style="padding:0 18px;"><i class="fas fa-arrow-right"></i></button>
     </div>
     <div class="mode-tabs" id="mode-tabs">
@@ -255,9 +305,9 @@
       <button data-mode="timer"><i class="fas fa-hourglass-end"></i> 计时器</button>
     </div>
     <button id="locate-btn"><i class="fas fa-location-dot"></i> 定位</button>
+    <button id="select-city-btn"><i class="fas fa-list-ul"></i> 选择城市</button>
   </div>
 
-  <!-- 时区快捷栏 -->
   <div class="city-quick" id="timezone-quick">
     <button data-tz="local" class="active-tz"><i class="fas fa-location-dot"></i> 本地</button>
     <button data-tz="America/New_York">纽约</button>
@@ -268,7 +318,7 @@
     <button data-tz="America/Los_Angeles">洛杉矶</button>
   </div>
 
-  <!-- 时钟面板 -->
+  <!-- 时钟面板 (扩展内容) -->
   <div id="clock-panel" class="card-panel">
     <div id="loading-state" class="status-message">⏳ 同步时间…</div>
     <div id="clock-card-content" class="hidden">
@@ -280,20 +330,25 @@
       <div class="date-section">
         <span class="full-date" id="full-date">2026年4月20日</span>
         <span class="weekday" id="weekday">星期日</span>
+        <span class="lunar-date" id="lunar-date" style="font-size:1rem; color:#2c5f8a;"></span>
       </div>
       <div class="details-grid" id="clock-details-grid"></div>
+      <div class="world-clock-section">
+        <div class="world-clock-title"><i class="fas fa-globe-americas"></i> 世界时钟</div>
+        <div class="world-clock-row" id="world-clock-row"></div>
+      </div>
     </div>
     <div id="clock-error" class="hidden">⚠️ 无法获取时间</div>
   </div>
 
   <!-- 表盘面板 -->
   <div id="analog-panel" class="card-panel hidden">
-    <canvas id="analog-canvas" class="analog-canvas" width="320" height="320"></canvas>
+    <canvas id="analog-canvas" class="analog-canvas" width="280" height="280"></canvas>
     <div class="analog-city" id="analog-city-name">本地时区</div>
     <div class="analog-digital" id="analog-digital-time">--:--:--</div>
   </div>
 
-  <!-- 秒表面板 -->
+  <!-- 秒表/计时器面板 -->
   <div id="stopwatch-panel" class="card-panel hidden">
     <div class="stopwatch-display" id="stopwatch-display">00:00.00</div>
     <div class="control-buttons">
@@ -302,8 +357,6 @@
       <button id="sw-reset"><i class="fas fa-undo-alt"></i> 重置</button>
     </div>
   </div>
-
-  <!-- 计时器面板 -->
   <div id="timer-panel" class="card-panel hidden">
     <div class="timer-display" id="timer-display">05:00</div>
     <div class="timer-input-group">
@@ -324,6 +377,21 @@
   </div>
 </div>
 
+<!-- 城市选择模态 -->
+<div class="city-modal hidden" id="city-modal">
+  <div class="city-modal-content">
+    <div class="city-modal-header">
+      <h3><i class="fas fa-globe"></i> 选择城市</h3>
+      <button class="close-btn" id="close-city-modal">&times;</button>
+    </div>
+    <div class="city-search-wrapper">
+      <i class="fas fa-search"></i>
+      <input type="text" id="city-filter-input" placeholder="过滤城市…" autocomplete="off" />
+    </div>
+    <div class="city-list" id="city-list-container"></div>
+  </div>
+</div>
+
 <script>
   (function(){
     "use strict";
@@ -337,11 +405,39 @@
     }
     themeToggle.addEventListener('click', () => {
       body.classList.toggle('dark');
-      const isDark = body.classList.contains('dark');
-      themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      const dark = body.classList.contains('dark');
+      themeIcon.className = dark ? 'fas fa-sun' : 'fas fa-moon';
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
       if (currentMode === 'analog') drawAnalogClock();
     });
+
+    // 农历计算
+    const Lunar = (function(){
+      const info = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,0x05aa0,0x076a3,0x096d0,0x04bd7,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0];
+      function getYearInfo(y){ return info[y-1900]; }
+      function getLeapMonth(y){ return getYearInfo(y)&0xf; }
+      function getMonthDays(y,m){ return (getYearInfo(y)&(0x10000>>m))?30:29; }
+      function getYearDays(y){ let sum=348; for(let i=0x8000;i>0x8;i>>=1) sum+=(getYearInfo(y)&i)?1:0; return sum+getLeapMonthDays(y); }
+      function getLeapMonthDays(y){ if(getLeapMonth(y)) return (getYearInfo(y)&0x10000)?30:29; return 0; }
+      const base = new Date(1900,0,31);
+      function solarToLunar(date){
+        let offset = Math.floor((date - base) / 86400000), year = 1900, days;
+        while(year < 2101 && offset > 0){ days = getYearDays(year); offset -= days; year++; }
+        if(offset < 0){ offset += days; year--; }
+        let month = 1, leap = false, leapMonth = getLeapMonth(year);
+        while(month <= 12 && offset > 0){
+          let dim = getMonthDays(year, month);
+          if(leapMonth === month && !leap){ leap = true; month--; }
+          if(offset >= dim){ offset -= dim; if(leap && month === leapMonth) leap = false; month++; }
+          else break;
+        }
+        return { year, month, day: offset + 1, leap };
+      }
+      const lunarMonthNames = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
+      const lunarDayNames = ['初一','初二','初三','初四','初五','初六','初七','初八','初九','初十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
+      function formatLunar(date){ const l=solarToLunar(date); return (l.leap?'闰':'')+lunarMonthNames[l.month-1]+'月'+lunarDayNames[l.day-1]; }
+      return { formatLunar };
+    })();
 
     // DOM
     const modeTabs = document.querySelectorAll('.mode-tabs button');
@@ -357,6 +453,7 @@
     const cityInput = document.getElementById('city-input');
     const searchBtn = document.getElementById('search-btn');
     const locateBtn = document.getElementById('locate-btn');
+    const selectCityBtn = document.getElementById('select-city-btn');
     const tzButtons = document.querySelectorAll('.city-quick button');
     const displayCity = document.getElementById('display-city');
     const updateTimeSpan = document.getElementById('update-time');
@@ -364,7 +461,9 @@
     const secondsDisplay = document.getElementById('seconds-display');
     const fullDateSpan = document.getElementById('full-date');
     const weekdaySpan = document.getElementById('weekday');
+    const lunarDateSpan = document.getElementById('lunar-date');
     const detailsGrid = document.getElementById('clock-details-grid');
+    const worldClockRow = document.getElementById('world-clock-row');
     const analogCanvas = document.getElementById('analog-canvas');
     const analogCtx = analogCanvas.getContext('2d');
     const analogCity = document.getElementById('analog-city-name');
@@ -380,7 +479,7 @@
     let timerRunning = false, timerRemaining = 300, timerInterval;
     let analogFrame;
 
-    // 粒子 (与日历风格一致)
+    // 粒子背景
     const canvas = document.getElementById('clock-canvas'), ctx = canvas.getContext('2d');
     let particles = [], cw, ch, animFrame;
     function initParticles() {
@@ -396,19 +495,19 @@
     function drawBg() {
       if(!ctx) return;
       ctx.clearRect(0,0,cw,ch);
-      const isDark = body.classList.contains('dark');
-      ctx.fillStyle = isDark ? 'rgba(20,35,50,0.1)' : 'rgba(210,230,250,0.1)';
+      const dark = body.classList.contains('dark');
+      ctx.fillStyle = dark ? 'rgba(20,35,50,0.1)' : 'rgba(210,230,250,0.1)';
       ctx.fillRect(0,0,cw,ch);
       particles.forEach(p => {
-        if(p.type === 'cloud') {
+        if(p.type === 'cloud'){
           const grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.radius);
-          if(isDark) grad.addColorStop(0, `rgba(100,140,180,${p.alpha*0.6})`), grad.addColorStop(1, 'rgba(40,60,80,0)');
+          if(dark) grad.addColorStop(0, `rgba(100,140,180,${p.alpha*0.6})`), grad.addColorStop(1, 'rgba(40,60,80,0)');
           else grad.addColorStop(0, `rgba(230,242,255,${p.alpha})`), grad.addColorStop(1, 'rgba(180,210,240,0)');
-          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,2*Math.PI); ctx.fill();
           p.x += 0.1; if(p.x>cw+100) p.x = -100;
         } else {
-          ctx.fillStyle = isDark ? `rgba(180,200,220,${p.alpha*0.8})` : `rgba(255,255,240,${p.alpha})`;
-          ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.6,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle = dark ? `rgba(180,200,220,${p.alpha*0.8})` : `rgba(255,255,240,${p.alpha})`;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.6,0,2*Math.PI); ctx.fill();
           p.x += p.speedX; p.y += p.speedY;
           if(p.x>cw+20) p.x=-20; if(p.y>ch+20) p.y=-20;
         }
@@ -416,12 +515,12 @@
     }
     function animLoop() { drawBg(); animFrame = requestAnimationFrame(animLoop); }
     function resizeCanvas() {
-      const rect = container.getBoundingClientRect(); cw = rect.width; ch = rect.height;
+      const rect = document.getElementById('clockAppContainer').getBoundingClientRect();
+      cw = rect.width; ch = rect.height;
       canvas.width = cw; canvas.height = ch; initParticles();
     }
-    const container = document.getElementById('clockAppContainer');
-    window.addEventListener('resize', ()=>{ resizeCanvas(); });
-    new ResizeObserver(()=>resizeCanvas()).observe(container);
+    window.addEventListener('resize', resizeCanvas);
+    new ResizeObserver(resizeCanvas).observe(document.getElementById('clockAppContainer'));
     resizeCanvas(); animFrame = requestAnimationFrame(animLoop);
 
     // 模式切换
@@ -437,7 +536,7 @@
     }
     modeTabs.forEach(b=>b.addEventListener('click', ()=>setMode(b.dataset.mode)));
 
-    // 时钟核心 (与之前相同)
+    // 时区工具
     function getTzOffset(tz, d) {
       if(tz==='local') return -d.getTimezoneOffset();
       return (new Date(d.toLocaleString('en-US',{timeZone:tz})) - new Date(d.toLocaleString('en-US',{timeZone:'UTC'}))) / 60000;
@@ -452,9 +551,30 @@
         return new Date(v.year, v.month-1, v.day, v.hour, v.minute, v.second);
       } catch { return now; }
     }
+
+    // 世界时钟
+    const worldCities = [
+      { name: '纽约', tz: 'America/New_York' }, { name: '伦敦', tz: 'Europe/London' },
+      { name: '东京', tz: 'Asia/Tokyo' }, { name: '悉尼', tz: 'Australia/Sydney' }
+    ];
+    function renderWorldClock() {
+      const now = new Date(); let html = '';
+      for(let c of worldCities) {
+        try {
+          const time = new Date(now.toLocaleString('en-US', { timeZone: c.tz }));
+          const offset = getTzOffset(c.tz, now);
+          const sign = offset >= 0 ? '+' : '-'; const abs = Math.abs(offset);
+          const offStr = `UTC${sign}${Math.floor(abs/60)}:${String(abs%60).padStart(2,'0')}`;
+          html += `<div class="world-city"><div class="world-city-name">${c.name}</div><div class="world-city-time">${time.getHours().toString().padStart(2,'0')}:${time.getMinutes().toString().padStart(2,'0')}</div><div class="world-city-offset">${offStr}</div></div>`;
+        } catch(e){}
+      }
+      worldClockRow.innerHTML = html || '<div style="opacity:0.6;">加载中…</div>';
+    }
+
     function updateClock() {
       if(currentMode!=='clock') return;
       const d = getCurrentTzDate(); const now = new Date();
+      const offset = currentTimezone==='local' ? -d.getTimezoneOffset() : getTzOffset(currentTimezone, now);
       displayCity.textContent = locationName;
       updateTimeSpan.textContent = `更新 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
       timeDisplay.textContent = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
@@ -462,28 +582,197 @@
       const df = new Intl.DateTimeFormat('zh-CN', { timeZone: currentTimezone==='local'?undefined:currentTimezone, year:'numeric', month:'long', day:'numeric' });
       const wf = new Intl.DateTimeFormat('zh-CN', { timeZone: currentTimezone==='local'?undefined:currentTimezone, weekday:'long' });
       fullDateSpan.textContent = df.format(d); weekdaySpan.textContent = wf.format(d);
-      const y = d.getFullYear(), start = new Date(y,0,1);
-      const dayOfYear = Math.floor((d-start)/86400000)+1;
-      const week = Math.ceil((((d-new Date(y,0,4))/86400000)+new Date(y,0,4).getDay()+1)/7);
-      const offset = currentTimezone==='local' ? -d.getTimezoneOffset() : getTzOffset(currentTimezone, now);
+      lunarDateSpan.textContent = '农历 ' + Lunar.formatLunar(d);
+      const y = d.getFullYear(); const start = new Date(y,0,1);
+      const dayOfYear = Math.floor((d - start) / 86400000) + 1;
+      const yearProgress = ((d - start) / (new Date(y+1,0,1) - start) * 100).toFixed(2);
+      const dayProgress = ((d.getHours()*3600 + d.getMinutes()*60 + d.getSeconds()) / 86400 * 100).toFixed(1);
+      const firstThu = new Date(y,0,4);
+      const weekNum = Math.ceil((((d - firstThu)/86400000) + firstThu.getDay() + 1) / 7);
+      const isDst = (()=>{
+        if(currentTimezone!=='local'){
+          const jan = new Date(y,0,1), jul = new Date(y,6,1);
+          return getTzOffset(currentTimezone,jan) !== getTzOffset(currentTimezone,jul) ? '是' : '否';
+        } else {
+          const jan = new Date(y,0,1), jul = new Date(y,6,1);
+          return jan.getTimezoneOffset() !== jul.getTimezoneOffset() ? '是' : '否';
+        }
+      })();
       const abbr = currentTimezone==='local' ? Intl.DateTimeFormat().resolvedOptions().timeZone : currentTimezone;
+      const quarter = Math.ceil((d.getMonth()+1)/3);
+      const century = Math.ceil(d.getFullYear()/100);
+      const unix = Math.floor(d.getTime()/1000);
       detailsGrid.innerHTML = `
         <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-day"></i></div><div class="detail-info"><span class="detail-label">年·第几天</span><span class="detail-value">${dayOfYear}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-week"></i></div><div class="detail-info"><span class="detail-label">周数</span><span class="detail-value">${week}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-clock"></i></div><div class="detail-info"><span class="detail-label">时区</span><span class="detail-value">${abbr}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-week"></i></div><div class="detail-info"><span class="detail-label">周数</span><span class="detail-value">${weekNum}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-chart-line"></i></div><div class="detail-info"><span class="detail-label">年进度</span><span class="detail-value">${yearProgress}<span class="detail-unit">%</span></span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-hourglass-half"></i></div><div class="detail-info"><span class="detail-label">一天进度</span><span class="detail-value">${dayProgress}<span class="detail-unit">%</span></span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-sun"></i></div><div class="detail-info"><span class="detail-label">夏令时</span><span class="detail-value">${isDst}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar"></i></div><div class="detail-info"><span class="detail-label">季度</span><span class="detail-value">Q${quarter}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-clock"></i></div><div class="detail-info"><span class="detail-label">时区缩写</span><span class="detail-value">${abbr}</span></div></div>
         <div class="detail-item"><div class="detail-icon"><i class="fas fa-map-pin"></i></div><div class="detail-info"><span class="detail-label">UTC偏移</span><span class="detail-value">${offset}分</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-hourglass-start"></i></div><div class="detail-info"><span class="detail-label">Unix时间戳</span><span class="detail-value">${Math.floor(d.getTime()/1000)}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-stopwatch"></i></div><div class="detail-info"><span class="detail-label">毫秒</span><span class="detail-value">${d.getTime()}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-hourglass-start"></i></div><div class="detail-info"><span class="detail-label">Unix时间戳</span><span class="detail-value">${unix}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="fas fa-building"></i></div><div class="detail-info"><span class="detail-label">世纪</span><span class="detail-value">${century}</span></div></div>
       `;
-      loading.classList.add('hidden'); clockContent.classList.remove('hidden'); errorDiv.classList.add('hidden');
+      renderWorldClock();
+      loading.classList.add('hidden');
+      clockContent.classList.remove('hidden');
+      errorDiv.classList.add('hidden');
     }
+
     function setTimezone(tz, name=null) {
-      currentTimezone = tz; locationName = name || (tz==='local'?'本地时区':tz.replace(/_/g,' '));
-      updateClock(); tzButtons.forEach(b=>b.classList.toggle('active-tz', b.dataset.tz===tz));
+      currentTimezone = tz;
+      locationName = name || (tz==='local'?'本地时区':tz.replace(/_/g,' ').replace(/\/.*\//,''));
+      updateClock();
+      tzButtons.forEach(b=>b.classList.toggle('active-tz', b.dataset.tz===tz));
       if(currentMode==='analog') drawAnalogClock();
     }
+
+    // 城市选择数据
+    const cityList = [
+      { name: "阿布扎比", tz: "Asia/Dubai" },
+      { name: "阿克拉", tz: "Africa/Accra" },
+      { name: "亚的斯亚贝巴", tz: "Africa/Addis_Ababa" },
+      { name: "阿尔及尔", tz: "Africa/Algiers" },
+      { name: "阿拉木图", tz: "Asia/Almaty" },
+      { name: "安曼", tz: "Asia/Amman" },
+      { name: "阿姆斯特丹", tz: "Europe/Amsterdam" },
+      { name: "安卡拉", tz: "Europe/Istanbul" },
+      { name: "安塔那那利佛", tz: "Indian/Antananarivo" },
+      { name: "阿什哈巴德", tz: "Asia/Ashgabat" },
+      { name: "雅典", tz: "Europe/Athens" },
+      { name: "亚特兰大", tz: "America/New_York" },
+      { name: "奥克兰", tz: "Pacific/Auckland" },
+      { name: "巴格达", tz: "Asia/Baghdad" },
+      { name: "巴库", tz: "Asia/Baku" },
+      { name: "曼谷", tz: "Asia/Bangkok" },
+      { name: "巴塞罗那", tz: "Europe/Madrid" },
+      { name: "北京", tz: "Asia/Shanghai" },
+      { name: "贝鲁特", tz: "Asia/Beirut" },
+      { name: "贝尔格莱德", tz: "Europe/Belgrade" },
+      { name: "柏林", tz: "Europe/Berlin" },
+      { name: "波哥大", tz: "America/Bogota" },
+      { name: "波士顿", tz: "America/New_York" },
+      { name: "巴西利亚", tz: "America/Sao_Paulo" },
+      { name: "布里斯班", tz: "Australia/Brisbane" },
+      { name: "布鲁塞尔", tz: "Europe/Brussels" },
+      { name: "布加勒斯特", tz: "Europe/Bucharest" },
+      { name: "布达佩斯", tz: "Europe/Budapest" },
+      { name: "布宜诺斯艾利斯", tz: "America/Argentina/Buenos_Aires" },
+      { name: "开罗", tz: "Africa/Cairo" },
+      { name: "加尔各答", tz: "Asia/Kolkata" },
+      { name: "芝加哥", tz: "America/Chicago" },
+      { name: "科伦坡", tz: "Asia/Colombo" },
+      { name: "哥本哈根", tz: "Europe/Copenhagen" },
+      { name: "达卡", tz: "Asia/Dhaka" },
+      { name: "迪拜", tz: "Asia/Dubai" },
+      { name: "都柏林", tz: "Europe/Dublin" },
+      { name: "法兰克福", tz: "Europe/Berlin" },
+      { name: "哈瓦那", tz: "America/Havana" },
+      { name: "赫尔辛基", tz: "Europe/Helsinki" },
+      { name: "香港", tz: "Asia/Hong_Kong" },
+      { name: "伊斯坦布尔", tz: "Europe/Istanbul" },
+      { name: "雅加达", tz: "Asia/Jakarta" },
+      { name: "约翰内斯堡", tz: "Africa/Johannesburg" },
+      { name: "喀布尔", tz: "Asia/Kabul" },
+      { name: "卡拉奇", tz: "Asia/Karachi" },
+      { name: "基辅", tz: "Europe/Kiev" },
+      { name: "科威特城", tz: "Asia/Kuwait" },
+      { name: "拉各斯", tz: "Africa/Lagos" },
+      { name: "利马", tz: "America/Lima" },
+      { name: "里斯本", tz: "Europe/Lisbon" },
+      { name: "伦敦", tz: "Europe/London" },
+      { name: "洛杉矶", tz: "America/Los_Angeles" },
+      { name: "马德里", tz: "Europe/Madrid" },
+      { name: "马尼拉", tz: "Asia/Manila" },
+      { name: "墨西哥城", tz: "America/Mexico_City" },
+      { name: "迈阿密", tz: "America/New_York" },
+      { name: "米兰", tz: "Europe/Rome" },
+      { name: "明斯克", tz: "Europe/Minsk" },
+      { name: "蒙特利尔", tz: "America/Toronto" },
+      { name: "莫斯科", tz: "Europe/Moscow" },
+      { name: "孟买", tz: "Asia/Kolkata" },
+      { name: "内罗毕", tz: "Africa/Nairobi" },
+      { name: "新德里", tz: "Asia/Kolkata" },
+      { name: "纽约", tz: "America/New_York" },
+      { name: "奥斯陆", tz: "Europe/Oslo" },
+      { name: "巴黎", tz: "Europe/Paris" },
+      { name: "珀斯", tz: "Australia/Perth" },
+      { name: "布拉格", tz: "Europe/Prague" },
+      { name: "雷克雅未克", tz: "Atlantic/Reykjavik" },
+      { name: "里约热内卢", tz: "America/Sao_Paulo" },
+      { name: "罗马", tz: "Europe/Rome" },
+      { name: "旧金山", tz: "America/Los_Angeles" },
+      { name: "圣地亚哥", tz: "America/Santiago" },
+      { name: "圣保罗", tz: "America/Sao_Paulo" },
+      { name: "西雅图", tz: "America/Los_Angeles" },
+      { name: "首尔", tz: "Asia/Seoul" },
+      { name: "上海", tz: "Asia/Shanghai" },
+      { name: "新加坡", tz: "Asia/Singapore" },
+      { name: "斯德哥尔摩", tz: "Europe/Stockholm" },
+      { name: "悉尼", tz: "Australia/Sydney" },
+      { name: "台北", tz: "Asia/Taipei" },
+      { name: "塔林", tz: "Europe/Tallinn" },
+      { name: "第比利斯", tz: "Asia/Tbilisi" },
+      { name: "德黑兰", tz: "Asia/Tehran" },
+      { name: "东京", tz: "Asia/Tokyo" },
+      { name: "多伦多", tz: "America/Toronto" },
+      { name: "温哥华", tz: "America/Vancouver" },
+      { name: "维也纳", tz: "Europe/Vienna" },
+      { name: "维尔纽斯", tz: "Europe/Vilnius" },
+      { name: "华沙", tz: "Europe/Warsaw" },
+      { name: "华盛顿", tz: "America/New_York" },
+      { name: "惠灵顿", tz: "Pacific/Auckland" },
+      { name: "苏黎世", tz: "Europe/Zurich" }
+    ];
+
+    // 城市模态逻辑
+    const cityModal = document.getElementById('city-modal');
+    const cityFilterInput = document.getElementById('city-filter-input');
+    const cityListContainer = document.getElementById('city-list-container');
+    const closeCityModal = document.getElementById('close-city-modal');
+
+    function renderCityList(filterText = '') {
+      const filtered = cityList.filter(c => c.name.includes(filterText) || c.tz.toLowerCase().includes(filterText.toLowerCase()));
+      cityListContainer.innerHTML = filtered.map(c => `
+        <div class="city-item" data-tz="${c.tz}" data-name="${c.name}">
+          <span>${c.name}</span>
+          <small>${c.tz.split('/').pop()}</small>
+        </div>
+      `).join('');
+      document.querySelectorAll('.city-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const tz = item.dataset.tz;
+          const name = item.dataset.name;
+          setTimezone(tz, name);
+          cityInput.value = name;
+          cityModal.classList.add('hidden');
+        });
+      });
+    }
+
+    selectCityBtn.addEventListener('click', () => {
+      cityModal.classList.remove('hidden');
+      cityFilterInput.value = '';
+      renderCityList();
+      cityFilterInput.focus();
+    });
+
+    closeCityModal.addEventListener('click', () => cityModal.classList.add('hidden'));
+    cityFilterInput.addEventListener('input', (e) => renderCityList(e.target.value));
+    cityModal.addEventListener('click', (e) => { if(e.target === cityModal) cityModal.classList.add('hidden'); });
+
+    // 搜索 & 定位
+    searchBtn.onclick = () => {
+      const city = cityInput.value.trim();
+      if(city) {
+        const found = cityList.find(c => c.name === city || c.tz === city);
+        if(found) setTimezone(found.tz, found.name);
+        else searchCity(city);
+      }
+    };
     async function searchCity(city) {
-      if(!city.trim()) return;
+      if(!city) return;
       loading.classList.remove('hidden'); clockContent.classList.add('hidden');
       if(abortController) abortController.abort();
       abortController = new AbortController();
@@ -491,13 +780,16 @@
         const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=zh`, {signal:abortController.signal});
         const d = await r.json();
         if(!d.results?.length) throw new Error('未找到');
-        const res = d.results[0]; if(!res.timezone) throw new Error('无时区');
-        let disp = res.name; if(res.admin1) disp += `, ${res.admin1}`;
-        setTimezone(res.timezone, disp); cityInput.value = disp;
+        const res = d.results[0];
+        if(!res.timezone) throw new Error('无时区');
+        let disp = res.name;
+        if(res.admin1) disp += `, ${res.admin1}`;
+        setTimezone(res.timezone, disp);
+        cityInput.value = disp;
       } catch(e) { errorDiv.classList.remove('hidden'); loading.classList.add('hidden'); }
       finally { abortController = null; }
     }
-    function manualLocate() {
+    locateBtn.onclick = () => {
       if(!navigator.geolocation) return;
       loading.classList.remove('hidden'); clockContent.classList.add('hidden');
       navigator.geolocation.getCurrentPosition(async pos=>{
@@ -505,79 +797,86 @@
         let name='我的位置';
         try{
           const rev=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=12`);
-          const d=await rev.json(); const a=d?.address;
-          if(a) name = a.city||a.town||a.village||a.suburb||a.county||a.state||'我的位置';
+          const d=await rev.json();
+          if(d?.address) name = d.address.city||d.address.town||d.address.village||d.address.suburb||'我的位置';
         }catch(e){}
-        setTimezone('local', name); cityInput.value = name;
+        setTimezone('local', name);
+        cityInput.value = name;
       }, ()=>{ errorDiv.classList.remove('hidden'); loading.classList.add('hidden'); });
-    }
+    };
 
-    // 表盘 (适配深色)
+    tzButtons.forEach(b=>b.addEventListener('click', ()=>{
+      const tz=b.dataset.tz;
+      setTimezone(tz, tz==='local'?'本地时区':b.textContent.trim());
+      cityInput.value = tz==='local'?'本地':b.textContent.trim();
+    }));
+
+    // 表盘
     function drawAnalogClock() {
-      const d = getCurrentTzDate(); const h=d.getHours(), m=d.getMinutes(), s=d.getSeconds(), ms=d.getMilliseconds();
-      const sec = s + ms/1000; const w=320, hh=320, cx=160, cy=160, r=135;
+      const d = getCurrentTzDate();
+      const h=d.getHours(), m=d.getMinutes(), s=d.getSeconds(), ms=d.getMilliseconds();
+      const sec = s + ms/1000;
+      const w=280, hh=280, cx=140, cy=140, r=115;
       analogCtx.clearRect(0,0,w,hh);
-      const isDark = body.classList.contains('dark');
-      const bg1 = isDark?'#2c4055':'#e6edf5', bg2 = isDark?'#1a2f45':'#b0c4de', bg3 = isDark?'#4a6a8a':'#8faec9';
-      const gradOut = analogCtx.createRadialGradient(cx-5,cy-5,2,cx,cy,r+12);
+      const dark = body.classList.contains('dark');
+      const bg1 = dark?'#2c4055':'#e6edf5', bg2 = dark?'#1a2f45':'#b0c4de', bg3 = dark?'#4a6a8a':'#8faec9';
+      const gradOut = analogCtx.createRadialGradient(cx-3,cy-3,2,cx,cy,r+10);
       gradOut.addColorStop(0,bg1); gradOut.addColorStop(0.7,bg2); gradOut.addColorStop(1,bg3);
-      analogCtx.beginPath(); analogCtx.arc(cx,cy,r+10,0,2*Math.PI); analogCtx.fillStyle=gradOut; analogCtx.fill();
-      analogCtx.strokeStyle = isDark?'#7a9bc0':'#2c4e6e'; analogCtx.lineWidth=2.5; analogCtx.stroke();
-      const faceGrad = analogCtx.createRadialGradient(cx-8,cy-8,5,cx,cy,r);
-      faceGrad.addColorStop(0, isDark?'#304a60':'#fff'); faceGrad.addColorStop(0.6, isDark?'#253c50':'#f0f6fe'); faceGrad.addColorStop(1, isDark?'#1a3142':'#d9e6f2');
+      analogCtx.beginPath(); analogCtx.arc(cx,cy,r+8,0,2*Math.PI); analogCtx.fillStyle=gradOut; analogCtx.fill();
+      analogCtx.strokeStyle = dark?'#7a9bc0':'#2c4e6e'; analogCtx.lineWidth=2.5; analogCtx.stroke();
+      const faceGrad = analogCtx.createRadialGradient(cx-6,cy-6,4,cx,cy,r);
+      faceGrad.addColorStop(0, dark?'#304a60':'#fff'); faceGrad.addColorStop(0.6, dark?'#253c50':'#f0f6fe'); faceGrad.addColorStop(1, dark?'#1a3142':'#d9e6f2');
       analogCtx.beginPath(); analogCtx.arc(cx,cy,r,0,2*Math.PI); analogCtx.fillStyle=faceGrad; analogCtx.fill(); analogCtx.stroke();
-      for(let i=0;i<60;i++) {
-        const ang = i*6*Math.PI/180; const isH = i%5===0;
+      for(let i=0;i<60;i++){
+        const ang=i*6*Math.PI/180, isH=i%5===0;
         analogCtx.beginPath();
-        analogCtx.moveTo(cx+Math.sin(ang)*(isH?r-12:r-6), cy-Math.cos(ang)*(isH?r-12:r-6));
+        analogCtx.moveTo(cx+Math.sin(ang)*(isH?r-10:r-5), cy-Math.cos(ang)*(isH?r-10:r-5));
         analogCtx.lineTo(cx+Math.sin(ang)*(r-2), cy-Math.cos(ang)*(r-2));
-        analogCtx.lineWidth = isH?3.5:1.8; analogCtx.strokeStyle = isH ? (isDark?'#b8d0e8':'#0a2a44') : (isDark?'#8aaccc':'#3a5a7a');
+        analogCtx.lineWidth=isH?3:1.5; analogCtx.strokeStyle=isH?(dark?'#b8d0e8':'#0a2a44'):(dark?'#8aaccc':'#3a5a7a');
         analogCtx.stroke();
       }
-      analogCtx.font='bold 18px Inter'; analogCtx.fillStyle=isDark?'#d0e2ff':'#0a2a44'; analogCtx.textAlign='center'; analogCtx.textBaseline='middle';
-      for(let i=1;i<=12;i++){ const ang=i*30*Math.PI/180; analogCtx.fillText(i.toString(), cx+Math.sin(ang)*(r-28), cy-Math.cos(ang)*(r-28)); }
+      analogCtx.font='bold 16px Inter'; analogCtx.fillStyle=dark?'#d0e2ff':'#0a2a44'; analogCtx.textAlign='center'; analogCtx.textBaseline='middle';
+      for(let i=1;i<=12;i++){ const ang=i*30*Math.PI/180; analogCtx.fillText(i.toString(), cx+Math.sin(ang)*(r-24), cy-Math.cos(ang)*(r-24)); }
       const hAng = ((h%12)*30 + m*0.5 + sec*0.00833)*Math.PI/180;
-      analogCtx.beginPath(); analogCtx.moveTo(cx,cy); analogCtx.lineTo(cx+Math.sin(hAng)*r*0.5, cy-Math.cos(hAng)*r*0.5);
-      analogCtx.lineWidth=7; const hGrad=analogCtx.createLinearGradient(cx-4,cy-4,cx+6,cy+6); hGrad.addColorStop(0,isDark?'#5a85b0':'#1e3a5f'); hGrad.addColorStop(1,isDark?'#3c6a96':'#2c5a7a');
+      analogCtx.beginPath(); analogCtx.moveTo(cx,cy); analogCtx.lineTo(cx+Math.sin(hAng)*r*0.45, cy-Math.cos(hAng)*r*0.45);
+      analogCtx.lineWidth=6; const hGrad=analogCtx.createLinearGradient(cx-3,cy-3,cx+4,cy+4); hGrad.addColorStop(0,dark?'#5a85b0':'#1e3a5f'); hGrad.addColorStop(1,dark?'#3c6a96':'#2c5a7a');
       analogCtx.strokeStyle=hGrad; analogCtx.stroke();
       const mAng = (m*6 + sec*0.1)*Math.PI/180;
-      analogCtx.beginPath(); analogCtx.moveTo(cx,cy); analogCtx.lineTo(cx+Math.sin(mAng)*r*0.7, cy-Math.cos(mAng)*r*0.7);
-      analogCtx.lineWidth=4.5; const mGrad=analogCtx.createLinearGradient(cx-3,cy-3,cx+5,cy+5); mGrad.addColorStop(0,isDark?'#6a96b8':'#2c4e6e'); mGrad.addColorStop(1,isDark?'#4f7ea3':'#3e6a8a');
+      analogCtx.beginPath(); analogCtx.moveTo(cx,cy); analogCtx.lineTo(cx+Math.sin(mAng)*r*0.65, cy-Math.cos(mAng)*r*0.65);
+      analogCtx.lineWidth=4; const mGrad=analogCtx.createLinearGradient(cx-2,cy-2,cx+3,cy+3); mGrad.addColorStop(0,dark?'#6a96b8':'#2c4e6e'); mGrad.addColorStop(1,dark?'#4f7ea3':'#3e6a8a');
       analogCtx.strokeStyle=mGrad; analogCtx.stroke();
       const sAng = sec*6*Math.PI/180;
-      analogCtx.beginPath(); analogCtx.moveTo(cx-Math.sin(sAng)*18, cy+Math.cos(sAng)*18); analogCtx.lineTo(cx+Math.sin(sAng)*r*0.85, cy-Math.cos(sAng)*r*0.85);
+      analogCtx.beginPath(); analogCtx.moveTo(cx-Math.sin(sAng)*15, cy+Math.cos(sAng)*15); analogCtx.lineTo(cx+Math.sin(sAng)*r*0.8, cy-Math.cos(sAng)*r*0.8);
       analogCtx.lineWidth=2; analogCtx.strokeStyle='#e05a5a'; analogCtx.stroke();
-      analogCtx.beginPath(); analogCtx.arc(cx,cy,6,0,2*Math.PI); analogCtx.fillStyle=isDark?'#b0c5dc':'#f0f0f0'; analogCtx.fill();
-      analogCity.textContent = locationName; analogDigital.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      analogCtx.beginPath(); analogCtx.arc(cx,cy,5,0,2*Math.PI); analogCtx.fillStyle=dark?'#b0c5dc':'#f0f0f0'; analogCtx.fill();
+      analogCity.textContent = locationName;
+      analogDigital.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
-    function startAnalog() { if(analogFrame) cancelAnimationFrame(analogFrame); function step(){ drawAnalogClock(); analogFrame=requestAnimationFrame(step); } analogFrame=requestAnimationFrame(step); }
-    function stopAnalog() { if(analogFrame) cancelAnimationFrame(analogFrame); analogFrame=null; }
+    function startAnalog(){ if(analogFrame)cancelAnimationFrame(analogFrame); function step(){ drawAnalogClock(); analogFrame=requestAnimationFrame(step); } analogFrame=requestAnimationFrame(step); }
+    function stopAnalog(){ if(analogFrame){ cancelAnimationFrame(analogFrame); analogFrame=null; } }
 
-    // 秒表/计时器 (与之前相同)
+    // 秒表/计时器
     function formatSw(ms){ const m=Math.floor(ms/60000), s=Math.floor((ms%60000)/1000), cs=Math.floor((ms%1000)/10); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${cs.toString().padStart(2,'0')}`; }
-    function stepSw(ts){ if(!swRunning) return; if(swLastTimestamp===0) swLastTimestamp=ts; swTime+=ts-swLastTimestamp; swLastTimestamp=ts; swDisplay.textContent=formatSw(swTime); swInterval=requestAnimationFrame(stepSw); }
-    function startStopwatch(){ if(swRunning) return; swRunning=true; swLastTimestamp=0; swInterval=requestAnimationFrame(stepSw); }
-    function pauseStopwatch(){ swRunning=false; if(swInterval) cancelAnimationFrame(swInterval); }
+    function stepSw(ts){ if(!swRunning)return; if(swLastTimestamp===0)swLastTimestamp=ts; swTime+=ts-swLastTimestamp; swLastTimestamp=ts; swDisplay.textContent=formatSw(swTime); swInterval=requestAnimationFrame(stepSw); }
+    function startStopwatch(){ if(swRunning)return; swRunning=true; swLastTimestamp=0; swInterval=requestAnimationFrame(stepSw); }
+    function pauseStopwatch(){ swRunning=false; if(swInterval)cancelAnimationFrame(swInterval); }
     function resetStopwatch(){ pauseStopwatch(); swTime=0; swDisplay.textContent=formatSw(0); }
-    function formatTimer(sec){ const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60; return h>0?`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`:`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
-    function updateTimerDisplay(){ timerDisplay.textContent = formatTimer(timerRemaining); timerDisplay.classList.toggle('timer-ended', timerRemaining<=0); }
-    function setTimerFromInputs(){ const h=parseInt(timerHours.value)||0, m=parseInt(timerMinutes.value)||0, s=parseInt(timerSeconds.value)||0; timerRemaining=h*3600+m*60+s; updateTimerDisplay(); }
-    function timerTick(){ if(!timerRunning) return; if(timerRemaining>0){ timerRemaining--; updateTimerDisplay(); if(timerRemaining===0){ try{new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f38=').play();}catch(e){} pauseTimer(); } } else pauseTimer(); }
-    function startTimer(){ if(timerRunning) return; if(timerRemaining<=0) setTimerFromInputs(); if(timerRemaining<=0) return; timerRunning=true; timerInterval=setInterval(timerTick,1000); }
-    function pauseTimer(){ timerRunning=false; if(timerInterval) clearInterval(timerInterval); }
+    function formatTimer(sec){ const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60; return h>0?`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`:`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+    function updateTimerDisplay(){ timerDisplay.textContent=formatTimer(timerRemaining); timerDisplay.classList.toggle('timer-ended',timerRemaining<=0); }
+    function setTimerFromInputs(){ const h=parseInt(timerHours.value)||0,m=parseInt(timerMinutes.value)||0,s=parseInt(timerSeconds.value)||0; timerRemaining=h*3600+m*60+s; updateTimerDisplay(); }
+    function timerTick(){ if(!timerRunning)return; if(timerRemaining>0){ timerRemaining--; updateTimerDisplay(); if(timerRemaining===0){ try{new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f38=').play();}catch(e){} pauseTimer(); } } else pauseTimer(); }
+    function startTimer(){ if(timerRunning)return; if(timerRemaining<=0)setTimerFromInputs(); if(timerRemaining<=0)return; timerRunning=true; timerInterval=setInterval(timerTick,1000); }
+    function pauseTimer(){ timerRunning=false; if(timerInterval)clearInterval(timerInterval); }
     function resetTimer(){ pauseTimer(); setTimerFromInputs(); timerDisplay.classList.remove('timer-ended'); }
 
-    // 绑定事件
-    searchBtn.onclick = ()=>searchCity(cityInput.value);
-    locateBtn.onclick = manualLocate;
-    tzButtons.forEach(b=>b.addEventListener('click', ()=>{ const tz=b.dataset.tz; setTimezone(tz, tz==='local'?'本地时区':b.textContent.trim()); cityInput.value = tz==='local'?'本地':b.textContent.trim(); }));
     document.getElementById('sw-start').onclick=startStopwatch; document.getElementById('sw-pause').onclick=pauseStopwatch; document.getElementById('sw-reset').onclick=resetStopwatch;
     document.getElementById('timer-start').onclick=startTimer; document.getElementById('timer-pause').onclick=pauseTimer; document.getElementById('timer-reset').onclick=resetTimer;
     timerHours.oninput=resetTimer; timerMinutes.oninput=resetTimer; timerSeconds.oninput=resetTimer;
     setTimerFromInputs();
 
     function init() {
-      setMode('clock'); setTimezone('local', '本地时区');
+      setMode('clock');
+      setTimezone('local', '本地时区');
       clockInterval = setInterval(()=>{ if(currentMode==='clock') updateClock(); }, 500);
     }
     init();
