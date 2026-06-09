@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>米遇安天气</title>
+  <title>米遇安天气 · 全球城市 · iOS玻璃</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
       --grid-value-color: #0b2b44;
       --forecast-item-bg: rgba(255, 255, 255, 0.4);
       --index-card-bg: rgba(255, 255, 255, 0.4);
-      --modal-overlay-bg: rgba(0, 0, 0, 0.15);
+      --modal-overlay-bg: rgba(0, 0, 0, 0.25);
       --tab-active-bg: #3b82f6;
       --tab-active-text: white;
       --tab-inactive-bg: rgba(255,255,255,0.5);
@@ -61,7 +61,7 @@
       --grid-value-color: #cbd5e1;
       --forecast-item-bg: rgba(40, 60, 80, 0.5);
       --index-card-bg: rgba(40, 60, 80, 0.5);
-      --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+      --modal-overlay-bg: rgba(0, 0, 0, 0.55);
       --tab-active-bg: #4f8cf7;
       --tab-active-text: white;
       --tab-inactive-bg: rgba(40,55,70,0.6);
@@ -86,6 +86,7 @@
       transition: background 0.3s ease;
     }
 
+    /* 直角风格统治 */
     .weather-app,
     .weather-app *,
     .search-wrapper,
@@ -266,7 +267,7 @@
       box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3) !important;
     }
 
-    /* 城市选择弹窗 - 白色玻璃背景 */
+    /* 模态弹窗 - iOS26 玻璃效果 */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -276,19 +277,19 @@
       align-items: center;
       justify-content: center;
       padding: 1rem;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
       transition: background 0.3s;
     }
     .modal-overlay.hidden {
       display: none;
     }
     .modal-content {
-      background: rgba(255, 255, 255, 0.78);
-      backdrop-filter: blur(48px) saturate(180%);
-      -webkit-backdrop-filter: blur(48px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12), inset 0 1px 0 white;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(44px) saturate(190%);
+      -webkit-backdrop-filter: blur(44px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.5);
       width: 100%;
       max-width: 600px;
       max-height: 80vh;
@@ -298,11 +299,11 @@
       transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
     .dark-mode .modal-content {
-      background: rgba(20, 28, 38, 0.7);
-      backdrop-filter: blur(48px) saturate(180%);
-      -webkit-backdrop-filter: blur(48px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      background: rgba(35, 45, 60, 0.28);
+      backdrop-filter: blur(44px) saturate(190%);
+      -webkit-backdrop-filter: blur(44px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     .modal-header {
@@ -310,10 +311,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 16px 20px;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-    }
-    .dark-mode .modal-header {
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid var(--card-border);
     }
     .modal-header h3 {
       font-size: 1.2rem;
@@ -335,10 +333,7 @@
     }
     .modal-search {
       padding: 12px 20px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-    }
-    .dark-mode .modal-search {
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid var(--card-border);
     }
     .modal-search-input {
       width: 100%;
@@ -359,10 +354,7 @@
       flex-wrap: wrap;
       gap: 6px;
       padding: 10px 20px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-    }
-    .dark-mode .modal-tabs {
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid var(--card-border);
     }
     .modal-tab {
       padding: 7px 14px;
@@ -775,7 +767,7 @@
     </div>
   </div>
 
-  <!-- 城市选择弹窗 (白色玻璃) -->
+  <!-- 城市选择模态弹窗 (iOS26 玻璃) -->
   <div class="modal-overlay hidden" id="city-modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
@@ -879,7 +871,7 @@
       }
       themeToggleBtn.addEventListener('click', toggleTheme);
 
-      // 粒子背景 (完整保留)
+      // 粒子背景 (与之前一致)
       function initParticlesForWeather(code) {
         const count = Math.floor((canvasWidth * canvasHeight) / 4500) || 30;
         particles = [];
@@ -937,7 +929,7 @@
       function manualLocate(){ if(!navigator.geolocation){showError('不支持定位');return;} setUIState('loading'); if(currentAbortController)currentAbortController.abort(); currentAbortController=new AbortController(); navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lon=pos.coords.longitude; let locName='我的位置'; try{ const rev=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=12`,{headers:{'User-Agent':'MiyuAnWeather'},signal:currentAbortController?.signal}); if(rev.ok){const d=await rev.json(); if(d?.address){const a=d.address; locName=a.city||a.town||a.village||a.suburb||a.county||a.state||'我的位置'; if(a.country&&locName!==a.country)locName+=`, ${a.country}`;}} }catch(e){} try{await fetchWeatherByCoords(lat,lon,locName); cityInput.value=locName.split(',')[0]||'';}catch(e){showError('定位天气失败');}finally{currentAbortController=null;} },(err)=>{currentAbortController=null;showError('定位失败');},{timeout:8000}); }
       function autoLocateOnLoad(){ if(!navigator.geolocation){handleSearch('北京');return;} navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lon=pos.coords.longitude; let locName='我的位置'; try{ const rev=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=12`,{headers:{'User-Agent':'MiyuAnWeather'},signal:AbortSignal.timeout(4000)}); if(rev.ok){const d=await rev.json(); if(d?.address){const a=d.address; locName=a.city||a.town||a.village||a.suburb||a.county||a.state||'我的位置'; if(a.country&&locName!==a.country)locName+=`, ${a.country}`;}} }catch(e){} if(currentAbortController)currentAbortController.abort(); currentAbortController=new AbortController(); setUIState('loading'); try{await fetchWeatherByCoords(lat,lon,locName); cityInput.value=locName.split(',')[0]||'';}catch(err){handleSearch('北京');}finally{currentAbortController=null;} },(err)=>{handleSearch('北京');},{timeout:6000}); }
 
-      // 城市选择弹窗功能
+      // 城市选择弹窗
       function renderCityList(region,filter=''){ let cities=[]; if(region==='all')cities=getAllCities(); else cities=cityDatabase[region]||[]; const f=filter.trim().toLowerCase(); if(f)cities=cities.filter(c=>c.toLowerCase().includes(f)); if(cities.length===0){modalCityList.innerHTML='<div class="no-result">未找到匹配的城市</div>';return;} modalCityList.innerHTML=cities.map(c=>`<button class="modal-city-btn${cityInput.value===c?' selected':''}" data-city="${c}">${c}</button>`).join(''); modalCityList.querySelectorAll('.modal-city-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ const city=btn.getAttribute('data-city'); cityInput.value=city; handleSearch(city); closeModal(); }); }); }
       function openModal(){ modalOverlay.classList.remove('hidden'); currentRegion='china'; modalTabs.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active')); const activeTab=modalTabs.querySelector(`[data-region="${currentRegion}"]`); if(activeTab)activeTab.classList.add('active'); modalSearchInput.value=''; renderCityList(currentRegion); setTimeout(()=>modalSearchInput.focus(),150); }
       function closeModal(){ modalOverlay.classList.add('hidden'); }
