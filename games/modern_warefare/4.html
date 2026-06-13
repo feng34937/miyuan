@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>现代战争推演4 · 经济霸业</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            background: #000000;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Orbitron', 'Microsoft Yahei', sans-serif;
+        }
+        .screen-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1); opacity: 1; pointer-events: none; }
+        .powered-by {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a0f1f, #000000);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 20001; font-size: 2.8rem; font-weight: 500; letter-spacing: 8px;
+            transition: opacity 1s ease; opacity: 1; pointer-events: none;
+            font-family: 'Orbitron', monospace;
+        }
+        .powered-by span {
+            background: linear-gradient(135deg, #f3e5ab, #d4af37, #ffd97c);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            text-shadow: 0 0 15px rgba(210,180,80,0.8);
+            animation: aurora 2s infinite alternate;
+        }
+        @keyframes aurora {
+            0% { text-shadow: 0 0 5px #ffd966; opacity: 0.9; }
+            100% { text-shadow: 0 0 25px #ffbf40; opacity: 1; }
+        }
+        .home-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 40% 30%, #0a1a3a, #01050f);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 1000; opacity: 0; transition: opacity 1.5s ease-out;
+            pointer-events: none; overflow: hidden;
+        }
+        .home-container.active { opacity: 1; pointer-events: auto; }
+        .flowing-lights { position: absolute; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; z-index: 0; }
+        .light-particle {
+            position: absolute; background: rgba(255, 215, 110, 0.7);
+            border-radius: 50%; filter: blur(2px); box-shadow: 0 0 8px #ffd58c;
+            animation: floatGlow 15s infinite linear;
+        }
+        @keyframes floatGlow {
+            0% { transform: translateY(100vh) translateX(-30px); opacity: 0; }
+            15% { opacity: 0.8; }
+            85% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) translateX(40px); opacity: 0; }
+        }
+        .game-title {
+            font-size: 5rem; font-weight: 800; background: linear-gradient(145deg, #f7e5b3, #dbaa42, #fff0c0);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            margin-bottom: 2rem; z-index: 2; letter-spacing: 5px;
+            animation: titleBreathing 2.5s infinite alternate;
+        }
+        @keyframes titleBreathing {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px #ffcc66);}
+            100% { transform: scale(1.02); filter: drop-shadow(0 0 15px #ffae42);}
+        }
+        .btn-group { display: flex; gap: 2rem; z-index: 2; }
+        .gold-btn {
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(12px); border: 1.5px solid #e9bc6d;
+            color: #ffebc2; font-size: 1.5rem; padding: 0.9rem 2rem; cursor: pointer;
+            font-weight: bold; border-radius: 0px; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3); letter-spacing: 2px;
+        }
+        .gold-btn:hover { background: rgba(210, 150, 50, 0.2); transform: translateY(-3px) scale(1.02); border-color: #ffda88; color: white; }
+
+        .game-main {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050f17; z-index: 2000; display: none; flex-direction: column;
+        }
+        .game-main.active { display: flex; }
+        .nation-info {
+            background: rgba(6, 20, 35, 0.85); backdrop-filter: blur(20px);
+            padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(203, 158, 50, 0.6); flex-wrap: wrap; gap: 12px; z-index: 2100;
+        }
+        .nation-card {
+            color: #fdebb3; font-weight: bold; font-size: 0.9rem;
+            background: #0a1f30cc; padding: 6px 18px; border-radius: 0px;
+            display: inline-flex; align-items: center; gap: 16px; backdrop-filter: blur(4px);
+            border: 1px solid #8b6b3a;
+        }
+        .nation-card span { color: #ffd966; margin-right: 6px; }
+        .turn-text {
+            background: #000000aa; backdrop-filter: blur(8px); padding: 6px 24px;
+            border-radius: 0px; font-size: 1rem; font-weight: bold; color: #ffe3a3;
+            border-left: 3px solid #ffbb55;
+        }
+        .map-wrapper { flex: 1; display: flex; justify-content: center; align-items: center; padding: 15px; overflow: auto; }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(20, minmax(44px, 52px));
+            grid-template-rows: repeat(20, minmax(44px, 52px));
+            background: #0e1d28; border: 2px solid #6a8eaa;
+        }
+        .grid-cell {
+            border: 1px solid #2d5470; transition: 0.08s linear; cursor: pointer;
+        }
+        .grid-cell:hover { filter: brightness(1.2); transform: scale(1.02); z-index: 5; box-shadow: inset 0 0 8px gold; }
+        .sea { background: linear-gradient(145deg, #1e4d6f, #0e3550); }
+        .land { background: linear-gradient(145deg, #3f9a6b, #276749); }
+        .selected { background: radial-gradient(circle, #ffc107, #f57c00) !important; border: 2px solid white !important; }
+        .unit { background: radial-gradient(circle at 30% 30%, #e34d4d, #9e2a2a) !important; box-shadow: inset 0 0 6px #ffa500; }
+        .player1-land { background: #b77cf0 !important; }
+        .player1-capital { background: #d6a6ff !important; border: 3px solid #ffdd88; }
+        .player2-land { background: #27b584 !important; }
+        .player2-capital { background: #53e0ae !important; border: 3px solid #ffdd88; }
+        .player3-land { background: #f5a623 !important; }
+        .player3-capital { background: #ffc857 !important; border: 3px solid #fff0b0; }
+        .player4-land { background: #e35f5f !important; }
+        .player4-capital { background: #fc8b8b !important; border: 3px solid #ffe0e0; }
+        .player5-land { background: #da62b0 !important; }
+        .player5-capital { background: #ff92ce !important; }
+        .player6-land { background: #8a6cf0 !important; }
+        .player6-capital { background: #b794ff !important; }
+        .player7-land { background: #2e7eb8 !important; }
+        .player7-capital { background: #5f9eff !important; }
+        .player8-land { background: #fc687c !important; }
+        .player8-capital { background: #ff98aa !important; }
+        .player9-land { background: #748aa6 !important; }
+        .player9-capital { background: #9eb0cc !important; }
+
+        .fab-horizontal {
+            position: fixed; bottom: 20px; right: 20px; z-index: 3000;
+            display: flex; gap: 10px;
+            background: rgba(12, 28, 40, 0.75); backdrop-filter: blur(20px);
+            padding: 8px 16px; border-radius: 0px; border: 1px solid #cfaa6e;
+        }
+        .fab-icon {
+            width: 46px; height: 46px; background: #08212e; border-radius: 0px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: #eacc89; cursor: pointer;
+            border: 1px solid #c99f48; transition: all 0.2s;
+        }
+        .fab-icon:hover { background: #2b5c7a; color: #ffeecc; transform: scale(1.02); }
+        .lobby-modal {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center; z-index: 7000;
+        }
+        .lobby-card {
+            background: #0b1725; border: 1px solid #c7974b; width: 95%; max-width: 800px;
+            padding: 2rem; text-align: center; border-radius: 0px; box-shadow: 0 20px 35px black;
+        }
+        .player-config-list { max-height: 55vh; overflow-y: auto; margin: 1rem 0; }
+        .player-row {
+            display: flex; gap: 12px; align-items: center; background: #021a2b; margin: 8px 0;
+            padding: 8px 12px; border: 1px solid #7a5a2a; flex-wrap: wrap;
+        }
+        .player-row input { background: #01121f; border: 1px solid #b37b3a; color: white; padding: 6px 12px; flex: 2; min-width: 100px; }
+        .player-row label { display: flex; align-items: center; gap: 8px; color: #ffdeae; margin-left: 10px; }
+        .lobby-btn { background: #b47c2e; border: none; color: white; font-weight: bold; padding: 10px 24px; font-size: 1.2rem; margin: 12px 8px; cursor: pointer; border-radius: 0px; }
+        .lobby-btn:hover { background: #df9f4a; }
+        .status-tip {
+            position: fixed; bottom: 100px; left: 20px;
+            background: #071c2cee; backdrop-filter: blur(12px);
+            color: #ffefbb; padding: 8px 20px; border-left: 4px solid #f5bc5c;
+            border-radius: 0px; font-weight: bold; z-index: 3000; font-size: 0.85rem;
+            pointer-events: none; font-family: monospace;
+        }
+        @media (max-width: 750px) {
+            .game-title { font-size: 2.8rem; }
+            .fab-icon { width: 40px; height: 40px; font-size: 16px; }
+            .nation-card { font-size: 0.65rem; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="screen-mask" id="blackMask"></div>
+<div class="powered-by" id="poweredScreen"><span>⚡ powered by Miyuan ⚡</span></div>
+<div class="home-container" id="homeContainer">
+    <div class="flowing-lights" id="lightCanvas"></div>
+    <div class="game-title">现代战争推演4</div>
+    <div class="btn-group">
+        <div class="gold-btn" id="enterGameBtn">⚔️ 进入游戏</div>
+        <div class="gold-btn" id="tutorialHomeBtn">📘 新手教程</div>
+    </div>
+</div>
+<div class="game-main" id="gameMain">
+    <div class="nation-info" id="nationInfoBar">
+        <div class="nation-card" id="playerInfoPanel">🏳️ 帝国议会</div>
+        <div class="turn-text" id="turnText">⚙️ 待机中</div>
+    </div>
+    <div class="map-wrapper">
+        <div class="grid-container" id="gridMap"></div>
+    </div>
+</div>
+<div class="fab-horizontal" id="fabMenu">
+    <div class="fab-icon" id="fabRules" title="规则"><i class="fas fa-scroll"></i></div>
+    <div class="fab-icon" id="fabResearch" title="研发"><i class="fas fa-flask"></i></div>
+    <div class="fab-icon" id="fabDeploy" title="部署武器"><i class="fas fa-bomb"></i></div>
+    <div class="fab-icon" id="fabAttack" title="攻击"><i class="fas fa-crosshairs"></i></div>
+    <div class="fab-icon" id="fabCollect" title="收集"><i class="fas fa-coins"></i></div>
+    <div class="fab-icon" id="fabExpand" title="扩张"><i class="fas fa-expand-alt"></i></div>
+    <div class="fab-icon" id="fabPlace" title="部署步兵"><i class="fas fa-user-plus"></i></div>
+    <div class="fab-icon" id="fabDevelop" title="内政发展"><i class="fas fa-chart-line"></i></div>
+    <div class="fab-icon" id="fabEndTurn" title="结束回合"><i class="fas fa-hourglass-half"></i></div>
+</div>
+<div class="status-tip" id="statusMessage">✦ 星辰战场 · 点击按钮开始征伐</div>
+
+<script>
+    (function() {
+        // ---------- 启动动画 ----------
+        const blackMask = document.getElementById('blackMask');
+        const poweredScreen = document.getElementById('poweredScreen');
+        const homeContainer = document.getElementById('homeContainer');
+        const gameMain = document.getElementById('gameMain');
+        const enterBtn = document.getElementById('enterGameBtn');
+        const tutorialBtn = document.getElementById('tutorialHomeBtn');
+
+        setTimeout(() => {
+            poweredScreen.style.opacity = '0';
+            setTimeout(() => {
+                poweredScreen.style.display = 'none';
+                blackMask.style.opacity = '0';
+                setTimeout(() => {
+                    blackMask.style.display = 'none';
+                    homeContainer.classList.add('active');
+                    generateStarParticles();
+                }, 400);
+            }, 900);
+        }, 1100);
+
+        function generateStarParticles() {
+            const container = document.getElementById('lightCanvas');
+            if(!container) return;
+            for(let i=0;i<120;i++) {
+                let p = document.createElement('div');
+                p.classList.add('light-particle');
+                let size = 3 + Math.random() * 8;
+                p.style.width = size + 'px'; p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 15 + 's';
+                p.style.animationDuration = 8 + Math.random() * 12 + 's';
+                p.style.opacity = 0.4 + Math.random() * 0.6;
+                container.appendChild(p);
+            }
+        }
+
+        // ================= 深度经济系统 + 战争 =================
+        let GAME = {
+            playerResources: {}, playerEconomy: {}, // GDP, 农业, 工业, 商业
+            playerNames: {}, capitalNames: {},
+            currentTurn: 1, totalPlayers: 2,
+            playerLands: {}, units: new Map(), harvestedCells: new Set(),
+            eliminatedPlayers: new Set(),
+            setupPhase: { isSetting: true, currentSettingPlayer: 1, selectedCells: [], selectingCapital: false },
+            selectedAction: null, pendingWeapon: null, attackUsedThisTurn: false,
+            researched: { 
+                lightTank: new Set(), heavyTank: new Set(), artillery: new Set(), rocket: new Set(),
+                missileShort: new Set(), missileLong: new Set(), nuke: new Set(), hbomb: new Set(),
+                industrial: new Set(), agriculture: new Set(), trade: new Set() 
+            },
+            weaponUsed: new Map(),
+            mapTerrain: [],
+            aiPlayers: new Set(),
+            aiProcessing: false,
+            turnCount: 0
+        };
+        const techKeys = ['lightTank','heavyTank','artillery','rocket','missileShort','missileLong','nuke','hbomb','industrial','agriculture','trade'];
+        techKeys.forEach(t => { if(!GAME.researched[t]) GAME.researched[t]=new Set(); });
+
+        function generateMap() {
+            let map = [];
+            for(let i=0;i<20;i++) {
+                map[i]=[];
+                for(let j=0;j<20;j++) map[i][j] = Math.random()>0.5?1:0;
+            }
+            let totalLand = map.flat().filter(v=>v===1).length;
+            let target = 200;
+            while(totalLand > target) {
+                let y = Math.floor(Math.random()*20), x = Math.floor(Math.random()*20);
+                if(map[y][x]===1) { map[y][x]=0; totalLand--; }
+            }
+            while(totalLand < target) {
+                let y = Math.floor(Math.random()*20), x = Math.floor(Math.random()*20);
+                if(map[y][x]===0) { map[y][x]=1; totalLand++; }
+            }
+            return map;
+        }
+
+        function renderFullMap() {
+            const container = document.getElementById('gridMap');
+            if(!container) return;
+            container.innerHTML = '';
+            for(let y=0;y<20;y++) {
+                for(let x=0;x<20;x++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    let key = `${x},${y}`;
+                    let owner = 0;
+                    for(let p=1;p<=GAME.totalPlayers;p++) if(GAME.playerLands[p]?.cells.has(key)) owner = p;
+                    let isCapital = false;
+                    for(let p=1;p<=GAME.totalPlayers;p++) if(GAME.playerLands[p]?.capital && GAME.playerLands[p].capital.x===x && GAME.playerLands[p].capital.y===y) isCapital=true;
+                    let terrain = (GAME.mapTerrain[y] && GAME.mapTerrain[y][x]===1) ? 'land' : 'sea';
+                    cell.classList.add(terrain);
+                    if(owner) {
+                        cell.classList.add(`player${owner}-land`);
+                        if(isCapital) cell.classList.add(`player${owner}-capital`);
+                    }
+                    if(GAME.units.has(key)) cell.classList.add('unit');
+                    cell.dataset.x=x; cell.dataset.y=y;
+                    cell.addEventListener('click', (function(xx,yy){ return function(){ onGridClick(xx,yy); }; })(x,y));
+                    container.appendChild(cell);
+                }
+            }
+        }
+
+        function updateTopBar() {
+            let panel = document.getElementById('playerInfoPanel');
+            let turnSpan = document.getElementById('turnText');
+            if(!panel) return;
+            if(GAME.setupPhase.isSetting) {
+                let cur = GAME.setupPhase.currentSettingPlayer;
+                let name = GAME.playerNames[cur] || `领主${cur}`;
+                panel.innerHTML = `🏳️ 圣国: ${name}  | 🏛️ 待立都 | 💰 银 ${GAME.playerResources[cur]?.silver || 200}`;
+                turnSpan.innerHTML = `⚙️ 拓建 · ${name}`;
+            } else {
+                let cur = GAME.currentTurn;
+                let eco = GAME.playerEconomy[cur] || {gdp:500, agriculture:10, industry:5, commerce:8};
+                let res = GAME.playerResources[cur] || {silver:200,gold:3,rareEarth:5,oil:12,uranium:1};
+                panel.innerHTML = `🏳️ ${GAME.playerNames[cur]}  | 🏛️ ${GAME.capitalNames[cur]} | 💰银 ${res.silver} | GDP ${eco.gdp} | 🌾农 ${eco.agriculture} | 🏭工 ${eco.industry} | 📈商 ${eco.commerce}`;
+                turnSpan.innerHTML = `✨ 回合: ${GAME.playerNames[cur]} ${GAME.attackUsedThisTurn ? '(已宣战)' : '待命'}  | 第${GAME.turnCount}轮`;
+            }
+        }
+
+        function isConnected(cells) {
+            if(cells.length<=1) return true;
+            let set = new Set(cells.map(c=>`${c.x},${c.y}`));
+            let start = cells[0];
+            let visited = new Set(), queue=[start];
+            visited.add(`${start.x},${start.y}`);
+            while(queue.length) {
+                let cur = queue.shift();
+                [[-1,0],[1,0],[0,-1],[0,1]].forEach(dir=>{
+                    let nx = cur.x+dir[0], ny = cur.y+dir[1];
+                    let k = `${nx},${ny}`;
+                    if(set.has(k) && !visited.has(k)) { visited.add(k); queue.push({x:nx,y:ny}); }
+                });
+            }
+            return visited.size === cells.length;
+        }
+
+        function onGridClick(x,y) {
+            let cellDiv = document.querySelector(`.grid-cell[data-x='${x}'][data-y='${y}']`);
+            if(!cellDiv) return;
+            if(GAME.setupPhase.isSetting) {
+                let curPlayer = GAME.setupPhase.currentSettingPlayer;
+                if(!cellDiv.classList.contains('land')) { showMsg('只能开拓陆地'); return; }
+                if(!GAME.setupPhase.selectingCapital) {
+                    if(GAME.setupPhase.selectedCells.some(c=>c.x===x && c.y===y)) {
+                        GAME.setupPhase.selectedCells = GAME.setupPhase.selectedCells.filter(c=>!(c.x===x && c.y===y));
+                        cellDiv.classList.remove('selected');
+                    } else {
+                        if(GAME.setupPhase.selectedCells.length>=4) { showMsg('最多选择4块祖地'); return; }
+                        GAME.setupPhase.selectedCells.push({x,y});
+                        cellDiv.classList.add('selected');
+                    }
+                    if(GAME.setupPhase.selectedCells.length===4 && isConnected(GAME.setupPhase.selectedCells)) {
+                        GAME.setupPhase.selectingCapital = true;
+                        showMsg('请点击其中一块作为龙脉之都');
+                    } else if(GAME.setupPhase.selectedCells.length===4 && !isConnected(GAME.setupPhase.selectedCells)) {
+                        GAME.setupPhase.selectedCells.pop();
+                        cellDiv.classList.remove('selected');
+                        showMsg('领土必须连成一片');
+                    }
+                } else {
+                    if(!GAME.setupPhase.selectedCells.some(c=>c.x===x && c.y===y)){ showMsg('首都需从已选地块中确立'); return; }
+                    GAME.playerLands[curPlayer] = { cells: new Set(), capital:null };
+                    GAME.setupPhase.selectedCells.forEach(c=>{ GAME.playerLands[curPlayer].cells.add(`${c.x},${c.y}`); });
+                    GAME.playerLands[curPlayer].capital = {x,y};
+                    if(!GAME.playerResources[curPlayer]) GAME.playerResources[curPlayer] = {silver:220,gold:4,diamond:1,rareEarth:10,oil:18,uranium:2};
+                    if(!GAME.playerEconomy[curPlayer]) GAME.playerEconomy[curPlayer] = {gdp:500, agriculture:10, industry:5, commerce:8};
+                    renderFullMap();
+                    if(curPlayer >= GAME.totalPlayers) {
+                        GAME.setupPhase.isSetting = false;
+                        GAME.currentTurn = 1;
+                        GAME.turnCount = 0;
+                        showMsg('帝国崛起！战争与经济发展纪元');
+                        updateTopBar();
+                        renderFullMap();
+                        if(GAME.aiPlayers.has(GAME.currentTurn)) executeAITurn();
+                    } else {
+                        GAME.setupPhase.currentSettingPlayer++;
+                        GAME.setupPhase.selectedCells = [];
+                        GAME.setupPhase.selectingCapital = false;
+                        showMsg(`轮到 ${GAME.playerNames[GAME.setupPhase.currentSettingPlayer]} 开辟疆土`);
+                        updateTopBar();
+                        if(GAME.aiPlayers.has(GAME.setupPhase.currentSettingPlayer)) autoSetupTerrain();
+                    }
+                }
+                return;
+            }
+            if(GAME.selectedAction === 'attack') actionAttack(x,y);
+            else if(GAME.selectedAction === 'collect') actionCollect(x,y);
+            else if(GAME.selectedAction === 'expand') actionExpand(x,y);
+            else if(GAME.selectedAction === 'place') actionPlaceUnit(x,y);
+            else if(GAME.selectedAction === 'develop') showDevelopMenu();
+            else showMsg('请通过右下角按钮选择策略行动');
+        }
+
+        function autoSetupTerrain() {
+            let player = GAME.setupPhase.currentSettingPlayer;
+            let landCells = [];
+            for(let y=0;y<20;y++) for(let x=0;x<20;x++) {
+                let cell = document.querySelector(`.grid-cell[data-x='${x}'][data-y='${y}']`);
+                if(cell && cell.classList.contains('land')) landCells.push({x,y,cell});
+            }
+            if(landCells.length<4) return;
+            let selected = [];
+            let start = landCells[Math.floor(Math.random()*landCells.length)];
+            selected.push(start);
+            let frontier = [start];
+            while(selected.length<4 && frontier.length) {
+                let cur = frontier.shift();
+                for(let dir of [[-1,0],[1,0],[0,-1],[0,1]]) {
+                    let nx = cur.x+dir[0], ny = cur.y+dir[1];
+                    let nc = landCells.find(c=>c.x===nx && c.y===ny);
+                    if(nc && !selected.some(s=>s.x===nx && s.y===ny)) {
+                        selected.push(nc);
+                        frontier.push(nc);
+                        if(selected.length>=4) break;
+                    }
+                }
+            }
+            if(selected.length<4) return;
+            for(let s of selected) {
+                GAME.setupPhase.selectedCells.push({x:s.x,y:s.y});
+                s.cell.classList.add('selected');
+            }
+            GAME.setupPhase.selectingCapital = true;
+            let cap = selected[Math.floor(Math.random()*selected.length)];
+            GAME.playerLands[player] = { cells: new Set(), capital:null };
+            GAME.setupPhase.selectedCells.forEach(c=>{ GAME.playerLands[player].cells.add(`${c.x},${c.y}`); });
+            GAME.playerLands[player].capital = {x:cap.x,y:cap.y};
+            if(!GAME.playerResources[player]) GAME.playerResources[player] = {silver:220,gold:4,diamond:1,rareEarth:10,oil:18,uranium:2};
+            if(!GAME.playerEconomy[player]) GAME.playerEconomy[player] = {gdp:500, agriculture:10, industry:5, commerce:8};
+            renderFullMap();
+            if(player >= GAME.totalPlayers) {
+                GAME.setupPhase.isSetting = false;
+                GAME.currentTurn = 1;
+                showMsg('帝国崛起！战争纪元开启');
+                updateTopBar();
+                if(GAME.aiPlayers.has(1)) executeAITurn();
+            } else {
+                GAME.setupPhase.currentSettingPlayer++;
+                GAME.setupPhase.selectedCells = [];
+                GAME.setupPhase.selectingCapital = false;
+                showMsg(`轮到 ${GAME.playerNames[GAME.setupPhase.currentSettingPlayer]} 开辟疆土`);
+                updateTopBar();
+                if(GAME.aiPlayers.has(GAME.setupPhase.currentSettingPlayer)) autoSetupTerrain();
+            }
+        }
+
+        async function executeAITurn() {
+            if(GAME.setupPhase.isSetting) return;
+            let player = GAME.currentTurn;
+            if(!GAME.aiPlayers.has(player)) return;
+            if(GAME.aiProcessing) return;
+            GAME.aiProcessing = true;
+            showMsg(`🤖 AI ${GAME.playerNames[player]} 开始运筹...`);
+            await new Promise(r=>setTimeout(r, 500));
+            // 经济发展
+            let eco = GAME.playerEconomy[player];
+            if(eco && (eco.agriculture<40 || eco.industry<30)) {
+                developEconomy(player, 'agriculture', 5);
+                await new Promise(r=>setTimeout(r, 300));
+                developEconomy(player, 'industry', 5);
+                await new Promise(r=>setTimeout(r, 300));
+            }
+            // 收集资源
+            for(let [key,unit] of GAME.units) {
+                if(unit.owner===player && !GAME.harvestedCells.has(key)) {
+                    let [x,y] = key.split(',').map(Number);
+                    if(GAME.playerLands[player].cells.has(key)) {
+                        actionCollect(x,y);
+                        await new Promise(r=>setTimeout(r, 300));
+                    }
+                }
+            }
+            // 扩张
+            let candidates = [];
+            for(let cell of GAME.playerLands[player].cells) {
+                let [cx,cy] = cell.split(',').map(Number);
+                [[-1,0],[1,0],[0,-1],[0,1]].forEach(dir=>{
+                    let nx=cx+dir[0], ny=cy+dir[1];
+                    let nk=`${nx},${ny}`;
+                    if(nx>=0 && nx<20 && ny>=0 && ny<20 && !GAME.playerLands[player].cells.has(nk) && GAME.playerResources[player].silver>=100) {
+                        let occ = false;
+                        for(let p=1;p<=GAME.totalPlayers;p++) if(p!==player && GAME.playerLands[p]?.cells.has(nk)) occ=true;
+                        if(!occ) candidates.push({x:nx,y:ny});
+                    }
+                });
+            }
+            if(candidates.length) {
+                let target = candidates[Math.floor(Math.random()*candidates.length)];
+                actionExpand(target.x,target.y);
+                await new Promise(r=>setTimeout(r, 300));
+            }
+            if(!GAME.attackUsedThisTurn) {
+                let enemies = [];
+                for(let [k,u] of GAME.units) if(u.owner !== player && !GAME.eliminatedPlayers.has(u.owner)) enemies.push(k);
+                if(enemies.length===0) {
+                    for(let i=1;i<=GAME.totalPlayers;i++) if(i!==player && !GAME.eliminatedPlayers.has(i)) {
+                        for(let cell of GAME.playerLands[i].cells) enemies.push(cell);
+                    }
+                }
+                if(enemies.length) {
+                    let targetKey = enemies[Math.floor(Math.random()*enemies.length)];
+                    let [tx,ty] = targetKey.split(',').map(Number);
+                    actionAttack(tx,ty);
+                    await new Promise(r=>setTimeout(r, 400));
+                }
+            }
+            endTurn();
+            GAME.aiProcessing = false;
+        }
+
+        function showDevelopMenu() {
+            let eco = GAME.playerEconomy[GAME.currentTurn];
+            let msg = `🌾 农业(${eco.agriculture})   🏭 工业(${eco.industry})   📈 商业(${eco.commerce})\nGDP:${eco.gdp}\n发展消耗银币:\n1.农业+5 (120银)  2.工业+5 (150银)  3.商业+5 (180银)`;
+            let choice = prompt(msg + "\n输入 1/2/3 选择发展方向:");
+            if(choice === '1') developEconomy(GAME.currentTurn, 'agriculture', 5);
+            else if(choice === '2') developEconomy(GAME.currentTurn, 'industry', 5);
+            else if(choice === '3') developEconomy(GAME.currentTurn, 'commerce', 5);
+            else showMsg('取消发展');
+            GAME.selectedAction = null;
+        }
+        function developEconomy(player, sector, amount) {
+            let eco = GAME.playerEconomy[player];
+            let cost = 0;
+            if(sector === 'agriculture') cost = 120;
+            else if(sector === 'industry') cost = 150;
+            else if(sector === 'commerce') cost = 180;
+            if(GAME.playerResources[player].silver < cost) { showMsg('银币不足'); return; }
+            GAME.playerResources[player].silver -= cost;
+            if(sector === 'agriculture') eco.agriculture += amount;
+            else if(sector === 'industry') eco.industry += amount;
+            else if(sector === 'commerce') eco.commerce += amount;
+            let newGdp = eco.gdp + eco.agriculture*3 + eco.industry*4 + eco.commerce*2;
+            eco.gdp = Math.floor(newGdp);
+            showMsg(`${sector} 发展成功! GDP提升至 ${eco.gdp}`);
+            updateTopBar();
+        }
+
+        function actionAttack(x,y) {
+            let key = `${x},${y}`;
+            let owner = null;
+            for(let p=1;p<=GAME.totalPlayers;p++) if(GAME.playerLands[p]?.cells.has(key)) owner=p;
+            if(owner === GAME.currentTurn){ showMsg('无法进攻己方领土'); return; }
+            if(GAME.attackUsedThisTurn){ showMsg('本回合已发动战事'); return; }
+            let myUnit = null;
+            for(let [k,u] of GAME.units) if(u.owner === GAME.currentTurn){ myUnit = k; break; }
+            if(!myUnit){ showMsg('无战斗单位，请部署步兵'); return; }
+            if(owner) {
+                GAME.playerLands[owner].cells.delete(key);
+                if(GAME.playerLands[owner].capital && GAME.playerLands[owner].capital.x===x && GAME.playerLands[owner].capital.y===y) {
+                    GAME.eliminatedPlayers.add(owner);
+                    showMsg(`⚔️ 帝国崩殂！${GAME.playerNames[owner]} 灭亡`);
+                }
+            }
+            GAME.playerLands[GAME.currentTurn].cells.add(key);
+            let [sx,sy] = myUnit.split(',').map(Number);
+            let oldCell = document.querySelector(`.grid-cell[data-x='${sx}'][data-y='${sy}']`);
+            if(oldCell) oldCell.classList.remove('unit');
+            GAME.units.delete(myUnit);
+            GAME.units.set(key, {type:'精锐步兵', owner:GAME.currentTurn});
+            GAME.attackUsedThisTurn = true;
+            renderFullMap(); updateTopBar();
+            showMsg(`⚡ 血战夺取 (${x},${y})`);
+            GAME.selectedAction = null;
+        }
+        function actionCollect(x,y) {
+            let key = `${x},${y}`;
+            if(!GAME.playerLands[GAME.currentTurn]?.cells.has(key)){ showMsg('非己方领土'); return; }
+            if(GAME.harvestedCells.has(key)){ showMsg('资源已枯竭'); return; }
+            let gain = 45 + Math.floor(Math.random() * 40);
+            GAME.playerResources[GAME.currentTurn].silver += gain;
+            GAME.harvestedCells.add(key);
+            showMsg(`💰 收集到 ${gain} 银币`);
+            updateTopBar(); renderFullMap();
+            GAME.selectedAction = null;
+        }
+        function actionExpand(x,y) {
+            let key = `${x},${y}`;
+            if(GAME.playerLands[GAME.currentTurn].cells.has(key)){ showMsg('已是疆土'); return; }
+            let neighbors = [`${x-1},${y}`,`${x+1},${y}`,`${x},${y-1}`,`${x},${y+1}`];
+            let adjacent = neighbors.some(n => GAME.playerLands[GAME.currentTurn].cells.has(n));
+            if(!adjacent){ showMsg('必须扩张相邻地块'); return; }
+            if(GAME.playerResources[GAME.currentTurn].silver < 100){ showMsg('银币不足100'); return; }
+            GAME.playerResources[GAME.currentTurn].silver -= 100;
+            GAME.playerLands[GAME.currentTurn].cells.add(key);
+            renderFullMap(); updateTopBar();
+            showMsg(`🏰 开疆拓土，消耗100银币`);
+            GAME.selectedAction = null;
+        }
+        function actionPlaceUnit(x,y) {
+            let key = `${x},${y}`;
+            if(!GAME.playerLands[GAME.currentTurn]?.cells.has(key)){ showMsg('必须部署在己方领土'); return; }
+            if(GAME.units.has(key)){ showMsg('已有驻军'); return; }
+            GAME.units.set(key, {type:'步兵军团', owner:GAME.currentTurn});
+            renderFullMap();
+            showMsg(`⚔️ 部署步兵于 (${x},${y})`);
+            GAME.selectedAction = null;
+        }
+
+        function endTurn() {
+            if(GAME.setupPhase.isSetting){ showMsg('建设中无法结束回合'); return; }
+            let eco = GAME.playerEconomy[GAME.currentTurn];
+            let income = Math.floor(eco.agriculture * 2 + eco.industry * 3 + eco.commerce * 2.5);
+            GAME.playerResources[GAME.currentTurn].silver += income;
+            showMsg(`📈 回合税收 +${income} 银币 (基于农业/工业/商业)`);
+            updateTopBar();
+
+            let next = (GAME.currentTurn % GAME.totalPlayers) + 1;
+            while(GAME.eliminatedPlayers.has(next) && next !== GAME.currentTurn) next = (next % GAME.totalPlayers)+1;
+            GAME.currentTurn = next;
+            GAME.turnCount++;
+            GAME.attackUsedThisTurn = false;
+            GAME.selectedAction = null;
+            renderFullMap(); updateTopBar();
+            showMsg(`⏳ 纪元更迭，轮到 ${GAME.playerNames[GAME.currentTurn]}`);
+            if(GAME.aiPlayers.has(GAME.currentTurn)) executeAITurn();
+        }
+        function showMsg(txt) { let el = document.getElementById('statusMessage'); if(el) el.innerHTML = `✦ ${txt} ✦`; }
+
+        function showLobbyConfig(callback) {
+            let modal = document.createElement('div');
+            modal.className = 'lobby-modal';
+            let playerCount = 2;
+            let container = document.createElement('div');
+            container.className = 'lobby-card';
+            container.innerHTML = `
+                <h2><i class="fas fa-users"></i> 帝国议会 · 经济霸业</h2>
+                <div style="display:flex; gap:20px; justify-content:center; margin-bottom:20px;">
+                    <button id="decPlayer" class="lobby-btn" style="padding:4px 18px;">-</button>
+                    <span id="playerNumDisplay" style="color:#ffdeae; font-size:1.8rem;">2</span>
+                    <button id="incPlayer" class="lobby-btn" style="padding:4px 18px;">+</button>
+                </div>
+                <div id="playersConfigList" class="player-config-list"></div>
+                <button id="confirmLobby" class="lobby-btn">⚡ 征途开启 ⚡</button>
+            `;
+            modal.appendChild(container);
+            document.body.appendChild(modal);
+            function rebuildList(count) {
+                let listDiv = document.getElementById('playersConfigList');
+                listDiv.innerHTML = '';
+                for(let i=1;i<=count;i++) {
+                    let row = document.createElement('div');
+                    row.className = 'player-row';
+                    row.innerHTML = `
+                        <span style="color:#ffd966; min-width:70px;">玩家${i}</span>
+                        <input type="text" id="pName${i}" placeholder="国度名称" value="星穹${i}">
+                        <input type="text" id="pCap${i}" placeholder="首都" value="辉光${i}">
+                        <label><input type="checkbox" id="pAI${i}"> 🤖 AI</label>
+                    `;
+                    listDiv.appendChild(row);
+                }
+            }
+            let numSpan = document.getElementById('playerNumDisplay');
+            let decBtn = document.getElementById('decPlayer'), incBtn = document.getElementById('incPlayer');
+            decBtn.onclick = () => { if(playerCount>2) { playerCount--; numSpan.innerText=playerCount; rebuildList(playerCount); } };
+            incBtn.onclick = () => { if(playerCount<9) { playerCount++; numSpan.innerText=playerCount; rebuildList(playerCount); } };
+            rebuildList(2);
+            document.getElementById('confirmLobby').onclick = () => {
+                let total = parseInt(numSpan.innerText);
+                GAME.totalPlayers = total;
+                GAME.playerNames = {}; GAME.capitalNames = {}; GAME.aiPlayers.clear();
+                for(let i=1;i<=total;i++) {
+                    let name = document.getElementById(`pName${i}`).value.trim() || `帝国${i}`;
+                    let cap = document.getElementById(`pCap${i}`).value.trim() || `王都${i}`;
+                    GAME.playerNames[i] = name;
+                    GAME.capitalNames[i] = cap;
+                    let isAi = document.getElementById(`pAI${i}`)?.checked || false;
+                    if(isAi) GAME.aiPlayers.add(i);
+                }
+                modal.remove();
+                callback();
+            };
+        }
+
+        function launchFullGame() {
+            homeContainer.classList.remove('active');
+            setTimeout(() => {
+                gameMain.classList.add('active');
+                showLobbyConfig(() => {
+                    GAME.mapTerrain = generateMap();
+                    GAME.playerLands = {}; GAME.playerResources = {}; GAME.playerEconomy = {};
+                    for(let i=1;i<=GAME.totalPlayers;i++) {
+                        GAME.playerLands[i] = { cells: new Set(), capital: null };
+                        GAME.playerResources[i] = { silver:250, gold:4, diamond:1, rareEarth:10, oil:20, uranium:2 };
+                        GAME.playerEconomy[i] = { gdp:500, agriculture:12, industry:6, commerce:10 };
+                    }
+                    GAME.units.clear(); GAME.harvestedCells.clear(); GAME.eliminatedPlayers.clear();
+                    GAME.setupPhase = { isSetting: true, currentSettingPlayer:1, selectedCells:[], selectingCapital:false };
+                    GAME.currentTurn=1; GAME.attackUsedThisTurn=false; GAME.turnCount=0;
+                    renderFullMap(); updateTopBar();
+                    showMsg(`请 ${GAME.playerNames[1]} 选择4块相连领土，再点击首都`);
+                    if(GAME.aiPlayers.has(1)) autoSetupTerrain();
+                });
+            }, 200);
+        }
+
+        enterBtn.onclick = launchFullGame;
+        tutorialBtn.onclick = launchFullGame;
+
+        document.getElementById('fabRules').onclick = () => alert("经济霸业规则：\n- 每回合可发展农业/工业/商业提升GDP\n- GDP影响税收和国力\n- 扩张、战争、研发均需消耗资源\n- 首都陷落即灭国");
+        document.getElementById('fabResearch').onclick = () => alert("科技树：坦克/导弹/核弹 + 经济科技，提升产业效率");
+        document.getElementById('fabDeploy').onclick = () => alert("部署武器：需研发对应科技，每个单位仅部署一次");
+        document.getElementById('fabAttack').onclick = () => { if(!GAME.setupPhase.isSetting){ GAME.selectedAction='attack'; showMsg('征伐模式 · 点击敌方领土'); } else showMsg('完成建国后再宣战'); };
+        document.getElementById('fabCollect').onclick = () => { if(!GAME.setupPhase.isSetting){ GAME.selectedAction='collect'; showMsg('征收模式 · 点击己方领土获取银币'); } };
+        document.getElementById('fabExpand').onclick = () => { if(!GAME.setupPhase.isSetting){ GAME.selectedAction='expand'; showMsg('拓疆模式 · 点击相邻空地（100银）'); } };
+        document.getElementById('fabPlace').onclick = () => { if(!GAME.setupPhase.isSetting){ GAME.selectedAction='place'; showMsg('募兵 · 点击己方领土部署步兵'); } };
+        document.getElementById('fabDevelop').onclick = () => { if(!GAME.setupPhase.isSetting){ GAME.selectedAction='develop'; showDevelopMenu(); } else showMsg('建设阶段无法发展经济'); };
+        document.getElementById('fabEndTurn').onclick = () => { endTurn(); };
+    })();
+</script>
+</body>
+</html>
