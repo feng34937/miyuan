@@ -172,7 +172,8 @@
             transition: opacity 1s ease;
             opacity: 1;
             pointer-events: none;
-            font-family: monospace;
+            /* 修改字体为华文细黑，并添加备选字体确保跨平台显示 */
+            font-family: '华文细黑', 'STXihei', 'Heiti SC', 'Microsoft YaHei', 'PingFang SC', sans-serif;
         }
         .powered-by span {
             background: linear-gradient(135deg, #ffdd99, #e6b422, #ffcc66);
@@ -592,7 +593,7 @@
             background: radial-gradient(circle, #b0c4de, #748aa6) !important;
         }
 
-        /* ============ 悬浮工具栏 ============ */
+        /* ============ 悬浮工具栏（毛玻璃·直角） ============ */
         .fab-horizontal {
             position: fixed;
             bottom: 12px;
@@ -600,15 +601,17 @@
             z-index: 3100;
             display: none;
             gap: 6px;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
             padding: 6px 10px;
-            border: 1px solid #f5bc5c;
+            border: 1px solid rgba(245, 188, 92, 0.5);
             flex-wrap: wrap;
             justify-content: flex-end;
             max-width: 88vw;
             pointer-events: auto;
-            border-radius: 2px;
+            border-radius: 0px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
         }
         .fab-horizontal.visible {
             display: flex;
@@ -616,21 +619,23 @@
         .fab-icon {
             width: 38px;
             height: 38px;
-            background: #0a1f2e;
+            background: rgba(10, 31, 46, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
             color: #ffdfa5;
             cursor: pointer;
-            border: 1px solid #dba347;
+            border: 1px solid rgba(219, 163, 71, 0.55);
             transition: 0.1s;
             position: relative;
-            border-radius: 2px;
+            border-radius: 0px;
         }
         .fab-icon:active {
             transform: scale(0.94);
-            background: #2c5a78;
+            background: rgba(44, 90, 120, 0.8);
             color: white;
         }
         .fab-icon:hover {
@@ -649,6 +654,15 @@
             100% {
                 box-shadow: 0 0 22px rgba(74, 222, 128, 0.9), 0 0 40px rgba(74, 222, 128, 0.4);
             }
+        }
+        .fab-icon.lottery-free {
+            border-color: #4ade80 !important;
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.7);
+            animation: lotteryGlow 1s infinite alternate;
+        }
+        @keyframes lotteryGlow {
+            from { box-shadow: 0 0 8px #4ade80; }
+            to { box-shadow: 0 0 20px #4ade80, 0 0 35px #22c55e; }
         }
 
         /* ============ 弹窗通用 ============ */
@@ -855,14 +869,37 @@
             text-align: center;
         }
 
-        /* ============ 状态提示栏 ============ */
+        /* 抽奖结果展示 */
+        .lottery-result {
+            margin: 15px 0;
+            padding: 12px;
+            background: #021a2b;
+            border: 1px dashed #f5bc5c;
+            animation: resultPop 0.4s ease;
+        }
+        .lottery-result .prize-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+        .lottery-result .prize-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffd966;
+        }
+        @keyframes resultPop {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* ============ 状态提示栏（毛玻璃·直角） ============ */
         .status-tip {
             position: fixed;
             bottom: 100px;
             left: 12px;
             right: 12px;
-            background: #000000dd;
-            backdrop-filter: blur(14px);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             color: #ffefbb;
             padding: 6px 14px;
             border-left: 4px solid #f5bc5c;
@@ -874,8 +911,10 @@
             overflow-x: auto;
             max-width: calc(100vw - 24px);
             text-align: center;
-            border-radius: 2px;
+            border-radius: 0px;
             text-overflow: ellipsis;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
         }
         .status-tip.warning {
             border-left-color: #f87171 !important;
@@ -884,10 +923,10 @@
         }
         @keyframes warningFlash {
             0% {
-                background: #000000dd;
+                background: rgba(0, 0, 0, 0.3);
             }
             100% {
-                background: #3a0000dd;
+                background: rgba(60, 0, 0, 0.45);
             }
         }
 
@@ -1182,6 +1221,7 @@
         <div class="fab-icon" id="fabExpand" title="扩张"><i class="fas fa-maximize"></i></div>
         <div class="fab-icon" id="fabPlace" title="部署步兵"><i class="fas fa-user-plus"></i></div>
         <div class="fab-icon" id="fabDevelop" title="内政发展"><i class="fas fa-chart-line"></i></div>
+        <div class="fab-icon" id="fabLottery" title="抽奖"><i class="fas fa-gift"></i></div>
         <div class="fab-icon" id="fabEndTurn" title="结束回合"><i class="fas fa-hourglass-half"></i></div>
     </div>
 
@@ -1438,7 +1478,6 @@
                 const wrapperWidth = wrapper.clientWidth;
                 const wrapperHeight = wrapper.clientHeight;
                 if (wrapperWidth <= 0 || wrapperHeight <= 0) return;
-                // 减去padding（左右各8px=16px）和border（4px）
                 const availWidth = wrapperWidth - 20;
                 const availHeight = wrapperHeight - 16;
                 const cellByWidth = Math.floor(availWidth / 20);
@@ -1450,7 +1489,6 @@
                 grid.style.gridTemplateRows = `repeat(20, ${cellSize}px)`;
             }
 
-            // 监听窗口变化和地图wrapper变化
             let resizeDebounce = null;
             window.addEventListener('resize', () => {
                 if (resizeDebounce) clearTimeout(resizeDebounce);
@@ -1459,7 +1497,6 @@
                 }, 150);
             });
 
-            // 使用ResizeObserver监听mapWrapper大小变化
             if (window.ResizeObserver && mapWrapper) {
                 const ro = new ResizeObserver(() => {
                     if (resizeDebounce) clearTimeout(resizeDebounce);
@@ -1510,6 +1547,112 @@
                 costRare: 8
             });
 
+            // ==================== 抽奖奖池 ====================
+            const LOTTERY_PRIZES = [
+                { type: 'silver', amount: 40, weight: 25, icon: '💰', text: '银币 +40' },
+                { type: 'silver', amount: 80, weight: 20, icon: '💎', text: '银币 +80' },
+                { type: 'silver', amount: 150, weight: 10, icon: '💎', text: '银币 +150' },
+                { type: 'gold', amount: 2, weight: 8, icon: '🥇', text: '黄金 +2' },
+                { type: 'gold', amount: 5, weight: 4, icon: '🥇', text: '黄金 +5' },
+                { type: 'rareEarth', amount: 5, weight: 8, icon: '🔮', text: '稀土 +5' },
+                { type: 'oil', amount: 8, weight: 8, icon: '🛢️', text: '石油 +8' },
+                { type: 'uranium', amount: 2, weight: 5, icon: '☢️', text: '铀矿 +2' },
+                { type: 'diamond', amount: 1, weight: 3, icon: '💠', text: '钻石 +1' },
+                { type: 'gdp_bonus', amount: 50, weight: 8, icon: '📈', text: 'GDP +50' },
+                { type: 'unit_free', weight: 3, icon: '🪖', text: '免费部署步兵' },
+                { type: 'tech_random', weight: 3, icon: '🔬', text: '随机免费科技' },
+            ];
+
+            function getRandomPrize() {
+                let totalWeight = LOTTERY_PRIZES.reduce((sum, p) => sum + p.weight, 0);
+                let rand = Math.random() * totalWeight;
+                let cumulative = 0;
+                for (let prize of LOTTERY_PRIZES) {
+                    cumulative += prize.weight;
+                    if (rand < cumulative) return prize;
+                }
+                return LOTTERY_PRIZES[0];
+            }
+
+            function applyPrize(player, prize) {
+                let res = GAME.playerResources[player];
+                let eco = GAME.playerEconomy[player];
+                let msg = '';
+                switch (prize.type) {
+                    case 'silver':
+                        res.silver += prize.amount;
+                        msg = `获得 ${prize.amount} 银币！`;
+                        break;
+                    case 'gold':
+                        res.gold = (res.gold || 0) + prize.amount;
+                        msg = `获得 ${prize.amount} 黄金！`;
+                        break;
+                    case 'rareEarth':
+                        res.rareEarth += prize.amount;
+                        msg = `获得 ${prize.amount} 稀土！`;
+                        break;
+                    case 'oil':
+                        res.oil += prize.amount;
+                        msg = `获得 ${prize.amount} 石油！`;
+                        break;
+                    case 'uranium':
+                        res.uranium = (res.uranium || 0) + prize.amount;
+                        msg = `获得 ${prize.amount} 铀矿！`;
+                        break;
+                    case 'diamond':
+                        res.diamond = (res.diamond || 0) + prize.amount;
+                        msg = `获得 ${prize.amount} 钻石！`;
+                        break;
+                    case 'gdp_bonus':
+                        eco.gdp += prize.amount;
+                        msg = `GDP 增加 ${prize.amount}！`;
+                        break;
+                    case 'unit_free':
+                        // 在首都或随机领土放置免费步兵
+                        let cap = GAME.playerLands[player]?.capital;
+                        if (cap) {
+                            let key = `${cap.x},${cap.y}`;
+                            if (!GAME.units.has(key)) {
+                                GAME.units.set(key, { type: '步兵', owner: player });
+                                msg = '首都获得免费步兵！';
+                            } else {
+                                // 尝试其他领土
+                                let placed = false;
+                                for (let cell of GAME.playerLands[player].cells) {
+                                    if (!GAME.units.has(cell)) {
+                                        GAME.units.set(cell, { type: '步兵', owner: player });
+                                        placed = true;
+                                        msg = '领土获得免费步兵！';
+                                        break;
+                                    }
+                                }
+                                if (!placed) msg = '免费步兵(无空位，转为+60银)';
+                                if (!placed) res.silver += 60;
+                            }
+                        } else {
+                            res.silver += 60;
+                            msg = '免费步兵(无首都，转为+60银)';
+                        }
+                        break;
+                    case 'tech_random':
+                        let unresearched = techList.filter(t => !GAME.researched[t.id]?.has(player));
+                        if (unresearched.length > 0) {
+                            let randomTech = unresearched[Math.floor(Math.random() * unresearched.length)];
+                            GAME.researched[randomTech.id].add(player);
+                            msg = `免费研发：${randomTech.name}`;
+                        } else {
+                            res.silver += 100;
+                            msg = '所有科技已研发，转为+100银';
+                        }
+                        break;
+                    default:
+                        msg = '谢谢参与';
+                }
+                updateTopBar();
+                renderFullMap();
+                return msg;
+            }
+
             // ==================== 游戏状态 ====================
             let GAME = {
                 playerResources: {},
@@ -1530,7 +1673,8 @@
                 aiPlayers: new Set(),
                 aiProcessing: false,
                 turnCount: 0,
-                riotCheckedTurns: new Set() // 已检查暴乱的回合
+                riotCheckedTurns: new Set(),
+                playerLastFreeTurn: {} // 记录每个玩家上次免费抽奖的全局回合编号
             };
             techList.forEach(t => { GAME.researched[t.id] = new Set(); });
 
@@ -1544,15 +1688,15 @@
                     { id: 1, title: '选择领土', desc: '👆 请点击地图上的绿色陆地，选择4块相连的领土', target: 'map',
                         action: 'select_land' },
                     { id: 2, title: '设立首都', desc: '🏛️ 从已选的4块领土中，点击其中一块作为首都', target: 'map',
-                    action: 'select_capital' },
+                        action: 'select_capital' },
                     { id: 3, title: '扩张领土', desc: '📐 点击右下角"扩张"按钮，然后点击相邻的空地', target: 'fabExpand',
                         action: 'expand' },
                     { id: 4, title: '收集资源', desc: '💰 点击"收集"按钮，然后点击你的领土获取银币', target: 'fabCollect',
                         action: 'collect' },
                     { id: 5, title: '部署步兵', desc: '🪖 点击"部署步兵"按钮，在领土上放置战斗单位', target: 'fabPlace',
-                    action: 'place' },
+                        action: 'place' },
                     { id: 6, title: '结束回合', desc: '⏳ 点击"结束回合"按钮，完成你的第一轮', target: 'fabEndTurn',
-                    action: 'end_turn' },
+                        action: 'end_turn' },
                 ]
             };
 
@@ -1570,7 +1714,6 @@
                     descEl.textContent = stepData.desc;
                     banner.classList.add('show');
                 }
-                // 高亮目标按钮
                 clearTutorialHighlights();
                 if (stepData && stepData.target && stepData.target !== 'map') {
                     const targetEl = document.getElementById(stepData.target);
@@ -1580,7 +1723,7 @@
 
             function clearTutorialHighlights() {
                 document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove(
-                'tutorial-highlight'));
+                    'tutorial-highlight'));
             }
 
             function advanceTutorial() {
@@ -1590,7 +1733,6 @@
                     updateTutorialBanner();
                     showMsg('📖 ' + TUTORIAL.steps[TUTORIAL.step - 1].desc);
                 } else {
-                    // 教程完成
                     TUTORIAL.completed = true;
                     TUTORIAL.active = false;
                     clearTutorialHighlights();
@@ -1613,7 +1755,6 @@
 
             // ==================== 暴乱处罚系统 ====================
             function checkRiot(player, turnCount) {
-                // 从第5回合开始，每5回合检查一次
                 if (turnCount < 5) return false;
                 if (turnCount % 5 !== 0) return false;
                 const checkKey = `${player}_${turnCount}`;
@@ -1623,7 +1764,6 @@
                 const eco = GAME.playerEconomy[player];
                 if (!eco) return false;
 
-                // 阈值计算：农业阈值 = 10 + turnCount*1.5，工业阈值 = 8 + turnCount*1.2
                 const agriThreshold = Math.floor(10 + turnCount * 1.5);
                 const indusThreshold = Math.floor(8 + turnCount * 1.2);
                 const agriLow = eco.agriculture < agriThreshold;
@@ -1631,7 +1771,6 @@
 
                 if (!agriLow && !indusLow) return false;
 
-                // 触发暴乱
                 let riotLevel = 'minor';
                 let penaltySilver = 0;
                 let penaltyGdp = 0;
@@ -1660,13 +1799,11 @@
                     riotDescParts.push(`工业(${eco.industry})远低于需求(${indusThreshold})`);
                 }
 
-                // 执行惩罚
                 penaltySilver = Math.max(30, Math.min(penaltySilver, 500));
                 penaltyGdp = Math.max(20, Math.min(penaltyGdp, 300));
                 GAME.playerResources[player].silver = Math.max(0, GAME.playerResources[player].silver - penaltySilver);
                 eco.gdp = Math.max(50, eco.gdp - penaltyGdp);
 
-                // 随机失去非首都领土
                 let lostCells = [];
                 if (loseTerritory && GAME.playerLands[player] && GAME.playerLands[player].cells.size > 1) {
                     const allCells = Array.from(GAME.playerLands[player].cells);
@@ -1680,9 +1817,7 @@
                             const cellToLose = nonCapCells.splice(idx, 1)[0];
                             GAME.playerLands[player].cells.delete(cellToLose);
                             lostCells.push(cellToLose);
-                            // 清除该格上的单位
                             if (GAME.units.has(cellToLose)) GAME.units.delete(cellToLose);
-                            // 清除收获记录
                             GAME.harvestedCells.delete(cellToLose);
                         }
                     }
@@ -1692,7 +1827,6 @@
                 if (lostCells.length > 0) riotDescParts.push(`失去${lostCells.length}块领土`);
                 const riotDesc = riotDescParts.join(' | ');
 
-                // 显示暴乱警告
                 showRiotWarning(riotTitle, riotDesc);
                 showMsg('⚠️ ' + riotTitle + '：' + riotDesc);
                 updateTopBar();
@@ -1755,7 +1889,6 @@
                         container.appendChild(cell);
                     }
                 }
-                // 重新计算单元格大小以适应屏幕
                 recalcCellSize();
             }
 
@@ -1774,7 +1907,7 @@
                     let eco = GAME.playerEconomy[cur] || { gdp: 500, agriculture: 10, industry: 5, commerce: 8,
                         science: 5 };
                     let res = GAME.playerResources[cur] || { silver: 220, gold: 3, rareEarth: 6, oil: 14,
-                    uranium: 1 };
+                        uranium: 1 };
                     panel.innerHTML =
                         `🏳️ ${GAME.playerNames[cur]} | 🏛️ ${GAME.capitalNames[cur]} | 💰银${res.silver} | GDP${eco.gdp} | 🌾${eco.agriculture} | 🏭${eco.industry} | 📈${eco.commerce} | 🔬${eco.science}`;
                     turnSpan.innerHTML =
@@ -1828,7 +1961,6 @@
                         if (GAME.setupPhase.selectedCells.length === 4 && isConnected(GAME.setupPhase.selectedCells)) {
                             GAME.setupPhase.selectingCapital = true;
                             showMsg('点击其中一块作为首都');
-                            // 教程：推进到步骤2
                             if (TUTORIAL.active && TUTORIAL.step === 1 && !TUTORIAL.completed) {
                                 advanceTutorial();
                             }
@@ -1844,7 +1976,7 @@
                             return; }
                         GAME.playerLands[curPlayer] = { cells: new Set(), capital: null };
                         GAME.setupPhase.selectedCells.forEach(c => { GAME.playerLands[curPlayer].cells.add(
-                            `${c.x},${c.y}`); });
+                                `${c.x},${c.y}`); });
                         GAME.playerLands[curPlayer].capital = { x, y };
                         if (!GAME.playerResources[curPlayer]) GAME.playerResources[curPlayer] = { silver: 250, gold: 5,
                             diamond: 1, rareEarth: 12, oil: 20, uranium: 3 };
@@ -1855,7 +1987,6 @@
                             '🏛️ 首都确立',
                             `${GAME.playerNames[curPlayer]} 的 ${GAME.capitalNames[curPlayer]} 巍然矗立！`
                         );
-                        // 教程：推进到步骤3
                         if (TUTORIAL.active && TUTORIAL.step === 2 && !TUTORIAL.completed) {
                             advanceTutorial();
                         }
@@ -1886,7 +2017,6 @@
                 else if (GAME.selectedAction === 'place') actionPlaceUnit(x, y);
                 else if (GAME.selectedAction === 'develop') showDevelopModal();
                 else {
-                    // 教程模式下给出提示
                     if (TUTORIAL.active && !TUTORIAL.completed) {
                         showMsg('📖 ' + TUTORIAL.steps[TUTORIAL.step - 1].desc);
                     } else {
@@ -2207,14 +2337,103 @@
                         <p><b>三、回合流程</b><br>每回合玩家可执行多种行动：<b>扩张领土</b>（消耗100银币，占领相邻空地）、<b>收集资源</b>（从己方领土获取银币，每格限一次）、<b>部署步兵</b>（在己方领土放置战斗单位）、<b>内政发展</b>（提升农业/工业/商业/科技四项指标）、<b>科技研发</b>（解锁50+项科技，部分有前置要求）、<b>发动攻击</b>（每回合限一次，用己方步兵攻占敌方格子）。结束回合后获得税收，轮到下一位玩家。</p>
                         <p><b>四、经济与资源</b><br>银币为主要货币，通过收集、税收和发展获得。GDP由四项经济指标加权计算。稀有资源包括<b>黄金、稀土、石油、铀矿</b>，用于高级科技研发。内政发展消耗银币提升对应指标，指标越高税收越多。</p>
                         <p><b>五、科技树</b><br>共设<b>8大类别50+项科技</b>：军事基础（坦克/火炮）、导弹科技（短程至洲际导弹）、核子力量（原子弹至钴弹）、空军力量、海军力量、未来科技（电磁炮/纳米机器人）、经济产业、战略支援。研发需消耗多种资源，部分科技有前置依赖。</p>
-                        <p><b>六、处罚机制 ⚠️</b><br>从第5回合开始，每5回合系统将检查<b>农业</b>和<b>工业</b>发展水平。若低于该阶段最低要求，将触发<b>暴乱</b>：银币减少、GDP下降，严重时还会<b>丧失领土</b>。请务必关注内政发展，保持农业与工业均衡增长！</p>
-                        <p><b>七、胜利条件</b><br>消灭所有其他玩家（攻占其首都或使其无领土）即为胜利。当场上仅剩一位玩家时，该玩家获得最终胜利。AI玩家会自动执行回合，具备基本的扩张与攻击逻辑。</p>
+                        <p><b>六、抽奖系统 🎁</b><br>每<b>2回合</b>可获得一次免费抽奖机会。其余时候可消耗<b>100银币</b>进行付费抽奖。奖池包含银币、黄金、稀土、石油、钻石、GDP加成、免费步兵、随机科技等惊喜奖励！</p>
+                        <p><b>七、处罚机制 ⚠️</b><br>从第5回合开始，每5回合系统将检查<b>农业</b>和<b>工业</b>发展水平。若低于该阶段最低要求，将触发<b>暴乱</b>：银币减少、GDP下降，严重时还会<b>丧失领土</b>。请务必关注内政发展，保持农业与工业均衡增长！</p>
+                        <p><b>八、胜利条件</b><br>消灭所有其他玩家（攻占其首都或使其无领土）即为胜利。当场上仅剩一位玩家时，该玩家获得最终胜利。AI玩家会自动执行回合，具备基本的扩张与攻击逻辑。</p>
                         <p style="text-align:center; color:#f5bc5c; margin-top:8px;">⚡ 运筹帷幄之中，决胜千里之外 ⚡</p>
                         <button class="modal-close-btn" id="closeRulesBtn" style="display:block; margin:0 auto;">朕已阅</button>
                     </div>`;
                 document.body.appendChild(modal);
                 document.getElementById('closeRulesBtn').addEventListener('click', () => modal.remove());
                 modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+            }
+
+            // ==================== 抽奖系统 ====================
+            function canFreeLottery(player) {
+                if (GAME.playerLastFreeTurn[player] === undefined) {
+                    GAME.playerLastFreeTurn[player] = -2;
+                }
+                return (GAME.turnCount - GAME.playerLastFreeTurn[player]) >= 2;
+            }
+
+            function updateLotteryButtonHighlight() {
+                const btn = document.getElementById('fabLottery');
+                if (!btn) return;
+                if (!GAME.setupPhase.isSetting && canFreeLottery(GAME.currentTurn)) {
+                    btn.classList.add('lottery-free');
+                } else {
+                    btn.classList.remove('lottery-free');
+                }
+            }
+
+            function openLotteryModal() {
+                if (GAME.setupPhase.isSetting) {
+                    showMsg('完成建国后再抽奖');
+                    return;
+                }
+                let player = GAME.currentTurn;
+                let free = canFreeLottery(player);
+                let res = GAME.playerResources[player];
+
+                let modal = document.createElement('div');
+                modal.className = 'modal-backdrop';
+                modal.innerHTML = `
+                    <div class="modal-card" style="max-width:450px;">
+                        <h2><i class="fas fa-gift"></i> 幸运抽奖</h2>
+                        <p style="color:#ffdfa5; margin-bottom:8px;">当前银币：<b>${res.silver}</b></p>
+                        <p style="color:${free?'#4ade80':'#f5bc5c'}; font-weight:bold; margin-bottom:12px;">
+                            ${free ? '🎫 免费抽奖机会！' : '💲 付费抽奖 · 消耗100银币'}
+                        </p>
+                        <div id="lotteryResultArea"></div>
+                        <button class="modal-action-btn" id="doLotteryBtn" style="font-size:1rem; padding:10px 24px;">
+                            ${free ? '🎰 免费抽取' : '🎰 消耗100银抽取'}
+                        </button>
+                        <button class="modal-close-btn" id="closeLotteryBtn" style="margin-top:10px;">离开</button>
+                    </div>`;
+                document.body.appendChild(modal);
+
+                document.getElementById('closeLotteryBtn').addEventListener('click', () => {
+                    modal.remove();
+                    updateLotteryButtonHighlight();
+                });
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
+                        updateLotteryButtonHighlight();
+                    }
+                });
+
+                document.getElementById('doLotteryBtn').addEventListener('click', () => {
+                    if (!free && res.silver < 100) {
+                        showMsg('银币不足100，无法抽奖');
+                        return;
+                    }
+                    if (!free) {
+                        res.silver -= 100;
+                        showMsg('消耗100银币进行抽奖');
+                    } else {
+                        GAME.playerLastFreeTurn[player] = GAME.turnCount;
+                    }
+
+                    let prize = getRandomPrize();
+                    let resultMsg = applyPrize(player, prize);
+                    let resultArea = document.getElementById('lotteryResultArea');
+                    if (resultArea) {
+                        resultArea.innerHTML = `
+                            <div class="lottery-result">
+                                <div class="prize-icon">${prize.icon}</div>
+                                <div class="prize-text">${prize.text}</div>
+                                <p style="color:#ffefcf; margin-top:6px;">${resultMsg}</p>
+                            </div>`;
+                    }
+                    // 禁用按钮防止重复点击
+                    let doBtn = document.getElementById('doLotteryBtn');
+                    if (doBtn) doBtn.disabled = true;
+                    showAchievement('<i class="fas fa-gift"></i>', '🎁 抽奖结果', prize.text);
+                    updateTopBar();
+                    renderFullMap();
+                    updateLotteryButtonHighlight();
+                });
             }
 
             // ==================== 军事行动 ====================
@@ -2283,7 +2502,6 @@
                 updateTopBar();
                 renderFullMap();
                 GAME.selectedAction = null;
-                // 教程：收集完成推进
                 if (TUTORIAL.active && TUTORIAL.step === 4 && !TUTORIAL.completed) {
                     advanceTutorial();
                 }
@@ -2309,7 +2527,6 @@
                     `疆域扩展至 (${x},${y})！-100银`
                 );
                 GAME.selectedAction = null;
-                // 教程：扩张完成推进
                 if (TUTORIAL.active && TUTORIAL.step === 3 && !TUTORIAL.completed) {
                     advanceTutorial();
                 }
@@ -2329,7 +2546,6 @@
                     `步兵已部署于 (${x},${y})！`
                 );
                 GAME.selectedAction = null;
-                // 教程：部署完成推进
                 if (TUTORIAL.active && TUTORIAL.step === 5 && !TUTORIAL.completed) {
                     advanceTutorial();
                 }
@@ -2339,7 +2555,6 @@
                 if (GAME.setupPhase.isSetting) { showMsg('建设中无法结束');
                     return; }
                 let curPlayer = GAME.currentTurn;
-                // 暴乱检查（在税收发放前）
                 checkRiot(curPlayer, GAME.turnCount + 1);
                 let eco = GAME.playerEconomy[curPlayer];
                 let income = Math.floor(eco.agriculture * 2 + eco.industry * 3 + eco.commerce * 2.5 + eco.science * 2);
@@ -2354,8 +2569,8 @@
                 GAME.selectedAction = null;
                 renderFullMap();
                 updateTopBar();
+                updateLotteryButtonHighlight();
                 showMsg(`轮到 ${GAME.playerNames[GAME.currentTurn]}`);
-                // 教程：结束回合完成
                 if (TUTORIAL.active && TUTORIAL.step === 6 && !TUTORIAL.completed) {
                     advanceTutorial();
                 }
@@ -2366,7 +2581,6 @@
                 let el = document.getElementById('statusMessage');
                 if (el) {
                     el.innerHTML = `✦ ${txt} ✦`;
-                    // 移除警告样式
                     el.classList.remove('warning');
                 }
             }
@@ -2471,12 +2685,14 @@
                         GAME.playerResources = {};
                         GAME.playerEconomy = {};
                         GAME.riotCheckedTurns = new Set();
+                        GAME.playerLastFreeTurn = {};
                         for (let i = 1; i <= GAME.totalPlayers; i++) {
                             GAME.playerLands[i] = { cells: new Set(), capital: null };
                             GAME.playerResources[i] = { silver: 350, gold: 6, diamond: 3, rareEarth: 20, oil: 35,
                                 uranium: 6 };
                             GAME.playerEconomy[i] = { gdp: 680, agriculture: 16, industry: 10, commerce: 13,
-                            science: 9 };
+                                science: 9 };
+                            GAME.playerLastFreeTurn[i] = -2;
                         }
                         GAME.units.clear();
                         GAME.harvestedCells.clear();
@@ -2488,7 +2704,7 @@
                         GAME.turnCount = 0;
                         renderFullMap();
                         updateTopBar();
-                        // 如果是教程模式，启动教程
+                        updateLotteryButtonHighlight();
                         if (isTutorial) {
                             startTutorial();
                             showMsg('📖 教程开始！' + TUTORIAL.steps[0].desc);
@@ -2535,21 +2751,25 @@
                 if (!GAME.setupPhase.isSetting) { GAME.selectedAction = 'develop';
                     showDevelopModal(); } else showMsg('建设中无法发展');
             };
+            document.getElementById('fabLottery').onclick = () => {
+                openLotteryModal();
+            };
             document.getElementById('fabEndTurn').onclick = () => { endTurn(); };
 
             // ==================== 初始状态 ====================
             updateHomeStats();
             recalcCellSize();
 
-            // 初始地图预览（首页背景用）
             GAME.mapTerrain = generateMap();
             GAME.playerLands = {};
             GAME.playerResources = {};
             GAME.playerEconomy = {};
+            GAME.playerLastFreeTurn = {};
             for (let i = 1; i <= 2; i++) {
                 GAME.playerLands[i] = { cells: new Set(), capital: null };
                 GAME.playerResources[i] = { silver: 350, gold: 6, diamond: 3, rareEarth: 20, oil: 35, uranium: 6 };
                 GAME.playerEconomy[i] = { gdp: 680, agriculture: 16, industry: 10, commerce: 13, science: 9 };
+                GAME.playerLastFreeTurn[i] = -2;
             }
             GAME.totalPlayers = 2;
             GAME.setupPhase = { isSetting: true, currentSettingPlayer: 1, selectedCells: [], selectingCapital: false };
