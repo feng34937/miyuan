@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>现代战争推演4</title>
+    <title>现代战争推演4 · 清晰无遮挡</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -16,6 +16,8 @@
             --danger: #f87171;
             --info: #60a5fa;
             --cell-size: 28px;
+            --tutorial-arrow-size: 72px;
+            --tutorial-arrow-size-mobile: 48px;
         }
         * {
             margin: 0;
@@ -33,7 +35,124 @@
             font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
         }
 
-        /* ============ 全屏成就动画 ============ */
+        /* ========== 教程大箭头指针 ========== */
+        .tutorial-arrow-pointer {
+            position: fixed;
+            z-index: 6100;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.35s ease, left 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1), top 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            filter: drop-shadow(0 0 18px rgba(74, 222, 128, 0.9)) drop-shadow(0 0 40px rgba(74, 222, 128, 0.5));
+        }
+        .tutorial-arrow-pointer.visible {
+            opacity: 1;
+        }
+        .tutorial-arrow-pointer .arrow-icon-wrap {
+            animation: tutorialArrowFloatLarge 1.1s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tutorial-arrow-pointer .arrow-icon-wrap i {
+            font-size: var(--tutorial-arrow-size);
+            color: #4ade80;
+            text-shadow: 0 0 30px #22c55e, 0 0 60px #16a34a, 0 0 100px #15803d;
+            line-height: 1;
+        }
+        .tutorial-arrow-pointer .arrow-label {
+            background: rgba(0, 30, 20, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 2px solid #4ade80;
+            color: #d4ffe0;
+            padding: 6px 16px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            margin-top: 2px;
+            animation: tutorialArrowFloatLarge 1.1s ease-in-out infinite;
+            text-shadow: 0 0 8px #4ade80;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
+            border-radius: 2px;
+        }
+        .tutorial-arrow-pointer.point-up .arrow-icon-wrap {
+            animation-name: tutorialArrowFloatUp;
+        }
+        .tutorial-arrow-pointer.point-up .arrow-label {
+            animation-name: tutorialArrowFloatUp;
+            margin-top: 0;
+            margin-bottom: 2px;
+            order: -1;
+        }
+        .tutorial-arrow-pointer.point-left .arrow-icon-wrap i {
+            transform: rotate(90deg);
+        }
+        .tutorial-arrow-pointer.point-right .arrow-icon-wrap i {
+            transform: rotate(-90deg);
+        }
+
+        @keyframes tutorialArrowFloatLarge {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            35% {
+                transform: translateY(-18px);
+            }
+            65% {
+                transform: translateY(-6px);
+            }
+        }
+        @keyframes tutorialArrowFloatUp {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            35% {
+                transform: translateY(14px);
+            }
+            65% {
+                transform: translateY(4px);
+            }
+        }
+
+        /* 地图教程高亮脉冲 */
+        .grid-container.tutorial-map-glow {
+            animation: tutorialMapGlow 0.9s ease-in-out infinite;
+            box-shadow: 0 0 25px rgba(74, 222, 128, 0.7), 0 0 55px rgba(74, 222, 128, 0.35), 0 0 0 4px rgba(74, 222, 128, 0.5) !important;
+            border-color: #4ade80 !important;
+        }
+        @keyframes tutorialMapGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(74, 222, 128, 0.5), 0 0 45px rgba(74, 222, 128, 0.25), 0 0 0 3px rgba(74, 222, 128, 0.45);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(74, 222, 128, 0.9), 0 0 80px rgba(74, 222, 128, 0.5), 0 0 0 6px rgba(74, 222, 128, 0.7);
+            }
+        }
+
+        /* 教程遮罩层（可选半透明蒙版突出目标） */
+        .tutorial-spotlight {
+            position: fixed;
+            z-index: 6050;
+            pointer-events: none;
+            border-radius: 50%;
+            background: transparent;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .tutorial-spotlight.active {
+            opacity: 1;
+        }
+
+        /* ========== 原有样式 ========== */
         .achievement-overlay {
             position: fixed;
             top: 0;
@@ -141,8 +260,6 @@
                 opacity: 0;
             }
         }
-
-        /* ============ 启动层 ============ */
         .screen-mask {
             position: fixed;
             top: 0;
@@ -172,7 +289,6 @@
             transition: opacity 1s ease;
             opacity: 1;
             pointer-events: none;
-            /* 修改字体为华文细黑，并添加备选字体确保跨平台显示 */
             font-family: '华文细黑', 'STXihei', 'Heiti SC', 'Microsoft YaHei', 'PingFang SC', sans-serif;
         }
         .powered-by span {
@@ -195,8 +311,6 @@
                 letter-spacing: 8px;
             }
         }
-
-        /* ============ 首页 ============ */
         .home-container {
             position: fixed;
             top: 0;
@@ -314,8 +428,6 @@
             box-shadow: 0 10px 28px rgba(74, 222, 128, 0.35);
             border-color: #6fff9f;
         }
-
-        /* 首页统计面板 */
         .home-stats-panel {
             position: relative;
             z-index: 3;
@@ -427,8 +539,6 @@
                 text-shadow: 0 0 35px #ffdd99, 0 0 70px #ffaa33, 0 0 100px #ff6600;
             }
         }
-
-        /* ============ 游戏主界面 ============ */
         .game-main {
             position: fixed;
             top: 0;
@@ -592,8 +702,6 @@
         .player9-capital {
             background: radial-gradient(circle, #b0c4de, #748aa6) !important;
         }
-
-        /* ============ 悬浮工具栏（毛玻璃·直角） ============ */
         .fab-horizontal {
             position: fixed;
             bottom: 12px;
@@ -646,6 +754,34 @@
             border-color: #4ade80 !important;
             box-shadow: 0 0 18px rgba(74, 222, 128, 0.7) !important;
             animation: tutorialGlow 0.7s infinite alternate;
+            z-index: 3150 !important;
+            position: relative;
+        }
+        .fab-icon.tutorial-highlight::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 3px;
+            border: 3px dashed rgba(74, 222, 128, 0.7);
+            animation: tutHighlightRing 0.8s infinite alternate;
+            pointer-events: none;
+            z-index: -1;
+        }
+        @keyframes tutHighlightRing {
+            0% {
+                inset: -4px;
+                border-color: rgba(74, 222, 128, 0.5);
+            }
+            100% {
+                inset: -9px;
+                border-color: rgba(74, 222, 128, 1);
+            }
+        }
+        .fab-icon.expand-used {
+            border-color: #888 !important;
+            color: #888 !important;
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         @keyframes tutorialGlow {
             0% {
@@ -661,11 +797,13 @@
             animation: lotteryGlow 1s infinite alternate;
         }
         @keyframes lotteryGlow {
-            from { box-shadow: 0 0 8px #4ade80; }
-            to { box-shadow: 0 0 20px #4ade80, 0 0 35px #22c55e; }
+            from {
+                box-shadow: 0 0 8px #4ade80;
+            }
+            to {
+                box-shadow: 0 0 20px #4ade80, 0 0 35px #22c55e;
+            }
         }
-
-        /* ============ 弹窗通用 ============ */
         .modal-backdrop {
             position: fixed;
             top: 0;
@@ -762,8 +900,6 @@
             cursor: not-allowed;
             opacity: 0.5;
         }
-
-        /* ============ 玩家配置列表 ============ */
         .player-config-list {
             max-height: 50vh;
             overflow-y: auto;
@@ -800,8 +936,6 @@
             min-width: 40px;
             font-size: 0.8rem;
         }
-
-        /* ============ 科技树弹窗 ============ */
         .tech-item {
             background: #05212e;
             margin: 8px 0;
@@ -832,8 +966,6 @@
             cursor: not-allowed;
             opacity: 0.6;
         }
-
-        /* ============ 内政发展弹窗 ============ */
         .develop-option {
             background: #05212e;
             margin: 8px 0;
@@ -868,8 +1000,6 @@
             width: 36px;
             text-align: center;
         }
-
-        /* 抽奖结果展示 */
         .lottery-result {
             margin: 15px 0;
             padding: 12px;
@@ -887,11 +1017,15 @@
             color: #ffd966;
         }
         @keyframes resultPop {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
-
-        /* ============ 状态提示栏（毛玻璃·直角） ============ */
         .status-tip {
             position: fixed;
             bottom: 100px;
@@ -929,8 +1063,6 @@
                 background: rgba(60, 0, 0, 0.45);
             }
         }
-
-        /* ============ 教程引导覆盖层 ============ */
         .tutorial-banner {
             position: fixed;
             top: 50px;
@@ -984,8 +1116,6 @@
                 transform: translateY(-6px);
             }
         }
-
-        /* ============ 暴乱全屏警告 ============ */
         .riot-overlay {
             position: fixed;
             top: 0;
@@ -1060,11 +1190,10 @@
                 opacity: 1;
             }
         }
-
-        /* ============ 响应式 ============ */
         @media (max-width: 650px) {
             :root {
                 --cell-size: 22px;
+                --tutorial-arrow-size: 48px;
             }
             .fab-icon {
                 width: 34px;
@@ -1130,10 +1259,16 @@
                 font-size: 0.55rem;
                 padding: 4px 8px;
             }
+            .tutorial-arrow-pointer .arrow-label {
+                font-size: 0.7rem;
+                padding: 4px 10px;
+                letter-spacing: 1px;
+            }
         }
         @media (max-width: 380px) {
             :root {
                 --cell-size: 18px;
+                --tutorial-arrow-size: 38px;
             }
             .fab-icon {
                 width: 30px;
@@ -1166,16 +1301,18 @@
                 padding: 4px 5px;
                 max-width: 96vw;
             }
+            .tutorial-arrow-pointer .arrow-label {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- 启动遮罩 -->
     <div class="screen-mask" id="blackMask"></div>
     <div class="powered-by" id="poweredScreen"><span>powered by Miyuan</span></div>
 
-    <!-- ============ 首页 ============ -->
     <div class="home-container" id="homeContainer">
         <div class="flowing-lights" id="lightCanvas"></div>
         <div class="game-title">现代战争推演4</div>
@@ -1184,7 +1321,6 @@
             <div class="gold-btn tutorial-btn" id="tutorialStartBtn"><i class="fas fa-graduation-cap"></i> 新手教程</div>
             <div class="gold-btn" id="tutorialHomeBtn"><i class="fas fa-book"></i> 游戏规则</div>
         </div>
-        <!-- 首页统计面板 -->
         <div class="home-stats-panel" id="homeStatsPanel">
             <div class="stat-item">
                 <span class="stat-label"><i class="fas fa-play-circle"></i> 游玩次数</span>
@@ -1201,7 +1337,6 @@
         </div>
     </div>
 
-    <!-- ============ 游戏主界面 ============ -->
     <div class="game-main" id="gameMain">
         <div class="nation-info" id="nationInfoBar">
             <div class="nation-card" id="playerInfoPanel">🏳️ 帝国议会</div>
@@ -1212,30 +1347,37 @@
         </div>
     </div>
 
-    <!-- ============ 悬浮工具栏（游戏中显示） ============ -->
     <div class="fab-horizontal" id="fabMenu">
         <div class="fab-icon" id="fabRules" title="规则"><i class="fas fa-scroll"></i></div>
         <div class="fab-icon" id="fabResearch" title="研发"><i class="fas fa-flask"></i></div>
         <div class="fab-icon" id="fabAttack" title="攻击"><i class="fas fa-crosshairs"></i></div>
         <div class="fab-icon" id="fabCollect" title="收集"><i class="fas fa-coins"></i></div>
-        <div class="fab-icon" id="fabExpand" title="扩张"><i class="fas fa-maximize"></i></div>
+        <div class="fab-icon" id="fabExpand" title="扩张（每回合1格）"><i class="fas fa-maximize"></i></div>
         <div class="fab-icon" id="fabPlace" title="部署步兵"><i class="fas fa-user-plus"></i></div>
         <div class="fab-icon" id="fabDevelop" title="内政发展"><i class="fas fa-chart-line"></i></div>
         <div class="fab-icon" id="fabLottery" title="抽奖"><i class="fas fa-gift"></i></div>
         <div class="fab-icon" id="fabEndTurn" title="结束回合"><i class="fas fa-hourglass-half"></i></div>
     </div>
 
-    <!-- 状态提示栏 -->
-    <div class="status-tip" id="statusMessage">✦ 触摸按钮开创霸业 | 地图已预留防遮挡空间</div>
+    <div class="status-tip" id="statusMessage">✦ 触摸按钮开创霸业 | 每回合只能扩张1格 ✦</div>
 
-    <!-- ============ 教程引导横幅 ============ -->
     <div class="tutorial-banner" id="tutorialBanner">
         <span class="tut-step-num" id="tutStepNum">步骤1/6</span>
         <span id="tutDesc">请选择4块相连陆地</span>
         <span class="tut-arrow">👇</span>
     </div>
 
-    <!-- ============ 暴乱全屏警告层 ============ -->
+    <!-- 教程大箭头指针 -->
+    <div class="tutorial-arrow-pointer" id="tutorialArrowPointer">
+        <div class="arrow-icon-wrap">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="arrow-label" id="tutorialArrowLabel">点这里</div>
+    </div>
+
+    <!-- 教程聚光灯遮罩 -->
+    <div class="tutorial-spotlight" id="tutorialSpotlight"></div>
+
     <div class="riot-overlay" id="riotOverlay">
         <div class="riot-content">
             <div class="riot-icon"><i class="fas fa-fire"></i></div>
@@ -1244,7 +1386,6 @@
         </div>
     </div>
 
-    <!-- ============ 全屏成就动画层 ============ -->
     <div class="achievement-overlay" id="achievementOverlay">
         <div class="achievement-particles" id="achievementParticles"></div>
         <div class="achievement-content">
@@ -1256,7 +1397,6 @@
 
     <script>
         (function() {
-            // ==================== LOCAL STORAGE 管理 ====================
             const LS_KEYS = {
                 playCount: 'modernWar4_playCount',
                 totalPlayTime: 'modernWar4_totalPlayTime',
@@ -1301,7 +1441,6 @@
                 localStorage.setItem(LS_KEYS.sessionStart, String(Date.now()));
             }
 
-            // 名号系统
             function getRankBadge(totalSeconds) {
                 let minutes = totalSeconds / 60;
                 if (minutes < 30) {
@@ -1336,7 +1475,6 @@
                 let totalSec = getTotalPlayTime();
                 let rank = getRankBadge(totalSec);
                 let timeStr = formatPlayTime(totalSec);
-
                 let countEl = document.getElementById('statPlayCount');
                 let timeEl = document.getElementById('statPlayTime');
                 let badgeEl = document.getElementById('statBadge');
@@ -1348,7 +1486,6 @@
                 }
             }
 
-            // 页面关闭时保存游玩时间
             window.addEventListener('beforeunload', () => {
                 flushSessionTime();
             });
@@ -1369,7 +1506,6 @@
                 }
             }
 
-            // ==================== 全屏成就动画 ====================
             let achievementTimer = null;
 
             function showAchievement(iconHtml, title, subtitle) {
@@ -1408,7 +1544,6 @@
                 }, 2200);
             }
 
-            // ==================== 暴乱警告动画 ====================
             let riotTimer = null;
 
             function showRiotWarning(title, desc) {
@@ -1426,7 +1561,6 @@
                 }, 2500);
             }
 
-            // ==================== 启动动画 ====================
             const blackMask = document.getElementById('blackMask');
             const poweredScreen = document.getElementById('poweredScreen');
             const homeContainer = document.getElementById('homeContainer');
@@ -1436,8 +1570,11 @@
             const tutorialBtn = document.getElementById('tutorialHomeBtn');
             const tutorialStartBtn = document.getElementById('tutorialStartBtn');
             const mapWrapper = document.getElementById('mapWrapper');
+            const gridMap = document.getElementById('gridMap');
+            const tutorialArrowPointer = document.getElementById('tutorialArrowPointer');
+            const tutorialArrowLabel = document.getElementById('tutorialArrowLabel');
+            const tutorialSpotlight = document.getElementById('tutorialSpotlight');
 
-            // 初始化首页统计
             updateHomeStats();
 
             setTimeout(() => {
@@ -1470,7 +1607,6 @@
                 }
             }
 
-            // ==================== 地图自适应单元格大小 ====================
             function recalcCellSize() {
                 const wrapper = document.getElementById('mapWrapper');
                 const grid = document.getElementById('gridMap');
@@ -1487,6 +1623,10 @@
                 document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
                 grid.style.gridTemplateColumns = `repeat(20, ${cellSize}px)`;
                 grid.style.gridTemplateRows = `repeat(20, ${cellSize}px)`;
+                // 重定位教程箭头
+                if (TUTORIAL.active && !TUTORIAL.completed) {
+                    positionTutorialArrow();
+                }
             }
 
             let resizeDebounce = null;
@@ -1494,6 +1634,9 @@
                 if (resizeDebounce) clearTimeout(resizeDebounce);
                 resizeDebounce = setTimeout(() => {
                     recalcCellSize();
+                    if (TUTORIAL.active && !TUTORIAL.completed) {
+                        positionTutorialArrow();
+                    }
                 }, 150);
             });
 
@@ -1502,12 +1645,14 @@
                     if (resizeDebounce) clearTimeout(resizeDebounce);
                     resizeDebounce = setTimeout(() => {
                         recalcCellSize();
+                        if (TUTORIAL.active && !TUTORIAL.completed) {
+                            positionTutorialArrow();
+                        }
                     }, 100);
                 });
                 ro.observe(mapWrapper);
             }
 
-            // ==================== 50个研发项目 ====================
             const techCategories = {
                 "⚔️ 军事基础": ["轻型坦克", "重型坦克", "自行火炮", "火箭炮", "防空系统"],
                 "🚀 导弹科技": ["短程导弹", "中程导弹", "洲际导弹", "高超音速导弹", "巡航导弹"],
@@ -1547,7 +1692,17 @@
                 costRare: 8
             });
 
-            // ==================== 抽奖奖池 ====================
+            const MISSILE_TECH_IDS = new Set(
+                techList.filter(t => t.category === '🚀 导弹科技').map(t => t.id)
+            );
+
+            function hasMissileTech(player) {
+                for (let mid of MISSILE_TECH_IDS) {
+                    if (GAME.researched[mid]?.has(player)) return true;
+                }
+                return false;
+            }
+
             const LOTTERY_PRIZES = [
                 { type: 'silver', amount: 40, weight: 25, icon: '💰', text: '银币 +40' },
                 { type: 'silver', amount: 80, weight: 20, icon: '💎', text: '银币 +80' },
@@ -1608,7 +1763,6 @@
                         msg = `GDP 增加 ${prize.amount}！`;
                         break;
                     case 'unit_free':
-                        // 在首都或随机领土放置免费步兵
                         let cap = GAME.playerLands[player]?.capital;
                         if (cap) {
                             let key = `${cap.x},${cap.y}`;
@@ -1616,7 +1770,6 @@
                                 GAME.units.set(key, { type: '步兵', owner: player });
                                 msg = '首都获得免费步兵！';
                             } else {
-                                // 尝试其他领土
                                 let placed = false;
                                 for (let cell of GAME.playerLands[player].cells) {
                                     if (!GAME.units.has(cell)) {
@@ -1668,13 +1821,14 @@
                 setupPhase: { isSetting: true, currentSettingPlayer: 1, selectedCells: [], selectingCapital: false },
                 selectedAction: null,
                 attackUsedThisTurn: false,
+                expandUsedThisTurn: false,
                 researched: {},
                 mapTerrain: [],
                 aiPlayers: new Set(),
                 aiProcessing: false,
                 turnCount: 0,
                 riotCheckedTurns: new Set(),
-                playerLastFreeTurn: {} // 记录每个玩家上次免费抽奖的全局回合编号
+                playerLastFreeTurn: {}
             };
             techList.forEach(t => { GAME.researched[t.id] = new Set(); });
 
@@ -1686,26 +1840,108 @@
                 completed: false,
                 steps: [
                     { id: 1, title: '选择领土', desc: '👆 请点击地图上的绿色陆地，选择4块相连的领土', target: 'map',
-                        action: 'select_land' },
+                        action: 'select_land', arrowDir: 'down', label: '点击绿色陆地' },
                     { id: 2, title: '设立首都', desc: '🏛️ 从已选的4块领土中，点击其中一块作为首都', target: 'map',
-                        action: 'select_capital' },
-                    { id: 3, title: '扩张领土', desc: '📐 点击右下角"扩张"按钮，然后点击相邻的空地', target: 'fabExpand',
-                        action: 'expand' },
+                        action: 'select_capital', arrowDir: 'down', label: '选一块当首都' },
+                    { id: 3, title: '扩张领土', desc: '📐 点击右下角"扩张"按钮，然后点击相邻的空地（每回合限1格）', target: 'fabExpand',
+                        action: 'expand', arrowDir: 'down', label: '先点扩张按钮' },
                     { id: 4, title: '收集资源', desc: '💰 点击"收集"按钮，然后点击你的领土获取银币', target: 'fabCollect',
-                        action: 'collect' },
+                        action: 'collect', arrowDir: 'down', label: '点收集按钮' },
                     { id: 5, title: '部署步兵', desc: '🪖 点击"部署步兵"按钮，在领土上放置战斗单位', target: 'fabPlace',
-                        action: 'place' },
+                        action: 'place', arrowDir: 'down', label: '部署步兵' },
                     { id: 6, title: '结束回合', desc: '⏳ 点击"结束回合"按钮，完成你的第一轮', target: 'fabEndTurn',
-                        action: 'end_turn' },
+                        action: 'end_turn', arrowDir: 'down', label: '结束回合' },
                 ]
             };
+
+            /**
+             * 定位教程大箭头到目标位置
+             */
+            function positionTutorialArrow() {
+                if (!tutorialArrowPointer || !TUTORIAL.active || TUTORIAL.completed) {
+                    hideTutorialArrow();
+                    return;
+                }
+                const stepData = TUTORIAL.steps[TUTORIAL.step - 1];
+                if (!stepData) {
+                    hideTutorialArrow();
+                    return;
+                }
+
+                let targetEl = null;
+                if (stepData.target === 'map') {
+                    targetEl = document.getElementById('gridMap');
+                } else {
+                    targetEl = document.getElementById(stepData.target);
+                }
+
+                if (!targetEl) {
+                    hideTutorialArrow();
+                    return;
+                }
+
+                const rect = targetEl.getBoundingClientRect();
+                const arrowSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue(
+                    '--tutorial-arrow-size').trim()) || 72;
+                const arrowHalf = arrowSize / 2;
+
+                let arrowLeft = rect.left + rect.width / 2;
+                let arrowTop = rect.top - arrowSize - 10;
+                let direction = stepData.arrowDir || 'down';
+
+                // 检查是否有足够空间在上方
+                if (arrowTop < 30) {
+                    // 上方空间不足，箭头放在下方
+                    arrowTop = rect.bottom + arrowSize + 10;
+                    direction = 'up';
+                }
+
+                // 确保箭头不超出屏幕
+                arrowLeft = Math.max(arrowHalf + 8, Math.min(window.innerWidth - arrowHalf - 8, arrowLeft));
+                arrowTop = Math.max(arrowHalf + 8, Math.min(window.innerHeight - arrowHalf - 8, arrowTop));
+
+                // 移除旧方向类
+                tutorialArrowPointer.classList.remove('point-up', 'point-down', 'point-left', 'point-right');
+                tutorialArrowPointer.classList.add('point-' + direction);
+                tutorialArrowPointer.style.left = arrowLeft + 'px';
+                tutorialArrowPointer.style.top = arrowTop + 'px';
+                tutorialArrowPointer.classList.add('visible');
+
+                // 更新标签文字
+                if (tutorialArrowLabel) {
+                    tutorialArrowLabel.textContent = stepData.label || '点这里';
+                }
+
+                // 更新聚光灯
+                if (tutorialSpotlight) {
+                    const spotSize = Math.max(rect.width, rect.height) + 30;
+                    tutorialSpotlight.style.left = (rect.left + rect.width / 2) + 'px';
+                    tutorialSpotlight.style.top = (rect.top + rect.height / 2) + 'px';
+                    tutorialSpotlight.style.width = spotSize + 'px';
+                    tutorialSpotlight.style.height = spotSize + 'px';
+                    tutorialSpotlight.classList.add('active');
+                }
+            }
+
+            function hideTutorialArrow() {
+                if (tutorialArrowPointer) {
+                    tutorialArrowPointer.classList.remove('visible');
+                }
+                if (tutorialSpotlight) {
+                    tutorialSpotlight.classList.remove('active');
+                }
+            }
 
             function updateTutorialBanner() {
                 const banner = document.getElementById('tutorialBanner');
                 const stepNumEl = document.getElementById('tutStepNum');
                 const descEl = document.getElementById('tutDesc');
+                const gridContainer = document.getElementById('gridMap');
+
                 if (!banner || !TUTORIAL.active) {
                     if (banner) banner.classList.remove('show');
+                    hideTutorialArrow();
+                    if (gridContainer) gridContainer.classList.remove('tutorial-map-glow');
                     return;
                 }
                 const stepData = TUTORIAL.steps[TUTORIAL.step - 1];
@@ -1715,15 +1951,30 @@
                     banner.classList.add('show');
                 }
                 clearTutorialHighlights();
+
+                // 高亮目标按钮
                 if (stepData && stepData.target && stepData.target !== 'map') {
                     const targetEl = document.getElementById(stepData.target);
                     if (targetEl) targetEl.classList.add('tutorial-highlight');
                 }
+
+                // 地图步骤高亮地图边框
+                if (stepData && stepData.target === 'map' && gridContainer) {
+                    gridContainer.classList.add('tutorial-map-glow');
+                } else if (gridContainer) {
+                    gridContainer.classList.remove('tutorial-map-glow');
+                }
+
+                // 定位大箭头
+                positionTutorialArrow();
             }
 
             function clearTutorialHighlights() {
                 document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove(
                     'tutorial-highlight'));
+                const gridContainer = document.getElementById('gridMap');
+                if (gridContainer) gridContainer.classList.remove('tutorial-map-glow');
+                hideTutorialArrow();
             }
 
             function advanceTutorial() {
@@ -1760,24 +2011,19 @@
                 const checkKey = `${player}_${turnCount}`;
                 if (GAME.riotCheckedTurns.has(checkKey)) return false;
                 GAME.riotCheckedTurns.add(checkKey);
-
                 const eco = GAME.playerEconomy[player];
                 if (!eco) return false;
-
                 const agriThreshold = Math.floor(10 + turnCount * 1.5);
                 const indusThreshold = Math.floor(8 + turnCount * 1.2);
                 const agriLow = eco.agriculture < agriThreshold;
                 const indusLow = eco.industry < indusThreshold;
-
                 if (!agriLow && !indusLow) return false;
-
                 let riotLevel = 'minor';
                 let penaltySilver = 0;
                 let penaltyGdp = 0;
                 let loseTerritory = false;
                 let riotTitle = '民众不满';
                 let riotDescParts = [];
-
                 if (agriLow && indusLow) {
                     riotLevel = 'major';
                     riotTitle = '🔥 大暴乱！';
@@ -1798,12 +2044,10 @@
                     penaltyGdp = Math.floor(eco.gdp * 0.12);
                     riotDescParts.push(`工业(${eco.industry})远低于需求(${indusThreshold})`);
                 }
-
                 penaltySilver = Math.max(30, Math.min(penaltySilver, 500));
                 penaltyGdp = Math.max(20, Math.min(penaltyGdp, 300));
                 GAME.playerResources[player].silver = Math.max(0, GAME.playerResources[player].silver - penaltySilver);
                 eco.gdp = Math.max(50, eco.gdp - penaltyGdp);
-
                 let lostCells = [];
                 if (loseTerritory && GAME.playerLands[player] && GAME.playerLands[player].cells.size > 1) {
                     const allCells = Array.from(GAME.playerLands[player].cells);
@@ -1822,11 +2066,9 @@
                         }
                     }
                 }
-
                 riotDescParts.push(`银币-${penaltySilver}`, `GDP-${penaltyGdp}`);
                 if (lostCells.length > 0) riotDescParts.push(`失去${lostCells.length}块领土`);
                 const riotDesc = riotDescParts.join(' | ');
-
                 showRiotWarning(riotTitle, riotDesc);
                 showMsg('⚠️ ' + riotTitle + '：' + riotDesc);
                 updateTopBar();
@@ -1890,6 +2132,21 @@
                     }
                 }
                 recalcCellSize();
+                updateExpandButtonState();
+                // 教程模式下重新定位箭头
+                if (TUTORIAL.active && !TUTORIAL.completed) {
+                    setTimeout(() => positionTutorialArrow(), 100);
+                }
+            }
+
+            function updateExpandButtonState() {
+                const expandBtn = document.getElementById('fabExpand');
+                if (!expandBtn) return;
+                if (!GAME.setupPhase.isSetting && GAME.expandUsedThisTurn) {
+                    expandBtn.classList.add('expand-used');
+                } else {
+                    expandBtn.classList.remove('expand-used');
+                }
             }
 
             function updateTopBar() {
@@ -1908,10 +2165,15 @@
                         science: 5 };
                     let res = GAME.playerResources[cur] || { silver: 220, gold: 3, rareEarth: 6, oil: 14,
                         uranium: 1 };
+                    let statusParts = [];
+                    if (GAME.attackUsedThisTurn) statusParts.push('已战');
+                    else statusParts.push('待命');
+                    if (GAME.expandUsedThisTurn) statusParts.push('已扩');
+                    let missileTag = hasMissileTech(cur) ? ' 🚀' : '';
                     panel.innerHTML =
-                        `🏳️ ${GAME.playerNames[cur]} | 🏛️ ${GAME.capitalNames[cur]} | 💰银${res.silver} | GDP${eco.gdp} | 🌾${eco.agriculture} | 🏭${eco.industry} | 📈${eco.commerce} | 🔬${eco.science}`;
+                        `🏳️ ${GAME.playerNames[cur]}${missileTag} | 🏛️ ${GAME.capitalNames[cur]} | 💰银${res.silver} | GDP${eco.gdp} | 🌾${eco.agriculture} | 🏭${eco.industry} | 📈${eco.commerce} | 🔬${eco.science}`;
                     turnSpan.innerHTML =
-                        `✨ ${GAME.playerNames[cur]} ${GAME.attackUsedThisTurn?'(已战)':'待命'} 第${GAME.turnCount}轮`;
+                        `✨ ${GAME.playerNames[cur]} (${statusParts.join('/')}) 第${GAME.turnCount}轮`;
                 }
             }
 
@@ -1994,7 +2256,8 @@
                             GAME.setupPhase.isSetting = false;
                             GAME.currentTurn = 1;
                             GAME.turnCount = 0;
-                            showMsg('帝国崛起！');
+                            GAME.expandUsedThisTurn = false;
+                            showMsg('帝国崛起！每回合只能扩张1格 | 攻击需相邻(导弹除外)');
                             updateTopBar();
                             if (TUTORIAL.active && TUTORIAL.step === 3 && !TUTORIAL.completed) {
                                 updateTutorialBanner();
@@ -2079,7 +2342,8 @@
                     GAME.setupPhase.isSetting = false;
                     GAME.currentTurn = 1;
                     GAME.turnCount = 0;
-                    showMsg('帝国崛起！');
+                    GAME.expandUsedThisTurn = false;
+                    showMsg('帝国崛起！每回合只能扩张1格 | 攻击需相邻(导弹除外)');
                     updateTopBar();
                     if (GAME.aiPlayers.has(1)) executeAITurn();
                 } else {
@@ -2092,6 +2356,7 @@
                 }
             }
 
+            // ==================== AI 回合 ====================
             async function executeAITurn() {
                 if (GAME.setupPhase.isSetting) return;
                 let player = GAME.currentTurn;
@@ -2113,46 +2378,82 @@
                         await new Promise(r => setTimeout(r, 200));
                     }
                 }
-                let candidates = [];
-                for (let cell of GAME.playerLands[player].cells) {
-                    let [cx, cy] = cell.split(',').map(Number);
-                    [
-                        [-1, 0],
-                        [1, 0],
-                        [0, -1],
-                        [0, 1]
-                    ].forEach(dir => {
-                        let nx = cx + dir[0],
-                            ny = cy + dir[1];
-                        let nk = `${nx},${ny}`;
-                        if (nx >= 0 && nx < 20 && ny >= 0 && ny < 20 && !GAME.playerLands[player].cells.has(
-                                nk) && GAME.playerResources[player].silver >= 100) {
-                            let occ = false;
-                            for (let p = 1; p <= GAME.totalPlayers; p++)
-                                if (p !== player && GAME.playerLands[p]?.cells.has(nk)) occ = true;
-                            if (!occ) candidates.push({ x: nx, y: ny });
-                        }
-                    });
-                }
-                if (candidates.length) {
-                    let target = candidates[Math.floor(Math.random() * candidates.length)];
-                    actionExpand(target.x, target.y);
-                    await new Promise(r => setTimeout(r, 200));
+                if (!GAME.expandUsedThisTurn) {
+                    let candidates = [];
+                    for (let cell of GAME.playerLands[player].cells) {
+                        let [cx, cy] = cell.split(',').map(Number);
+                        [
+                            [-1, 0],
+                            [1, 0],
+                            [0, -1],
+                            [0, 1]
+                        ].forEach(dir => {
+                            let nx = cx + dir[0],
+                                ny = cy + dir[1];
+                            let nk = `${nx},${ny}`;
+                            if (nx >= 0 && nx < 20 && ny >= 0 && ny < 20 && !GAME.playerLands[player].cells.has(
+                                    nk) && GAME.playerResources[player].silver >= 100) {
+                                let occ = false;
+                                for (let p = 1; p <= GAME.totalPlayers; p++)
+                                    if (p !== player && GAME.playerLands[p]?.cells.has(nk)) occ = true;
+                                if (!occ) candidates.push({ x: nx, y: ny });
+                            }
+                        });
+                    }
+                    if (candidates.length) {
+                        let target = candidates[Math.floor(Math.random() * candidates.length)];
+                        actionExpand(target.x, target.y);
+                        await new Promise(r => setTimeout(r, 200));
+                    }
                 }
                 if (!GAME.attackUsedThisTurn) {
-                    let enemies = [];
-                    for (let [k, u] of GAME.units)
-                        if (u.owner !== player && !GAME.eliminatedPlayers.has(u.owner)) enemies.push(k);
-                    if (enemies.length === 0) {
-                        for (let i = 1; i <= GAME.totalPlayers; i++)
-                            if (i !== player && !GAME.eliminatedPlayers.has(i)) {
-                                for (let cell of GAME.playerLands[i].cells) enemies.push(cell);
-                            }
+                    let myUnitKeys = [];
+                    for (let [k, u] of GAME.units) {
+                        if (u.owner === player && !GAME.eliminatedPlayers.has(u.owner)) myUnitKeys.push(k);
                     }
-                    if (enemies.length) {
-                        let targetKey = enemies[Math.floor(Math.random() * enemies.length)];
-                        let [tx, ty] = targetKey.split(',').map(Number);
-                        actionAttack(tx, ty);
+                    let attackTarget = null;
+                    let useMissile = false;
+                    let sourceUnitKey = null;
+                    if (myUnitKeys.length > 0) {
+                        let enemyCells = [];
+                        for (let i = 1; i <= GAME.totalPlayers; i++) {
+                            if (i !== player && !GAME.eliminatedPlayers.has(i)) {
+                                for (let cell of GAME.playerLands[i].cells) enemyCells.push({ key: cell, owner: i });
+                            }
+                        }
+                        for (let [k, u] of GAME.units) {
+                            if (u.owner !== player && !GAME.eliminatedPlayers.has(u.owner)) {
+                                if (!enemyCells.some(e => e.key === k)) enemyCells.push({ key: k, owner: u.owner });
+                            }
+                        }
+                        enemyCells.sort(() => Math.random() - 0.5);
+                        for (let enemy of enemyCells) {
+                            let [ex, ey] = enemy.key.split(',').map(Number);
+                            for (let uk of myUnitKeys) {
+                                let [ux, uy] = uk.split(',').map(Number);
+                                if (Math.abs(ux - ex) + Math.abs(uy - ey) === 1) {
+                                    attackTarget = { x: ex, y: ey, owner: enemy.owner };
+                                    sourceUnitKey = uk;
+                                    useMissile = false;
+                                    break;
+                                }
+                            }
+                            if (attackTarget) break;
+                        }
+                        if (!attackTarget && hasMissileTech(player) && enemyCells.length > 0) {
+                            let randomEnemy = enemyCells[0];
+                            let [ex, ey] = randomEnemy.key.split(',').map(Number);
+                            attackTarget = { x: ex, y: ey, owner: randomEnemy.owner };
+                            sourceUnitKey = myUnitKeys[0];
+                            useMissile = true;
+                        }
+                    }
+                    if (attackTarget && sourceUnitKey) {
+                        if (useMissile) {
+                            actionAttackMissile(attackTarget.x, attackTarget.y, sourceUnitKey);
+                        } else {
+                            actionAttack(attackTarget.x, attackTarget.y);
+                        }
                         await new Promise(r => setTimeout(r, 300));
                     }
                 }
@@ -2198,7 +2499,6 @@
                         <button class="modal-close-btn" id="devCancelBtn">取消</button>
                     </div>`;
                 document.body.appendChild(modal);
-
                 modal.querySelectorAll('.develop-option').forEach(opt => {
                     opt.addEventListener('click', function() {
                         let choice = this.dataset.choice;
@@ -2277,7 +2577,6 @@
                     `<button class="modal-close-btn" id="closeTechModalBtn">关闭</button></div>`;
                 modal.innerHTML = html;
                 document.body.appendChild(modal);
-
                 modal.querySelectorAll('.tech-research-btn').forEach(btn => {
                     btn.onclick = (e) => {
                         let techId = btn.dataset.tech;
@@ -2312,10 +2611,12 @@
                         if (tech.name === '数字金融') GAME.playerEconomy[player].commerce += 5;
                         if (tech.name === '人工智能管理') GAME.playerEconomy[player].science += 6;
                         updateTopBar();
-                        showMsg(`研发成功: ${tech.name}`);
+                        let isMissile = MISSILE_TECH_IDS.has(techId);
+                        let extraMsg = isMissile ? ' 🚀 现在可进行远程导弹攻击！' : '';
+                        showMsg(`研发成功: ${tech.name}${extraMsg}`);
                         showAchievement('<i class="fas fa-flask"></i>',
                             '🔬 研发成功！',
-                            `成功研发出「${tech.name}」！科技力量大幅提升`
+                            `成功研发出「${tech.name}」！${isMissile ? '解锁远程导弹攻击能力！' : '科技力量大幅提升'}`
                         );
                         modal.remove();
                         showTechTree();
@@ -2332,14 +2633,15 @@
                 modal.innerHTML = `
                     <div class="modal-card" style="max-width:620px; text-align:left; line-height:1.7; font-size:0.85rem;">
                         <h2 style="text-align:center;"><i class="fas fa-scroll"></i> 现代战争推演4 · 完整规则</h2>
-                        <p><b>一、游戏概述</b><br>《现代战争推演4》是一款回合制战略推演游戏，支持2~9名玩家（可设AI）。玩家扮演各国领袖，通过领土扩张、经济发展、科技研发与军事征服，最终消灭所有对手、一统天下。每回合仅可执行一次攻击，策略深度极高。</p>
+                        <p><b>一、游戏概述</b><br>《现代战争推演4》是一款回合制战略推演游戏，支持2~9名玩家（可设AI）。玩家扮演各国领袖，通过领土扩张、经济发展、科技研发与军事征服，最终消灭所有对手、一统天下。每回合仅可执行一次攻击，<b style="color:#f5bc5c;">每回合只能扩张1格</b>，策略深度极高。</p>
                         <p><b>二、建国阶段</b><br>游戏开始时，每位玩家需在20×20的世界地图上选择<b>4块相连陆地</b>作为初始领土，并从其中选定<b>1块为首都</b>。首都若被敌方攻占，则该玩家<b>立即灭亡</b>，所有领土归攻击者所有。领土必须连成一片方可确认。</p>
-                        <p><b>三、回合流程</b><br>每回合玩家可执行多种行动：<b>扩张领土</b>（消耗100银币，占领相邻空地）、<b>收集资源</b>（从己方领土获取银币，每格限一次）、<b>部署步兵</b>（在己方领土放置战斗单位）、<b>内政发展</b>（提升农业/工业/商业/科技四项指标）、<b>科技研发</b>（解锁50+项科技，部分有前置要求）、<b>发动攻击</b>（每回合限一次，用己方步兵攻占敌方格子）。结束回合后获得税收，轮到下一位玩家。</p>
+                        <p><b>三、回合流程</b><br>每回合玩家可执行多种行动：<b>扩张领土</b>（消耗100银币，占领相邻空地，<b style="color:#f87171;">每回合限1次</b>）、<b>收集资源</b>（从己方领土获取银币，每格限一次）、<b>部署步兵</b>（在己方领土放置战斗单位）、<b>内政发展</b>（提升农业/工业/商业/科技四项指标）、<b>科技研发</b>（解锁50+项科技，部分有前置要求）、<b>发动攻击</b>（每回合限一次，<b style="color:#f87171;">除导弹外，只有己方已部署武器或步兵的格子与敌方的格子相邻时，才可以攻击</b>）。结束回合后获得税收，轮到下一位玩家。</p>
                         <p><b>四、经济与资源</b><br>银币为主要货币，通过收集、税收和发展获得。GDP由四项经济指标加权计算。稀有资源包括<b>黄金、稀土、石油、铀矿</b>，用于高级科技研发。内政发展消耗银币提升对应指标，指标越高税收越多。</p>
-                        <p><b>五、科技树</b><br>共设<b>8大类别50+项科技</b>：军事基础（坦克/火炮）、导弹科技（短程至洲际导弹）、核子力量（原子弹至钴弹）、空军力量、海军力量、未来科技（电磁炮/纳米机器人）、经济产业、战略支援。研发需消耗多种资源，部分科技有前置依赖。</p>
-                        <p><b>六、抽奖系统 🎁</b><br>每<b>2回合</b>可获得一次免费抽奖机会。其余时候可消耗<b>100银币</b>进行付费抽奖。奖池包含银币、黄金、稀土、石油、钻石、GDP加成、免费步兵、随机科技等惊喜奖励！</p>
-                        <p><b>七、处罚机制 ⚠️</b><br>从第5回合开始，每5回合系统将检查<b>农业</b>和<b>工业</b>发展水平。若低于该阶段最低要求，将触发<b>暴乱</b>：银币减少、GDP下降，严重时还会<b>丧失领土</b>。请务必关注内政发展，保持农业与工业均衡增长！</p>
-                        <p><b>八、胜利条件</b><br>消灭所有其他玩家（攻占其首都或使其无领土）即为胜利。当场上仅剩一位玩家时，该玩家获得最终胜利。AI玩家会自动执行回合，具备基本的扩张与攻击逻辑。</p>
+                        <p><b>五、科技树</b><br>共设<b>8大类别50+项科技</b>：军事基础（坦克/火炮）、导弹科技（短程至洲际导弹）、核子力量（原子弹至钴弹）、空军力量、海军力量、未来科技（电磁炮/纳米机器人）、经济产业、战略支援。研发需消耗多种资源，部分科技有前置依赖。<b style="color:#4ade80;">🚀 研发导弹科技后，可进行远程攻击（无需相邻）！</b></p>
+                        <p><b>六、攻击规则 ⚔️</b><br><b style="color:#f5bc5c;">普通攻击</b>：己方步兵/武器所在格子必须与敌方目标格子相邻（上下左右）。攻击后步兵移动至目标格。<br><b style="color:#60a5fa;">🚀 导弹攻击</b>：研发任意导弹科技后解锁。可从己方任意单位远程攻击任意敌方格子，消耗<b>50银币</b>，单位不移动。每回合仅限攻击一次。</p>
+                        <p><b>七、抽奖系统 🎁</b><br>每<b>2回合</b>可获得一次免费抽奖机会。其余时候可消耗<b>100银币</b>进行付费抽奖。奖池包含银币、黄金、稀土、石油、钻石、GDP加成、免费步兵、随机科技等惊喜奖励！</p>
+                        <p><b>八、处罚机制 ⚠️</b><br>从第5回合开始，每5回合系统将检查<b>农业</b>和<b>工业</b>发展水平。若低于该阶段最低要求，将触发<b>暴乱</b>：银币减少、GDP下降，严重时还会<b>丧失领土</b>。请务必关注内政发展，保持农业与工业均衡增长！</p>
+                        <p><b>九、胜利条件</b><br>消灭所有其他玩家（攻占其首都或使其无领土）即为胜利。当场上仅剩一位玩家时，该玩家获得最终胜利。AI玩家会自动执行回合，具备基本的扩张与攻击逻辑。</p>
                         <p style="text-align:center; color:#f5bc5c; margin-top:8px;">⚡ 运筹帷幄之中，决胜千里之外 ⚡</p>
                         <button class="modal-close-btn" id="closeRulesBtn" style="display:block; margin:0 auto;">朕已阅</button>
                     </div>`;
@@ -2374,7 +2676,6 @@
                 let player = GAME.currentTurn;
                 let free = canFreeLottery(player);
                 let res = GAME.playerResources[player];
-
                 let modal = document.createElement('div');
                 modal.className = 'modal-backdrop';
                 modal.innerHTML = `
@@ -2391,7 +2692,6 @@
                         <button class="modal-close-btn" id="closeLotteryBtn" style="margin-top:10px;">离开</button>
                     </div>`;
                 document.body.appendChild(modal);
-
                 document.getElementById('closeLotteryBtn').addEventListener('click', () => {
                     modal.remove();
                     updateLotteryButtonHighlight();
@@ -2402,7 +2702,6 @@
                         updateLotteryButtonHighlight();
                     }
                 });
-
                 document.getElementById('doLotteryBtn').addEventListener('click', () => {
                     if (!free && res.silver < 100) {
                         showMsg('银币不足100，无法抽奖');
@@ -2414,7 +2713,6 @@
                     } else {
                         GAME.playerLastFreeTurn[player] = GAME.turnCount;
                     }
-
                     let prize = getRandomPrize();
                     let resultMsg = applyPrize(player, prize);
                     let resultArea = document.getElementById('lotteryResultArea');
@@ -2426,7 +2724,6 @@
                                 <p style="color:#ffefcf; margin-top:6px;">${resultMsg}</p>
                             </div>`;
                     }
-                    // 禁用按钮防止重复点击
                     let doBtn = document.getElementById('doLotteryBtn');
                     if (doBtn) doBtn.disabled = true;
                     showAchievement('<i class="fas fa-gift"></i>', '🎁 抽奖结果', prize.text);
@@ -2437,20 +2734,7 @@
             }
 
             // ==================== 军事行动 ====================
-            function actionAttack(x, y) {
-                let key = `${x},${y}`;
-                let owner = null;
-                for (let p = 1; p <= GAME.totalPlayers; p++)
-                    if (GAME.playerLands[p]?.cells.has(key)) owner = p;
-                if (owner === GAME.currentTurn) { showMsg('无法进攻己方');
-                    GAME.selectedAction = null; return; }
-                if (GAME.attackUsedThisTurn) { showMsg('本回合已攻击');
-                    GAME.selectedAction = null; return; }
-                let myUnit = null;
-                for (let [k, u] of GAME.units)
-                    if (u.owner === GAME.currentTurn) { myUnit = k; break; }
-                if (!myUnit) { showMsg('无战斗单位');
-                    GAME.selectedAction = null; return; }
+            function executeAdjacentAttack(x, y, key, owner, player, sourceUnitEntry) {
                 let conqueredPlayerName = null;
                 if (owner) {
                     GAME.playerLands[owner].cells.delete(key);
@@ -2461,16 +2745,16 @@
                         showMsg(`⚔️ ${conqueredPlayerName} 灭亡！`);
                     }
                 }
-                GAME.playerLands[GAME.currentTurn].cells.add(key);
-                let [sx, sy] = myUnit.split(',').map(Number);
+                GAME.playerLands[player].cells.add(key);
+                let [sx, sy] = sourceUnitEntry.key.split(',').map(Number);
                 let oldCell = document.querySelector(`.grid-cell[data-x='${sx}'][data-y='${sy}']`);
                 if (oldCell) oldCell.classList.remove('unit');
-                GAME.units.delete(myUnit);
-                GAME.units.set(key, { type: '步兵', owner: GAME.currentTurn });
+                GAME.units.delete(sourceUnitEntry.key);
+                GAME.units.set(key, { type: '步兵', owner: player });
                 GAME.attackUsedThisTurn = true;
                 renderFullMap();
                 updateTopBar();
-                showMsg(`占领 (${x},${y})`);
+                showMsg(`⚔️ 步兵攻占 (${x},${y})`);
                 if (conqueredPlayerName) {
                     showAchievement('<i class="fas fa-skull-crossbones"></i>',
                         '💀 帝国覆灭',
@@ -2479,7 +2763,99 @@
                 } else {
                     showAchievement('<i class="fas fa-crosshairs"></i>',
                         '⚔️ 攻占成功',
-                        `成功占领坐标 (${x},${y})！`
+                        `步兵成功占领坐标 (${x},${y})！`
+                    );
+                }
+                GAME.selectedAction = null;
+            }
+
+            function actionAttack(x, y) {
+                let player = GAME.currentTurn;
+                let key = `${x},${y}`;
+                let owner = null;
+                for (let p = 1; p <= GAME.totalPlayers; p++)
+                    if (GAME.playerLands[p]?.cells.has(key)) owner = p;
+                if (owner === player) { showMsg('无法进攻己方');
+                    GAME.selectedAction = null; return; }
+                if (GAME.attackUsedThisTurn) { showMsg('本回合已攻击');
+                    GAME.selectedAction = null; return; }
+                let myUnitEntries = [];
+                for (let [k, u] of GAME.units) {
+                    if (u.owner === player) myUnitEntries.push({ key: k, unit: u });
+                }
+                if (myUnitEntries.length === 0) { showMsg('无己方战斗单位，请先部署步兵');
+                    GAME.selectedAction = null; return; }
+                let adjacentUnit = null;
+                for (let entry of myUnitEntries) {
+                    let [sx, sy] = entry.key.split(',').map(Number);
+                    if (Math.abs(sx - x) + Math.abs(sy - y) === 1) {
+                        adjacentUnit = entry;
+                        break;
+                    }
+                }
+                if (!adjacentUnit) {
+                    if (hasMissileTech(player)) {
+                        showMsg('⚠️ 没有相邻的己方单位！但你已研发导弹科技，再次点击目标确认远程打击(消耗50银)');
+                        GAME.selectedAction = 'missile';
+                        return;
+                    } else {
+                        showMsg('❌ 没有与目标相邻的己方单位！研发导弹科技后可远程攻击');
+                        GAME.selectedAction = null;
+                        return;
+                    }
+                }
+                executeAdjacentAttack(x, y, key, owner, player, adjacentUnit);
+            }
+
+            function actionAttackMissile(x, y, sourceUnitKeyOverride) {
+                let player = GAME.currentTurn;
+                let key = `${x},${y}`;
+                let owner = null;
+                for (let p = 1; p <= GAME.totalPlayers; p++)
+                    if (GAME.playerLands[p]?.cells.has(key)) owner = p;
+                if (owner === player) { showMsg('无法进攻己方');
+                    GAME.selectedAction = null; return; }
+                if (GAME.attackUsedThisTurn) { showMsg('本回合已攻击');
+                    GAME.selectedAction = null; return; }
+                if (!hasMissileTech(player)) { showMsg('未研发导弹科技，无法远程攻击');
+                    GAME.selectedAction = null; return; }
+                let sourceKey = sourceUnitKeyOverride;
+                if (!sourceKey) {
+                    let myUnitEntries = [];
+                    for (let [k, u] of GAME.units) {
+                        if (u.owner === player) myUnitEntries.push(k);
+                    }
+                    if (myUnitEntries.length === 0) { showMsg('无己方单位作为导弹发射平台');
+                        GAME.selectedAction = null; return; }
+                    sourceKey = myUnitEntries[0];
+                }
+                if (GAME.playerResources[player].silver < 50) { showMsg('银币不足50，无法发射导弹');
+                    GAME.selectedAction = null; return; }
+                GAME.playerResources[player].silver -= 50;
+                let conqueredPlayerName = null;
+                if (owner) {
+                    GAME.playerLands[owner].cells.delete(key);
+                    if (GAME.playerLands[owner].capital && GAME.playerLands[owner].capital.x === x && GAME.playerLands[
+                            owner].capital.y === y) {
+                        GAME.eliminatedPlayers.add(owner);
+                        conqueredPlayerName = GAME.playerNames[owner];
+                        showMsg(`💥 导弹摧毁！${conqueredPlayerName} 灭亡！`);
+                    }
+                }
+                GAME.playerLands[player].cells.add(key);
+                GAME.attackUsedThisTurn = true;
+                renderFullMap();
+                updateTopBar();
+                showMsg(`🚀 导弹远程打击 (${x},${y}) -50银`);
+                if (conqueredPlayerName) {
+                    showAchievement('<i class="fas fa-skull-crossbones"></i>',
+                        '💀 帝国覆灭',
+                        `${conqueredPlayerName} 的首都被导弹摧毁！霸业又进一步！`
+                    );
+                } else {
+                    showAchievement('<i class="fas fa-rocket"></i>',
+                        '🚀 导弹打击',
+                        `远程导弹成功命中坐标 (${x},${y})！-50银`
                     );
                 }
                 GAME.selectedAction = null;
@@ -2509,6 +2885,11 @@
 
             function actionExpand(x, y) {
                 let key = `${x},${y}`;
+                if (GAME.expandUsedThisTurn) {
+                    showMsg('⚠️ 本回合已扩张过，每回合只能扩张1格！');
+                    GAME.selectedAction = null;
+                    return;
+                }
                 if (GAME.playerLands[GAME.currentTurn].cells.has(key)) { showMsg('已是领土');
                     GAME.selectedAction = null; return; }
                 let neighbors = [`${x-1},${y}`, `${x+1},${y}`, `${x},${y-1}`, `${x},${y+1}`];
@@ -2519,12 +2900,13 @@
                     GAME.selectedAction = null; return; }
                 GAME.playerResources[GAME.currentTurn].silver -= 100;
                 GAME.playerLands[GAME.currentTurn].cells.add(key);
+                GAME.expandUsedThisTurn = true;
                 renderFullMap();
                 updateTopBar();
-                showMsg(`扩张成功 -100银`);
+                showMsg(`扩张成功 -100银 (本回合已扩张)`);
                 showAchievement('<i class="fas fa-maximize"></i>',
                     '🏴 领土扩张',
-                    `疆域扩展至 (${x},${y})！-100银`
+                    `疆域扩展至 (${x},${y})！-100银（本回合仅此1格）`
                 );
                 GAME.selectedAction = null;
                 if (TUTORIAL.active && TUTORIAL.step === 3 && !TUTORIAL.completed) {
@@ -2566,11 +2948,12 @@
                 GAME.currentTurn = next;
                 GAME.turnCount++;
                 GAME.attackUsedThisTurn = false;
+                GAME.expandUsedThisTurn = false;
                 GAME.selectedAction = null;
                 renderFullMap();
                 updateTopBar();
                 updateLotteryButtonHighlight();
-                showMsg(`轮到 ${GAME.playerNames[GAME.currentTurn]}`);
+                showMsg(`轮到 ${GAME.playerNames[GAME.currentTurn]} (可扩张1格 | 攻击需相邻或导弹)`);
                 if (TUTORIAL.active && TUTORIAL.step === 6 && !TUTORIAL.completed) {
                     advanceTutorial();
                 }
@@ -2603,7 +2986,7 @@
                 container.className = 'modal-card';
                 container.innerHTML = `
                     <h2><i class="fas fa-crown"></i> ${isTutorial ? '新手教程 · 配置' : '帝国议会'}</h2>
-                    ${isTutorial ? '<p style="color:#4ade80; font-size:0.8rem;">教程将逐步引导你完成基本操作</p>' : ''}
+                    ${isTutorial ? '<p style="color:#4ade80; font-size:0.8rem;">教程将逐步引导你完成基本操作（每回合限扩1格，攻击需相邻或导弹）</p>' : ''}
                     <div style="display:flex; gap:15px; justify-content:center; margin-bottom:15px; align-items:center;">
                         <button id="decPlayer" class="modal-action-btn" style="font-size:1.2rem; padding:6px 16px;" ${isTutorial?'disabled':''}>-</button>
                         <span id="playerNumDisplay" style="color:#ffdeae; font-size:1.8rem; font-weight:900;">${playerCount}</span>
@@ -2701,6 +3084,7 @@
                             selectingCapital: false };
                         GAME.currentTurn = 1;
                         GAME.attackUsedThisTurn = false;
+                        GAME.expandUsedThisTurn = false;
                         GAME.turnCount = 0;
                         renderFullMap();
                         updateTopBar();
@@ -2714,7 +3098,7 @@
                             clearTutorialHighlights();
                             const banner = document.getElementById('tutorialBanner');
                             if (banner) banner.classList.remove('show');
-                            showMsg(`请 ${GAME.playerNames[1]} 选择4块相连领土，再点击首都`);
+                            showMsg(`请 ${GAME.playerNames[1]} 选择4块相连领土，再点击首都 | 每回合限扩1格 | 攻击需相邻(导弹除外)`);
                         }
                         if (GAME.aiPlayers.has(1)) autoSetupTerrain();
                     }, isTutorial);
@@ -2732,16 +3116,29 @@
                 else showMsg('建设中无法研发');
             };
             document.getElementById('fabAttack').onclick = () => {
-                if (!GAME.setupPhase.isSetting) { GAME.selectedAction = 'attack';
-                    showMsg('攻击模式: 点击敌方格子'); } else showMsg('完成建国后再宣战');
+                if (!GAME.setupPhase.isSetting) {
+                    GAME.selectedAction = 'attack';
+                    let player = GAME.currentTurn;
+                    if (hasMissileTech(player)) {
+                        showMsg('⚔️ 攻击模式：点击敌方相邻格子(步兵) 或 远程(导弹-50银) | 再次点击目标确认');
+                    } else {
+                        showMsg('⚔️ 攻击模式：点击与己方单位相邻的敌方格子');
+                    }
+                } else showMsg('完成建国后再宣战');
             };
             document.getElementById('fabCollect').onclick = () => {
                 if (!GAME.setupPhase.isSetting) { GAME.selectedAction = 'collect';
                     showMsg('收集模式: 点击己方领土'); } else showMsg('完成建国后再收集');
             };
             document.getElementById('fabExpand').onclick = () => {
-                if (!GAME.setupPhase.isSetting) { GAME.selectedAction = 'expand';
-                    showMsg('扩张模式: 点击相邻地块(100银)'); } else showMsg('完成建国后再扩张');
+                if (GAME.setupPhase.isSetting) { showMsg('完成建国后再扩张');
+                    return; }
+                if (GAME.expandUsedThisTurn) {
+                    showMsg('⚠️ 本回合已扩张过，每回合只能扩张1格！请结束回合后下轮再扩');
+                    return;
+                }
+                GAME.selectedAction = 'expand';
+                showMsg('扩张模式: 点击相邻地块(100银)·本回合限1格');
             };
             document.getElementById('fabPlace').onclick = () => {
                 if (!GAME.setupPhase.isSetting) { GAME.selectedAction = 'place';
@@ -2756,10 +3153,59 @@
             };
             document.getElementById('fabEndTurn').onclick = () => { endTurn(); };
 
+            // ==================== 重写onGridClick处理导弹模式 ====================
+            const originalOnGridClick = onGridClick;
+            onGridClick = function(x, y) {
+                if (!GAME.setupPhase.isSetting && GAME.selectedAction === 'missile') {
+                    actionAttackMissile(x, y, null);
+                    return;
+                }
+                if (!GAME.setupPhase.isSetting && GAME.selectedAction === 'attack') {
+                    let player = GAME.currentTurn;
+                    let key = `${x},${y}`;
+                    let owner = null;
+                    for (let p = 1; p <= GAME.totalPlayers; p++)
+                        if (GAME.playerLands[p]?.cells.has(key)) owner = p;
+                    if (owner === player) { showMsg('无法进攻己方');
+                        GAME.selectedAction = null; return; }
+                    if (GAME.attackUsedThisTurn) { showMsg('本回合已攻击');
+                        GAME.selectedAction = null; return; }
+                    let myUnitEntries = [];
+                    for (let [k, u] of GAME.units) {
+                        if (u.owner === player) myUnitEntries.push({ key: k, unit: u });
+                    }
+                    if (myUnitEntries.length === 0) { showMsg('无己方战斗单位，请先部署步兵');
+                        GAME.selectedAction = null; return; }
+                    let adjacentUnit = null;
+                    for (let entry of myUnitEntries) {
+                        let [sx, sy] = entry.key.split(',').map(Number);
+                        if (Math.abs(sx - x) + Math.abs(sy - y) === 1) {
+                            adjacentUnit = entry;
+                            break;
+                        }
+                    }
+                    if (!adjacentUnit && hasMissileTech(player)) {
+                        if (GAME.playerResources[player].silver < 50) {
+                            showMsg('❌ 没有相邻单位，且银币不足50无法发射导弹');
+                            GAME.selectedAction = null;
+                            return;
+                        }
+                        actionAttackMissile(x, y, null);
+                        return;
+                    } else if (!adjacentUnit) {
+                        showMsg('❌ 没有与目标相邻的己方单位！研发导弹科技后可远程攻击');
+                        GAME.selectedAction = null;
+                        return;
+                    }
+                    executeAdjacentAttack(x, y, key, owner, player, adjacentUnit);
+                    return;
+                }
+                originalOnGridClick(x, y);
+            };
+
             // ==================== 初始状态 ====================
             updateHomeStats();
             recalcCellSize();
-
             GAME.mapTerrain = generateMap();
             GAME.playerLands = {};
             GAME.playerResources = {};
@@ -2775,6 +3221,8 @@
             GAME.setupPhase = { isSetting: true, currentSettingPlayer: 1, selectedCells: [], selectingCapital: false };
             GAME.playerNames = { 1: '星穹1', 2: '星穹2' };
             GAME.capitalNames = { 1: '辉光1', 2: '辉光2' };
+            GAME.attackUsedThisTurn = false;
+            GAME.expandUsedThisTurn = false;
         })();
     </script>
 </body>
