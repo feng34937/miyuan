@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>《HTML由入门到精通》阅读器</title>
+    <!-- Font Awesome 6 (免费) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* === 全局重置 === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f5f3f0;
+            color: #333;
+            overflow: hidden;
+            height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* === 夜间模式变量 === */
+        body.night-mode {
+            background: #1a1a1a;
+            color: #ccc;
+        }
+
+        body.night-mode .reader-header {
+            background: rgba(30, 30, 30, 0.75);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        body.night-mode .reader-header h1 {
+            color: #e0e0e0;
+        }
+
+        body.night-mode .reader-footer {
+            background: rgba(30, 30, 30, 0.75);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        body.night-mode .reader-footer button {
+            color: #ccc;
+        }
+
+        body.night-mode .reader-footer button:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        body.night-mode .progress-bar {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        body.night-mode .progress-fill {
+            background: #6a8caf;
+        }
+
+        body.night-mode .content-area {
+            background: #1a1a1a;
+        }
+
+        body.night-mode .chapter-title {
+            color: #e8e8e8;
+        }
+
+        body.night-mode .chapter-content {
+            color: #c8c8c8;
+        }
+
+        body.night-mode .chapter-content h1,
+        body.night-mode .chapter-content h2,
+        body.night-mode .chapter-content h3 {
+            color: #e0e0e0;
+        }
+
+        body.night-mode .chapter-content code {
+            background: #2d2d2d;
+            color: #e6c07b;
+        }
+
+        body.night-mode .chapter-content pre {
+            background: #2d2d2d;
+            border-left-color: #6a8caf;
+        }
+
+        body.night-mode .chapter-content table {
+            border-color: #444;
+        }
+
+        body.night-mode .chapter-content th,
+        body.night-mode .chapter-content td {
+            border-color: #444;
+        }
+
+        body.night-mode .chapter-content blockquote {
+            border-left-color: #6a8caf;
+            background: #2a2a2a;
+        }
+
+        body.night-mode .chapter-content .tip-box {
+            background: #2a3a3a;
+            border-left-color: #6a8caf;
+        }
+
+        body.night-mode .chapter-content .tip-box strong {
+            color: #8ab4d6;
+        }
+
+        body.night-mode .drawer-overlay {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        /* === iOS 26 玻璃背景目录 === */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+
+        .drawer-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: 320px;
+            height: 100%;
+            z-index: 1001;
+            transition: left 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            overflow-y: auto;
+            padding: 24px 0 40px 0;
+            background: rgba(255, 255, 255, 0.58);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-right: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            border-radius: 0;
+        }
+
+        body.night-mode .drawer {
+            background: rgba(30, 30, 30, 0.70);
+            backdrop-filter: blur(40px) saturate(160%);
+            -webkit-backdrop-filter: blur(40px) saturate(160%);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .drawer.open {
+            left: 0;
+        }
+
+        .drawer::-webkit-scrollbar {
+            width: 3px;
+        }
+        .drawer::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .drawer::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+        body.night-mode .drawer::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .drawer-title {
+            font-size: 20px;
+            font-weight: 600;
+            padding: 0 20px 18px 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+        }
+
+        body.night-mode .drawer-title {
+            color: #e0e0e0;
+            border-bottom-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .drawer-title i {
+            margin-right: 10px;
+            color: #3b7cb8;
+            font-size: 22px;
+        }
+
+        body.night-mode .drawer-title i {
+            color: #6a8caf;
+        }
+
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: rgba(0, 0, 0, 0.4);
+            padding: 0 8px;
+            transition: color 0.2s;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .drawer-close:hover {
+            background: rgba(0, 0, 0, 0.06);
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        body.night-mode .drawer-close {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        body.night-mode .drawer-close:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 8px 12px 20px 12px;
+            margin: 0;
+        }
+
+        .toc-item {
+            padding: 10px 16px 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            color: rgba(0, 0, 0, 0.75);
+            margin-bottom: 2px;
+            position: relative;
+        }
+
+        body.night-mode .toc-item {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .toc-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body.night-mode .toc-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .toc-item .chapter-num {
+            display: inline-block;
+            width: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.3);
+            margin-right: 10px;
+            flex-shrink: 0;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        body.night-mode .toc-item .chapter-num {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .toc-item .chapter-title-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .toc-item .status-tag {
+            margin-left: 10px;
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.06);
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+
+        body.night-mode .toc-item .status-tag {
+            color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .toc-item.active {
+            background: rgba(59, 124, 184, 0.15);
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        body.night-mode .toc-item.active {
+            background: rgba(106, 140, 175, 0.20);
+            color: #e8e8e8;
+        }
+
+        .toc-item.active .chapter-num {
+            color: #3b7cb8;
+        }
+
+        body.night-mode .toc-item.active .chapter-num {
+            color: #8ab4d6;
+        }
+
+        .toc-item .toc-icon {
+            margin-right: 12px;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.2);
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        body.night-mode .toc-item .toc-icon {
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .toc-item.active .toc-icon {
+            color: #3b7cb8;
+        }
+
+        body.night-mode .toc-item.active .toc-icon {
+            color: #8ab4d6;
+        }
+
+        /* === 阅读器布局 === */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 820px;
+            margin: 0 auto;
+            position: relative;
+            background: #f5f3f0;
+            transition: background 0.3s;
+            border-radius: 0;
+        }
+
+        body.night-mode .app-container {
+            background: #1a1a1a;
+        }
+
+        /* === 顶部导航 - 玻璃效果增强，圆角0 === */
+        .reader-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-shrink: 0;
+            transition: background 0.3s, border-color 0.3s;
+            height: 60px;
+            border-radius: 0 !important;
+        }
+
+        body.night-mode .reader-header {
+            background: rgba(30, 30, 30, 0.65);
+            backdrop-filter: blur(30px) saturate(160%);
+            -webkit-backdrop-filter: blur(30px) saturate(160%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .reader-header .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 8px;
+            color: rgba(0, 0, 0, 0.5);
+            transition: color 0.2s, background 0.2s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.8);
+        }
+
+        body.night-mode .menu-btn {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        body.night-mode .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .reader-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            transition: color 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        body.night-mode .reader-header h1 {
+            color: #e0e0e0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .header-right button {
+            background: none;
+            border: none;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            font-size: 18px;
+            cursor: pointer;
+            color: rgba(0, 0, 0, 0.5);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-right button:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.8);
+        }
+
+        body.night-mode .header-right button {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        body.night-mode .header-right button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .font-size-controls {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 20px;
+            padding: 2px 4px;
+        }
+
+        body.night-mode .font-size-controls {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .font-size-controls button {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+            border-radius: 50%;
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        body.night-mode .font-size-controls button {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .font-size-controls .size-display {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.4);
+            min-width: 32px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        body.night-mode .font-size-controls .size-display {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* === 内容区域 === */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 30px 40px 30px;
+            background: #fcfaf8;
+            transition: background 0.3s, padding 0.3s;
+            scroll-behavior: smooth;
+            line-height: 1.8;
+        }
+
+        body.night-mode .content-area {
+            background: #1e1e1e;
+        }
+
+        .chapter-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .chapter-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+            transition: color 0.3s;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8e6e3;
+        }
+
+        body.night-mode .chapter-title {
+            border-bottom-color: #3a3a3a;
+        }
+
+        .chapter-content {
+            font-size: 16px;
+            color: #333;
+            transition: color 0.3s, font-size 0.2s;
+        }
+
+        .chapter-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .chapter-content h1,
+        .chapter-content h2,
+        .chapter-content h3 {
+            margin-top: 1.6em;
+            margin-bottom: 0.6em;
+            font-weight: 600;
+        }
+
+        .chapter-content h1 {
+            font-size: 1.8em;
+        }
+        .chapter-content h2 {
+            font-size: 1.4em;
+        }
+        .chapter-content h3 {
+            font-size: 1.2em;
+        }
+
+        .chapter-content ul,
+        .chapter-content ol {
+            margin: 0.8em 0 1em 1.8em;
+        }
+
+        .chapter-content li {
+            margin-bottom: 0.3em;
+        }
+
+        .chapter-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+            font-size: 0.95em;
+        }
+
+        .chapter-content th,
+        .chapter-content td {
+            border: 1px solid #d0d0d0;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .chapter-content th {
+            background: #f0f0f0;
+            font-weight: 600;
+        }
+
+        body.night-mode .chapter-content th {
+            background: #2a2a2a;
+        }
+
+        .chapter-content code {
+            font-family: "SF Mono", "Menlo", "Consolas", monospace;
+            background: #f0f0f0;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+
+        body.night-mode .chapter-content code {
+            background: #2d2d2d;
+            color: #e6c07b;
+        }
+
+        .chapter-content pre {
+            background: #f6f6f6;
+            padding: 16px 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-size: 0.9em;
+            line-height: 1.6;
+            border-left: 4px solid #3b7cb8;
+            margin: 1em 0;
+        }
+
+        body.night-mode .chapter-content pre {
+            background: #2d2d2d;
+            border-left-color: #6a8caf;
+        }
+
+        .chapter-content pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        .chapter-content blockquote {
+            border-left: 4px solid #3b7cb8;
+            padding: 0.8em 1.2em;
+            background: #f9f9f9;
+            margin: 1em 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        body.night-mode .chapter-content blockquote {
+            background: #2a2a2a;
+            border-left-color: #6a8caf;
+        }
+
+        .chapter-content .tip-box {
+            background: #f0f7ff;
+            border-left: 4px solid #3b7cb8;
+            padding: 0.8em 1.2em;
+            margin: 1em 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        body.night-mode .chapter-content .tip-box {
+            background: #2a3a4a;
+        }
+
+        .chapter-content .tip-box strong {
+            color: #1a5c9a;
+        }
+
+        .chapter-content hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 2em 0;
+        }
+
+        .chapter-content .placeholder-box {
+            background: rgba(0, 0, 0, 0.02);
+            border: 2px dashed rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 60px 20px;
+            text-align: center;
+            color: rgba(0, 0, 0, 0.3);
+            font-size: 1.2em;
+            margin: 2em 0;
+            backdrop-filter: blur(4px);
+        }
+
+        body.night-mode .chapter-content .placeholder-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .chapter-content .placeholder-box i {
+            font-size: 3em;
+            margin-bottom: 16px;
+            display: block;
+            color: rgba(0, 0, 0, 0.12);
+        }
+
+        body.night-mode .chapter-content .placeholder-box i {
+            color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* === 底部工具栏 === */
+        .reader-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            flex-shrink: 0;
+            transition: background 0.3s, border-color 0.3s;
+            height: 56px;
+            border-radius: 0;
+        }
+
+        body.night-mode .reader-footer {
+            background: rgba(30, 30, 30, 0.65);
+            backdrop-filter: blur(30px) saturate(160%);
+            -webkit-backdrop-filter: blur(30px) saturate(160%);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .reader-footer .progress-info {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.35);
+            min-width: 60px;
+            font-weight: 500;
+        }
+
+        body.night-mode .reader-footer .progress-info {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+            margin: 0 16px;
+            position: relative;
+            cursor: pointer;
+            transition: height 0.2s;
+        }
+
+        .progress-bar:hover {
+            height: 5px;
+        }
+
+        body.night-mode .progress-bar {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #3b7cb8;
+            border-radius: 4px;
+            transition: width 0.1s;
+        }
+
+        .footer-controls {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .footer-controls button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: rgba(0, 0, 0, 0.4);
+            padding: 4px 10px;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-controls button:hover:not(:disabled) {
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .footer-controls button:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+
+        body.night-mode .footer-controls button {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        body.night-mode .footer-controls button:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* === 响应式 === */
+        @media (max-width: 640px) {
+            .reader-header h1 {
+                font-size: 16px;
+            }
+            .content-area {
+                padding: 16px 16px 30px 16px;
+            }
+            .chapter-title {
+                font-size: 22px;
+            }
+            .drawer {
+                width: 290px;
+                left: -310px;
+                padding: 20px 0 30px 0;
+            }
+            .drawer.open {
+                left: 0;
+            }
+            .reader-footer .progress-info {
+                font-size: 12px;
+                min-width: 50px;
+            }
+            .header-right .theme-toggle {
+                font-size: 16px;
+            }
+            .menu-btn {
+                font-size: 20px;
+                width: 36px;
+                height: 36px;
+            }
+            .font-size-controls button {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+            .font-size-controls .size-display {
+                min-width: 26px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .reader-header {
+                padding: 8px 12px;
+                height: 50px;
+            }
+            .reader-header h1 {
+                font-size: 14px;
+            }
+            .content-area {
+                padding: 12px 12px 20px 12px;
+            }
+            .chapter-title {
+                font-size: 20px;
+            }
+            .drawer {
+                width: 270px;
+                left: -290px;
+            }
+            .drawer.open {
+                left: 0;
+            }
+        }
+
+        /* 滚动条美化 */
+        .content-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .content-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .content-area::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.12);
+            border-radius: 4px;
+        }
+
+        body.night-mode .content-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chapter-content * {
+            transition: color 0.2s, background 0.2s, border-color 0.2s;
+        }
+
+        ::selection {
+            background: rgba(59, 124, 184, 0.25);
+            color: inherit;
+        }
+
+        body.night-mode ::selection {
+            background: rgba(106, 140, 175, 0.30);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 遮罩层 -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- 目录 -->
+    <div class="drawer" id="drawer">
+        <div class="drawer-title">
+            <span><i class="fas fa-book-open"></i> 目录</span>
+            <button class="drawer-close" id="drawerClose" aria-label="关闭目录">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+        <ul class="toc-list" id="tocList"></ul>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="app-container" id="appContainer">
+        <!-- 顶部（玻璃效果，圆角0） -->
+        <header class="reader-header">
+            <div class="left">
+                <button class="menu-btn" id="menuBtn" aria-label="目录">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>HTML 由入门到精通</h1>
+            </div>
+            <div class="header-right">
+                <div class="font-size-controls">
+                    <button id="fontDec" aria-label="减小字号"><i class="fas fa-minus"></i></button>
+                    <span class="size-display" id="fontSizeDisplay">16</span>
+                    <button id="fontInc" aria-label="增大字号"><i class="fas fa-plus"></i></button>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换夜间模式">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- 内容 -->
+        <div class="content-area" id="contentArea">
+            <div class="chapter-container" id="chapterContainer">
+                <!-- 由JS动态渲染 -->
+            </div>
+        </div>
+
+        <!-- 底部 -->
+        <footer class="reader-footer">
+            <span class="progress-info" id="progressText">0%</span>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="footer-controls">
+                <button id="prevChapter" aria-label="上一章"><i class="fas fa-chevron-left"></i></button>
+                <button id="nextChapter" aria-label="下一章"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================================
+        // 1. 书籍数据 (与之前相同，省略部分内容以节省篇幅，完整保留)
+        // ============================================================
+        const bookData = [{
+            id: 'preface',
+            title: '前言',
+            icon: 'fa-feather-pointed',
+            content: `
+                        <h1>前言</h1>
+                        <div class="chapter-content">
+                            <h2>一、缘起</h2>
+                            <p>1991年，蒂姆·伯纳斯-李（Tim Berners-Lee）在万维网上发布了第一个网页，那是一个只有纯文本和超链接的简单页面。三十多年后的今天，互联网已经深刻改变了人类生活的方方面面——从获取信息到社交娱乐，从在线教育到远程办公，从电子商务到数字金融，Web技术无处不在。</p>
+                            <p>在Web前端开发的三大核心技术（HTML、CSS、JavaScript）中，<strong>HTML（超文本标记语言，HyperText Markup Language）</strong> 是当之无愧的基石。如果把一个网页比作一栋建筑，那么HTML就是承重墙和框架结构，CSS是内外装修，JavaScript则是水电和智能化系统。没有HTML，网页便无从谈起。</p>
+                            <p>本书正是从这一认知出发，力求为读者提供一条清晰、完整的HTML学习路径——从零基础起步，逐步深入到HTML5的前沿特性，最终能够独立完成商业级别的Web项目开发。</p>
+                            <h2>二、为什么需要这本书</h2>
+                            <p>在市面上，关于HTML的书籍并不少见，但普遍存在两个问题：一是内容陈旧，未能跟上HTML5及现代Web技术的发展步伐；二是要么过于浅显，只停留在标签罗列层面，要么过于晦涩，初学者难以入门。</p>
+                            <p>笔者在教学和一线开发中深刻体会到，一本<strong>系统全面、循序渐进、实例丰富、紧跟时代</strong>的HTML教程，是广大初学者和初级开发者迫切需要的。这正是编写本书的初衷。</p>
+                            <p>本书以<strong>"零基础入门→核心技术掌握→高级应用进阶→综合项目实战"</strong>为主线，将理论与实践紧密结合。每一章都配有翔实的代码示例、常见错误提示和巩固练习，确保读者在学习过程中"听得懂、跟得上、做得出来"。</p>
+                            <h2>三、本书读者对象</h2>
+                            <p>本书适合以下读者群体：</p>
+                            <ul>
+                                <li><strong>Web开发初学者</strong>：没有任何编程基础，希望从HTML开始进入互联网开发领域。</li>
+                                <li><strong>在校大学生</strong>：计算机相关专业的学生，作为Web前端课程的辅助教材或自学读物。</li>
+                                <li><strong>转行开发者</strong>：希望从其他行业转入Web前端开发领域的学习者。</li>
+                                <li><strong>全栈开发者</strong>：希望补充和巩固前端基础知识的后端开发人员。</li>
+                                <li><strong>产品经理与设计师</strong>：希望了解HTML技术原理，以便与开发团队更好协作。</li>
+                            </ul>
+                            <p>阅读本书<strong>不需要任何前置知识</strong>，只需具备基本的计算机操作能力和学习热情即可。</p>
+                            <h2>四、全书结构导览</h2>
+                            <p>本书共分为<strong>四篇</strong>，<strong>28章</strong>：</p>
+                            <p><strong>第一篇"基础知识篇"（第1～6章）</strong>：从Web开发的全貌入手，帮助读者建立宏观认知，然后逐步深入到HTML文档结构、核心语法和常用标签。学完此篇，读者能够独立编写结构完整的静态网页。</p>
+                            <p><strong>第二篇"核心技术篇"（第7～13章）</strong>：深入讲解HTML的核心功能模块——表格、表单、语义化标签、CSS布局、Flexbox与Grid等。这部分内容是构建复杂网页的必备技能，也是全书的重中之重。</p>
+                            <p><strong>第三篇"高级应用篇"（第14～22章）</strong>：聚焦HTML5的前沿特性，包括Canvas绘图、SVG、文件操作、Web存储、离线应用、多线程处理、通信API、地理位置、响应式设计等。掌握这些内容，读者将具备开发现代Web应用的能力。</p>
+                            <p><strong>第四篇"综合实战篇"（第23～28章）</strong>：通过个人博客、企业官网、在线教育平台、电商网站、后台管理系统等五个完整的商业项目，综合运用全书所学知识。同时介绍版本控制、构建工具、前端框架等工程化内容，为读者后续的职业发展铺路。</p>
+                            <p>此外，书末还附有HTML标签速查表、全局属性大全、字符实体对照表等实用附录，方便读者随时查阅。</p>
+                            <h2>五、如何使用本书</h2>
+                            <p>建议读者按以下方式学习本书：</p>
+                            <ol>
+                                <li><strong>顺序阅读，循序渐进</strong>：全书内容前后关联，建议从第1章依次学至第28章，不宜跳跃。</li>
+                                <li><strong>动手实践，学练结合</strong>：阅读过程中，务必打开代码编辑器，将书中的示例亲手敲一遍。<strong>"眼看千遍不如手敲一遍"</strong>，这是学习编程的铁律。</li>
+                                <li><strong>完成每章习题</strong>：每章末尾的习题和实践题，是检验学习效果的重要手段，请认真完成。</li>
+                                <li><strong>做透综合项目</strong>：第四篇的项目实战是全书的精华所在，建议在学完前22章之后，完整地将每个项目从头到尾实现一遍。</li>
+                                <li><strong>善用附录和网络资源</strong>：遇到遗忘或不确定的标签、属性时，随时查阅附录中的速查表。同时，本书配套网站提供了全部源代码下载和在线答疑服务。</li>
+                            </ol>
+                            <h2>六、致谢</h2>
+                            <p>本书的编写过程中，得到了许多人的帮助和支持。</p>
+                            <p>感谢我的家人，是你们的理解与包容，让我能够专注于写作。感谢我的学生们，你们的疑问和反馈促使我不断反思教学方法，也让本书的内容更加贴近学习者的真实需求。感谢电子工业出版社的编辑团队，你们的专业建议让本书得以不断完善。</p>
+                            <p>最后，感谢每一位翻开本书的读者。你们的信任是我们不断前行的动力。由于笔者水平有限，书中难免存在疏漏和不足之处，恳请广大读者批评指正。</p>
+                            <p>愿本书能成为你Web开发之路上的良师益友。</p>
+                            <p style="text-align:right;"><strong>编者</strong><br>2026年6月 于桂林</p>
+                            <hr>
+                            <h2>第一篇 基础知识篇</h2>
+                            <p><strong>本篇导读</strong></p>
+                            <p>欢迎开启HTML的学习之旅！</p>
+                            <p>第一篇是全书的基础，也是整栋知识大厦的地基。在这一篇中，我们将从Web开发的全貌入手，了解HTML在整个互联网技术体系中的位置和作用，然后亲手创建第一个HTML页面，逐步掌握文档结构、基本语法、文本排版、列表、超链接、图像和多媒体等核心知识。</p>
+                            <p>学完本篇，你将能够独立编写出结构清晰、内容完整的静态网页。更重要的是，你将建立起对Web开发的整体认知，为后续深入学习打下坚实的基础。</p>
+                            <p>本篇共6章，建议用2～3周时间完成学习。</p>
+                        </div>
+                    `
+        }, {
+            id: 'ch1-1',
+            title: '第1章 开启Web世界的大门',
+            icon: 'fa-globe',
+            content: `
+                        <h1>第1章 开启Web世界的大门</h1>
+                        <div class="chapter-content">
+                            <p><strong>学习目标</strong></p>
+                            <ul>
+                                <li>了解Web前端的基本概念和发展历程</li>
+                                <li>认识Web前端开发的三大核心技术及其关系</li>
+                                <li>掌握常用开发工具（浏览器、代码编辑器）的安装与使用</li>
+                                <li>理解HTML的基本概念、发展历史和HTML5的优势</li>
+                                <li>了解各主流浏览器对HTML5的支持情况</li>
+                            </ul>
+                            <h2>1.1 Web前端概述</h2>
+                            <h3>1.1.1 什么是Web前端</h3>
+                            <p>要理解"Web前端"，我们不妨先从"Web"和"前端"两个词说起。</p>
+                            <p><strong>Web</strong>，中文常译为"万维网"，是由超文本和超链接构成的全球性信息系统。简单来说，我们日常通过浏览器访问的<strong>网站</strong>和<strong>网页</strong>，就是Web最直观的呈现形式。当你打开新闻网站阅读资讯、在电商平台浏览商品、刷短视频或使用在线文档时，你都在使用Web。</p>
+                            <p><strong>前端</strong>，是相对于"后端"而言的概念。在一个完整的Web应用中：</p>
+                            <ul>
+                                <li><strong>前端（Front-end）</strong> 负责用户直接看到和交互的部分——即<strong>浏览器端</strong>呈现的页面界面和交互体验。</li>
+                                <li><strong>后端（Back-end）</strong> 负责服务器端的业务逻辑、数据处理和存储——即"看不见但支撑着一切"的部分。</li>
+                            </ul>
+                            <p>打个比方：如果你走进一家餐厅就餐——</p>
+                            <ul>
+                                <li><strong>前端</strong>就如同餐厅的用餐环境、菜单设计、服务员的服务——这些都是顾客（用户）能直接看到和感受到的。</li>
+                                <li><strong>后端</strong>就如同后厨的厨师、食材采购、财务结算——顾客看不到，但菜品的美味和餐厅的正常运营离不开它们。</li>
+                            </ul>
+                            <p><strong>Web前端开发</strong>，就是专门负责Web应用中用户可见部分的设计与开发工作——包括页面结构的搭建、视觉样式的实现、用户交互逻辑的编写、页面性能的优化等。</p>
+                            <p>随着移动互联网的普及，Web前端开发的范畴已经从传统的桌面网站，扩展到了移动端网页、微信小程序、混合移动应用（Hybrid App）、桌面跨平台应用（如Electron）等多个领域。可以说，<strong>只要有图形界面的地方，就有前端开发者的身影</strong>。</p>
+                            <h3>1.1.2 Web前端开发的三大核心技术</h3>
+                            <p>Web前端开发的核心技术有三项：<strong>HTML、CSS、JavaScript</strong>。这三者分工明确、协同配合，共同构成了现代Web应用的基石。</p>
+                            <p>我们可以用<strong>人体结构</strong>来形象地理解三者的关系：</p>
+                            <table>
+                                <tr><th>技术</th><th>类比</th><th>作用</th></tr>
+                                <tr><td><strong>HTML</strong></td><td>骨骼结构</td><td>定义网页的内容和结构</td></tr>
+                                <tr><td><strong>CSS</strong></td><td>皮肤与衣装</td><td>控制网页的样式与布局</td></tr>
+                                <tr><td><strong>JavaScript</strong></td><td>神经系统与肌肉</td><td>实现网页的交互与动态效果</td></tr>
+                            </table>
+                            <p>分开来看：</p>
+                            <p><strong>1. HTML——超文本标记语言</strong></p>
+                            <p>HTML（HyperText Markup Language）是用来<strong>描述网页结构和内容</strong>的标记语言。它通过一系列<strong>标签（Tag）</strong>来标记文本、图像、链接、表格、表单等不同类型的页面元素，告诉浏览器"这里应该显示一个标题""那里应该放一张图片""此处是一个可点击的按钮"。</p>
+                            <p><strong>示例1-1：一个最简单的HTML片段</strong></p>
+                            <pre><code>&lt;h1&gt;欢迎来到我的网站&lt;/h1&gt;
+        &lt;p&gt;这是我的第一个网页段落。&lt;/p&gt;
+        &lt;a href="https://www.example.com"&gt;点击这里访问示例网站&lt;/a&gt;</code></pre>
+                            <p>在上面的代码中：</p>
+                            <ul>
+                                <li><code>&lt;h1&gt;</code>标签表示<strong>一级标题</strong></li>
+                                <li><code>&lt;p&gt;</code>标签表示<strong>段落</strong></li>
+                                <li><code>&lt;a&gt;</code>标签表示<strong>超链接</strong></li>
+                            </ul>
+                            <p>浏览器会读取这些标签，并按照默认样式将它们渲染成可视化的页面元素。</p>
+                            <p>HTML是Web的<strong>基础语言</strong>——没有HTML，就没有网页的"骨架"，CSS和JavaScript也就失去了施展的空间。</p>
+                            <p><strong>2. CSS——层叠样式表</strong></p>
+                            <p>CSS（Cascading Style Sheets）是用来<strong>控制HTML元素呈现样式</strong>的语言。它负责网页的"美颜"——包括颜色、字体、大小、间距、位置、动画效果等。</p>
+                            <p><strong>示例1-2：CSS代码示例</strong></p>
+                            <pre><code>h1 {
+        color: blue;          /* 标题变为蓝色 */
+        font-size: 36px;      /* 标题字号为36像素 */
+        text-align: center;   /* 标题居中显示 */
+        }
+        p {
+        color: #333;          /* 段落文字为深灰色 */
+        line-height: 1.8;     /* 行高为1.8倍 */
+        }</code></pre>
+                            <p>有了CSS，原本单调乏味的纯文本页面可以变得色彩丰富、布局精致、赏心悦目。</p>
+                            <p><strong>3. JavaScript——交互脚本语言</strong></p>
+                            <p>JavaScript（简称JS）是一种<strong>脚本编程语言</strong>，用于为网页<strong>添加交互行为和动态功能</strong>。它可以响应用户的点击、输入、滚动等操作，动态更新页面内容，与服务器进行数据通信（Ajax），实现复杂的业务逻辑等。</p>
+                            <p><strong>示例1-3：JavaScript代码示例</strong></p>
+                            <pre><code>// 当用户点击按钮时，弹出一个欢迎对话框
+        document.getElementById('myButton').onclick = function() {
+            alert('欢迎你，亲爱的读者！');
+        };
+        // 动态修改页面内容
+        document.querySelector('h1').textContent = '你已成功修改了标题！';</code></pre>
+                            <p>有了JavaScript，网页不再是"静态的印刷品"，而是一个<strong>可以实时响应用户操作的"应用"</strong>。</p>
+                            <p><strong>三者协同工作</strong></p>
+                            <p>下面通过一个具体的例子来说明三者如何协同工作：</p>
+                            <table>
+                                <tr><th>职责</th><th>代码示例</th><th>实现效果</th></tr>
+                                <tr><td>HTML（结构）</td><td><code>&lt;button id="myButton"&gt;点击我&lt;/button&gt;</code></td><td>在页面上显示一个按钮</td></tr>
+                                <tr><td>CSS（样式）</td><td><code>button { background: red; color: white; }</code></td><td>按钮变为红底白字</td></tr>
+                                <tr><td>JavaScript（行为）</td><td><code>button.onclick = function() { ... }</code></td><td>点击按钮时弹出提示</td></tr>
+                            </table>
+                            <p>在真实的开发中，这三者通常分别写在独立的文件中（.html、.css、.js），各司其职、清晰维护——这就是<strong>结构、样式、行为分离</strong>的开发原则。</p>
+                            <div class="tip-box">
+                                <p><strong>💡 常识补充</strong>：JavaScript虽然名字中带有"Java"，但它和Java编程语言是完全不同的两种语言，只是在命名上借用了当时如日中天的Java的名气来提升知名度。</p>
+                            </div>
+                            <p><strong>知识小结</strong></p>
+                            <p>本节我们学习了：</p>
+                            <ol>
+                                <li><strong>Web前端</strong>是用户直接面对和交互的Web界面部分。</li>
+                                <li><strong>HTML、CSS、JavaScript</strong>是Web前端开发的三大核心技术，分别负责<strong>结构、样式、行为</strong>。</li>
+                                <li>三者协同配合，共同构成完整的Web应用。</li>
+                            </ol>
+                            <p><strong>思考与练习</strong></p>
+                            <p><strong>一、选择题</strong></p>
+                            <ol>
+                                <li>Web前端开发中，负责页面样式和布局的技术是（　）<br>A. HTML &nbsp;&nbsp; B. CSS &nbsp;&nbsp; C. JavaScript &nbsp;&nbsp; D. Python</li>
+                                <li>以下关于HTML的说法，正确的是（　）<br>A. HTML是一种编程语言<br>B. HTML是一种标记语言，用于描述网页结构<br>C. HTML是一种数据库查询语言<br>D. HTML是一种样式表语言</li>
+                            </ol>
+                            <p><strong>二、简答题</strong></p>
+                            <ol>
+                                <li>请用自己的话解释"Web前端开发"是做什么的。</li>
+                                <li>如果把网页比作一栋房子，请分别说明HTML、CSS、JavaScript对应房子的哪个部分，并解释原因。</li>
+                            </ol>
+                            <p><strong>三、上机实践</strong></p>
+                            <ol>
+                                <li>打开你的电脑浏览器，访问任意三个你常用的网站（如新闻门户、购物网站、视频网站），仔细观察并记录每个网站的页面构成——它包含哪些类型的内容元素（文字、图片、视频、按钮、表单等）？尝试思考一下：哪些是HTML负责的？哪些是CSS负责的？哪些可能是JavaScript负责的？将观察结果写下来。</li>
+                            </ol>
+                            <hr>
+                            <p><strong>下节预告</strong>：1.2节将带你完成开发工具的安装与配置，并亲手编写并运行你的第一个HTML页面——敬请期待！</p>
+                        </div>
+                    `
+        }, {
+            id: 'ch1-2',
+            title: '1.2 Web前端开发工具',
+            icon: 'fa-screwdriver-wrench',
+            content: `
+                        <h1>1.2 Web前端开发工具</h1>
+                        <div class="chapter-content">
+                            <p>在上一节中，我们了解了Web前端是由HTML、CSS和JavaScript共同构建的。那么，在实际开发中，我们究竟需要哪些工具来编写和调试这些代码呢？</p>
+                            <p><strong>"工欲善其事，必先利其器。"</strong> ——选择并熟练掌握合适的开发工具，能让你的学习效率事半功倍。</p>
+                            <p>简单来说，Web前端开发最核心的两类工具是：</p>
+                            <ol>
+                                <li><strong>浏览器</strong>——用来"跑"我们的网页，查看运行效果。</li>
+                                <li><strong>代码编辑器</strong>——用来"写"我们的代码。</li>
+                            </ol>
+                            <p>下面我们逐一展开介绍。</p>
+                            <h2>1.2.1 常用浏览器及开发者工具</h2>
+                            <p><strong>浏览器（Browser）</strong>是Web的"窗口"，也是前端代码最终的"运行环境"。我们编写的HTML、CSS和JavaScript，最终都要在浏览器中渲染和执行。</p>
+                            <p><strong>1. 主流浏览器简介</strong></p>
+                            <p>目前，全球用户量最大的浏览器主要有以下四款：</p>
+                            <table>
+                                <tr><th>浏览器名称</th><th>内核/渲染引擎</th><th>特点与适用场景</th></tr>
+                                <tr><td><strong>Google Chrome（谷歌浏览器）</strong></td><td>Blink</td><td>全球市场占有率最高（约65%+），开发者工具最强大，是前端开发的事实标准。<strong>强烈推荐作为主力开发浏览器。</strong></td></tr>
+                                <tr><td><strong>Microsoft Edge（微软边缘浏览器）</strong></td><td>Blink（基于Chromium）</td><td>Windows系统自带，兼容性和性能优秀，开发者工具与Chrome高度相似，也是很好的选择。</td></tr>
+                                <tr><td><strong>Mozilla Firefox（火狐浏览器）</strong></td><td>Gecko</td><td>开源社区的骄傲，开发者工具独具特色（如3D视图），CSS调试能力很强，适合做兼容性测试。</td></tr>
+                                <tr><td><strong>Safari（苹果浏览器）</strong></td><td>WebKit</td><td>macOS和iOS系统的默认浏览器，在苹果生态中表现最佳。如果你需要开发面向iPhone/iPad用户的网页，必须用Safari进行测试。</td></tr>
+                            </table>
+                            <div class="tip-box">
+                                <p><strong>💡 给初学者的建议</strong>：在学习阶段，请以 <strong>Google Chrome</strong> 为主力浏览器。本书的所有示例和调试讲解，均以Chrome浏览器为基准环境。当你熟练掌握开发技能后，再补充测试其他浏览器即可。</p>
+                            </div>
+                            <p><strong>2. 浏览器开发者工具（DevTools）</strong></p>
+                            <p>现代浏览器都内置了<strong>开发者工具（Developer Tools）</strong>，这是一套专为前端开发者设计的调试面板。对于初学者来说，它就像医生的"听诊器"和"CT机"——可以透视网页的内部结构，快速定位问题。</p>
+                            <p>在Chrome浏览器中，可以通过以下三种方式打开开发者工具：</p>
+                            <ul>
+                                <li>按键盘上的 <strong>F12</strong> 键（或 <strong>Ctrl + Shift + I</strong> / <strong>Cmd + Option + I</strong>）。</li>
+                                <li>在网页任意位置 <strong>右键单击</strong>，在弹出的菜单中选择 <strong>"检查"（Inspect）</strong>。</li>
+                                <li>点击浏览器右上角的"三个点"菜单 → <strong>更多工具</strong> → <strong>开发者工具</strong>。</li>
+                            </ul>
+                            <p>打开后，你会看到一个分为多个面板的调试窗口（通常出现在浏览器右侧或底部）。对于HTML初学者，最常用的是以下两个面板：</p>
+                            <table>
+                                <tr><th>面板名称</th><th>功能说明</th><th>常用场景</th></tr>
+                                <tr><td><strong>Elements（元素）面板</strong></td><td>以树形结构展示当前网页的完整HTML代码，右侧同步显示对应的CSS样式。</td><td>1. 实时查看和修改HTML结构。<br>2. 查看和调试CSS样式。<br>3. 检查元素的盒子模型（宽高、内边距、边框、外边距）。</td></tr>
+                                <tr><td><strong>Console（控制台）</strong></td><td>用于显示JavaScript日志信息和执行JS代码的交互式命令行。</td><td>1. 查看网页运行中的报错信息。<br>2. 直接输入JS代码进行测试。<br>3. 调试JavaScript逻辑。</td></tr>
+                            </table>
+                            <p><strong>动手试一试</strong>：现在打开任何一个你常访问的网站，按F12打开开发者工具，点击"Elements"面板，你会看到网页的完整HTML源码树。把鼠标在源码树上移动，左侧网页中对应的元素会高亮显示——这就是"检查元素"功能的直观体现。</p>
+                            <h2>1.2.2 代码编辑器（VS Code、WebStorm等）</h2>
+                            <p>有了浏览器来"看"效果，我们还需要一个工具来"写"代码。千万别用Windows自带的记事本（Notepad）来写HTML——它没有代码高亮、没有自动补全、没有错误提示，会让你写得非常痛苦。</p>
+                            <p>前端开发中，主流的代码编辑器主要有以下几款：</p>
+                            <table>
+                                <tr><th>编辑器名称</th><th>类型</th><th>特点</th><th>推荐指数</th></tr>
+                                <tr><td><strong>Visual Studio Code（简称VS Code）</strong></td><td>免费、开源</td><td>微软出品，目前全球最流行的前端编辑器。插件生态极其丰富，轻量且功能强大，完美支持HTML/CSS/JavaScript。</td><td>⭐⭐⭐⭐⭐（首选）</td></tr>
+                                <tr><td><strong>WebStorm</strong></td><td>付费（商业软件）</td><td>JetBrains公司出品，功能极为强大，开箱即用（内置了Git、终端、调试器等）。适合专业团队和企业级开发，但需要付费购买许可证。</td><td>⭐⭐⭐⭐</td></tr>
+                                <tr><td><strong>Sublime Text</strong></td><td>免费（但有付费提示）</td><td>老牌编辑器，启动速度极快，界面简洁。但插件配置相对繁琐，目前使用人数逐渐减少。</td><td>⭐⭐⭐</td></tr>
+                                <tr><td><strong>HBuilder X</strong></td><td>免费</td><td>国产编辑器，对uni-app和小程序开发支持较好，适合特定场景。</td><td>⭐⭐⭐</td></tr>
+                            </table>
+                            <div class="tip-box">
+                                <p><strong>🎯 本书指定工具</strong>：考虑到<strong>免费、易用、插件丰富、社区活跃</strong>等因素，本书所有示例和操作均以 <strong>Visual Studio Code（简称VS Code）</strong> 为准。请读者务必完成VS Code的安装和基础配置，后续章节将不再重复说明。</p>
+                            </div>
+                            <p><strong>手把手教程：安装并配置VS Code</strong></p>
+                            <p><strong>第1步：下载与安装</strong></p>
+                            <ol>
+                                <li>打开浏览器，访问 VS Code 官方网站：<code>https://code.visualstudio.com/</code></li>
+                                <li>根据你的操作系统（Windows / macOS / Linux），点击对应的下载按钮。</li>
+                                <li>下载完成后，双击安装包，一路点击"下一步"（Windows下建议勾选"添加到PATH"和"注册为受支持的文件类型"），完成安装。</li>
+                            </ol>
+                            <p><strong>第2步：安装必备插件（扩展）</strong></p>
+                            <p>VS Code的灵魂在于<strong>插件（Extensions）</strong>。安装完VS Code后，请打开它，点击左侧活动栏中的"扩展"图标（或按 <code>Ctrl + Shift + X</code>），在搜索框中输入以下插件名称并点击"安装"：</p>
+                            <table>
+                                <tr><th>插件名称</th><th>作用</th><th>是否必须</th></tr>
+                                <tr><td><strong>Chinese (Simplified) Language Pack</strong></td><td>将VS Code界面汉化为简体中文</td><td>推荐（英文好的可不装）</td></tr>
+                                <tr><td><strong>Live Server</strong></td><td>🔥 <strong>极其重要</strong>！在本地启动一个实时预览的Web服务器，保存代码后浏览器页面自动刷新，所见即所得。</td><td><strong>必须安装</strong></td></tr>
+                                <tr><td><strong>Prettier - Code formatter</strong></td><td>自动格式化代码（统一缩进、换行、空格），让代码更整洁规范。</td><td>强烈推荐</td></tr>
+                                <tr><td><strong>HTML CSS Support</strong></td><td>在编写HTML时，智能提示CSS类名和ID，提高编码效率。</td><td>推荐</td></tr>
+                            </table>
+                            <p><strong>第3步：创建你的第一个HTML文件并预览</strong></p>
+                            <p>完成以上配置后，让我们来真正运行一个HTML文件：</p>
+                            <ol>
+                                <li>在你的电脑桌面上（或任意文件夹中），新建一个文件夹，命名为 <code>my-first-web</code>。</li>
+                                <li>打开VS Code，点击 <strong>"打开文件夹"</strong> ，选择刚刚创建的 <code>my-first-web</code> 文件夹。</li>
+                                <li>在VS Code左侧的资源管理器中，右键点击空白处，选择 <strong>"新建文件"</strong> ，命名为 <code>index.html</code>（注意：后缀必须是 <code>.html</code>，而不是 <code>.txt</code>）。</li>
+                                <li>在 <code>index.html</code> 的编辑区域中，输入一个英文的感叹号 <code>!</code>，然后按下键盘上的 <strong>Tab键</strong>（或回车键）。你会看到VS Code自动生成了一套完整的HTML文档结构模板——这是VS Code内置的 <strong>Emmet</strong> 快捷语法功能，能极大提高编码速度。</li>
+                                <li>在自动生成的模板中，找到 <code>&lt;title&gt;</code> 标签，将其中的文字修改为 <code>我的第一个网页</code>。</li>
+                                <li>在 <code>&lt;body&gt;</code> 标签中，输入以下内容：</li>
+                            </ol>
+                            <pre><code>&lt;h1&gt;Hello， Web世界！&lt;/h1&gt;
+        &lt;p&gt;我成功运行了第一个HTML页面，太棒了！&lt;/p&gt;</code></pre>
+                            <ol start="7">
+                                <li>保存文件（<code>Ctrl + S</code>）。</li>
+                                <li>在 <code>index.html</code> 的编辑区域中，<strong>右键单击</strong>，选择 <strong>"Open with Live Server"</strong>。</li>
+                                <li>此时，你的默认浏览器将自动打开，并显示一个包含大标题和段落的网页。尝试修改 <code>&lt;h1&gt;</code> 标签中的文字，保存文件，你会发现浏览器中的页面<strong>自动刷新</strong>并显示了最新的内容——这就是Live Server的魔力！</li>
+                            </ol>
+                            <p>至此，你已经成功搭建好了完整的Web前端开发环境，并亲手运行了人生中的第一个HTML页面！</p>
+                            <p><strong>知识小结</strong></p>
+                            <p>本节我们完成了开发环境的搭建，核心知识点如下：</p>
+                            <ol>
+                                <li><strong>浏览器</strong>是前端代码的运行环境，推荐使用 <strong>Google Chrome</strong> 作为主力开发浏览器。</li>
+                                <li>浏览器的 <strong>开发者工具（DevTools）</strong> 是调试网页的利器，其中 <strong>Elements面板</strong> 用于查看和调试HTML/CSS，<strong>Console面板</strong> 用于调试JavaScript和查看报错信息。</li>
+                                <li><strong>代码编辑器</strong>是编写代码的工具，本书统一使用 <strong>Visual Studio Code（VS Code）</strong> ，它免费、轻量且插件生态强大。</li>
+                                <li>在VS Code中，必须安装 <strong>Live Server</strong> 插件来实现网页的实时预览；安装 <strong>Prettier</strong> 插件来规范代码格式。</li>
+                                <li>通过 <code>!</code> + <code>Tab</code> 快捷键（Emmet语法）可以快速生成HTML文档骨架。</li>
+                            </ol>
+                            <p><strong>思考与练习</strong></p>
+                            <p><strong>一、选择题</strong></p>
+                            <ol>
+                                <li>以下哪款浏览器是全球市场占有率最高、最常用于前端开发的？（　）<br>A. Firefox &nbsp;&nbsp; B. Safari &nbsp;&nbsp; C. Google Chrome &nbsp;&nbsp; D. Opera</li>
+                                <li>在Chrome浏览器中，打开开发者工具的默认快捷键是（　）<br>A. Ctrl + S &nbsp;&nbsp; B. F12 &nbsp;&nbsp; C. Ctrl + P &nbsp;&nbsp; D. Alt + Tab</li>
+                                <li>VS Code中，输入 <code>!</code> 后按下Tab键可以快速生成HTML文档骨架，这是借助了什么功能？（　）<br>A. Live Server &nbsp;&nbsp; B. Prettier &nbsp;&nbsp; C. Emmet &nbsp;&nbsp; D. Debugger</li>
+                            </ol>
+                            <p><strong>二、简答题</strong></p>
+                            <ol>
+                                <li>请简述浏览器开发者工具中 <strong>Elements（元素）面板</strong> 的主要用途。</li>
+                                <li>为什么推荐初学者使用VS Code而不是记事本来编写HTML代码？（至少列出两个理由）</li>
+                            </ol>
+                            <p><strong>三、上机实践</strong></p>
+                            <ol>
+                                <li>按照本节"手把手教程"的步骤，在自己的电脑上完成VS Code的安装、Live Server插件的安装，并成功运行一个包含 <code>&lt;h1&gt;</code> 和 <code>&lt;p&gt;</code> 标签的 <code>index.html</code> 文件。</li>
+                                <li>尝试使用开发者工具的 <strong>Elements面板</strong>：在浏览器中打开你刚刚创建的页面，按F12打开开发者工具，在Elements面板中找到 <code>&lt;h1&gt;</code> 标签，双击其中的文字内容，修改为其他文字，观察页面变化。思考：这种修改是永久性的还是临时性的？为什么？</li>
+                            </ol>
+                            <hr>
+                            <p><strong>下节预告</strong>：1.3节我们将正式走进HTML的世界，了解HTML是什么、它经历了怎样的发展历程，以及最新的HTML5带来了哪些令人兴奋的新特性——敬请期待！</p>
+                        </div>
+                    `
+        }, {
+            id: 'ch1-3',
+            title: '1.3 什么是HTML',
+            icon: 'fa-code',
+            content: `
+                        <h1>1.3 什么是HTML</h1>
+                        <div class="chapter-content">
+                            <p>通过前两节的学习，我们已经知道HTML是Web前端的三大核心技术之一，负责网页的结构和内容。但HTML究竟是一门什么样的"语言"？它从哪里来，又将向何处去？本节我们将追本溯源，系统地回答这些问题。</p>
+                            <h2>1.3.1 HTML的基本概念</h2>
+                            <p><strong>HTML</strong> 是 <strong>HyperText Markup Language</strong> 的缩写，中文译为 <strong>"超文本标记语言"</strong> 。我们从它的名字入手，逐一拆解其含义：</p>
+                            <ul>
+                                <li><strong>标记（Markup）</strong>：HTML通过一系列预先定义好的 <strong>"标签"（Tag）</strong> 来"标记"文本内容，告诉浏览器这段文字是标题、那段文字是段落、某处需要插入一张图片。这些标签本身不会在页面上显示，它们就像剧本中的"舞台提示"——指导浏览器如何将内容呈现给观众。</li>
+                                <li><strong>超文本（HyperText）</strong>：普通的文本（如TXT文档）是线性的、只读的。而"超文本"超越了普通文本的限制——它可以通过 <strong>超链接（Hyperlink）</strong> 将不同的页面、不同的网站、甚至不同的媒体（图片、视频、音频）连接在一起，形成一个纵横交错的、非线性的信息网络。这正是万维网（WWW）的精髓所在。</li>
+                            </ul>
+                            <p>因此，HTML的本质是一种 <strong>描述性标记语言</strong>，而非编程语言。它没有复杂的逻辑运算和流程控制，它的核心任务就是：<strong>用标签告诉浏览器"内容是什么"以及"内容如何结构化"</strong>。</p>
+                            <p><strong>HTML的基本语法结构</strong></p>
+                            <p>一个HTML元素（Element）通常由三部分组成：</p>
+                            <ol>
+                                <li><strong>开始标签（Start Tag）</strong>：如 <code>&lt;p&gt;</code></li>
+                                <li><strong>内容（Content）</strong>：如 "这是一段文字"</li>
+                                <li><strong>结束标签（End Tag）</strong>：如 <code>&lt;/p&gt;</code></li>
+                            </ol>
+                            <p>完整写法为：<code>&lt;p&gt;这是一段文字&lt;/p&gt;</code></p>
+                            <p>此外，标签上还可以添加 <strong>属性（Attribute）</strong> ，用来为元素提供额外的信息。属性写在开始标签中，采用 <code>属性名="属性值"</code> 的格式：</p>
+                            <p><strong>示例1-4：带属性的HTML元素</strong></p>
+                            <pre><code>&lt;!-- 不带属性 --&gt;
+        &lt;a&gt;点击这里&lt;/a&gt;
+
+        &lt;!-- 带 href 属性，指定链接的目标地址 --&gt;
+        &lt;a href="https://www.example.com"&gt;点击这里访问示例网站&lt;/a&gt;
+
+        &lt;!-- 带多个属性 --&gt;
+        &lt;a href="https://www.example.com" target="_blank" title="前往示例网站"&gt;
+            点击这里访问示例网站
+        &lt;/a&gt;</code></pre>
+                            <p>在上面的例子中，<code>href</code>（链接地址）、<code>target</code>（打开方式）、<code>title</code>（提示文本）都是 <code>&lt;a&gt;</code> 标签的属性，它们让这个超链接具备了完整的跳转功能。</p>
+                            <div class="tip-box">
+                                <p><strong>💡 常识补充</strong>：HTML标签是<strong>不区分大小写</strong>的，<code>&lt;P&gt;</code> 和 <code>&lt;p&gt;</code> 在浏览器中效果相同。但按照业界规范，<strong>所有标签和属性名一律使用小写字母</strong>，这是一种良好的编码习惯，也是W3C的官方推荐。</p>
+                            </div>
+                            <h2>1.3.2 HTML的发展历史</h2>
+                            <p>了解HTML的发展历程，有助于我们理解这门语言的设计哲学和演进方向。HTML从诞生至今，主要经历了以下几个重要的版本阶段：</p>
+                            <table>
+                                <tr><th>版本/时间</th><th>重要里程碑</th><th>主要特点</th></tr>
+                                <tr><td><strong>HTML 1.0</strong>（1991年）</td><td>蒂姆·伯纳斯-李定义了最早的HTML标签。</td><td>仅包含约20个标签（标题、段落、超链接等），纯文本排版，无表格、无图像、无样式。这是万维网的"史前时代"。</td></tr>
+                                <tr><td><strong>HTML 2.0</strong>（1995年）</td><td>IETF（互联网工程任务组）发布正式标准。</td><td>加入了表单（Form）和表格（Table）的支持，让网页具备了初步的交互和数据提交能力。网页开始"活"起来。</td></tr>
+                                <tr><td><strong>HTML 3.2</strong>（1997年）</td><td>W3C（万维网联盟）接管HTML标准化工作。</td><td>引入了更多样式属性（如字体、颜色）、<code>&lt;applet&gt;</code> 支持Java小程序，并开始支持简单的CSS。但此时网页布局严重依赖表格嵌套，非常混乱。</td></tr>
+                                <tr><td><strong>HTML 4.01</strong>（1999年）</td><td>经典的成熟版本，长期统治Web世界。</td><td>彻底将样式剥离到CSS中，强调"结构与样式分离"。增加了 <code>&lt;div&gt;</code>、<code>&lt;span&gt;</code> 等通用容器，以及更强大的表单功能。这个版本是21世纪前十年Web开发的基石。</td></tr>
+                                <tr><td><strong>XHTML 1.0</strong>（2000年）</td><td>结合XML的严格语法规则。</td><td>要求标签必须闭合、属性必须加引号、标签名必须小写（语法极严）。虽然提高了代码规范性，但因为太过严厉，在执行中导致大量兼容性问题，最终未能成为主流。</td></tr>
+                                <tr><td><strong>HTML5</strong>（2014年正式推荐标准）</td><td><strong>Web开发的"分水岭"</strong>。</td><td>革命性的版本。不再基于SGML（标准通用标记语言），拥有独立的语法规范。新增了大量语义标签、多媒体支持（音视频）、图形绘制（Canvas）、本地存储、离线应用等。<strong>彻底终结了Flash、Silverlight等第三方插件的时代</strong>。</td></tr>
+                            </table>
+                            <p><strong>一个关键的时间点</strong>：2004年至2009年间，WHATWG（网页超文本应用技术工作小组）与W3C在HTML发展方向上产生分歧——W3C主张走向严格的XHTML 2.0（但过于理想化，脱离实际），而WHATWG主张在现有HTML 4.01基础上渐进增强、向后兼容。最终，WHATWG的路线取得了胜利，其成果便是今天的 <strong>HTML5</strong>。这充分说明：<strong>一项技术能否被广泛接纳，不在于它是否"纯粹"或"理论完美"，而在于它是否解决了开发者的真实痛点、是否兼容了已有的大量网页。</strong></p>
+                            <h2>1.3.3 HTML5的新特性与优势</h2>
+                            <p>HTML5并不是在HTML 4.01基础上的"小修小补"，而是一次 <strong>颠覆性的升级</strong>。如果说HTML 4.01时代网页是"静态文档"，那么HTML5时代的网页则是"富应用平台"。</p>
+                            <p>HTML5的核心设计理念是 <strong>"一切从简，兼容为王"</strong> ——减少对外部插件（如Flash）的依赖，让浏览器原生能力更强大，同时确保所有新特性在不支持的旧浏览器上能"优雅降级"（即不报错，只是功能缺失）。</p>
+                            <p>以下是HTML5带来的几项最核心的新特性与优势：</p>
+                            <p><strong>1. 新增了大量语义化标签——让网页"有血有肉有骨架"</strong></p>
+                            <p>在HTML 4时代，开发者几乎用 <code>&lt;div&gt;</code> 和 <code>&lt;span&gt;</code> 来搭建一切页面结构（俗称"DIV+CSS"布局）。这导致搜索引擎爬虫很难理解页面区块的含义（全是 <code>&lt;div&gt;</code>，谁知道哪里是导航栏、哪里是页脚？）。</p>
+                            <p>HTML5新增了专门的语义标签来明确页面结构：</p>
+                            <table>
+                                <tr><th>HTML4写法（无语义）</th><th>HTML5写法（有语义）</th><th>表达含义</th></tr>
+                                <tr><td><code>&lt;div id="header"&gt;</code></td><td><code>&lt;header&gt;</code></td><td>页面头部</td></tr>
+                                <tr><td><code>&lt;div id="nav"&gt;</code></td><td><code>&lt;nav&gt;</code></td><td>导航区域</td></tr>
+                                <tr><td><code>&lt;div id="main"&gt;</code></td><td><code>&lt;main&gt;</code></td><td>页面主体内容</td></tr>
+                                <tr><td><code>&lt;div id="article"&gt;</code></td><td><code>&lt;article&gt;</code></td><td>独立文章/内容块</td></tr>
+                                <tr><td><code>&lt;div id="sidebar"&gt;</code></td><td><code>&lt;aside&gt;</code></td><td>侧边栏/附属信息</td></tr>
+                                <tr><td><code>&lt;div id="footer"&gt;</code></td><td><code>&lt;footer&gt;</code></td><td>页面底部</td></tr>
+                            </table>
+                            <p>语义化不仅提升了代码的可读性，更重要的是 <strong>极大地改善了SEO（搜索引擎优化）</strong>，让搜索引擎能够更准确地抓取网页的核心内容，同时也有利于屏幕阅读器等辅助设备为视障人士提供服务。</p>
+                            <p><strong>2. 原生多媒体支持——让Flash"退休"</strong></p>
+                            <p>在HTML5之前，在网页中嵌入视频和音频是一件极其痛苦的事情——你必须依赖第三方插件（如Adobe Flash、Windows Media Player）。这不仅存在巨大的安全漏洞风险，而且在移动端（iPhone/iPad）根本无法运行。</p>
+                            <p>HTML5提供了 <code>&lt;video&gt;</code> 和 <code>&lt;audio&gt;</code> 标签，让浏览器原生支持多媒体播放：</p>
+                            <pre><code>&lt;video src="movie.mp4" controls width="600"&gt;
+        您的浏览器不支持视频播放，请升级浏览器。
+        &lt;/video&gt;
+
+        &lt;audio src="music.mp3" controls&gt;
+        您的浏览器不支持音频播放。
+        &lt;/audio&gt;</code></pre>
+                            <p><code>controls</code> 属性让浏览器自动显示播放/暂停、进度条、音量等控件，用户体验统一且流畅。</p>
+                            <p><strong>3. Canvas与SVG——强大的绘图能力</strong></p>
+                            <p>HTML5的 <code>&lt;canvas&gt;</code> 标签提供了一个"画布"，开发者可以通过JavaScript在画布上动态绘制图形、图表、动画，甚至开发完整的网页游戏（如经典的《2048》或《植物大战僵尸》的HTML5版本）。</p>
+                            <p>同时，SVG（可缩放矢量图形）也在HTML5中得到了原生支持，适合绘制图标、LOGO等需要高清缩放（如高清屏适配）的矢量图形。</p>
+                            <p>（这两项技术我们将在本书第三篇的<strong>第14章</strong>和<strong>第15章</strong>中深入讲解。）</p>
+                            <p><strong>4. 客户端数据存储——不再只依赖Cookie</strong></p>
+                            <p>以往的Web存储只能依赖 <code>Cookie</code>，但Cookie有大小限制（仅4KB左右）且每次HTTP请求都会携带，严重影响网络传输效率。</p>
+                            <p>HTML5提供了全新的存储方案：</p>
+                            <ul>
+                                <li><strong>localStorage</strong>：无过期时间的持久存储，容量约5~10MB，适合存储用户偏好设置、浏览记录等。</li>
+                                <li><strong>sessionStorage</strong>：会话级存储，关闭浏览器标签页即清除。</li>
+                                <li><strong>IndexedDB</strong>：一个完整的事务型数据库系统，适合在客户端存储大量结构化数据（如离线版邮件客户端、笔记应用等）。</li>
+                            </ul>
+                            <p>这让 <strong>"离线Web应用"（PWA）</strong> 成为可能——即用户即使在网络断开的情况下，依然可以打开网页并查看之前缓存的全部内容。</p>
+                            <p><strong>5. 强大的表单控件与验证</strong></p>
+                            <p>HTML5对表单进行了大刀阔斧的增强，新增了多种输入类型和属性：</p>
+                            <ul>
+                                <li>新的输入类型：<code>type="email"</code>（邮箱）、<code>type="url"</code>（网址）、<code>type="date"</code>（日期）、<code>type="color"</code>（颜色选择器）、<code>type="range"</code>（滑块）等，让移动端键盘自动弹出对应虚拟键盘（如输入邮箱时弹出"@"键）。</li>
+                                <li>新的验证属性：<code>required</code>（必填）、<code>pattern</code>（正则匹配）、<code>min</code>/<code>max</code>（数值范围），大幅减少了前端表单验证对JavaScript的依赖。</li>
+                            </ul>
+                            <p><strong>6. 地理定位（Geolocation）与设备能力</strong></p>
+                            <p>HTML5允许网页通过 <code>Geolocation API</code> 获取用户的地理位置（经度/纬度），这在LBS（基于位置的服务）应用中极其重要，如外卖配送跟踪、附近门店查找、运动轨迹记录等。此外，HTML5还可以访问设备的摄像头、麦克风（通过 <code>getUserMedia</code> API），为Web视频会议、在线直播等应用提供了底层支撑。</p>
+                            <p><strong>7. 通信能力的飞跃</strong></p>
+                            <ul>
+                                <li><strong>WebSocket</strong>：实现了浏览器与服务器之间的全双工实时通信，是开发在线聊天室、股票行情推送、多人在线游戏等"实时Web应用"的核心技术。</li>
+                                <li><strong>Server-Sent Events (SSE)</strong>：允许服务器主动向浏览器推送数据（如新闻推送、赛事比分），比传统的"轮询"方式更高效。</li>
+                            </ul>
+                            <p><strong>发展启示录</strong></p>
+                            <p>回顾HTML的演进史，我们不难发现一条清晰的规律：<strong>HTML发展的核心驱动力，始终是"让Web变得更强大、更易用、更开放"</strong> 。从纯文本到图文并茂，从静态展示到动态交互，从依赖插件到原生支持，每一步都在降低开发门槛、提升用户体验、拓宽Web的应用边界。</p>
+                            <p>正如万维网发明者蒂姆·伯纳斯-李爵士所期望的那样——<strong>"Web是为所有人服务的。"</strong> HTML5正是这一理念的完美践行者，它让Web不再只是"可阅读的文档"，而是"可交互的操作系统级平台"。</p>
+                            <p><strong>知识小结</strong></p>
+                            <p>本节我们系统地学习了HTML的基本概念和发展历史：</p>
+                            <ol>
+                                <li><strong>HTML</strong> 是"超文本标记语言"，通过 <strong>标签（Tag）</strong> 和 <strong>属性（Attribute）</strong> 来描述网页的结构和内容。它是描述性语言，而非编程语言。</li>
+                                <li>HTML的发展经历了 <strong>1.0→2.0→3.2→4.01→XHTML→HTML5</strong> 的演进历程。HTML5是迄今为止最成功、应用最广泛的版本。</li>
+                                <li><strong>HTML5的核心优势</strong>包括：语义化标签、原生多媒体（音视频）、Canvas/SVG绘图、客户端存储（localStorage等）、强大的表单控件、地理位置定位以及WebSocket等高级通信能力。</li>
+                                <li>HTML5的设计哲学是 <strong>"兼容优先，渐进增强"</strong>，旨在构建一个不依赖第三方插件的、开放、强大的Web应用平台。</li>
+                            </ol>
+                            <p><strong>思考与练习</strong></p>
+                            <p><strong>一、选择题</strong></p>
+                            <ol>
+                                <li>HTML中的标签 <code>&lt;p&gt;</code> 和 <code>&lt;/p&gt;</code> 之间的文字，在浏览器中会被解析为（　）<br>A. 标题 &nbsp;&nbsp; B. 段落 &nbsp;&nbsp; C. 超链接 &nbsp;&nbsp; D. 图片</li>
+                                <li>以下哪个版本的HTML首次引入了 <code>&lt;video&gt;</code> 和 <code>&lt;audio&gt;</code> 标签来支持原生多媒体播放？（　）<br>A. HTML 3.2 &nbsp;&nbsp; B. HTML 4.01 &nbsp;&nbsp; C. XHTML 1.0 &nbsp;&nbsp; D. HTML5</li>
+                                <li>在HTML5中，以下哪个标签用于表示页面顶部的头部区域（包含LOGO、导航等）？（　）<br>A. <code>&lt;div id="top"&gt;</code> &nbsp;&nbsp; B. <code>&lt;head&gt;</code> &nbsp;&nbsp; C. <code>&lt;header&gt;</code> &nbsp;&nbsp; D. <code>&lt;heading&gt;</code></li>
+                                <li>以下哪项是HTML5新增的客户端数据存储方案？（　）<br>A. Cookie &nbsp;&nbsp; B. localStorage &nbsp;&nbsp; C. Session &nbsp;&nbsp; D. Cache</li>
+                            </ol>
+                            <p><strong>二、简答题</strong></p>
+                            <ol>
+                                <li>请用自己的话解释"超文本"（HyperText）的含义，并举例说明。</li>
+                                <li>为什么说HTML5的诞生"终结了Flash的时代"？请至少列出两个理由。</li>
+                                <li>语义化标签（如 <code>&lt;header&gt;</code>、<code>&lt;nav&gt;</code>、<code>&lt;article&gt;</code>）相较于普通的 <code>&lt;div&gt;</code> 标签有哪些优势？</li>
+                            </ol>
+                            <p><strong>三、上机实践</strong></p>
+                            <ol>
+                                <li><strong>查看网页源代码</strong>：打开你常用的任意一个网站（如百度首页），在页面空白处右键单击，选择 <strong>"查看网页源代码"</strong>（或按 <code>Ctrl + U</code>）。在源代码中尝试找到以下标签：<br>
+                                找到 <code>&lt;title&gt;</code> 标签，看看网页的标题是什么。<br>
+                                找到 <code>&lt;h1&gt;</code> 或 <code>&lt;h2&gt;</code> 标签，看看页面的大标题是什么。<br>
+                                看看这个页面的HTML代码中是否已经使用了HTML5的语义化标签（如 <code>&lt;header&gt;</code>、<code>&lt;nav&gt;</code> 等）。</li>
+                                <li><strong>体验HTML5多媒体</strong>：在浏览器中打开一个HTML5视频播放页面（如B站、YouTube等），在视频播放器上右键单击，查看菜单中是否有"显示控件"或"关于HTML5播放器"的选项。思考：这和你多年前用Flash播放器看视频的体验有何不同？</li>
+                            </ol>
+                            <hr>
+                            <p><strong>下节预告</strong>：1.4节我们将探讨 <strong>各浏览器对HTML5的支持情况</strong>，了解在不同浏览器和不同版本下，HTML5特性的兼容性差异，以及作为开发者如何妥善处理这些兼容性问题。敬请期待！</p>
+                        </div>
+                    `
+        }, {
+            id: 'ch1-4',
+            title: '1.4 各浏览器对HTML5的支持情况',
+            icon: 'fa-browser',
+            content: `
+                        <h1>1.4 各浏览器对HTML5的支持情况</h1>
+                        <div class="chapter-content">
+                            <p>在1.3节中，我们了解了HTML5带来的诸多强大新特性——语义化标签、原生音视频、Canvas绘图、本地存储……然而，一个很现实的问题摆在我们面前：<strong>这些炫酷的新特性，在所有浏览器中都能正常工作吗？</strong></p>
+                            <p>答案是否定的。不同浏览器、不同版本对HTML5各项特性的支持程度不尽相同。本节将系统地解答这一问题，并教会你作为开发者如何应对兼容性挑战。</p>
+                            <h2>1.4.1 HTML5已成行业标准——但"标准"不等于"齐步走"</h2>
+                            <p>首先，我们需要建立一个基本认知：<strong>HTML5早已不是"新技术"，而是现代Web的默认底座</strong>。截至2026年，<strong>全球约95%的浏览器已支持HTML5</strong>，使其成为名副其实的行业标准。</p>
+                            <p>但"95%的浏览器支持HTML5"这个说法，其实是一个<strong>笼统的宏观表述</strong>。为什么？</p>
+                            <ul>
+                                <li><strong>"支持HTML5"不是一个非黑即白的是非题。</strong> HTML5包含数十项独立的新特性和API（应用程序编程接口）。一个浏览器可能完美支持 <code>&lt;video&gt;</code> 标签，但对 <code>IndexedDB</code> 的支持却存在Bug；可能支持 <code>Canvas</code> 绘图，但对 <code>WebSocket</code> 的支持不完整。</li>
+                                <li><strong>浏览器的版本迭代速度不同。</strong> Chrome和Firefox每年发布多个大版本，新特性跟进极快；而某些老旧浏览器（如Internet Explorer的早期版本）则永久停留在对HTML5支持极其有限的状态。</li>
+                            </ul>
+                            <p>因此，更准确的说法是：<strong>现代主流浏览器对HTML5核心特性的支持已高度统一，但具体到每一个API和标签，仍需具体分析。</strong> 下面我们分门别类来看。</p>
+                            <h2>1.4.2 主流浏览器的HTML5支持概况</h2>
+                            <p><strong>1. 现代桌面浏览器——全面支持</strong></p>
+                            <p>以下浏览器对HTML5提供了<strong>全面且持续更新</strong>的支持：</p>
+                            <table>
+                                <tr><th>浏览器</th><th>支持情况</th><th>备注</th></tr>
+                                <tr><td><strong>Google Chrome</strong></td><td>完全支持</td><td>更新最频繁，对最新HTML5特性的支持通常最快。Chrome 4+ 即已支持核心HTML5特性。</td></tr>
+                                <tr><td><strong>Mozilla Firefox</strong></td><td>完全支持</td><td>积极跟进W3C标准，开源社区的标杆。Firefox 4+ 支持核心HTML5特性。</td></tr>
+                                <tr><td><strong>Microsoft Edge</strong></td><td>完全支持</td><td>基于Chromium内核的新版Edge与Chrome支持程度高度一致。Edge 12+ 支持核心HTML5特性。</td></tr>
+                                <tr><td><strong>Apple Safari</strong></td><td>完全支持</td><td>对HTML5的支持很完善，但在部分新特性的跟进速度上略慢于Chrome和Firefox。Safari 5.1+ 支持核心HTML5特性。</td></tr>
+                                <tr><td><strong>Opera</strong></td><td>完全支持</td><td>基于Chromium内核，与Chrome支持程度相近。Opera 11.6+ 支持核心HTML5特性。</td></tr>
+                            </table>
+                            <p><strong>关键结论</strong>：只要你（和你的用户）使用的是<strong>上述浏览器的最新版本或近几年的版本</strong>，HTML5的核心功能（语义标签、<code>&lt;video&gt;</code>/<code>&lt;audio&gt;</code>、<code>Canvas</code>、<code>localStorage</code>等）基本都可以放心使用，无需额外处理。</p>
+                            <div class="tip-box">
+                                <p><strong>💡 一个常见的误解</strong>：很多初学者会问"如何安装HTML5"或"如何在浏览器中开启HTML5"。<strong>HTML5不是插件，也不是浏览器的一个开关选项</strong>——它是W3C标准，由浏览器内核原生实现。现代浏览器默认就已完整支持，不需要任何额外操作。</p>
+                            </div>
+                            <p><strong>2. 旧版浏览器——兼容的"历史包袱"</strong></p>
+                            <p>真正需要操心兼容性的，是那些<strong>仍在被部分用户使用的旧版浏览器</strong>，尤其是Internet Explorer（IE）系列：</p>
+                            <table>
+                                <tr><th>浏览器版本</th><th>HTML5支持情况</th><th>说明</th></tr>
+                                <tr><td><strong>IE8及更早版本</strong></td><td>几乎不支持</td><td>无法原生识别HTML5的新语义标签（如 <code>&lt;header&gt;</code>、<code>&lt;nav&gt;</code>），无法播放HTML5视频，无法使用Canvas。</td></tr>
+                                <tr><td><strong>IE9</strong></td><td>部分支持</td><td>开始支持部分HTML5特性（如Canvas、部分语义标签），但支持不完整。</td></tr>
+                                <tr><td><strong>IE10 / IE11</strong></td><td>支持大部分特性</td><td>对HTML5的支持有显著提升，但仍有部分限制。</td></tr>
+                                <tr><td><strong>旧版Edge（EdgeHTML内核）</strong></td><td>支持大部分特性</td><td>不如基于Chromium的新版Edge完善。</td></tr>
+                            </table>
+                            <p>好消息是，微软早已停止对IE系列的主流支持，全球范围内使用IE的用户比例已极低。但在某些<strong>企业内网、政府网站、教育系统</strong>等特定场景中，旧版IE可能仍在服役——如果你的项目面向这类用户，就需要认真对待兼容性问题。</p>
+                            <p><strong>3. 移动端浏览器——支持良好</strong></p>
+                            <p>移动端的情况比想象中更乐观：<strong>iOS Safari、Android Chrome以及大多数基于Chromium或WebKit的移动浏览器，对HTML5的支持都非常好</strong>。这主要得益于：</p>
+                            <ul>
+                                <li>移动端浏览器的更新周期通常较短，新版本的普及速度较快。</li>
+                                <li>苹果和谷歌都积极推动HTML5在移动端的落地，以替代对Flash等插件的依赖。</li>
+                            </ul>
+                            <h2>1.4.3 如何查询具体特性的浏览器支持情况</h2>
+                            <p>在实际开发中，你经常会遇到这样的问题："我想用 <code>&lt;datalist&gt;</code> 做输入建议，Safari支持吗？""<code>localStorage</code> 在IE11上能用吗？"——这时就需要借助专业的查询工具。</p>
+                            <p><strong>工具一：Can I use（最常用）</strong></p>
+                            <p><strong>Can I use</strong>（https://caniuse.com）是前端开发领域<strong>最权威的浏览器兼容性查询网站</strong>。它提供了实时更新的浏览器支持数据，覆盖HTML、CSS、JavaScript、Web API等几乎所有前端技术。</p>
+                            <p><strong>使用方法</strong>：在搜索框中输入你想查询的特性名称（如 <code>video</code>、<code>localStorage</code>、<code>flexbox</code>、<code>datalist</code> 等），页面会以表格形式展示该特性在各浏览器及各版本中的支持状态——绿色代表支持，红色代表不支持，黄色代表部分支持。</p>
+                            <div class="tip-box">
+                                <p><strong>💡 给初学者的建议</strong>：把 <strong>Can I use</strong> 加入你的浏览器书签。在未来的开发中，每当你想使用一个不太确定兼容性的HTML5特性时，先上去查一查——这会帮你避免无数"为什么我的页面在某某浏览器上显示不正常"的困惑。</p>
+                            </div>
+                            <p><strong>工具二：MDN Web Docs</strong></p>
+                            <p><strong>MDN Web Docs</strong>（https://developer.mozilla.org）是Mozilla维护的Web技术权威文档库。在每一个HTML标签、属性或API的页面底部，都有一张<strong>"浏览器兼容性"表格</strong>，清晰列出了该特性在各主流浏览器中的支持版本。MDN的数据与Can I use相互补充，同样值得信赖。</p>
+                            <p><strong>工具三：手动代码检测</strong></p>
+                            <p>除了查表，你还可以在代码中<strong>直接检测</strong>浏览器是否支持某个特性：</p>
+                            <pre><code>// 检测 localStorage 是否可用
+        if (typeof localStorage !== 'undefined') {
+            // 安全使用 localStorage
+            localStorage.setItem('key', 'value');
+        } else {
+            // 降级方案：使用 Cookie 或其他方式
+            console.log('当前浏览器不支持 localStorage');
+        }
+
+        // 检测地理定位 API 是否可用
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                console.log('纬度：' + pos.coords.latitude);
+            });
+        } else {
+            alert('您的浏览器不支持地理定位功能');
+        }
+
+        // 检测 Canvas 是否可用
+        if (!!document.createElement('canvas').getContext) {
+            // 可以使用 Canvas 绘图
+        } else {
+            // 提供降级方案
+        }</code></pre>
+                            <p>这种"<strong>特性检测（Feature Detection）</strong>"是前端开发中处理兼容性的<strong>黄金法则</strong>——不要猜测用户用什么浏览器，而是直接检测"这个功能在用户的浏览器中是否可用"。</p>
+                            <h2>1.4.4 处理兼容性问题的常用策略</h2>
+                            <p>当某个HTML5特性在目标用户的浏览器中不被支持时，我们该怎么办？以下是业界通行的几种策略：</p>
+                            <p><strong>策略一：渐进增强（Progressive Enhancement）</strong></p>
+                            <p><strong>核心理念</strong>：先为所有浏览器提供<strong>最基本的功能</strong>（使用最基础的HTML标签），然后为支持新特性的浏览器<strong>逐步增加更丰富的体验</strong>。</p>
+                            <p><strong>示例</strong>：使用 <code>&lt;video&gt;</code> 标签播放视频时，在标签内部提供降级文本：</p>
+                            <pre><code>&lt;video controls width="600"&gt;
+        &lt;source src="movie.mp4" type="video/mp4"&gt;
+        &lt;source src="movie.ogg" type="video/ogg"&gt;
+        &lt;!-- 以下内容在不支持 video 的浏览器中显示 --&gt;
+        &lt;p&gt;您的浏览器不支持HTML5视频播放，请升级浏览器。
+        &lt;a href="movie.mp4"&gt;点击此处下载视频文件&lt;/a&gt;&lt;/p&gt;
+        &lt;/video&gt;</code></pre>
+                            <p>在支持 <code>&lt;video&gt;</code> 的浏览器中，用户看到的是精美的视频播放器；在不支持的浏览器中，用户至少能看到一段提示文字和一个下载链接——<strong>功能可能不完整，但不会"坏掉"</strong>。</p>
+                            <p><strong>策略二：Polyfill（垫片）</strong></p>
+                            <p><strong>Polyfill</strong> 是一段JavaScript代码，它的作用是：<strong>如果浏览器原生不支持某个新特性，就用JavaScript模拟实现该功能</strong>。</p>
+                            <p><strong>经典案例</strong>：旧版IE（IE9及以下）无法识别HTML5的新语义标签（如 <code>&lt;header&gt;</code>、<code>&lt;nav&gt;</code>、<code>&lt;article&gt;</code> 等），会导致这些标签无法被正确渲染。开发者可以使用 <strong>html5shiv</strong> 这个Polyfill来解决：</p>
+                            <pre><code>&lt;!-- 仅在 IE9 及以下版本中加载 html5shiv --&gt;
+        &lt;!--[if lt IE 9]&gt;
+            &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"&gt;&lt;/script&gt;
+        &lt;![endif]--&gt;</code></pre>
+                            <p>这段代码的意思是："如果用户的浏览器是IE9或更早版本，就加载html5shiv脚本，让这些旧浏览器也能识别HTML5的新标签。"——这是<strong>条件注释（Conditional Comment）</strong> 的用法，是专门为IE设计的HTML语法。</p>
+                            <p><strong>策略三：优雅降级（Graceful Degradation）</strong></p>
+                            <p><strong>核心理念</strong>：先为现代浏览器开发<strong>完整功能</strong>的版本，然后确保在旧浏览器中<strong>功能虽有缩减但依然可用且不报错</strong>。</p>
+                            <p>渐进增强和优雅降级是两种互补的思路——前者"从下往上"构建，后者"从上往下"兼容。在实际开发中，<strong>渐进增强是更被推崇的实践</strong>，因为它天然保证了所有用户都能获得最基本的可用体验。</p>
+                            <p><strong>策略四：提示用户升级浏览器</strong></p>
+                            <p>对于实在无法兼容的极端情况（如用户仍在使用IE8），最务实的做法是<strong>友好地提示用户升级浏览器</strong>：</p>
+                            <pre><code>&lt;!--[if lt IE 9]&gt;
+        &lt;p style="color: red; font-size: 18px; padding: 20px; background: #ffeeee;"&gt;
+            您的浏览器版本过低，无法正常访问本网站。
+            请升级到 &lt;a href="https://www.microsoft.com/edge"&gt;Microsoft Edge&lt;/a&gt;
+            或 &lt;a href="https://www.google.com/chrome/"&gt;Google Chrome&lt;/a&gt;。
+        &lt;/p&gt;
+        &lt;![endif]--&gt;</code></pre>
+                            <h2>1.4.5 现代开发的新趋势：Baseline（广泛可用功能）</h2>
+                            <p>2025年以来，Web开发社区提出了一项名为 <strong>"Baseline（基准）"</strong> 的新倡议。其核心理念是：</p>
+                            <p><strong>当一个Web功能被所有主流浏览器（Chrome、Firefox、Safari、Edge）都支持时，它就进入了"Baseline Widely Available"（广泛可用）状态</strong>。开发者可以<strong>放心大胆地使用</strong>这些功能，无需担心兼容性问题。</p>
+                            <p>截至2026年，已有<strong>超过500项Web功能</strong>被标记为"Baseline Widely Available"——这其中包括了绝大部分HTML5的核心特性。换句话说，<strong>对于现代Web开发而言，兼容性问题正在逐年减少</strong>。</p>
+                            <div class="tip-box">
+                                <p><strong>🎯 对初学者的建议</strong>：在学习阶段，请放心使用本书中讲解的所有HTML5特性——只要你在Chrome、Firefox、Edge或Safari的最新版本中测试，它们都能正常工作。当你将来进入实际项目开发时，再根据项目的目标用户群体，有针对性地处理兼容性问题即可。</p>
+                            </div>
+                            <p><strong>知识小结</strong></p>
+                            <p>本节我们学习了各浏览器对HTML5的支持情况及相关应对策略：</p>
+                            <ol>
+                                <li><strong>HTML5已成行业标准</strong>，全球约95%的浏览器已支持HTML5。但"支持HTML5"是一个笼统的说法——具体到每个特性和API，支持情况可能不同。</li>
+                                <li><strong>现代浏览器</strong>（Chrome、Firefox、Edge、Safari、Opera）<strong>完全支持</strong>HTML5核心特性；<strong>旧版IE</strong>（尤其是IE8及更早版本）支持非常有限；<strong>移动端浏览器</strong>支持情况普遍良好。</li>
+                                <li>查询具体特性的兼容性，可使用 <strong>Can I use</strong>（https://caniuse.com）或 <strong>MDN Web Docs</strong>。</li>
+                                <li>处理兼容性问题的常用策略包括：<strong>渐进增强</strong>（先基础后增强）、<strong>Polyfill</strong>（用JS模拟缺失功能）、<strong>优雅降级</strong>（先完整后精简）和<strong>提示用户升级浏览器</strong>。</li>
+                                <li><strong>Baseline（广泛可用功能）</strong> 是近年来兴起的新标准——当一个功能被所有主流浏览器支持后，开发者即可放心使用。</li>
+                            </ol>
+                            <p><strong>思考与练习</strong></p>
+                            <p><strong>一、选择题</strong></p>
+                            <ol>
+                                <li>以下关于浏览器对HTML5支持的说法，正确的是（　）<br>A. 所有浏览器对所有HTML5特性的支持程度完全一致<br>B. 全球约95%的浏览器已支持HTML5，但具体到每个特性可能有差异<br>C. HTML5需要用户手动在浏览器中"安装"才能使用<br>D. 只有Chrome浏览器支持HTML5</li>
+                                <li>以下哪个网站是查询浏览器对HTML5特性兼容性的权威工具？（　）<br>A. Google.com &nbsp;&nbsp; B. CanIuse.com &nbsp;&nbsp; C. Github.com &nbsp;&nbsp; D. StackOverflow.com</li>
+                                <li>在HTML中嵌入视频时，为保证在不支持 <code>&lt;video&gt;</code> 标签的浏览器中也能提供基本的可用体验，可以在 <code>&lt;video&gt;</code> 标签内部放置（　）<br>A. 另一个 <code>&lt;video&gt;</code> 标签 &nbsp;&nbsp; B. 一段提示文字或下载链接<br>C. 一个 <code>&lt;script&gt;</code> 标签 &nbsp;&nbsp; D. 一个 <code>&lt;style&gt;</code> 标签</li>
+                            </ol>
+                            <p><strong>二、简答题</strong></p>
+                            <ol>
+                                <li>为什么说"95%的浏览器支持HTML5"这个说法是笼统的？请结合HTML5包含多项独立特性这一事实进行解释。</li>
+                                <li>请简述"特性检测"（Feature Detection）的含义，并说明它与"浏览器嗅探"（检测浏览器名称和版本）相比有哪些优势。</li>
+                                <li>什么是Polyfill？请举例说明它在处理HTML5兼容性问题时的作用。</li>
+                            </ol>
+                            <p><strong>三、上机实践</strong></p>
+                            <ol>
+                                <li>打开浏览器，访问 <strong>Can I use</strong> 网站（https://caniuse.com），依次搜索以下关键词：<code>video</code>、<code>localStorage</code>、<code>flexbox</code>、<code>datalist</code>。观察每个特性在各浏览器中的支持情况，记录下哪些浏览器对该特性的支持存在限制。</li>
+                                <li>在上一节创建的 <code>index.html</code> 文件中，尝试加入一个 <code>&lt;video&gt;</code> 标签，在标签内部添加一段降级提示文字。用Chrome打开该文件，验证视频播放器是否正常显示；如果有条件，再用一台安装了旧版IE的电脑（或使用IE模拟工具）打开，观察降级文字是否显示。</li>
+                                <li>（选做）搜索了解"html5shiv"的作用原理，并尝试在你的HTML页面中引入html5shiv的CDN链接，观察在旧版IE中的效果变化。</li>
+                            </ol>
+                            <hr>
+                            <p><strong>下节预告</strong>：第1章的全部内容到此结束。从下一章开始，我们将正式进入HTML编码的实战阶段——<strong>第2章"HTML文档结构与基本语法"</strong> 将带你亲手编写第一个完整的HTML页面，并深入理解HTML文档的骨架结构。敬请期待！</p>
+                        </div>
+                    `
+        }];
+
+        // 占位章节
+        const placeholderChapters = [
+            { id: 'ch2', title: '第2章 HTML文档结构与基本语法', icon: 'fa-file-lines' },
+            { id: 'ch3', title: '第3章 HTML头部标记详解', icon: 'fa-heading' },
+            { id: 'ch4', title: '第4章 网页文本内容设计', icon: 'fa-font' },
+            { id: 'ch5', title: '第5章 列表与超链接', icon: 'fa-list' },
+            { id: 'ch6', title: '第6章 图像与多媒体', icon: 'fa-image' },
+            { id: 'ch7', title: '第7章 表格的应用', icon: 'fa-table' },
+            { id: 'ch8', title: '第8章 表单与用户交互（上）', icon: 'fa-rectangle-ad' },
+            { id: 'ch9', title: '第9章 表单与用户交互（下）', icon: 'fa-rectangle-ad' },
+            { id: 'ch10', title: '第10章 语义化标签与网页结构', icon: 'fa-tags' },
+            { id: 'ch11', title: '第11章 DIV+CSS布局基础', icon: 'fa-object-group' },
+            { id: 'ch12', title: '第12章 CSS盒子模型与网页布局', icon: 'fa-cube' },
+            { id: 'ch13', title: '第13章 Flexbox与Grid弹性布局', icon: 'fa-grid-2' },
+            { id: 'ch14', title: '第14章 HTML5绘图——Canvas', icon: 'fa-palette' },
+            { id: 'ch15', title: '第15章 SVG矢量图形', icon: 'fa-bezier-curve' },
+            { id: 'ch16', title: '第16章 文件操作与拖放', icon: 'fa-file-arrow-up' },
+            { id: 'ch17', title: '第17章 Web存储', icon: 'fa-database' },
+            { id: 'ch18', title: '第18章 离线应用与缓存', icon: 'fa-wifi' },
+            { id: 'ch19', title: '第19章 Web Workers多线程处理', icon: 'fa-microchip' },
+            { id: 'ch20', title: '第20章 通信API', icon: 'fa-satellite' },
+            { id: 'ch21', title: '第21章 获取地理位置信息', icon: 'fa-location-dot' },
+            { id: 'ch22', title: '第22章 响应式网页设计', icon: 'fa-mobile-screen' },
+            { id: 'ch23', title: '第23章 项目实战一：个人博客网站', icon: 'fa-blog' },
+            { id: 'ch24', title: '第24章 项目实战二：企业官网', icon: 'fa-building' },
+            { id: 'ch25', title: '第25章 项目实战三：在线教育平台首页', icon: 'fa-chalkboard-user' },
+            { id: 'ch26', title: '第26章 项目实战四：电商购物网站', icon: 'fa-cart-shopping' },
+            { id: 'ch27', title: '第27章 项目实战五：后台管理系统界面', icon: 'fa-screwdriver-wrench' },
+            { id: 'ch28', title: '第28章 前端工程化与未来发展', icon: 'fa-rocket' },
+            { id: 'appendix', title: '附录', icon: 'fa-paperclip' }
+        ];
+
+        const allChapters = [...bookData, ...placeholderChapters.map(p => ({
+            ...p,
+            placeholder: true,
+            content: `
+                            <h1>${p.title}</h1>
+                            <div class="chapter-content">
+                                <div class="placeholder-box">
+                                    <i class="fas ${p.icon || 'fa-book'}"></i>
+                                    <p style="font-size: 1.4em; margin-bottom: 8px; font-weight: 400;">本章内容正在编写中...</p>
+                                    <p style="font-size: 0.9em; color: rgba(0,0,0,0.25);">敬请期待后续更新</p>
+                                </div>
+                            </div>
+                        `
+        }))];
+        allChapters.forEach((ch, idx) => ch.index = idx);
+
+        // ============================================================
+        // 2. 状态管理
+        // ============================================================
+        let currentChapterIndex = 0;
+        let fontSize = 16;
+        let isNight = false;
+
+        // DOM
+        const contentArea = document.getElementById('contentArea');
+        const chapterContainer = document.getElementById('chapterContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const tocList = document.getElementById('tocList');
+        const drawer = document.getElementById('drawer');
+        const overlay = document.getElementById('drawerOverlay');
+        const menuBtn = document.getElementById('menuBtn');
+        const drawerClose = document.getElementById('drawerClose');
+        const themeToggle = document.getElementById('themeToggle');
+        const fontInc = document.getElementById('fontInc');
+        const fontDec = document.getElementById('fontDec');
+        const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+        const prevBtn = document.getElementById('prevChapter');
+        const nextBtn = document.getElementById('nextChapter');
+
+        // ============================================================
+        // 3. 核心函数
+        // ============================================================
+
+        function renderChapter(index) {
+            const chapter = allChapters[index];
+            if (!chapter) return;
+            chapterContainer.innerHTML = chapter.content;
+            updateProgress();
+            updateTocActive();
+            // 不要自动滚动到顶部，因为我们会恢复滚动位置
+            // 但如果是通过导航切换，我们希望滚动到顶部，但如果是恢复，则保留滚动位置。
+            // 我们将在goToChapter中决定是否滚动。
+            prevBtn.disabled = (index === 0);
+            nextBtn.disabled = (index === allChapters.length - 1);
+            prevBtn.style.opacity = prevBtn.disabled ? '0.2' : '1';
+            nextBtn.style.opacity = nextBtn.disabled ? '0.2' : '1';
+        }
+
+        function updateProgress() {
+            const scrollTop = contentArea.scrollTop;
+            const scrollHeight = contentArea.scrollHeight - contentArea.clientHeight;
+            let percent = 0;
+            if (scrollHeight > 0) {
+                percent = (scrollTop / scrollHeight) * 100;
+            }
+            percent = Math.min(100, Math.max(0, percent));
+            progressFill.style.width = percent + '%';
+            progressText.textContent = Math.round(percent) + '%';
+        }
+
+        function renderToc() {
+            tocList.innerHTML = '';
+            allChapters.forEach((ch, idx) => {
+                const li = document.createElement('li');
+                li.className = 'toc-item';
+                if (idx === currentChapterIndex) li.classList.add('active');
+
+                const iconSpan = document.createElement('span');
+                iconSpan.className = 'toc-icon';
+                const iconName = ch.icon || (ch.id === 'preface' ? 'fa-feather-pointed' : 'fa-book');
+                iconSpan.innerHTML = `<i class="fas ${iconName}"></i>`;
+
+                const numSpan = document.createElement('span');
+                numSpan.className = 'chapter-num';
+                if (ch.id === 'preface') {
+                    numSpan.textContent = '序';
+                } else if (ch.id.startsWith('ch')) {
+                    const num = ch.id.replace('ch', '');
+                    if (num.includes('-')) {
+                        numSpan.textContent = num;
+                    } else {
+                        numSpan.textContent = num;
+                    }
+                } else if (ch.id === 'appendix') {
+                    numSpan.textContent = '附';
+                } else {
+                    numSpan.textContent = '';
+                }
+
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'chapter-title-text';
+                titleSpan.textContent = ch.title;
+
+                li.appendChild(iconSpan);
+                li.appendChild(numSpan);
+                li.appendChild(titleSpan);
+
+                if (ch.placeholder) {
+                    const tag = document.createElement('span');
+                    tag.className = 'status-tag';
+                    tag.textContent = '敬请期待';
+                    li.appendChild(tag);
+                }
+
+                li.addEventListener('click', () => {
+                    closeDrawer();
+                    goToChapter(idx, true); // 手动点击目录，滚动到顶部
+                });
+
+                tocList.appendChild(li);
+            });
+        }
+
+        function updateTocActive() {
+            const items = tocList.querySelectorAll('.toc-item');
+            items.forEach((item, idx) => {
+                item.classList.toggle('active', idx === currentChapterIndex);
+            });
+        }
+
+        function goToChapter(index, scrollToTop = false) {
+            if (index < 0 || index >= allChapters.length) return;
+            currentChapterIndex = index;
+            renderChapter(index);
+            if (scrollToTop) {
+                contentArea.scrollTop = 0;
+            }
+            // 保存进度
+            saveProgress();
+        }
+
+        // ---- 进度记忆 ----
+        function saveProgress() {
+            try {
+                const data = {
+                    chapterIndex: currentChapterIndex,
+                    scrollTop: contentArea.scrollTop,
+                };
+                localStorage.setItem('html-reader-progress', JSON.stringify(data));
+            } catch (e) { /* ignore */ }
+        }
+
+        function loadProgress() {
+            try {
+                const raw = localStorage.getItem('html-reader-progress');
+                if (!raw) return null;
+                const data = JSON.parse(raw);
+                if (typeof data.chapterIndex === 'number' && data.chapterIndex >= 0 && data.chapterIndex < allChapters
+                    .length) {
+                    return data;
+                }
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // 恢复进度（在启动时调用）
+        function restoreProgress() {
+            const data = loadProgress();
+            if (data) {
+                currentChapterIndex = data.chapterIndex;
+                renderChapter(currentChapterIndex);
+                // 恢复滚动位置
+                if (data.scrollTop !== undefined && data.scrollTop >= 0) {
+                    // 需要等DOM渲染完成后再设置scrollTop
+                    requestAnimationFrame(() => {
+                        contentArea.scrollTop = data.scrollTop;
+                        updateProgress();
+                    });
+                }
+            } else {
+                // 默认从第1章1.1开始（索引1）
+                currentChapterIndex = 1;
+                renderChapter(currentChapterIndex);
+                contentArea.scrollTop = 0;
+            }
+        }
+
+        // 监听滚动并保存进度（节流）
+        let saveTimer = null;
+
+        function handleScroll() {
+            updateProgress();
+            if (saveTimer) {
+                clearTimeout(saveTimer);
+            }
+            saveTimer = setTimeout(() => {
+                saveProgress();
+                saveTimer = null;
+            }, 300);
+        }
+
+        // 切换章节时保存
+        const origGoTo = goToChapter;
+        goToChapter = function(index, scrollToTop) {
+            origGoTo(index, scrollToTop);
+            // 保存已在origGoTo中调用saveProgress，但为了避免重复，可保留
+        };
+
+        // ============================================================
+        // 4. 事件绑定
+        // ============================================================
+
+        contentArea.addEventListener('scroll', handleScroll);
+
+        menuBtn.addEventListener('click', toggleDrawer);
+        drawerClose.addEventListener('click', closeDrawer);
+        overlay.addEventListener('click', closeDrawer);
+
+        prevBtn.addEventListener('click', () => {
+            if (currentChapterIndex > 0) goToChapter(currentChapterIndex - 1, true);
+        });
+        nextBtn.addEventListener('click', () => {
+            if (currentChapterIndex < allChapters.length - 1) goToChapter(currentChapterIndex + 1, true);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'ArrowLeft') {
+                if (currentChapterIndex > 0) goToChapter(currentChapterIndex - 1, true);
+                e.preventDefault();
+            } else if (e.key === 'ArrowRight') {
+                if (currentChapterIndex < allChapters.length - 1) goToChapter(currentChapterIndex + 1, true);
+                e.preventDefault();
+            }
+        });
+
+        themeToggle.addEventListener('click', toggleTheme);
+
+        fontInc.addEventListener('click', () => changeFontSize(2));
+        fontDec.addEventListener('click', () => changeFontSize(-2));
+
+        document.getElementById('progressBar').addEventListener('click', (e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            const scrollHeight = contentArea.scrollHeight - contentArea.clientHeight;
+            contentArea.scrollTop = percent * scrollHeight;
+        });
+
+        // ============================================================
+        // 5. 偏好恢复
+        // ============================================================
+        try {
+            const savedTheme = localStorage.getItem('html-reader-theme');
+            if (savedTheme === 'night') {
+                isNight = true;
+                document.body.classList.add('night-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            const savedFont = localStorage.getItem('html-reader-fontsize');
+            if (savedFont) {
+                fontSize = parseInt(savedFont, 10);
+                if (fontSize >= 12 && fontSize <= 24) {
+                    fontSizeDisplay.textContent = fontSize;
+                }
+            }
+        } catch (e) {}
+
+        function toggleTheme() {
+            isNight = !isNight;
+            document.body.classList.toggle('night-mode', isNight);
+            themeToggle.innerHTML = isNight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            try {
+                localStorage.setItem('html-reader-theme', isNight ? 'night' : 'day');
+            } catch (e) {}
+        }
+
+        function changeFontSize(delta) {
+            fontSize = Math.min(24, Math.max(12, fontSize + delta));
+            fontSizeDisplay.textContent = fontSize;
+            document.querySelectorAll('.chapter-content').forEach(el => {
+                el.style.fontSize = fontSize + 'px';
+            });
+            try {
+                localStorage.setItem('html-reader-fontsize', fontSize);
+            } catch (e) {}
+        }
+
+        // 打开/关闭目录
+        function openDrawer() {
+            drawer.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function toggleDrawer() {
+            if (drawer.classList.contains('open')) {
+                closeDrawer();
+            } else {
+                openDrawer();
+            }
+        }
+
+        // ============================================================
+        // 6. 启动应用
+        // ============================================================
+        renderToc();
+        // 恢复阅读进度
+        restoreProgress();
+        // 应用字体大小
+        document.querySelectorAll('.chapter-content').forEach(el => {
+            el.style.fontSize = fontSize + 'px';
+        });
+
+        // 触摸滑动翻页
+        let touchStartX = 0,
+            touchStartY = 0;
+        contentArea.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        contentArea.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            const dy = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                if (dx < 0 && currentChapterIndex < allChapters.length - 1) {
+                    goToChapter(currentChapterIndex + 1, true);
+                } else if (dx > 0 && currentChapterIndex > 0) {
+                    goToChapter(currentChapterIndex - 1, true);
+                }
+            }
+        }, { passive: true });
+
+        console.log('📖 HTML阅读器已启动 (玻璃标题栏 + 位置记忆)');
+        console.log('总章节数：', allChapters.length);
+    </script>
+</body>
+</html>
