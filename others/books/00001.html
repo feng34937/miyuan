@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HTML由入门到精通</title>
+    <title>《HTML由入门到精通》阅读器</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* === 全局重置 === */
         * {
             margin: 0;
             padding: 0;
@@ -22,6 +23,7 @@
             transition: background 0.3s, color 0.3s;
         }
 
+        /* === 夜间模式变量 === */
         body.night-mode {
             background: #1a1a1a;
             color: #ccc;
@@ -31,69 +33,88 @@
             background: rgba(30, 30, 30, 0.65);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
+
         body.night-mode .reader-header h1 {
             color: #e0e0e0;
         }
+
         body.night-mode .reader-footer {
             background: rgba(30, 30, 30, 0.65);
             border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
+
         body.night-mode .reader-footer button {
             color: #ccc;
         }
+
         body.night-mode .reader-footer button:hover {
             background: rgba(255, 255, 255, 0.08);
         }
+
         body.night-mode .progress-bar {
             background: rgba(255, 255, 255, 0.15);
         }
+
         body.night-mode .progress-fill {
             background: #6a8caf;
         }
+
         body.night-mode .content-area {
             background: #1a1a1a;
         }
+
         body.night-mode .chapter-title {
             color: #e8e8e8;
         }
+
         body.night-mode .chapter-content {
             color: #c8c8c8;
         }
+
         body.night-mode .chapter-content h1,
         body.night-mode .chapter-content h2,
         body.night-mode .chapter-content h3 {
             color: #e0e0e0;
         }
+
         body.night-mode .chapter-content code {
             background: #2d2d2d;
             color: #e6c07b;
         }
+
         body.night-mode .chapter-content pre {
             background: #2d2d2d;
             border-left-color: #6a8caf;
         }
+
         body.night-mode .chapter-content table {
             border-color: #444;
         }
+
         body.night-mode .chapter-content th,
         body.night-mode .chapter-content td {
             border-color: #444;
         }
+
         body.night-mode .chapter-content blockquote {
             border-left-color: #6a8caf;
             background: #2a2a2a;
         }
+
         body.night-mode .chapter-content .tip-box {
             background: #2a3a3a;
             border-left-color: #6a8caf;
         }
+
         body.night-mode .chapter-content .tip-box strong {
             color: #8ab4d6;
         }
+
         body.night-mode .drawer-overlay {
             background: rgba(0, 0, 0, 0.6);
         }
 
+        /* === 玻璃抽屉 === */
         .drawer-overlay {
             position: fixed;
             top: 0;
@@ -109,6 +130,7 @@
             -webkit-backdrop-filter: blur(2px);
             border-radius: 0 !important;
         }
+
         .drawer-overlay.open {
             opacity: 1;
             pointer-events: auto;
@@ -131,6 +153,7 @@
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
             border-radius: 0 !important;
         }
+
         body.night-mode .drawer {
             background: rgba(30, 30, 30, 0.70);
             backdrop-filter: blur(40px) saturate(160%);
@@ -138,9 +161,11 @@
             border-right: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
         }
+
         .drawer.open {
             left: 0;
         }
+
         .drawer::-webkit-scrollbar {
             width: 3px;
         }
@@ -166,18 +191,22 @@
             color: #1a1a1a;
             letter-spacing: 0.5px;
         }
+
         body.night-mode .drawer-title {
             color: #e0e0e0;
             border-bottom-color: rgba(255, 255, 255, 0.06);
         }
+
         .drawer-title i {
             margin-right: 10px;
             color: #3b7cb8;
             font-size: 22px;
         }
+
         body.night-mode .drawer-title i {
             color: #6a8caf;
         }
+
         .drawer-close {
             background: none;
             border: none;
@@ -193,10 +222,12 @@
             align-items: center;
             justify-content: center;
         }
+
         .drawer-close:hover {
             background: rgba(0, 0, 0, 0.06);
             color: rgba(0, 0, 0, 0.7);
         }
+
         body.night-mode .drawer-close {
             color: rgba(255, 255, 255, 0.4);
         }
@@ -205,7 +236,7 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* 两级目录样式 */
+        /* === 两级目录样式 === */
         .toc-list {
             list-style: none;
             padding: 8px 12px 20px 12px;
@@ -905,8 +936,8 @@
 
     <script>
         // ============================================================
-        // 1. 完整书籍数据（包含前言、第1~4章完整内容、第5~28章及附录占位）
-        //    此处为完整数据，确保所有章节内容无删减。
+        // 1. 完整书籍数据（包含前言、第1~5章全部内容、第6~28章及附录占位）
+        //    新增第5章的 5.1~5.4 四个小节，移除了第5章的占位项。
         // ============================================================
         var bookData = [{
             id: 'preface',
@@ -5878,14 +5909,2023 @@
                     <p><strong>下篇预告</strong>：第5章将学习 <strong>列表与超链接</strong> —— 包括无序列表、有序列表、自定义列表，以及超链接的各种用法。敬请期待！</p>
                 </div>
             `
+        },
+        // ======== 第5章 5.1 ========
+        {
+            id: 'ch5-1',
+            title: '5.1 无序列表 —— <ul> 与 <li>',
+            icon: 'fa-list-ul',
+            content: `
+                <h1>5.1 无序列表 —— <code>&lt;ul&gt;</code> 与 <code>&lt;li&gt;</code></h1>
+                <div class="chapter-content">
+                    <p>在网页内容中，我们经常需要展示<strong>一组具有并列关系或从属关系的项目</strong>——例如商品列表、菜单导航、功能特点、步骤说明等。HTML 提供了专门的列表标签来组织和呈现这类内容，其中<strong>无序列表</strong>是最常用、最基础的一种。</p>
+                    <p>如果说标题是文章的“骨架”、段落是“血肉”，那么列表就是内容的“脉络”——它让信息以结构化的方式呈现，便于用户快速浏览和理解。</p>
+
+                    <h2>5.1.1 无序列表的基本语法</h2>
+                    <p>无序列表（Unordered List）用于表示<strong>一组没有特定顺序的项目</strong>，每个项目之间是并列关系。它由两个标签配合使用：</p>
+                    <ul>
+                        <li><code>&lt;ul&gt;</code>（unordered list）：定义无序列表的容器。</li>
+                        <li><code>&lt;li&gt;</code>（list item）：定义列表中的每一个项目。</li>
+                    </ul>
+
+                    <p><strong>基本用法</strong></p>
+                    <pre><code>&lt;ul&gt;
+            &lt;li&gt;苹果&lt;/li&gt;
+            &lt;li&gt;香蕉&lt;/li&gt;
+            &lt;li&gt;橙子&lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+                    <p>在浏览器中，这段代码会显示为：</p>
+                    <pre><code>• 苹果
+        • 香蕉
+        • 橙子</code></pre>
+                    <p>每个 <code>&lt;li&gt;</code> 前面默认显示一个<strong>圆点符号（bullet point）</strong>，这也是无序列表最显著的视觉特征。</p>
+
+                    <p><strong>一个完整的 HTML 示例</strong></p>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+        &lt;html lang="zh-CN"&gt;
+        &lt;head&gt;
+            &lt;meta charset="utf-8"&gt;
+            &lt;title&gt;无序列表示例&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;h1&gt;水果清单&lt;/h1&gt;
+            &lt;p&gt;以下是今天需要采购的水果：&lt;/p&gt;
+            &lt;ul&gt;
+                &lt;li&gt;苹果&lt;/li&gt;
+                &lt;li&gt;香蕉&lt;/li&gt;
+                &lt;li&gt;橙子&lt;/li&gt;
+                &lt;li&gt;草莓&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;</code></pre>
+
+                    <p><strong><code>&lt;ul&gt;</code> 只能包含 <code>&lt;li&gt;</code></strong></p>
+                    <p><code>&lt;ul&gt;</code> 标签的<strong>直接子元素只能是 <code>&lt;li&gt;</code></strong>。虽然你可以在 <code>&lt;li&gt;</code> 内部放置各种内容（文本、图片、链接、甚至其他列表），但不能在 <code>&lt;ul&gt;</code> 中直接放置文本或其他块级元素。</p>
+                    <pre><code>&lt;!-- ❌ 错误：在 <ul> 中直接放文本 --&gt;
+        &lt;ul&gt;
+            水果列表：
+            &lt;li&gt;苹果&lt;/li&gt;
+            &lt;li&gt;香蕉&lt;/li&gt;
+        &lt;/ul&gt;
+
+        &lt;!-- ❌ 错误：在 <ul> 中直接放 <p> --&gt;
+        &lt;ul&gt;
+            &lt;p&gt;水果列表&lt;/p&gt;
+            &lt;li&gt;苹果&lt;/li&gt;
+            &lt;li&gt;香蕉&lt;/li&gt;
+        &lt;/ul&gt;
+
+        &lt;!-- ✅ 正确：<ul> 内只放 <li> --&gt;
+        &lt;ul&gt;
+            &lt;li&gt;苹果&lt;/li&gt;
+            &lt;li&gt;香蕉&lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+
+                    <h2>5.1.2 无序列表的默认样式与语义</h2>
+                    <p><strong>默认样式</strong></p>
+                    <p>浏览器对无序列表的默认样式包括：</p>
+                    <table>
+                        <tr><th>样式属性</th><th>默认值</th><th>说明</th></tr>
+                        <tr><td><code>list-style-type</code></td><td><code>disc</code>（实心圆点）</td><td>项目符号的样式</td></tr>
+                        <tr><td><code>padding-left</code></td><td><code>40px</code>（左右）</td><td>列表内容相对于父容器的缩进</td></tr>
+                        <tr><td><code>margin-top/bottom</code></td><td><code>1em</code></td><td>列表上下与其他元素的外边距</td></tr>
+                        <tr><td><code>display</code></td><td><code>block</code>（块级元素）</td><td>列表独占一行</td></tr>
+                    </table>
+
+                    <p><strong>语义含义</strong></p>
+                    <p>无序列表的语义是：<strong>“这些项目之间是并列关系，顺序不重要。”</strong></p>
+                    <ul>
+                        <li>对于<strong>用户</strong>来说，圆点符号暗示了项目的并列性。</li>
+                        <li>对于<strong>搜索引擎</strong>来说，<code>&lt;ul&gt;</code> 和 <code>&lt;li&gt;</code> 的结构有助于理解内容的组织方式。</li>
+                        <li>对于<strong>屏幕阅读器</strong>来说，它会告知用户“这是一个包含 N 个项目的列表”，并逐一朗读每个项目。</li>
+                    </ul>
+                    <div class="tip-box">
+                        <p><strong>💡 重要概念</strong>：列表标签的核心价值在于<strong>语义</strong>——告诉浏览器和辅助技术“这是一组相关的项目”，而不是仅仅为了显示几个圆点。不要为了视觉上的圆点而滥用列表，而应基于内容的结构逻辑来选择是否使用列表。</p>
+                    </div>
+
+                    <h2>5.1.3 无序列表的常见应用场景</h2>
+                    <p>无序列表在网页开发中应用极广，几乎任何需要列举“一组项目”的场景都可以使用。</p>
+
+                    <p><strong>1. 导航菜单（水平或垂直）</strong></p>
+                    <p>导航菜单本质上是一组链接的集合，非常适合用无序列表来组织。</p>
+                    <pre><code>&lt;nav&gt;
+            &lt;ul&gt;
+                &lt;li&gt;&lt;a href="/"&gt;首页&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="/products"&gt;产品&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="/about"&gt;关于我们&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="/contact"&gt;联系我们&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/nav&gt;</code></pre>
+
+                    <p><strong>2. 商品/功能特点列表</strong></p>
+                    <p>展示产品的功能特点时，可以用无序列表清晰地罗列。</p>
+                    <pre><code>&lt;h2&gt;产品特点&lt;/h2&gt;
+        &lt;ul&gt;
+            &lt;li&gt;轻量化设计，重量仅 150g&lt;/li&gt;
+            &lt;li&gt;续航时间长达 12 小时&lt;/li&gt;
+            &lt;li&gt;支持快速充电，30 分钟充至 80%&lt;/li&gt;
+            &lt;li&gt;IP68 级防水防尘&lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+
+                    <p><strong>3. 内容目录或索引</strong></p>
+                    <p>在文章开头展示目录时，无序列表是很好的选择。</p>
+                    <pre><code>&lt;ul&gt;
+            &lt;li&gt;第一章：基础知识&lt;/li&gt;
+            &lt;li&gt;第二章：核心语法&lt;/li&gt;
+            &lt;li&gt;第三章：高级应用&lt;/li&gt;
+            &lt;li&gt;第四章：项目实战&lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+
+                    <p><strong>4. 用户评论或回复列表</strong></p>
+                    <p>在社交或评论系统中，用户的评论列表也常使用无序列表。</p>
+                    <pre><code>&lt;ul class="comments"&gt;
+            &lt;li&gt;用户A：这篇文章非常有用！&lt;/li&gt;
+            &lt;li&gt;用户B：感谢分享，学习了。&lt;/li&gt;
+            &lt;li&gt;用户C：期待更多这样的内容。&lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+
+                    <h2>5.1.4 列表的嵌套 —— 创建多级列表</h2>
+                    <p><strong>列表可以相互嵌套</strong>，即在 <code>&lt;li&gt;</code> 内部再放置一个新的 <code>&lt;ul&gt;</code>，从而创建多级列表。这在展示层级结构（如分类、目录、组织架构）时非常有用。</p>
+
+                    <p><strong>基本语法</strong></p>
+                    <pre><code>&lt;ul&gt;
+            &lt;li&gt;
+                水果
+                &lt;ul&gt;
+                    &lt;li&gt;苹果&lt;/li&gt;
+                    &lt;li&gt;香蕉&lt;/li&gt;
+                    &lt;li&gt;橙子&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                蔬菜
+                &lt;ul&gt;
+                    &lt;li&gt;白菜&lt;/li&gt;
+                    &lt;li&gt;胡萝卜&lt;/li&gt;
+                    &lt;li&gt;西兰花&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+
+                    <p><strong>嵌套的视觉效果</strong></p>
+                    <p>在浏览器中，嵌套列表会自动缩进，并且子列表的项目符号通常会改变样式（第一级为实心圆点，第二级为空心圆点，第三级为实心方块），以帮助用户区分层级。</p>
+                    <pre><code>• 水果
+            ◦ 苹果
+            ◦ 香蕉
+            ◦ 橙子
+        • 蔬菜
+            ◦ 白菜
+            ◦ 胡萝卜
+            ◦ 西兰花</code></pre>
+
+                    <p><strong>嵌套列表的注意事项</strong></p>
+                    <ol>
+                        <li><strong>嵌套的 <code>&lt;ul&gt;</code> 必须放在 <code>&lt;li&gt;</code> 内部</strong>，不能直接放在父级 <code>&lt;ul&gt;</code> 中。</li>
+                        <li><strong>嵌套的层级不宜过深</strong>，一般建议不超过 3 层，否则会影响可读性和用户体验。</li>
+                        <li><strong>不同层级应有不同的语义</strong>：子列表表示的是“上一级项目的细分内容”，而非全新的列表。</li>
+                    </ol>
+                    <pre><code>&lt;!-- ❌ 错误：嵌套的 <ul> 直接放在 <ul> 中 --&gt;
+        &lt;ul&gt;
+            &lt;li&gt;水果&lt;/li&gt;
+            &lt;ul&gt;
+                &lt;li&gt;苹果&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/ul&gt;
+
+        &lt;!-- ✅ 正确：嵌套的 <ul> 放在 <li> 内部 --&gt;
+        &lt;ul&gt;
+            &lt;li&gt;
+                水果
+                &lt;ul&gt;
+                    &lt;li&gt;苹果&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+
+                    <h2>5.1.5 无序列表的 CSS 样式定制</h2>
+                    <p>在实际开发中，你几乎一定会通过 CSS 自定义无序列表的外观，使其与页面设计风格统一。</p>
+
+                    <p><strong>1. 修改项目符号样式（<code>list-style-type</code>）</strong></p>
+                    <table>
+                        <tr><th>值</th><th>效果</th><th>说明</th></tr>
+                        <tr><td><code>disc</code></td><td>•</td><td>实心圆点（默认）</td></tr>
+                        <tr><td><code>circle</code></td><td>◦</td><td>空心圆点</td></tr>
+                        <tr><td><code>square</code></td><td>▪</td><td>实心方块</td></tr>
+                        <tr><td><code>none</code></td><td>（无）</td><td>移除项目符号</td></tr>
+                    </table>
+                    <pre><code>ul {
+            list-style-type: square;
+        }</code></pre>
+
+                    <p><strong>2. 使用自定义图片作为项目符号（<code>list-style-image</code>）</strong></p>
+                    <pre><code>ul {
+            list-style-image: url('arrow.png');
+        }</code></pre>
+
+                    <p><strong>3. 完全移除项目符号并自定义间距（常用）</strong></p>
+                    <p>在许多设计中，开发者会移除默认的项目符号，通过自定义的图标或间距来呈现列表。</p>
+                    <pre><code>ul {
+            list-style: none;      /* 移除项目符号 */
+            padding-left: 0;       /* 移除默认缩进 */
+        }
+
+        li {
+            padding-left: 24px;    /* 为自定义图标留出空间 */
+            background: url('check.svg') left center no-repeat;
+            background-size: 16px;
+        }</code></pre>
+
+                    <p><strong>4. 创建水平列表（如导航菜单）</strong></p>
+                    <p>默认情况下，列表是垂直排列的。通过 CSS <code>display: inline-block</code> 或 <code>flex</code>，可以将其变为水平排列。</p>
+                    <pre><code>/* 方法一：inline-block */
+        .horizontal-list li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        /* 方法二：Flexbox（推荐） */
+        .horizontal-list {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+        }</code></pre>
+
+                    <p><strong>5. 调整列表的缩进与间距</strong></p>
+                    <pre><code>ul {
+            padding-left: 20px;     /* 列表整体缩进 */
+            margin: 16px 0;         /* 列表上下间距 */
+        }
+
+        li {
+            margin-bottom: 8px;     /* 项目之间的间距 */
+        }</code></pre>
+
+                    <p><strong>综合样式示例</strong></p>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+        &lt;html lang="zh-CN"&gt;
+        &lt;head&gt;
+            &lt;meta charset="utf-8"&gt;
+            &lt;title&gt;无序列表样式演示&lt;/title&gt;
+            &lt;style&gt;
+                /* 移除默认样式，自定义美观的列表 */
+                .feature-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 20px 0;
+                    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+                }
+
+                .feature-list li {
+                    padding: 12px 16px 12px 44px;
+                    margin-bottom: 8px;
+                    background: #f8f9fa url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23349bdb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>') left 12px center no-repeat;
+                    background-size: 20px;
+                    border-radius: 8px;
+                    border-left: 4px solid #3498db;
+                    color: #333;
+                    transition: background 0.2s;
+                }
+
+                .feature-list li:hover {
+                    background-color: #eef4f8;
+                }
+
+                /* 水平导航菜单 */
+                .nav-list {
+                    display: flex;
+                    gap: 24px;
+                    list-style: none;
+                    padding: 12px 20px;
+                    margin: 0;
+                    background: #2c3e50;
+                    border-radius: 8px;
+                }
+
+                .nav-list li a {
+                    color: #fff;
+                    text-decoration: none;
+                    font-weight: 500;
+                    padding: 6px 12px;
+                    border-radius: 4px;
+                    transition: background 0.2s;
+                }
+
+                .nav-list li a:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                }
+
+                /* 多级列表样式 */
+                .nested-list {
+                    list-style-type: square;
+                    padding-left: 24px;
+                }
+                .nested-list ul {
+                    list-style-type: circle;
+                    padding-left: 24px;
+                }
+                .nested-list ul ul {
+                    list-style-type: disc;
+                    padding-left: 24px;
+                }
+            &lt;/style&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;h1&gt;自定义列表样式&lt;/h1&gt;
+
+            &lt;h2&gt;功能特点（带图标）&lt;/h2&gt;
+            &lt;ul class="feature-list"&gt;
+                &lt;li&gt;轻量化设计，重量仅 150g&lt;/li&gt;
+                &lt;li&gt;续航时间长达 12 小时&lt;/li&gt;
+                &lt;li&gt;支持快速充电，30 分钟充至 80%&lt;/li&gt;
+                &lt;li&gt;IP68 级防水防尘&lt;/li&gt;
+            &lt;/ul&gt;
+
+            &lt;h2&gt;导航菜单（水平）&lt;/h2&gt;
+            &lt;ul class="nav-list"&gt;
+                &lt;li&gt;&lt;a href="#"&gt;首页&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;产品&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;关于&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;联系&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+
+            &lt;h2&gt;多级列表&lt;/h2&gt;
+            &lt;ul class="nested-list"&gt;
+                &lt;li&gt;
+                    编程语言
+                    &lt;ul&gt;
+                        &lt;li&gt;
+                            前端
+                            &lt;ul&gt;
+                                &lt;li&gt;HTML&lt;/li&gt;
+                                &lt;li&gt;CSS&lt;/li&gt;
+                                &lt;li&gt;JavaScript&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                            后端
+                            &lt;ul&gt;
+                                &lt;li&gt;Python&lt;/li&gt;
+                                &lt;li&gt;Java&lt;/li&gt;
+                                &lt;li&gt;Go&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;</code></pre>
+
+                    <h2>5.1.6 无序列表与有序列表的初步对比</h2>
+                    <p>虽然有序列表（<code>&lt;ol&gt;</code>）将在下一节详细讲解，但这里先做一个简单对比，以便你理解无序列表的适用边界。</p>
+                    <table>
+                        <tr><th>对比维度</th><th>无序列表 <code>&lt;ul&gt;</code></th><th>有序列表 <code>&lt;ol&gt;</code></th></tr>
+                        <tr><td><strong>项目符号</strong></td><td>圆点（•）或自定义符号</td><td>数字（1, 2, 3...）或字母（a, b, c...）</td></tr>
+                        <tr><td><strong>语义含义</strong></td><td>项目之间是并列关系，顺序不重要</td><td>项目之间有顺序或排名关系</td></tr>
+                        <tr><td><strong>典型场景</strong></td><td>购物清单、导航菜单、功能特点</td><td>操作步骤、排行榜、时间线</td></tr>
+                        <tr><td><strong>默认样式</strong></td><td><code>list-style-type: disc</code></td><td><code>list-style-type: decimal</code></td></tr>
+                    </table>
+                    <p><strong>选择原则</strong>：如果项目的<strong>顺序无关紧要</strong>（如商品列表、功能特点），使用无序列表；如果项目的<strong>顺序有意义</strong>（如制作步骤、排名），使用有序列表。</p>
+
+                    <h2>5.1.7 常见错误与最佳实践</h2>
+                    <p><strong>常见错误</strong></p>
+                    <table>
+                        <tr><th>错误</th><th>问题</th><th>正确做法</th></tr>
+                        <tr><td><strong>在 <code>&lt;ul&gt;</code> 中直接放置文本或非 <code>&lt;li&gt;</code> 元素</strong></td><td>违反 HTML 语法规范</td><td><code>&lt;ul&gt;</code> 的直接子元素只能是 <code>&lt;li&gt;</code></td></tr>
+                        <tr><td><strong>为了显示圆点而使用列表</strong></td><td>纯粹为了视觉效果，忽略语义</td><td>只有内容属于“一组相关项目”时才使用列表</td></tr>
+                        <tr><td><strong>过度嵌套（超过 4 层）</strong></td><td>影响可读性和用户体验</td><td>一般不超过 3 层，必要时考虑其他布局方式</td></tr>
+                        <tr><td><strong>忘记为嵌套列表设置合适的样式</strong></td><td>不同层级混淆不清</td><td>使用 CSS 明确区分不同层级的样式</td></tr>
+                        <tr><td><strong>在导航中使用列表但不移除默认样式</strong></td><td>导航菜单出现多余的圆点</td><td>设置 <code>list-style: none</code> 移除项目符号</td></tr>
+                    </table>
+
+                    <p><strong>最佳实践总结</strong></p>
+                    <ol>
+                        <li><strong>只在内容确实是一组“并列项目”时使用无序列表</strong>，不要为了视觉上的圆点而滥用。</li>
+                        <li><strong><code>&lt;ul&gt;</code> 的直接子元素只能是 <code>&lt;li&gt;</code></strong>，其他内容（文本、标题、段落）应放在 <code>&lt;li&gt;</code> 内部。</li>
+                        <li><strong>嵌套列表时，子列表必须放在父级 <code>&lt;li&gt;</code> 内部</strong>，且层级不宜过深（建议 ≤ 3 层）。</li>
+                        <li><strong>使用 CSS 自定义列表样式</strong>，而不是依赖浏览器的默认样式，使其与页面设计统一。</li>
+                        <li><strong>在导航菜单中，使用 <code>&lt;ul&gt;</code> + <code>&lt;li&gt;</code> + <code>&lt;a&gt;</code> 的结构</strong>，这是语义化且可访问的最佳实践。</li>
+                        <li><strong>考虑屏幕阅读器用户</strong>：列表标签可以帮助视障用户理解内容的组织结构，切勿滥用或遗漏。</li>
+                        <li><strong>善用 <code>list-style-type: none</code></strong> 在需要完全自定义列表外观时，先移除默认样式再重新设计。</li>
+                    </ol>
+
+                    <p><strong>知识小结</strong></p>
+                    <p>本节我们学习了无序列表 <code>&lt;ul&gt;</code> 和列表项 <code>&lt;li&gt;</code>：</p>
+                    <table>
+                        <tr><th>要点</th><th>说明</th></tr>
+                        <tr><td><strong>标签组合</strong></td><td><code>&lt;ul&gt;</code> 定义列表容器，<code>&lt;li&gt;</code> 定义列表项目。</td></tr>
+                        <tr><td><strong>语义含义</strong></td><td>表示一组并列关系的项目，顺序不重要。</td></tr>
+                        <tr><td><strong>默认样式</strong></td><td>实心圆点（<code>disc</code>），自动缩进。</td></tr>
+                        <tr><td><strong>嵌套</strong></td><td>列表可以嵌套，子列表必须放在 <code>&lt;li&gt;</code> 内部。</td></tr>
+                        <tr><td><strong>常见场景</strong></td><td>导航菜单、商品列表、功能特点、目录索引。</td></tr>
+                        <tr><td><strong>CSS 定制</strong></td><td>常用属性包括 <code>list-style-type</code>、<code>list-style-image</code>、<code>list-style: none</code>、<code>padding</code>、<code>margin</code>。</td></tr>
+                        <tr><td><strong>水平列表</strong></td><td>使用 <code>display: flex</code> 或 <code>display: inline-block</code> 实现。</td></tr>
+                        <tr><td><strong>与 <code>&lt;ol&gt;</code> 的区别</strong></td><td>无序列表表示“顺序不重要”，有序列表表示“顺序有意义”。</td></tr>
+                    </table>
+                    <p><strong>核心认知</strong>：无序列表是 HTML 中最基础、最常用的列表类型。它不仅仅是一组带圆点的项目，更是表达“并列关系”的语义工具。正确使用无序列表，能让页面内容结构清晰、语义明确、可访问性更好。而通过 CSS 的灵活定制，你可以让列表在保持语义的同时，呈现出丰富多样的视觉风格。</p>
+
+                    <p><strong>思考与练习</strong></p>
+                    <p><strong>一、选择题</strong></p>
+                    <ol>
+                        <li>在 HTML 中，无序列表的容器标签是（　）<br>A. <code>&lt;ol&gt;</code> &nbsp;&nbsp; B. <code>&lt;ul&gt;</code> &nbsp;&nbsp; C. <code>&lt;li&gt;</code> &nbsp;&nbsp; D. <code>&lt;list&gt;</code></li>
+                        <li>以下哪个是 <code>&lt;ul&gt;</code> 标签合法的直接子元素？（　）<br>A. <code>&lt;p&gt;</code> &nbsp;&nbsp; B. <code>&lt;div&gt;</code> &nbsp;&nbsp; C. <code>&lt;li&gt;</code> &nbsp;&nbsp; D. <code>&lt;span&gt;</code></li>
+                        <li>无序列表默认的项目符号样式是（　）<br>A. 空心圆点 &nbsp;&nbsp; B. 实心圆点 &nbsp;&nbsp; C. 实心方块 &nbsp;&nbsp; D. 数字</li>
+                        <li>以下哪个 CSS 属性可以移除无序列表的项目符号？（　）<br>A. <code>list-style: none</code> &nbsp;&nbsp; B. <code>list-style-type: disc</code><br>C. <code>list-style-type: square</code> &nbsp;&nbsp; D. <code>list-style: circle</code></li>
+                        <li>关于嵌套列表，以下说法正确的是（　）<br>A. 嵌套的 <code>&lt;ul&gt;</code> 可以直接放在父级 <code>&lt;ul&gt;</code> 中<br>B. 嵌套的 <code>&lt;ul&gt;</code> 必须放在父级 <code>&lt;li&gt;</code> 内部<br>C. 列表最多只能嵌套两层<br>D. 嵌套列表不支持项目符号样式的变化</li>
+                    </ol>
+                    <p><strong>二、简答题</strong></p>
+                    <ol>
+                        <li>无序列表的语义是什么？在什么情况下应该使用无序列表？</li>
+                        <li>请写出一个包含三级嵌套的无序列表的 HTML 代码结构（不要求具体内容）。</li>
+                        <li>为什么在导航菜单中推荐使用 <code>&lt;ul&gt;</code> 和 <code>&lt;li&gt;</code> 来组织链接？</li>
+                    </ol>
+                    <p><strong>三、上机实践</strong></p>
+                    <ol>
+                        <li>创建一个 HTML 页面，在 <code>&lt;body&gt;</code> 中使用 <code>&lt;ul&gt;</code> 和 <code>&lt;li&gt;</code> 创建一个“购物清单”列表，包含至少 5 个项目。</li>
+                        <li>在页面中创建一个多级嵌套列表，用于展示“图书分类”（如“计算机科学”→“前端开发”→“HTML/CSS/JavaScript”），至少包含 3 层嵌套。</li>
+                        <li>为上述购物清单添加 CSS 样式：
+                            <ul>
+                                <li>移除默认的项目符号</li>
+                                <li>使用自定义的图标（可以是 Unicode 符号如 <code>✓</code> 或 <code>★</code>）作为项目符号</li>
+                                <li>为每个列表项添加浅色背景和圆角</li>
+                                <li>鼠标悬停时背景颜色变化</li>
+                            </ul>
+                        </li>
+                        <li>创建一个水平导航菜单，使用 <code>&lt;ul&gt;</code> 和 <code>&lt;li&gt;</code>，包含“首页”、“产品”、“关于”、“联系”四个链接，并使用 Flexbox 实现水平排列和间距控制。</li>
+                    </ol>
+                    <hr>
+                    <p><strong>下节预告</strong>：5.2节将学习 <strong>有序列表 —— <code>&lt;ol&gt;</code></strong>，了解如何创建带编号的列表、自定义编号样式，以及有序列表的常见应用场景。敬请期待！</p>
+                </div>
+            `
+        }, {
+            id: 'ch5-2',
+            title: '5.2 有序列表 —— <ol> 与 <li>',
+            icon: 'fa-list-ol',
+            content: `
+                <h1>5.2 有序列表 —— <code>&lt;ol&gt;</code> 与 <code>&lt;li&gt;</code></h1>
+                <div class="chapter-content">
+                    <p>在上一节中，我们学习了无序列表，它用于表示一组<strong>并列关系、顺序无关</strong>的项目。但在实际生活中，很多场景下的项目是有<strong>明确顺序或排名</strong>的——例如烹饪步骤、操作指南、比赛名次、排行榜等。</p>
+                    <p>HTML 为此提供了<strong>有序列表（Ordered List）</strong>，它使用 <strong>数字或字母</strong> 自动为每个项目编号，清晰地传达了项目的先后顺序。</p>
+
+                    <h2>5.2.1 有序列表的基本语法</h2>
+                    <p>有序列表（Ordered List）用于表示<strong>一组有顺序关系的项目</strong>，每个项目的顺序至关重要。它同样由两个标签配合使用：</p>
+                    <ul>
+                        <li><code>&lt;ol&gt;</code>（ordered list）：定义有序列表的容器。</li>
+                        <li><code>&lt;li&gt;</code>（list item）：定义列表中的每一个项目。</li>
+                    </ul>
+
+                    <p><strong>基本用法</strong></p>
+                    <pre><code>&lt;ol&gt;
+            &lt;li&gt;将水烧开&lt;/li&gt;
+            &lt;li&gt;放入面条&lt;/li&gt;
+            &lt;li&gt;煮 3 分钟后捞出&lt;/li&gt;
+            &lt;li&gt;加入调料拌匀&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+                    <p>在浏览器中，这段代码会显示为：</p>
+                    <pre><code>1. 将水烧开
+        2. 放入面条
+        3. 煮 3 分钟后捞出
+        4. 加入调料拌匀</code></pre>
+                    <p>浏览器会自动为每个 <code>&lt;li&gt;</code> 生成递增的数字编号，你不需要手动输入序号。</p>
+
+                    <p><strong>一个完整的 HTML 示例</strong></p>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+        &lt;html lang="zh-CN"&gt;
+        &lt;head&gt;
+            &lt;meta charset="utf-8"&gt;
+            &lt;title&gt;有序列表示例&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;h1&gt;番茄炒蛋制作步骤&lt;/h1&gt;
+            &lt;p&gt;以下是制作番茄炒蛋的详细步骤：&lt;/p&gt;
+            &lt;ol&gt;
+                &lt;li&gt;番茄洗净切块，鸡蛋打散备用&lt;/li&gt;
+                &lt;li&gt;热锅倒油，倒入蛋液炒至凝固，盛出&lt;/li&gt;
+                &lt;li&gt;锅中留底油，放入番茄翻炒出汁&lt;/li&gt;
+                &lt;li&gt;加入炒好的鸡蛋，调入盐和糖&lt;/li&gt;
+                &lt;li&gt;翻炒均匀，出锅装盘&lt;/li&gt;
+            &lt;/ol&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;</code></pre>
+
+                    <p><strong><code>&lt;ol&gt;</code> 只能包含 <code>&lt;li&gt;</code></strong></p>
+                    <p>与 <code>&lt;ul&gt;</code> 一样，<code>&lt;ol&gt;</code> 的<strong>直接子元素也只能是 <code>&lt;li&gt;</code></strong>。你可以在 <code>&lt;li&gt;</code> 内部放置各种内容（文本、图片、链接、甚至其他列表），但不能在 <code>&lt;ol&gt;</code> 中直接放置文本或其他块级元素。</p>
+                    <pre><code>&lt;!-- ❌ 错误：在 <ol> 中直接放文本 --&gt;
+        &lt;ol&gt;
+            制作步骤：
+            &lt;li&gt;第一步&lt;/li&gt;
+            &lt;li&gt;第二步&lt;/li&gt;
+        &lt;/ol&gt;
+
+        &lt;!-- ✅ 正确：<ol> 内只放 <li> --&gt;
+        &lt;ol&gt;
+            &lt;li&gt;第一步&lt;/li&gt;
+            &lt;li&gt;第二步&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+
+                    <h2>5.2.2 编号类型 —— <code>type</code> 属性（已废弃，推荐 CSS）</h2>
+                    <p>在 HTML4 及更早版本中，<code>&lt;ol&gt;</code> 标签的 <code>type</code> 属性用于控制编号的样式。但在 <strong>HTML5 中，<code>type</code> 属性已被废弃</strong>，不再推荐使用。现代开发中，应使用 CSS 的 <code>list-style-type</code> 属性来控制编号样式。</p>
+                    <p>不过，了解 <code>type</code> 属性的历史用法有助于你理解编号样式的分类。</p>
+
+                    <p><strong>历史用法（仅作了解，不要在新项目中使用）</strong></p>
+                    <table>
+                        <tr><th><code>type</code> 值</th><th>编号样式</th><th>示例</th></tr>
+                        <tr><td><code>1</code></td><td>十进制数字（默认）</td><td>1, 2, 3, 4...</td></tr>
+                        <tr><td><code>a</code></td><td>小写字母</td><td>a, b, c, d...</td></tr>
+                        <tr><td><code>A</code></td><td>大写字母</td><td>A, B, C, D...</td></tr>
+                        <tr><td><code>i</code></td><td>小写罗马数字</td><td>i, ii, iii, iv...</td></tr>
+                        <tr><td><code>I</code></td><td>大写罗马数字</td><td>I, II, III, IV...</td></tr>
+                    </table>
+                    <pre><code>&lt;!-- ❌ 废弃用法，不推荐 --&gt;
+        &lt;ol type="A"&gt;
+            &lt;li&gt;选项 A&lt;/li&gt;
+            &lt;li&gt;选项 B&lt;/li&gt;
+            &lt;li&gt;选项 C&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+
+                    <p><strong>现代 CSS 替代方案</strong></p>
+                    <p>在 CSS 中，使用 <code>list-style-type</code> 属性可以完全替代 <code>type</code> 属性，并且功能更强大。</p>
+                    <pre><code>ol {
+            list-style-type: decimal;      /* 数字（默认） */
+            list-style-type: lower-alpha;  /* 小写字母 a, b, c */
+            list-style-type: upper-alpha;  /* 大写字母 A, B, C */
+            list-style-type: lower-roman;  /* 小写罗马数字 i, ii, iii */
+            list-style-type: upper-roman;  /* 大写罗马数字 I, II, III */
+            list-style-type: none;         /* 无编号 */
+        }</code></pre>
+
+                    <p><strong>示例：</strong></p>
+                    <pre><code>&lt;style&gt;
+            .step-list {
+                list-style-type: decimal;
+            }
+            .alpha-list {
+                list-style-type: lower-alpha;
+            }
+            .roman-list {
+                list-style-type: upper-roman;
+            }
+        &lt;/style&gt;
+
+        &lt;ol class="step-list"&gt;
+            &lt;li&gt;第一步&lt;/li&gt;
+            &lt;li&gt;第二步&lt;/li&gt;
+        &lt;/ol&gt;
+
+        &lt;ol class="alpha-list"&gt;
+            &lt;li&gt;选项 A&lt;/li&gt;
+            &lt;li&gt;选项 B&lt;/li&gt;
+        &lt;/ol&gt;
+
+        &lt;ol class="roman-list"&gt;
+            &lt;li&gt;第一章&lt;/li&gt;
+            &lt;li&gt;第二章&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+
+                    <h2>5.2.3 起始编号 —— <code>start</code> 属性</h2>
+                    <p>有时你可能希望列表不从 1 开始编号，而是从某个特定的数字开始。这时可以使用 <code>start</code> 属性。</p>
+
+                    <p><strong>基本用法</strong></p>
+                    <p><code>start</code> 属性接受一个<strong>数字</strong>值，指定列表的起始编号。</p>
+                    <pre><code>&lt;ol start="5"&gt;
+            &lt;li&gt;第五项&lt;/li&gt;
+            &lt;li&gt;第六项&lt;/li&gt;
+            &lt;li&gt;第七项&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+                    <p>显示为：</p>
+                    <pre><code>5. 第五项
+        6. 第六项
+        7. 第七项</code></pre>
+
+                    <p><strong>与字母或罗马数字配合</strong></p>
+                    <p>即使你使用字母或罗马数字样式，<code>start</code> 属性接受的仍然是<strong>数字值</strong>（从 1 开始计数）。</p>
+                    <pre><code>&lt;style&gt;
+            .alpha-list {
+                list-style-type: lower-alpha;
+            }
+        &lt;/style&gt;
+
+        &lt;ol class="alpha-list" start="3"&gt;
+            &lt;li&gt;第三项（c）&lt;/li&gt;
+            &lt;li&gt;第四项（d）&lt;/li&gt;
+            &lt;li&gt;第五项（e）&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+                    <p>显示为：</p>
+                    <pre><code>c. 第三项（c）
+        d. 第四项（d）
+        e. 第五项（e）</code></pre>
+
+                    <h2>5.2.4 反向编号 —— <code>reversed</code> 属性（HTML5 新增）</h2>
+                    <p>HTML5 为 <code>&lt;ol&gt;</code> 新增了 <code>reversed</code> 属性，用于<strong>反向编号</strong>（从高到低）。这在排行榜、倒计时等场景中非常有用。</p>
+
+                    <p><strong>基本用法</strong></p>
+                    <pre><code>&lt;ol reversed&gt;
+            &lt;li&gt;第一名&lt;/li&gt;
+            &lt;li&gt;第二名&lt;/li&gt;
+            &lt;li&gt;第三名&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+                    <p>显示为：</p>
+                    <pre><code>3. 第一名
+        2. 第二名
+        1. 第三名</code></pre>
+                    <div class="tip-box">
+                        <p><strong>💡 注意</strong>：<code>reversed</code> 是一个<strong>布尔属性</strong>，只需要写属性名即可，不需要赋值。浏览器会自动计算列表项的数量，并从总数开始倒序编号。</p>
+                    </div>
+
+                    <p><strong>与 <code>start</code> 配合使用</strong></p>
+                    <p>你可以同时使用 <code>reversed</code> 和 <code>start</code> 来控制编号的起始值（但通常 <code>reversed</code> 会自动从列表项总数开始倒序，<code>start</code> 的作用会改变起始值）。</p>
+                    <pre><code>&lt;ol reversed start="10"&gt;
+            &lt;li&gt;项目 A&lt;/li&gt;
+            &lt;li&gt;项目 B&lt;/li&gt;
+            &lt;li&gt;项目 C&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+
+                    <h2>5.2.5 有序列表的嵌套</h2>
+                    <p>与无序列表一样，有序列表也可以<strong>相互嵌套</strong>，或在无序列表中嵌套有序列表（反之亦然），以表达更复杂的层级结构。</p>
+
+                    <p><strong>示例一：有序列表嵌套有序列表</strong></p>
+                    <pre><code>&lt;ol&gt;
+            &lt;li&gt;
+                第一阶段
+                &lt;ol&gt;
+                    &lt;li&gt;步骤一&lt;/li&gt;
+                    &lt;li&gt;步骤二&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                第二阶段
+                &lt;ol&gt;
+                    &lt;li&gt;步骤三&lt;/li&gt;
+                    &lt;li&gt;步骤四&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+                    <p>显示为：</p>
+                    <pre><code>1. 第一阶段
+            1. 步骤一
+            2. 步骤二
+        2. 第二阶段
+            1. 步骤三
+            2. 步骤四</code></pre>
+                    <p><strong>注意</strong>：嵌套的有序列表默认会<strong>重新从 1 开始编号</strong>，而不是延续父级列表的编号。</p>
+
+                    <p><strong>示例二：无序列表中嵌套有序列表（混合）</strong></p>
+                    <pre><code>&lt;ul&gt;
+            &lt;li&gt;
+                水果
+                &lt;ol&gt;
+                    &lt;li&gt;苹果（按甜度排名）&lt;/li&gt;
+                    &lt;li&gt;香蕉&lt;/li&gt;
+                    &lt;li&gt;橙子&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                蔬菜
+                &lt;ol&gt;
+                    &lt;li&gt;西兰花（按营养排名）&lt;/li&gt;
+                    &lt;li&gt;胡萝卜&lt;/li&gt;
+                    &lt;li&gt;菠菜&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+                    <p>这种混合使用的方式在实际项目中非常常见，可以根据内容的逻辑结构灵活选择。</p>
+
+                    <h2>5.2.6 有序列表的 CSS 样式定制</h2>
+                    <p>除了 <code>list-style-type</code>，你还可以通过 CSS 对有序列表进行更丰富、更精细的样式控制。</p>
+
+                    <p><strong>1. 修改编号样式</strong></p>
+                    <pre><code>/* 大写罗马数字 */
+        ol {
+            list-style-type: upper-roman;
+        }
+
+        /* 带前导零的编号（需要 counter 实现） */
+        /* 默认 list-style-type 不支持 "01, 02, 03"，需要使用 CSS 计数器（counter()） */</code></pre>
+
+                    <p><strong>2. 使用 CSS 计数器（<code>counter()</code>）实现高级编号</strong></p>
+                    <p>CSS 计数器允许你创建自定义的编号格式，比如 <code>"第1章"</code>、<code>"Step 01"</code> 等。</p>
+                    <pre><code>&lt;style&gt;
+            /* 重置计数器 */
+            .custom-list {
+                counter-reset: section;
+                list-style: none;
+                padding-left: 0;
+            }
+
+            .custom-list li {
+                counter-increment: section;
+                padding: 8px 0 8px 40px;
+                position: relative;
+            }
+
+            .custom-list li::before {
+                content: "第" counter(section) "章";
+                position: absolute;
+                left: 0;
+                color: #3498db;
+                font-weight: bold;
+            }
+        &lt;/style&gt;
+
+        &lt;ol class="custom-list"&gt;
+            &lt;li&gt;HTML 基础&lt;/li&gt;
+            &lt;li&gt;CSS 样式&lt;/li&gt;
+            &lt;li&gt;JavaScript 交互&lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+                    <p>显示为：</p>
+                    <pre><code>第1章 HTML 基础
+        第2章 CSS 样式
+        第3章 JavaScript 交互</code></pre>
+
+                    <p><strong>3. 控制编号位置（<code>list-style-position</code>）</strong></p>
+                    <table>
+                        <tr><th>值</th><th>效果</th><th>说明</th></tr>
+                        <tr><td><code>outside</code></td><td>编号在内容框外部（默认）</td><td>编号在列表项的左侧，内容对齐</td></tr>
+                        <tr><td><code>inside</code></td><td>编号在内容框内部</td><td>编号和内容在同一行，缩进较少</td></tr>
+                    </table>
+                    <pre><code>ol {
+            list-style-position: inside;
+        }</code></pre>
+
+                    <p><strong>4. 完整样式示例</strong></p>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+        &lt;html lang="zh-CN"&gt;
+        &lt;head&gt;
+            &lt;meta charset="utf-8"&gt;
+            &lt;title&gt;有序列表样式演示&lt;/title&gt;
+            &lt;style&gt;
+                /* 基础重置 */
+                ol {
+                    padding-left: 24px;
+                }
+
+                /* 样式一：大写字母，粗体 */
+                .style-alpha {
+                    list-style-type: upper-alpha;
+                    font-weight: 600;
+                }
+                .style-alpha li {
+                    margin-bottom: 6px;
+                }
+
+                /* 样式二：罗马数字，编号内置 */
+                .style-roman {
+                    list-style-type: lower-roman;
+                    list-style-position: inside;
+                    background: #f8f9fa;
+                    padding: 16px 24px;
+                    border-radius: 8px;
+                }
+                .style-roman li {
+                    padding: 4px 0;
+                    border-bottom: 1px solid #eee;
+                }
+                .style-roman li:last-child {
+                    border-bottom: none;
+                }
+
+                /* 样式三：自定义计数器（带图标） */
+                .style-custom {
+                    counter-reset: step;
+                    list-style: none;
+                    padding: 0;
+                }
+                .style-custom li {
+                    counter-increment: step;
+                    padding: 12px 16px 12px 56px;
+                    margin-bottom: 8px;
+                    background: #f0f7ff;
+                    border-radius: 8px;
+                    position: relative;
+                    transition: background 0.2s;
+                }
+                .style-custom li:hover {
+                    background: #dbeafe;
+                }
+                .style-custom li::before {
+                    content: counter(step);
+                    position: absolute;
+                    left: 12px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 30px;
+                    height: 30px;
+                    background: #3498db;
+                    color: #fff;
+                    font-weight: bold;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                }
+            &lt;/style&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;h1&gt;有序列表样式&lt;/h1&gt;
+
+            &lt;h2&gt;样式一：大写字母&lt;/h2&gt;
+            &lt;ol class="style-alpha"&gt;
+                &lt;li&gt;选项 A&lt;/li&gt;
+                &lt;li&gt;选项 B&lt;/li&gt;
+                &lt;li&gt;选项 C&lt;/li&gt;
+            &lt;/ol&gt;
+
+            &lt;h2&gt;样式二：小写罗马数字 + 内置编号&lt;/h2&gt;
+            &lt;ol class="style-roman"&gt;
+                &lt;li&gt;第一章：基础&lt;/li&gt;
+                &lt;li&gt;第二章：进阶&lt;/li&gt;
+                &lt;li&gt;第三章：实战&lt;/li&gt;
+            &lt;/ol&gt;
+
+            &lt;h2&gt;样式三：自定义圆形数字&lt;/h2&gt;
+            &lt;ol class="style-custom"&gt;
+                &lt;li&gt;打开编辑器&lt;/li&gt;
+                &lt;li&gt;创建 HTML 文件&lt;/li&gt;
+                &lt;li&gt;编写代码&lt;/li&gt;
+                &lt;li&gt;保存并预览&lt;/li&gt;
+            &lt;/ol&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;</code></pre>
+
+                    <h2>5.2.7 <code>&lt;ol&gt;</code> 与 <code>&lt;ul&gt;</code> 的选择指南</h2>
+                    <p>在实际开发中，选择使用有序列表还是无序列表，取决于内容的<strong>语义</strong>。</p>
+                    <table>
+                        <tr><th>场景</th><th>使用的列表类型</th><th>理由</th></tr>
+                        <tr><td>菜谱步骤</td><td><code>&lt;ol&gt;</code></td><td>步骤必须按顺序执行，顺序改变会影响结果</td></tr>
+                        <tr><td>比赛名次</td><td><code>&lt;ol&gt;</code></td><td>名次有先后之分</td></tr>
+                        <tr><td>操作指南</td><td><code>&lt;ol&gt;</code></td><td>需要按照编号顺序操作</td></tr>
+                        <tr><td>购物清单</td><td><code>&lt;ul&gt;</code></td><td>项目之间没有顺序要求</td></tr>
+                        <tr><td>导航菜单</td><td><code>&lt;ul&gt;</code></td><td>链接之间是并列关系</td></tr>
+                        <tr><td>产品特点</td><td><code>&lt;ul&gt;</code></td><td>特点之间是并列描述</td></tr>
+                    </table>
+                    <p><strong>核心原则</strong>：如果项目的<strong>顺序改变会影响意义或结果</strong>，使用 <code>&lt;ol&gt;</code>；如果顺序改变不影响意义，使用 <code>&lt;ul&gt;</code>。</p>
+
+                    <h2>5.2.8 常见错误与最佳实践</h2>
+                    <p><strong>常见错误</strong></p>
+                    <table>
+                        <tr><th>错误</th><th>问题</th><th>正确做法</th></tr>
+                        <tr><td><strong>手动输入编号</strong></td><td>在 <code>&lt;li&gt;</code> 中手动写“1.”、“2.”，而不是利用浏览器自动编号</td><td>让浏览器自动生成编号，只需写内容</td></tr>
+                        <tr><td><strong>在 <code>&lt;ol&gt;</code> 中直接放置非 <code>&lt;li&gt;</code> 元素</strong></td><td>违反 HTML 语法规范</td><td><code>&lt;ol&gt;</code> 的直接子元素只能是 <code>&lt;li&gt;</code></td></tr>
+                        <tr><td><strong>使用已废弃的 <code>type</code> 属性</strong></td><td>HTML5 中 <code>type</code> 已废弃，不符合标准</td><td>使用 CSS <code>list-style-type</code> 替代</td></tr>
+                        <tr><td><strong>滥用 <code>reversed</code></strong></td><td>在不该倒序的场景中使用</td><td>仅在确实需要倒序时使用（如排行榜从高到低）</td></tr>
+                        <tr><td><strong>忘记嵌套列表的编号会重置</strong></td><td>期望嵌套列表延续父级编号</td><td>嵌套列表默认从 1 开始，如需延续需使用 CSS 计数器</td></tr>
+                        <tr><td><strong>使用有序列表表示“不重要但想编号”的内容</strong></td><td>语义错误</td><td>只有当顺序确实重要时才使用 <code>&lt;ol&gt;</code></td></tr>
+                    </table>
+
+                    <p><strong>最佳实践总结</strong></p>
+                    <ol>
+                        <li><strong>只在顺序确实重要的场景使用 <code>&lt;ol&gt;</code></strong>，否则使用 <code>&lt;ul&gt;</code>。</li>
+                        <li><strong>不要手动输入编号</strong>，让浏览器自动生成，便于维护和修改。</li>
+                        <li><strong>使用 CSS <code>list-style-type</code> 控制编号样式</strong>，不要使用已废弃的 <code>type</code> 属性。</li>
+                        <li><strong>合理使用 <code>start</code> 属性</strong>，在需要从特定数字开始时使用。</li>
+                        <li><strong>合理使用 <code>reversed</code> 属性</strong>，在需要倒序排列时使用（如榜单）。</li>
+                        <li><strong>嵌套列表时，子列表必须放在 <code>&lt;li&gt;</code> 内部</strong>，且默认重新编号。</li>
+                        <li><strong>善用 CSS 计数器实现自定义编号格式</strong>，如“第1章”、“步骤 01”等。</li>
+                        <li><strong>为列表项之间的间距设置合适的 <code>margin</code></strong>，提升可读性。</li>
+                    </ol>
+
+                    <p><strong>知识小结</strong></p>
+                    <p>本节我们学习了有序列表 <code>&lt;ol&gt;</code> 和列表项 <code>&lt;li&gt;</code>：</p>
+                    <table>
+                        <tr><th>要点</th><th>说明</th></tr>
+                        <tr><td><strong>标签组合</strong></td><td><code>&lt;ol&gt;</code> 定义列表容器，<code>&lt;li&gt;</code> 定义列表项目。</td></tr>
+                        <tr><td><strong>语义含义</strong></td><td>表示一组有顺序关系的项目，顺序改变会影响意义。</td></tr>
+                        <tr><td><strong>默认样式</strong></td><td>十进制数字（1, 2, 3...），自动缩进。</td></tr>
+                        <tr><td><strong>编号样式（CSS）</strong></td><td><code>list-style-type: decimal</code>（数字）、<code>lower-alpha</code>（小写字母）、<code>upper-roman</code>（大写罗马数字）等。</td></tr>
+                        <tr><td><strong>起始编号</strong></td><td>使用 <code>start</code> 属性指定起始数字。</td></tr>
+                        <tr><td><strong>反向编号</strong></td><td>使用 <code>reversed</code> 属性实现倒序排列（HTML5 新增）。</td></tr>
+                        <tr><td><strong>嵌套</strong></td><td>列表可以嵌套，子列表必须放在 <code>&lt;li&gt;</code> 内部，默认重新编号。</td></tr>
+                        <tr><td><strong>高级定制</strong></td><td>使用 CSS 计数器（<code>counter()</code>）实现自定义编号格式。</td></tr>
+                        <tr><td><strong>与 <code>&lt;ul&gt;</code> 的区别</strong></td><td>有序列表表示“顺序有意义”，无序列表表示“顺序不重要”。</td></tr>
+                    </table>
+                    <p><strong>核心认知</strong>：有序列表是表达“步骤”、“排名”、“时间线”等顺序关系的语义工具。它让浏览器自动处理编号，既减轻了开发者的工作量，又保证了内容的语义清晰。正确区分何时使用 <code>&lt;ol&gt;</code> 和 <code>&lt;ul&gt;</code>，是编写高质量 HTML 的基本功之一。</p>
+
+                    <p><strong>思考与练习</strong></p>
+                    <p><strong>一、选择题</strong></p>
+                    <ol>
+                        <li>在 HTML 中，有序列表的容器标签是（　）<br>A. <code>&lt;ul&gt;</code> &nbsp;&nbsp; B. <code>&lt;ol&gt;</code> &nbsp;&nbsp; C. <code>&lt;li&gt;</code> &nbsp;&nbsp; D. <code>&lt;list&gt;</code></li>
+                        <li>以下哪个 CSS 属性可以控制有序列表的编号样式为“大写字母”？（　）<br>A. <code>list-style-type: upper-alpha</code> &nbsp;&nbsp; B. <code>list-style-type: decimal</code><br>C. <code>list-style-type: lower-roman</code> &nbsp;&nbsp; D. <code>list-style-type: none</code></li>
+                        <li>要使有序列表从数字 5 开始编号，应该使用哪个属性？（　）<br>A. <code>start="5"</code> &nbsp;&nbsp; B. <code>begin="5"</code> &nbsp;&nbsp; C. <code>value="5"</code> &nbsp;&nbsp; D. <code>type="5"</code></li>
+                        <li>以下哪个是 HTML5 新增的、用于实现反向编号的属性？（　）<br>A. <code>reversed</code> &nbsp;&nbsp; B. <code>reverse</code> &nbsp;&nbsp; C. <code>backward</code> &nbsp;&nbsp; D. <code>desc</code></li>
+                        <li>关于嵌套列表，以下说法正确的是（　）<br>A. 嵌套的有序列表会延续父级列表的编号<br>B. 嵌套的有序列表默认从 1 开始重新编号<br>C. 嵌套的列表不能使用不同的编号样式<br>D. 嵌套的列表必须使用相同的标签类型</li>
+                    </ol>
+                    <p><strong>二、简答题</strong></p>
+                    <ol>
+                        <li>有序列表和无序列表的核心语义区别是什么？请举例说明。</li>
+                        <li>为什么不应该在 <code>&lt;li&gt;</code> 中手动输入编号（如“1.”、“2.”）？</li>
+                        <li>请说出三种 CSS <code>list-style-type</code> 的取值，并说明对应的编号样式。</li>
+                    </ol>
+                    <p><strong>三、上机实践</strong></p>
+                    <ol>
+                        <li>创建一个 HTML 页面，使用 <code>&lt;ol&gt;</code> 和 <code>&lt;li&gt;</code> 编写“番茄炒蛋”的详细制作步骤，至少包含 5 个步骤。</li>
+                        <li>在页面中创建一个从 10 开始编号的有序列表（使用 <code>start</code> 属性），内容为“倒计时项目”，包含 5 个项目。</li>
+                        <li>创建一个“排行榜”列表，使用 <code>reversed</code> 属性实现从第一名到第五名的倒序显示（即显示为“5. 第一名”到“1. 第五名”）。</li>
+                        <li>为上述“番茄炒蛋”步骤列表添加 CSS 样式：
+                            <ul>
+                                <li>使用小写罗马数字编号（<code>lower-roman</code>）</li>
+                                <li>每个列表项添加下边距</li>
+                                <li>将编号位置设置为 <code>inside</code></li>
+                            </ul>
+                        </li>
+                        <li>（选做）使用 CSS 计数器创建一个自定义有序列表，编号格式为 “Step 1”、“Step 2”、“Step 3”……并为每个步骤添加左侧的彩色边框。</li>
+                    </ol>
+                    <hr>
+                    <p><strong>下节预告</strong>：5.3节将学习 <strong>自定义列表 —— <code>&lt;dl&gt;</code>、<code>&lt;dt&gt;</code>、<code>&lt;dd&gt;</code></strong>，了解如何创建术语定义列表，适用于词汇表、问答、键值对等场景。敬请期待！</p>
+                </div>
+            `
+        }, {
+            id: 'ch5-3',
+            title: '5.3 自定义列表 —— <dl>、<dt>、<dd>',
+            icon: 'fa-list',
+            content: `
+                <h1>5.3 自定义列表 —— <code>&lt;dl&gt;</code>、<code>&lt;dt&gt;</code>、<code>&lt;dd&gt;</code></h1>
+                <div class="chapter-content">
+                    <p>在前两节中，我们学习了无序列表（<code>&lt;ul&gt;</code>）和有序列表（<code>&lt;ol&gt;</code>），它们都用于表示<strong>一组项目</strong>的集合。但在实际内容中，我们经常遇到另一种场景——<strong>术语与定义的配对关系</strong>。</p>
+                    <p>例如：</p>
+                    <ul>
+                        <li>词汇表：<code>"HTML"</code> → <code>"超文本标记语言"</code></li>
+                        <li>问答：<code>"什么是CSS？"</code> → <code>"层叠样式表"</code></li>
+                        <li>属性描述：<code>"颜色"</code> → <code>"红色"</code>、<code>"大小"</code> → <code>"16px"</code></li>
+                    </ul>
+                    <p>这种<strong>“名称-值”</strong>或<strong>“术语-描述”</strong>的配对关系，无法用 <code>&lt;ul&gt;</code> 或 <code>&lt;ol&gt;</code> 来恰当地表达——因为它们表达的是“一组项目”，而非“配对关系”。</p>
+                    <p>为此，HTML 专门提供了 <strong>自定义列表（Description List）</strong>，也称为 <strong>定义列表</strong>。</p>
+
+                    <h2>5.3.1 自定义列表的基本语法</h2>
+                    <p>自定义列表由三个标签配合使用：</p>
+                    <table>
+                        <tr><th>标签</th><th>全称</th><th>作用</th></tr>
+                        <tr><td><code>&lt;dl&gt;</code></td><td>Description List</td><td>自定义列表的容器</td></tr>
+                        <tr><td><code>&lt;dt&gt;</code></td><td>Description Term</td><td>定义术语（术语/名称/问题）</td></tr>
+                        <tr><td><code>&lt;dd&gt;</code></td><td>Description Definition</td><td>定义描述（解释/答案/值）</td></tr>
+                    </table>
+
+                    <p><strong>基本用法</strong></p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;HTML&lt;/dt&gt;
+            &lt;dd&gt;超文本标记语言，用于构建网页结构。&lt;/dd&gt;
+
+            &lt;dt&gt;CSS&lt;/dt&gt;
+            &lt;dd&gt;层叠样式表，用于控制网页的视觉样式。&lt;/dd&gt;
+
+            &lt;dt&gt;JavaScript&lt;/dt&gt;
+            &lt;dd&gt;一种脚本编程语言，用于为网页添加交互功能。&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+                    <p>在浏览器中显示为：</p>
+                    <pre><code>HTML
+            超文本标记语言，用于构建网页结构。
+        CSS
+            层叠样式表，用于控制网页的视觉样式。
+        JavaScript
+            一种脚本编程语言，用于为网页添加交互功能。</code></pre>
+                    <p>浏览器默认将 <code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code> 分行显示，并且 <code>&lt;dd&gt;</code> 会自动缩进（通常左右各缩进约 40px），从而在视觉上清晰地表达“术语-描述”的配对关系。</p>
+
+                    <p><strong>一个完整的 HTML 示例</strong></p>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+        &lt;html lang="zh-CN"&gt;
+        &lt;head&gt;
+            &lt;meta charset="utf-8"&gt;
+            &lt;title&gt;自定义列表示例&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;h1&gt;Web 开发术语&lt;/h1&gt;
+            &lt;dl&gt;
+                &lt;dt&gt;HTML&lt;/dt&gt;
+                &lt;dd&gt;超文本标记语言（HyperText Markup Language），用于创建网页结构和内容。&lt;/dd&gt;
+
+                &lt;dt&gt;CSS&lt;/dt&gt;
+                &lt;dd&gt;层叠样式表（Cascading Style Sheets），用于控制网页的布局和视觉样式。&lt;/dd&gt;
+
+                &lt;dt&gt;JavaScript&lt;/dt&gt;
+                &lt;dd&gt;一种高级编程语言，用于为网页添加交互性和动态功能。&lt;/dd&gt;
+            &lt;/dl&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;</code></pre>
+
+                    <h2>5.3.2 自定义列表的语义与特点</h2>
+                    <p><strong>语义含义</strong></p>
+                    <p>自定义列表的语义是：<strong>“这是一组术语及其对应描述的配对列表”</strong>。它告诉浏览器和搜索引擎：</p>
+                    <ul>
+                        <li><code>&lt;dt&gt;</code> 中的内容是“术语”或“名称”。</li>
+                        <li><code>&lt;dd&gt;</code> 中的内容是“描述”或“定义”。</li>
+                        <li><code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code> 成对出现，表达“是什么”和“为什么/怎么样”的关系。</li>
+                    </ul>
+
+                    <p><strong>与 <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code> 的本质区别</strong></p>
+                    <table>
+                        <tr><th>对比维度</th><th>自定义列表 <code>&lt;dl&gt;</code></th><th>无序/有序列表 <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code></th></tr>
+                        <tr><td><strong>结构关系</strong></td><td>术语（名称）与描述（值）的配对</td><td>一组并列的项目</td></tr>
+                        <tr><td><strong>项目类型</strong></td><td>每个项目由“术语+描述”组成</td><td>每个项目是单一内容</td></tr>
+                        <tr><td><strong>典型场景</strong></td><td>词汇表、问答、属性描述</td><td>菜单、清单、步骤</td></tr>
+                        <tr><td><strong>子元素</strong></td><td><code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code> 是直接子元素</td><td><code>&lt;li&gt;</code> 是唯一的直接子元素</td></tr>
+                    </table>
+                    <div class="tip-box">
+                        <p><strong>💡 关键概念</strong>：自定义列表不是“带缩进的普通列表”，而是表达“配对关系”的语义工具。不要仅仅因为想要“缩进效果”而使用 <code>&lt;dl&gt;</code>。</p>
+                    </div>
+
+                    <h2>5.3.3 自定义列表的适用场景</h2>
+                    <p>自定义列表适用于任何需要“术语-描述”或“名称-值”配对的场景。</p>
+
+                    <p><strong>1. 词汇表 / 术语表</strong></p>
+                    <p>这是 <code>&lt;dl&gt;</code> 最经典的应用场景。</p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;API&lt;/dt&gt;
+            &lt;dd&gt;应用程序编程接口（Application Programming Interface），定义了软件组件之间的交互方式。&lt;/dd&gt;
+
+            &lt;dt&gt;DOM&lt;/dt&gt;
+            &lt;dd&gt;文档对象模型（Document Object Model），是 HTML 文档的编程接口。&lt;/dd&gt;
+
+            &lt;dt&gt;HTTP&lt;/dt&gt;
+            &lt;dd&gt;超文本传输协议（HyperText Transfer Protocol），用于在 Web 上传输数据。&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <p><strong>2. 问答（FAQ）</strong></p>
+                    <p>在常见问题解答中，问题和答案天然是“术语-描述”的关系。</p>
+                    <pre><code>&lt;h2&gt;常见问题&lt;/h2&gt;
+        &lt;dl&gt;
+            &lt;dt&gt;如何注册账号？&lt;/dt&gt;
+            &lt;dd&gt;点击页面右上角的“注册”按钮，填写邮箱和密码即可完成注册。&lt;/dd&gt;
+
+            &lt;dt&gt;密码忘记了怎么办？&lt;/dt&gt;
+            &lt;dd&gt;在登录页面点击“忘记密码”，系统会发送重置链接到您的注册邮箱。&lt;/dd&gt;
+
+            &lt;dt&gt;如何联系客服？&lt;/dt&gt;
+            &lt;dd&gt;您可以通过在线客服、电话 400-888-9999 或发送邮件至 support@example.com 联系我们。&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <p><strong>3. 属性 / 键值对展示</strong></p>
+                    <p>展示产品参数、人物属性、配置信息等。</p>
+                    <pre><code>&lt;h2&gt;产品规格&lt;/h2&gt;
+        &lt;dl&gt;
+            &lt;dt&gt;屏幕尺寸&lt;/dt&gt;
+            &lt;dd&gt;6.7 英寸 OLED 全面屏&lt;/dd&gt;
+
+            &lt;dt&gt;处理器&lt;/dt&gt;
+            &lt;dd&gt;A17 Pro 芯片&lt;/dd&gt;
+
+            &lt;dt&gt;存储容量&lt;/dt&gt;
+            &lt;dd&gt;256GB / 512GB / 1TB&lt;/dd&gt;
+
+            &lt;dt&gt;电池续航&lt;/dt&gt;
+            &lt;dd&gt;最长 29 小时视频播放&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <p><strong>4. 元数据 / 信息摘要</strong></p>
+                    <p>在文章或页面的头部展示作者、日期、分类等元信息。</p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;作者&lt;/dt&gt;
+            &lt;dd&gt;张三&lt;/dd&gt;
+
+            &lt;dt&gt;发布时间&lt;/dt&gt;
+            &lt;dd&gt;2026年7月12日&lt;/dd&gt;
+
+            &lt;dt&gt;分类&lt;/dt&gt;
+            &lt;dd&gt;前端开发&lt;/dd&gt;
+
+            &lt;dt&gt;标签&lt;/dt&gt;
+            &lt;dd&gt;HTML, CSS, JavaScript&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <p><strong>5. 对话记录</strong></p>
+                    <p>在某些场景下，对话中的“说话人-发言内容”也可以用 <code>&lt;dl&gt;</code> 表示。</p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;小明&lt;/dt&gt;
+            &lt;dd&gt;你好，请问这本书有电子版吗？&lt;/dd&gt;
+
+            &lt;dt&gt;客服&lt;/dt&gt;
+            &lt;dd&gt;您好，本书目前仅提供纸质版。&lt;/dd&gt;
+
+            &lt;dt&gt;小明&lt;/dt&gt;
+            &lt;dd&gt;好的，谢谢！&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <h2>5.3.4 多术语与多描述的灵活组合</h2>
+                    <p>在实际使用中，<code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code> 并不是严格的一一对应关系。HTML 允许：</p>
+                    <ul>
+                        <li><strong>一个 <code>&lt;dt&gt;</code> 对应多个 <code>&lt;dd&gt;</code></strong>（一个术语有多个描述）</li>
+                        <li><strong>多个 <code>&lt;dt&gt;</code> 对应一个 <code>&lt;dd&gt;</code></strong>（多个术语共享一个描述）</li>
+                    </ul>
+
+                    <p><strong>一个 <code>&lt;dt&gt;</code> + 多个 <code>&lt;dd&gt;</code></strong></p>
+                    <p>当一个术语有多个定义或解释时，可以使用多个 <code>&lt;dd&gt;</code>。</p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;HTML&lt;/dt&gt;
+            &lt;dd&gt;超文本标记语言（HyperText Markup Language）。&lt;/dd&gt;
+            &lt;dd&gt;用于创建网页结构的标准标记语言。&lt;/dd&gt;
+            &lt;dd&gt;由 W3C 维护的 Web 核心技术之一。&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+                    <p>显示为：</p>
+                    <pre><code>HTML
+            超文本标记语言（HyperText Markup Language）。
+            用于创建网页结构的标准标记语言。
+            由 W3C 维护的 Web 核心技术之一。</code></pre>
+
+                    <p><strong>多个 <code>&lt;dt&gt;</code> + 一个 <code>&lt;dd&gt;</code></strong></p>
+                    <p>当多个术语共享同一个描述时，可以写多个 <code>&lt;dt&gt;</code> 后跟一个 <code>&lt;dd&gt;</code>。</p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;HTML5&lt;/dt&gt;
+            &lt;dt&gt;HTML 5&lt;/dt&gt;
+            &lt;dd&gt;HTML 的第五个主要版本，于 2014 年正式发布。&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+                    <p>显示为：</p>
+                    <pre><code>HTML5
+        HTML 5
+            HTML 的第五个主要版本，于 2014 年正式发布。</code></pre>
+
+                    <p><strong>混合使用</strong></p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;前端开发&lt;/dt&gt;
+            &lt;dt&gt;Front-end Development&lt;/dt&gt;
+            &lt;dd&gt;负责构建用户可见的界面和交互体验。&lt;/dd&gt;
+            &lt;dd&gt;主要技术包括 HTML、CSS 和 JavaScript。&lt;/dd&gt;
+
+            &lt;dt&gt;后端开发&lt;/dt&gt;
+            &lt;dt&gt;Back-end Development&lt;/dt&gt;
+            &lt;dd&gt;负责服务器端的业务逻辑和数据处理。&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <h2>5.3.5 自定义列表的嵌套</h2>
+                    <p>与 <code>&lt;ul&gt;</code> 和 <code>&lt;ol&gt;</code> 一样，<code>&lt;dl&gt;</code> 也可以相互嵌套。但嵌套的方式有所不同——你需要在 <code>&lt;dd&gt;</code> 内部嵌套新的 <code>&lt;dl&gt;</code>，因为 <code>&lt;dd&gt;</code> 是允许包含块级元素的容器。</p>
+
+                    <p><strong>示例：嵌套的词汇表</strong></p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;Web 开发&lt;/dt&gt;
+            &lt;dd&gt;
+                构建 Web 应用的技术集合。
+                &lt;dl&gt;
+                    &lt;dt&gt;前端&lt;/dt&gt;
+                    &lt;dd&gt;用户直接交互的部分，包括 HTML、CSS、JavaScript。&lt;/dd&gt;
+                    &lt;dt&gt;后端&lt;/dt&gt;
+                    &lt;dd&gt;服务器端逻辑，包括数据库、API、身份验证等。&lt;/dd&gt;
+                &lt;/dl&gt;
+            &lt;/dd&gt;
+
+            &lt;dt&gt;移动开发&lt;/dt&gt;
+            &lt;dd&gt;
+                构建移动应用的技术集合。
+                &lt;dl&gt;
+                    &lt;dt&gt;Android&lt;/dt&gt;
+                    &lt;dd&gt;基于 Java/Kotlin 的移动开发平台。&lt;/dd&gt;
+                    &lt;dt&gt;iOS&lt;/dt&gt;
+                    &lt;dd&gt;基于 Swift/Objective-C 的移动开发平台。&lt;/dd&gt;
+                &lt;/dl&gt;
+            &lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+                    <div class="tip-box">
+                        <p><strong>⚠️ 注意</strong>：嵌套的 <code>&lt;dl&gt;</code> 必须放在 <code>&lt;dd&gt;</code> 内部，不能直接放在 <code>&lt;dl&gt;</code> 或 <code>&lt;dt&gt;</code> 中。</p>
+                    </div>
+
+                    <h2>5.3.6 自定义列表的 CSS 样式定制</h2>
+                    <p>自定义列表的默认样式在不同浏览器中有所差异，但通常 <code>&lt;dd&gt;</code> 会带有缩进。通过 CSS，你可以完全自定义其外观。</p>
+
+                    <p><strong>1. 移除默认缩进</strong></p>
+                    <pre><code>dl {
+            margin: 0;
+        }
+
+        dd {
+            margin-left: 0;
+        }</code></pre>
+
+                    <p><strong>2. 水平布局：术语与描述在同一行</strong></p>
+                    <p>有时你希望 <code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code> 在同一行显示（如表格样式的键值对）。</p>
+                    <pre><code>.horizontal-dl {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 0;
+        }
+
+        .horizontal-dl dt {
+            flex: 0 0 100px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .horizontal-dl dd {
+            flex: 1;
+            margin-left: 0;
+            color: #555;
+        }</code></pre>
+                    <pre><code>&lt;dl class="horizontal-dl"&gt;
+            &lt;dt&gt;姓名&lt;/dt&gt;
+            &lt;dd&gt;张三&lt;/dd&gt;
+            &lt;dt&gt;年龄&lt;/dt&gt;
+            &lt;dd&gt;28 岁&lt;/dd&gt;
+            &lt;dt&gt;职业&lt;/dt&gt;
+            &lt;dd&gt;Web 开发工程师&lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <p><strong>3. 添加分隔线</strong></p>
+                    <p>在术语列表中添加底部分隔线，提升可读性。</p>
+                    <pre><code>.dl-divider dt {
+            font-weight: bold;
+            color: #2c3e50;
+            padding-top: 12px;
+        }
+
+        .dl-divider dd {
+            margin-left: 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        .dl-divider dd:last-of-type {
+            border-bottom: none;
+        }</code></pre>
+
+                    <p><strong>4. 术语加粗、描述缩进</strong></p>
+                    <pre><code>.dl-style dt {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 1.05em;
+            margin-top: 8px;
+        }
+
+        .dl-style dd {
+            margin-left: 24px;
+            color: #555;
+            padding: 4px 0 8px 0;
+        }</code></pre>
+
+                    <p><strong>5. 完整综合示例</strong></p>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+        &lt;html lang="zh-CN"&gt;
+        &lt;head&gt;
+            &lt;meta charset="utf-8"&gt;
+            &lt;title&gt;自定义列表样式演示&lt;/title&gt;
+            &lt;style&gt;
+                /* 全局样式 */
+                body {
+                    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+                    max-width: 720px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    line-height: 1.8;
+                }
+
+                /* 样式一：经典术语定义 */
+                .dl-classic dt {
+                    font-weight: 600;
+                    color: #2c3e50;
+                    margin-top: 12px;
+                    font-size: 1.05em;
+                }
+
+                .dl-classic dd {
+                    margin-left: 24px;
+                    color: #555;
+                    padding: 2px 0 8px 0;
+                    border-bottom: 1px solid #f0f0f0;
+                }
+
+                .dl-classic dd:last-of-type {
+                    border-bottom: none;
+                }
+
+                /* 样式二：水平键值对 */
+                .dl-horizontal {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 4px 0;
+                    background: #f8f9fa;
+                    padding: 16px 20px;
+                    border-radius: 8px;
+                }
+
+                .dl-horizontal dt {
+                    flex: 0 0 80px;
+                    font-weight: 600;
+                    color: #2c3e50;
+                }
+
+                .dl-horizontal dd {
+                    flex: 1;
+                    margin-left: 0;
+                    color: #555;
+                }
+
+                /* 样式三：带编号的问答风格 */
+                .dl-faq {
+                    counter-reset: question;
+                }
+
+                .dl-faq dt {
+                    counter-increment: question;
+                    font-weight: 600;
+                    color: #1a1a1a;
+                    padding: 12px 16px 4px 48px;
+                    position: relative;
+                    background: #f0f7ff;
+                    border-radius: 8px 8px 0 0;
+                }
+
+                .dl-faq dt::before {
+                    content: "Q" counter(question);
+                    position: absolute;
+                    left: 12px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-weight: 700;
+                    color: #3498db;
+                    font-size: 14px;
+                }
+
+                .dl-faq dd {
+                    margin-left: 0;
+                    padding: 4px 16px 16px 48px;
+                    background: #f0f7ff;
+                    border-radius: 0 0 8px 8px;
+                    color: #555;
+                    margin-bottom: 12px;
+                }
+
+                .dl-faq dd::before {
+                    content: "A";
+                    color: #2ecc71;
+                    font-weight: 700;
+                    margin-right: 8px;
+                }
+            &lt;/style&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;h1&gt;自定义列表样式&lt;/h1&gt;
+
+            &lt;h2&gt;样式一：经典术语定义&lt;/h2&gt;
+            &lt;dl class="dl-classic"&gt;
+                &lt;dt&gt;HTML&lt;/dt&gt;
+                &lt;dd&gt;超文本标记语言，用于构建网页结构。&lt;/dd&gt;
+                &lt;dt&gt;CSS&lt;/dt&gt;
+                &lt;dd&gt;层叠样式表，用于控制网页的视觉样式。&lt;/dd&gt;
+                &lt;dt&gt;JavaScript&lt;/dt&gt;
+                &lt;dd&gt;脚本编程语言，用于为网页添加交互功能。&lt;/dd&gt;
+            &lt;/dl&gt;
+
+            &lt;h2&gt;样式二：水平键值对&lt;/h2&gt;
+            &lt;dl class="dl-horizontal"&gt;
+                &lt;dt&gt;姓名&lt;/dt&gt;
+                &lt;dd&gt;张三&lt;/dd&gt;
+                &lt;dt&gt;年龄&lt;/dt&gt;
+                &lt;dd&gt;28 岁&lt;/dd&gt;
+                &lt;dt&gt;职业&lt;/dt&gt;
+                &lt;dd&gt;Web 开发工程师&lt;/dd&gt;
+                &lt;dt&gt;邮箱&lt;/dt&gt;
+                &lt;dd&gt;zhangsan@example.com&lt;/dd&gt;
+            &lt;/dl&gt;
+
+            &lt;h2&gt;样式三：问答风格（FAQ）&lt;/h2&gt;
+            &lt;dl class="dl-faq"&gt;
+                &lt;dt&gt;如何创建 HTML 文件？&lt;/dt&gt;
+                &lt;dd&gt;使用任何文本编辑器（如 VS Code）创建以 <code>.html</code> 为扩展名的文件即可。&lt;/dd&gt;
+                &lt;dt&gt;什么是 CSS 选择器？&lt;/dt&gt;
+                &lt;dd&gt;CSS 选择器用于选择需要应用样式的 HTML 元素。&lt;/dd&gt;
+                &lt;dt&gt;JavaScript 能做什么？&lt;/dt&gt;
+                &lt;dd&gt;JavaScript 可以实现页面交互、数据验证、动画效果、与服务器通信等功能。&lt;/dd&gt;
+            &lt;/dl&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;</code></pre>
+
+                    <h2>5.3.7 可访问性注意事项</h2>
+                    <p>自定义列表在可访问性方面有一些独特的考虑：</p>
+                    <ol>
+                        <li><strong>屏幕阅读器支持</strong>：大多数屏幕阅读器会以不同的方式朗读 <code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code>，帮助用户理解术语和描述的关系。但具体行为因屏幕阅读器而异。</li>
+                        <li><strong>语义清晰性</strong>：使用 <code>&lt;dl&gt;</code>、<code>&lt;dt&gt;</code>、<code>&lt;dd&gt;</code> 比使用 <code>&lt;ul&gt;</code> + 加粗文字 + 缩进更语义化，辅助技术能更好地理解内容结构。</li>
+                        <li><strong>多个 <code>&lt;dd&gt;</code> 的处理</strong>：当一个 <code>&lt;dt&gt;</code> 有多个 <code>&lt;dd&gt;</code> 时，屏幕阅读器通常会逐个朗读所有描述，用户能识别它们属于同一个术语。</li>
+                        <li><strong>避免滥用</strong>：不要将 <code>&lt;dl&gt;</code> 用于纯样式目的（如缩进），这会混淆辅助技术对内容结构的理解。</li>
+                    </ol>
+                    <div class="tip-box">
+                        <p><strong>🎯 可访问性建议</strong>：在自定义列表中，确保每个 <code>&lt;dt&gt;</code> 都有对应的 <code>&lt;dd&gt;</code>，避免出现孤立的术语或描述。</p>
+                    </div>
+
+                    <h2>5.3.8 常见错误与最佳实践</h2>
+                    <p><strong>常见错误</strong></p>
+                    <table>
+                        <tr><th>错误</th><th>问题</th><th>正确做法</th></tr>
+                        <tr><td><strong>用 <code>&lt;dl&gt;</code> 做普通缩进</strong></td><td>滥用语义，只为视觉效果</td><td>使用 CSS 的 <code>padding</code> 或 <code>margin</code> 控制缩进</td></tr>
+                        <tr><td><strong>在 <code>&lt;dl&gt;</code> 中直接放置非 <code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code> 元素</strong></td><td>违反 HTML 语法规范</td><td><code>&lt;dl&gt;</code> 的直接子元素只能是 <code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code></td></tr>
+                        <tr><td><strong>将 <code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code> 顺序颠倒</strong></td><td>语义混乱</td><td><code>&lt;dt&gt;</code>（术语）在前，<code>&lt;dd&gt;</code>（描述）在后</td></tr>
+                        <tr><td><strong><code>&lt;dd&gt;</code> 与 <code>&lt;dt&gt;</code> 数量不匹配</strong></td><td>出现孤立的术语或描述</td><td>确保每个 <code>&lt;dt&gt;</code> 至少有一个对应的 <code>&lt;dd&gt;</code></td></tr>
+                        <tr><td><strong>在 <code>&lt;dt&gt;</code> 中放置复杂内容</strong></td><td><code>&lt;dt&gt;</code> 应保持简洁</td><td><code>&lt;dt&gt;</code> 通常为简短的术语名称，详细内容放在 <code>&lt;dd&gt;</code> 中</td></tr>
+                        <tr><td><strong>忘记为自定义列表设置样式</strong></td><td>浏览器默认样式可能不符合设计需求</td><td>使用 CSS 自定义样式</td></tr>
+                    </table>
+
+                    <p><strong>最佳实践总结</strong></p>
+                    <ol>
+                        <li><strong>只在“术语-描述”配对的场景使用 <code>&lt;dl&gt;</code></strong>，不要用于普通缩进或列表。</li>
+                        <li><strong><code>&lt;dl&gt;</code> 的直接子元素只能是 <code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code></strong>，其他内容应放在其中。</li>
+                        <li><strong><code>&lt;dt&gt;</code> 应保持简洁</strong>，通常是短语或关键词；详细解释放在 <code>&lt;dd&gt;</code> 中。</li>
+                        <li><strong>确保术语与描述配对</strong>，避免孤立的 <code>&lt;dt&gt;</code> 或 <code>&lt;dd&gt;</code>。</li>
+                        <li><strong>善用 CSS 自定义样式</strong>，让自定义列表与页面设计风格统一。</li>
+                        <li><strong>在问答场景中，可以用 <code>&lt;dl&gt;</code> 表示问题和答案</strong>，语义自然且清晰。</li>
+                        <li><strong>嵌套时，子 <code>&lt;dl&gt;</code> 必须放在 <code>&lt;dd&gt;</code> 内部</strong>，不能直接放在 <code>&lt;dl&gt;</code> 中。</li>
+                        <li><strong>考虑可访问性</strong>：合理使用 <code>&lt;dl&gt;</code> 能帮助屏幕阅读器用户更好地理解内容。</li>
+                    </ol>
+
+                    <p><strong>知识小结</strong></p>
+                    <p>本节我们学习了自定义列表 <code>&lt;dl&gt;</code>、<code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code>：</p>
+                    <table>
+                        <tr><th>要点</th><th>说明</th></tr>
+                        <tr><td><strong>标签组合</strong></td><td><code>&lt;dl&gt;</code> 定义列表容器，<code>&lt;dt&gt;</code> 定义术语，<code>&lt;dd&gt;</code> 定义描述。</td></tr>
+                        <tr><td><strong>语义含义</strong></td><td>表示“术语-描述”的配对关系，适用于词汇表、问答、属性描述等。</td></tr>
+                        <tr><td><strong>默认样式</strong></td><td><code>&lt;dd&gt;</code> 自动缩进（左右各约 40px），<code>&lt;dt&gt;</code> 不加缩进。</td></tr>
+                        <tr><td><strong>灵活配对</strong></td><td>一个 <code>&lt;dt&gt;</code> 可对应多个 <code>&lt;dd&gt;</code>，多个 <code>&lt;dt&gt;</code> 可对应一个 <code>&lt;dd&gt;</code>。</td></tr>
+                        <tr><td><strong>嵌套</strong></td><td>嵌套的 <code>&lt;dl&gt;</code> 必须放在 <code>&lt;dd&gt;</code> 内部。</td></tr>
+                        <tr><td><strong>与 <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code> 的区别</strong></td><td>自定义列表表达的是“配对关系”，而非“一组项目”。</td></tr>
+                        <tr><td><strong>常见场景</strong></td><td>词汇表、FAQ、产品规格、元数据、对话记录。</td></tr>
+                        <tr><td><strong>CSS 定制</strong></td><td>可移除缩进、实现水平布局、添加分隔线、设计问答风格等。</td></tr>
+                    </table>
+                    <p><strong>核心认知</strong>：自定义列表是 HTML 中唯一专门用于表达“术语-描述”配对关系的语义工具。它填补了 <code>&lt;ul&gt;</code> 和 <code>&lt;ol&gt;</code> 无法表达的语义空白，是构建词汇表、FAQ、产品规格等内容的最佳选择。正确使用自定义列表，能让你的内容结构更清晰、语义更丰富。</p>
+
+                    <p><strong>思考与练习</strong></p>
+                    <p><strong>一、选择题</strong></p>
+                    <ol>
+                        <li>自定义列表的容器标签是（　）<br>A. <code>&lt;ul&gt;</code> &nbsp;&nbsp; B. <code>&lt;ol&gt;</code> &nbsp;&nbsp; C. <code>&lt;dl&gt;</code> &nbsp;&nbsp; D. <code>&lt;list&gt;</code></li>
+                        <li>在自定义列表中，用于定义“术语”的标签是（　）<br>A. <code>&lt;dd&gt;</code> &nbsp;&nbsp; B. <code>&lt;dt&gt;</code> &nbsp;&nbsp; C. <code>&lt;li&gt;</code> &nbsp;&nbsp; D. <code>&lt;term&gt;</code></li>
+                        <li>以下哪个场景最适合使用自定义列表？（　）<br>A. 导航菜单 &nbsp;&nbsp; B. 购物清单 &nbsp;&nbsp; C. 词汇表 &nbsp;&nbsp; D. 操作步骤</li>
+                        <li>在自定义列表中，一个 <code>&lt;dt&gt;</code> 可以有（　）个 <code>&lt;dd&gt;</code>。<br>A. 只能有 1 个 &nbsp;&nbsp; B. 可以有多个 &nbsp;&nbsp; C. 不能有 <code>&lt;dd&gt;</code> &nbsp;&nbsp; D. 必须恰好有 1 个</li>
+                        <li>以下关于自定义列表的说法，正确的是（　）<br>A. 可以用 <code>&lt;dl&gt;</code> 实现普通文本的缩进效果<br>B. <code>&lt;dl&gt;</code> 的直接子元素只能是 <code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code><br>C. <code>&lt;dd&gt;</code> 必须紧跟在对应的 <code>&lt;dt&gt;</code> 后面，不能有多个 <code>&lt;dd&gt;</code><br>D. 自定义列表不支持嵌套</li>
+                    </ol>
+                    <p><strong>二、简答题</strong></p>
+                    <ol>
+                        <li>自定义列表与无序列表/有序列表的核心语义区别是什么？</li>
+                        <li>请列举三个适合使用自定义列表的实际场景。</li>
+                        <li>在自定义列表中，一个 <code>&lt;dt&gt;</code> 对应多个 <code>&lt;dd&gt;</code> 和多 <code>&lt;dt&gt;</code> 对应一个 <code>&lt;dd&gt;</code> 分别有什么实际用途？请举例说明。</li>
+                    </ol>
+                    <p><strong>三、上机实践</strong></p>
+                    <ol>
+                        <li>创建一个 HTML 页面，使用 <code>&lt;dl&gt;</code>、<code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code> 创建一个“Web 开发术语表”，至少包含 5 个术语及其定义。</li>
+                        <li>使用自定义列表创建一个“常见问题（FAQ）”页面，包含至少 3 个问题和对应的答案。</li>
+                        <li>使用自定义列表创建一个“产品规格表”，展示一款智能手机的参数（如屏幕、处理器、存储、电池、摄像头等）。</li>
+                        <li>为上述“术语表”添加 CSS 样式：
+                            <ul>
+                                <li>将 <code>&lt;dt&gt;</code> 加粗并设为蓝色</li>
+                                <li>将 <code>&lt;dd&gt;</code> 缩进 24px</li>
+                                <li>在术语之间添加浅灰色分隔线</li>
+                            </ul>
+                        </li>
+                        <li>（选做）使用 CSS 实现一个“水平键值对”风格的自定义列表，使 <code>&lt;dt&gt;</code> 和 <code>&lt;dd&gt;</code> 在同一行显示，<code>&lt;dt&gt;</code> 宽度固定为 120px。</li>
+                    </ol>
+                    <hr>
+                    <p><strong>下节预告</strong>：5.4节将学习 <strong>列表的嵌套与综合应用</strong>，深入探讨如何在实际项目中灵活组合使用无序列表、有序列表和自定义列表，构建复杂的层级结构和丰富的内容布局。敬请期待！</p>
+                </div>
+            `
+        }, {
+            id: 'ch5-4',
+            title: '5.4 列表的嵌套与综合应用',
+            icon: 'fa-layer-group',
+            content: `
+                <h1>5.4 列表的嵌套与综合应用</h1>
+                <div class="chapter-content">
+                    <p>在前三节中，我们已经分别学习了无序列表（<code>&lt;ul&gt;</code>）、有序列表（<code>&lt;ol&gt;</code>）和自定义列表（<code>&lt;dl&gt;</code>）。但在真实的网页开发中，这三种列表很少孤立存在。复杂的页面结构往往需要<strong>将不同类型的列表相互嵌套、灵活组合</strong>，才能构建出层次丰富、语义清晰的内容。</p>
+                    <p>这一节，我们将深入学习列表的嵌套技巧，并通过多个综合实战案例，帮助你掌握在实际项目中灵活运用列表的能力。</p>
+
+                    <h2>5.4.1 列表嵌套的核心规则</h2>
+                    <p>无论哪种列表进行嵌套，都必须遵循一个<strong>铁律</strong>：</p>
+                    <div class="tip-box">
+                        <p><strong>嵌套的列表必须放在父级列表的 <code>&lt;li&gt;</code>（或 <code>&lt;dd&gt;</code>/<code>&lt;dt&gt;</code>）内部，绝不能直接放在父级列表容器（<code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>/<code>&lt;dl&gt;</code>）中。</strong></p>
+                    </div>
+
+                    <p><strong>正确示例 vs 错误示例</strong></p>
+                    <pre><code>&lt;!-- ❌ 错误：子列表直接放在 <ul> 中 --&gt;
+        &lt;ul&gt;
+            &lt;li&gt;水果&lt;/li&gt;
+            &lt;ul&gt;          &lt;!-- 这里位置错误！ --&gt;
+                &lt;li&gt;苹果&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/ul&gt;
+
+        &lt;!-- ✅ 正确：子列表放在 <li> 内部 --&gt;
+        &lt;ul&gt;
+            &lt;li&gt;
+                水果
+                &lt;ul&gt;      &lt;!-- 正确位置 --&gt;
+                    &lt;li&gt;苹果&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+                    <p>这个规则同样适用于有序列表和自定义列表：</p>
+                    <ul>
+                        <li><code>&lt;ul&gt;</code> 和 <code>&lt;ol&gt;</code> 的子列表必须放在 <code>&lt;li&gt;</code> 内部。</li>
+                        <li><code>&lt;dl&gt;</code> 的子列表必须放在 <code>&lt;dd&gt;</code> 内部（因为 <code>&lt;dd&gt;</code> 是允许包含块级内容的容器）。</li>
+                    </ul>
+
+                    <h2>5.4.2 无序列表与有序列表的混合嵌套</h2>
+                    <p>在实际内容中，一个“大类”下的“子项”可能需要有序，或者一个“步骤”下需要罗列并列的要点。这时就需要混合嵌套。</p>
+
+                    <p><strong>示例：学习计划（大类无序，子步骤有序）</strong></p>
+                    <pre><code>&lt;ul&gt;
+            &lt;li&gt;
+                第一阶段：HTML 基础
+                &lt;ol&gt;
+                    &lt;li&gt;学习标签结构&lt;/li&gt;
+                    &lt;li&gt;掌握文本与列表&lt;/li&gt;
+                    &lt;li&gt;理解超链接与图像&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                第二阶段：CSS 样式
+                &lt;ol&gt;
+                    &lt;li&gt;学习选择器与盒模型&lt;/li&gt;
+                    &lt;li&gt;掌握 Flexbox 布局&lt;/li&gt;
+                    &lt;li&gt;理解响应式设计&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                第三阶段：JavaScript 交互
+                &lt;ol&gt;
+                    &lt;li&gt;学习基本语法&lt;/li&gt;
+                    &lt;li&gt;掌握 DOM 操作&lt;/li&gt;
+                    &lt;li&gt;理解事件处理&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+
+                    <p><strong>示例：文章目录（有序嵌套无序）</strong></p>
+                    <p>在技术文章中，章节目录通常是有序的（章节编号），但每个章节下的标签或相关链接可能是无序的。</p>
+                    <pre><code>&lt;ol&gt;
+            &lt;li&gt;
+                前言
+                &lt;ul&gt;
+                    &lt;li&gt;写作背景&lt;/li&gt;
+                    &lt;li&gt;读者对象&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                基础知识
+                &lt;ul&gt;
+                    &lt;li&gt;HTML 起源&lt;/li&gt;
+                    &lt;li&gt;开发工具&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                核心语法
+                &lt;ul&gt;
+                    &lt;li&gt;标签与属性&lt;/li&gt;
+                    &lt;li&gt;文档结构&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+        &lt;/ol&gt;</code></pre>
+
+                    <h2>5.4.3 自定义列表与其他列表的混合</h2>
+                    <p>自定义列表的 <code>&lt;dd&gt;</code> 是一个“块级容器”，它可以容纳几乎任何内容，包括段落、图片、以及<strong>完整的 <code>&lt;ul&gt;</code> 或 <code>&lt;ol&gt;</code> 列表</strong>。</p>
+
+                    <p><strong>示例：词汇表 + 相关术语列表</strong></p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;前端开发&lt;/dt&gt;
+            &lt;dd&gt;
+                负责构建用户界面和交互体验的开发领域。
+                &lt;p&gt;&lt;strong&gt;核心技术包括：&lt;/strong&gt;&lt;/p&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;HTML（结构）&lt;/li&gt;
+                    &lt;li&gt;CSS（样式）&lt;/li&gt;
+                    &lt;li&gt;JavaScript（交互）&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/dd&gt;
+
+            &lt;dt&gt;后端开发&lt;/dt&gt;
+            &lt;dd&gt;
+                负责服务器端逻辑和数据处理。
+                &lt;p&gt;&lt;strong&gt;常用编程语言：&lt;/strong&gt;&lt;/p&gt;
+                &lt;ol&gt;
+                    &lt;li&gt;Python&lt;/li&gt;
+                    &lt;li&gt;Java&lt;/li&gt;
+                    &lt;li&gt;Go&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <p><strong>示例：FAQ 问答 + 步骤列表</strong></p>
+                    <p>在回答“如何注册？”这样的问题时，答案可能需要包含具体的操作步骤。</p>
+                    <pre><code>&lt;dl&gt;
+            &lt;dt&gt;如何注册成为会员？&lt;/dt&gt;
+            &lt;dd&gt;
+                请按照以下步骤操作：
+                &lt;ol&gt;
+                    &lt;li&gt;点击页面右上角的“注册”按钮&lt;/li&gt;
+                    &lt;li&gt;填写用户名、邮箱和密码&lt;/li&gt;
+                    &lt;li&gt;阅读并同意服务条款&lt;/li&gt;
+                    &lt;li&gt;点击“提交”完成注册&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/dd&gt;
+        &lt;/dl&gt;</code></pre>
+
+                    <h2>5.4.4 综合实战场景</h2>
+                    <p><strong>场景一：多级下拉导航菜单（经典应用）</strong></p>
+                    <p>在网站的导航栏中，多级下拉菜单是嵌套列表最经典的应用场景。它利用 <code>&lt;ul&gt;</code> 的无限嵌套能力，构建出任意深度的层级结构。</p>
+                    <pre><code>&lt;nav&gt;
+            &lt;ul class="main-nav"&gt;
+                &lt;li&gt;&lt;a href="/"&gt;首页&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;
+                    &lt;a href="/products"&gt;产品中心&lt;/a&gt;
+                    &lt;!-- 第一级下拉 --&gt;
+                    &lt;ul class="sub-menu"&gt;
+                        &lt;li&gt;
+                            &lt;a href="/products/software"&gt;软件产品&lt;/a&gt;
+                            &lt;!-- 第二级下拉 --&gt;
+                            &lt;ul class="sub-menu"&gt;
+                                &lt;li&gt;&lt;a href="/products/software/web"&gt;Web 应用&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href="/products/software/mobile"&gt;移动应用&lt;/a&gt;&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/li&gt;
+                        &lt;li&gt;&lt;a href="/products/hardware"&gt;硬件产品&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="/products/accessories"&gt;配件&lt;/a&gt;&lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/li&gt;
+                &lt;li&gt;&lt;a href="/about"&gt;关于我们&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="/contact"&gt;联系我们&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/nav&gt;</code></pre>
+                    <div class="tip-box">
+                        <p><strong>💡 提示</strong>：在实际项目中，这样的多级菜单需要通过 CSS（如 <code>display: none</code> / <code>block</code>）配合 JavaScript 来控制下拉显示/隐藏。但结构上，<code>&lt;ul&gt;</code> 的嵌套已经完整地表达了层级关系。</p>
+                    </div>
+
+                    <p><strong>场景二：博客文章侧边栏（信息卡片）</strong></p>
+                    <p>在一个博客侧边栏中，往往集成了多种类型的信息，适合使用混合列表。</p>
+                    <pre><code>&lt;aside class="sidebar"&gt;
+            &lt;!-- 1. 个人信息（使用自定义列表） --&gt;
+            &lt;section&gt;
+                &lt;h3&gt;关于作者&lt;/h3&gt;
+                &lt;dl&gt;
+                    &lt;dt&gt;姓名&lt;/dt&gt;
+                    &lt;dd&gt;张三&lt;/dd&gt;
+                    &lt;dt&gt;职业&lt;/dt&gt;
+                    &lt;dd&gt;Web 开发工程师&lt;/dd&gt;
+                    &lt;dt&gt;专长&lt;/dt&gt;
+                    &lt;dd&gt;前端开发、用户体验设计&lt;/dd&gt;
+                &lt;/dl&gt;
+            &lt;/section&gt;
+
+            &lt;!-- 2. 热门文章（使用有序列表，有排名） --&gt;
+            &lt;section&gt;
+                &lt;h3&gt;热门文章&lt;/h3&gt;
+                &lt;ol&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;HTML 语义化指南&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;CSS Flexbox 完全手册&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;JavaScript 闭包详解&lt;/a&gt;&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/section&gt;
+
+            &lt;!-- 3. 标签云（使用无序列表） --&gt;
+            &lt;section&gt;
+                &lt;h3&gt;标签云&lt;/h3&gt;
+                &lt;ul class="tag-cloud"&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;HTML&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;CSS&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;JavaScript&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;React&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;Vue&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/section&gt;
+        &lt;/aside&gt;</code></pre>
+
+                    <p><strong>场景三：电商商品详情页（规格 + 特点 + 步骤）</strong></p>
+                    <p>一个商品详情页，通常包含商品参数（使用 <code>&lt;dl&gt;</code>）、功能特点（使用 <code>&lt;ul&gt;</code>）和购买步骤（使用 <code>&lt;ol&gt;</code>），三者相互独立但又共同构成一个完整的页面模块。</p>
+                    <pre><code>&lt;article class="product"&gt;
+            &lt;h1&gt;智能手表 Pro&lt;/h1&gt;
+
+            &lt;!-- 产品参数（自定义列表） --&gt;
+            &lt;h2&gt;产品规格&lt;/h2&gt;
+            &lt;dl&gt;
+                &lt;dt&gt;屏幕尺寸&lt;/dt&gt;
+                &lt;dd&gt;1.8 英寸 AMOLED&lt;/dd&gt;
+                &lt;dt&gt;电池续航&lt;/dt&gt;
+                &lt;dd&gt;最长 14 天&lt;/dd&gt;
+                &lt;dt&gt;防水等级&lt;/dt&gt;
+                &lt;dd&gt;IP68&lt;/dd&gt;
+                &lt;dt&gt;兼容系统&lt;/dt&gt;
+                &lt;dd&gt;iOS 15+ / Android 10+&lt;/dd&gt;
+            &lt;/dl&gt;
+
+            &lt;!-- 产品特点（无序列表） --&gt;
+            &lt;h2&gt;核心特点&lt;/h2&gt;
+            &lt;ul&gt;
+                &lt;li&gt;⭐ 心率血氧实时监测&lt;/li&gt;
+                &lt;li&gt;🏃 100+ 运动模式识别&lt;/li&gt;
+                &lt;li&gt;📱 蓝牙通话与消息提醒&lt;/li&gt;
+                &lt;li&gt;🌙 科学睡眠分析&lt;/li&gt;
+            &lt;/ul&gt;
+
+            &lt;!-- 购买步骤（有序列表） --&gt;
+            &lt;h2&gt;购买流程&lt;/h2&gt;
+            &lt;ol&gt;
+                &lt;li&gt;选择颜色和表带&lt;/li&gt;
+                &lt;li&gt;点击“立即购买”加入购物车&lt;/li&gt;
+                &lt;li&gt;填写收货地址&lt;/li&gt;
+                &lt;li&gt;完成支付&lt;/li&gt;
+            &lt;/ol&gt;
+        &lt;/article&gt;</code></pre>
+
+                    <h2>5.4.5 深度嵌套的注意事项与最佳实践</h2>
+                    <p>虽然理论上列表可以无限嵌套，但从实际体验和可维护性出发，需要遵循以下原则：</p>
+
+                    <p><strong>1. 层级不宜过深（建议 ≤ 3 层）</strong></p>
+                    <ul>
+                        <li><strong>用户体验</strong>：过深的层级（如 4 层以上）会让页面视觉混乱，用户难以聚焦。</li>
+                        <li><strong>可访问性</strong>：屏幕阅读器会逐层朗读列表结构，过深的嵌套会让视障用户迷失方向。</li>
+                        <li><strong>SEO</strong>：搜索引擎抓取时，过深的层级可能降低内容的重要性权重。</li>
+                    </ul>
+                    <div class="tip-box">
+                        <p><strong>解决方案</strong>：如果你发现需要嵌套 4 层以上，应考虑使用其他布局方式（如卡片式设计、Tab 切换等），或重新审视内容的组织结构。</p>
+                    </div>
+
+                    <p><strong>2. 明确语义，避免滥用</strong></p>
+                    <ul>
+                        <li>不要为了“层级缩进”效果而使用列表嵌套。如果仅仅是视觉上的缩进，应使用 CSS 的 <code>padding</code> 或 <code>margin</code>。</li>
+                        <li>选择正确的列表类型来表达内容关系：并列用 <code>&lt;ul&gt;</code>，排序用 <code>&lt;ol&gt;</code>，配对用 <code>&lt;dl&gt;</code>。</li>
+                    </ul>
+
+                    <p><strong>3. 为嵌套列表添加清晰的 CSS 样式</strong></p>
+                    <p>不同层级的列表应该有视觉上的区分，让用户一目了然。</p>
+                    <pre><code>/* 多级导航样式示例 */
+        .main-nav > li {
+            display: inline-block;  /* 第一级水平 */
+        }
+
+        .sub-menu {
+            display: none;          /* 默认隐藏子菜单 */
+            position: absolute;
+            padding-left: 0;
+        }
+
+        .main-nav li:hover > .sub-menu {
+            display: block;         /* 悬停时显示 */
+        }
+
+        /* 不同层级缩进（文章目录示例） */
+        .toc ul,
+        .toc ol {
+            padding-left: 24px;     /* 每层缩进 24px */
+        }</code></pre>
+
+                    <p><strong>4. 注意 <code>li</code> 与 <code>ul</code>/<code>ol</code> 的闭合</strong></p>
+                    <p>虽然浏览器通常会容错，但为了代码的可维护性和可读性，务必确保标签正确闭合。</p>
+                    <pre><code>&lt;!-- ✅ 清晰的嵌套缩进 --&gt;
+        &lt;ul&gt;
+            &lt;li&gt;
+                一级项目
+                &lt;ul&gt;
+                    &lt;li&gt;二级项目&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;</code></pre>
+
+                    <h2>5.4.6 综合实战：构建一个完整的文章页结构</h2>
+                    <p>下面我们结合所有知识，构建一个包含“文章目录（有序+无序）”、“作者信息（自定义列表）”和“相关推荐（无序列表）”的完整文章页侧边栏。</p>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+        &lt;html lang="zh-CN"&gt;
+        &lt;head&gt;
+            &lt;meta charset="utf-8"&gt;
+            &lt;title&gt;列表综合实战 - 文章页&lt;/title&gt;
+            &lt;style&gt;
+                body {
+                    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+                    max-width: 900px;
+                    margin: 20px auto;
+                    padding: 20px;
+                    background: #f5f3f0;
+                    display: flex;
+                    gap: 40px;
+                }
+
+                /* 主内容区 */
+                .main-content {
+                    flex: 2;
+                    background: #fff;
+                    padding: 24px;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                }
+
+                /* 侧边栏 */
+                .sidebar {
+                    flex: 1;
+                    background: #fff;
+                    padding: 24px;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                }
+
+                /* 文章目录样式 */
+                .toc {
+                    padding-left: 0;
+                    list-style: none;
+                }
+                .toc > li {
+                    font-weight: 600;
+                    margin-bottom: 8px;
+                    color: #2c3e50;
+                }
+                .toc > li ul {
+                    list-style: none;
+                    padding-left: 24px;
+                    font-weight: 400;
+                    color: #555;
+                    margin-top: 4px;
+                }
+                .toc > li ul li {
+                    padding: 4px 0;
+                    border-bottom: 1px dashed #f0f0f0;
+                }
+                .toc > li ul li:last-child {
+                    border-bottom: none;
+                }
+
+                /* 作者信息自定义列表 */
+                .author-dl dt {
+                    font-weight: 600;
+                    color: #2c3e50;
+                    float: left;
+                    width: 60px;
+                    clear: left;
+                }
+                .author-dl dd {
+                    margin-left: 70px;
+                    color: #555;
+                    margin-bottom: 8px;
+                }
+
+                /* 标签云 */
+                .tag-cloud {
+                    list-style: none;
+                    padding: 0;
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                }
+                .tag-cloud li a {
+                    display: inline-block;
+                    padding: 4px 14px;
+                    background: #eef4f8;
+                    border-radius: 20px;
+                    color: #2c3e50;
+                    text-decoration: none;
+                    font-size: 14px;
+                    transition: 0.2s;
+                }
+                .tag-cloud li a:hover {
+                    background: #3498db;
+                    color: #fff;
+                }
+
+                section {
+                    margin-bottom: 28px;
+                }
+                section h3 {
+                    font-size: 16px;
+                    border-bottom: 2px solid #3498db;
+                    padding-bottom: 8px;
+                    margin-bottom: 16px;
+                    color: #1a1a1a;
+                }
+            &lt;/style&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;div class="main-content"&gt;
+                &lt;h1&gt;HTML 列表完全指南&lt;/h1&gt;
+                &lt;p&gt;本文详细介绍了 HTML 中的三种列表类型及其应用场景。&lt;/p&gt;
+
+                &lt;!-- 文章目录 --&gt;
+                &lt;section&gt;
+                    &lt;h3&gt;📖 文章目录&lt;/h3&gt;
+                    &lt;ul class="toc"&gt;
+                        &lt;li&gt;
+                            1. 列表概述
+                            &lt;ul&gt;
+                                &lt;li&gt;1.1 列表的作用&lt;/li&gt;
+                                &lt;li&gt;1.2 列表的分类&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                            2. 无序列表 (ul)
+                            &lt;ul&gt;
+                                &lt;li&gt;2.1 基本语法&lt;/li&gt;
+                                &lt;li&gt;2.2 应用场景&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                            3. 有序列表 (ol)
+                            &lt;ul&gt;
+                                &lt;li&gt;3.1 基本语法&lt;/li&gt;
+                                &lt;li&gt;3.2 属性与样式&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                            4. 自定义列表 (dl)
+                            &lt;ul&gt;
+                                &lt;li&gt;4.1 术语与描述&lt;/li&gt;
+                                &lt;li&gt;4.2 典型应用&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                            5. 综合实战
+                            &lt;ul&gt;
+                                &lt;li&gt;5.1 列表嵌套&lt;/li&gt;
+                                &lt;li&gt;5.2 混合使用&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/section&gt;
+
+                &lt;!-- 正文内容（略） --&gt;
+                &lt;p&gt;正文内容……&lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;!-- 侧边栏 --&gt;
+            &lt;div class="sidebar"&gt;
+                &lt;!-- 作者信息 --&gt;
+                &lt;section&gt;
+                    &lt;h3&gt;👤 关于作者&lt;/h3&gt;
+                    &lt;dl class="author-dl"&gt;
+                        &lt;dt&gt;姓名&lt;/dt&gt;
+                        &lt;dd&gt;张 三&lt;/dd&gt;
+                        &lt;dt&gt;职业&lt;/dt&gt;
+                        &lt;dd&gt;前端技术专家&lt;/dd&gt;
+                        &lt;dt&gt;成就&lt;/dt&gt;
+                        &lt;dd&gt;10 年开发经验，开源项目贡献者&lt;/dd&gt;
+                    &lt;/dl&gt;
+                &lt;/section&gt;
+
+                &lt;!-- 热门文章 --&gt;
+                &lt;section&gt;
+                    &lt;h3&gt;🔥 热门文章&lt;/h3&gt;
+                    &lt;ol&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;CSS 布局完全手册&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;JavaScript 高阶函数详解&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;Vue 3 组合式 API 指南&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;React Hooks 深度解析&lt;/a&gt;&lt;/li&gt;
+                    &lt;/ol&gt;
+                &lt;/section&gt;
+
+                &lt;!-- 标签云 --&gt;
+                &lt;section&gt;
+                    &lt;h3&gt;🏷️ 标签&lt;/h3&gt;
+                    &lt;ul class="tag-cloud"&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;HTML&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;CSS&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;JavaScript&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;React&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;Vue&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;性能优化&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="#"&gt;可访问性&lt;/a&gt;&lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/section&gt;
+            &lt;/div&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;</code></pre>
+
+                    <h2>知识小结</h2>
+                    <p>本节我们深入学习了列表的嵌套与综合应用：</p>
+                    <table>
+                        <tr><th>要点</th><th>说明</th></tr>
+                        <tr><td><strong>嵌套铁律</strong></td><td>嵌套列表必须放在父级 <code>&lt;li&gt;</code>（或 <code>&lt;dd&gt;</code>）内部，不能直接放在容器标签中。</td></tr>
+                        <tr><td><strong>混合嵌套</strong></td><td><code>&lt;ul&gt;</code> 中可以嵌套 <code>&lt;ol&gt;</code>，反之亦然，灵活性极高。</td></tr>
+                        <tr><td><strong>与 <code>&lt;dl&gt;</code> 结合</strong></td><td><code>&lt;dd&gt;</code> 是块级容器，可以容纳完整的 <code>&lt;ul&gt;</code> 或 <code>&lt;ol&gt;</code>。</td></tr>
+                        <tr><td><strong>常见场景</strong></td><td>多级导航菜单、文章目录、商品详情页、侧边栏信息卡片。</td></tr>
+                        <tr><td><strong>深度限制</strong></td><td>建议嵌套不超过 3 层，过深会影响体验和可访问性。</td></tr>
+                        <tr><td><strong>样式区分</strong></td><td>不同层级应有明确的视觉区分（缩进、颜色、大小）。</td></tr>
+                        <tr><td><strong>语义优先</strong></td><td>根据内容逻辑选择合适的列表类型，不要仅为样式而嵌套。</td></tr>
+                    </table>
+                    <p><strong>核心认知</strong>：列表嵌套是 HTML 构建复杂层级结构的基础技能。正确、合理地嵌套列表，能让网页内容的组织结构清晰、语义丰富，同时为 CSS 样式和 JavaScript 交互提供良好的基础。</p>
+
+                    <p><strong>思考与练习</strong></p>
+                    <p><strong>一、选择题</strong></p>
+                    <ol>
+                        <li>嵌套的子列表必须放在哪个标签内部？（　）<br>A. <code>&lt;ul&gt;</code> &nbsp;&nbsp; B. <code>&lt;ol&gt;</code> &nbsp;&nbsp; C. <code>&lt;li&gt;</code> &nbsp;&nbsp; D. <code>&lt;dl&gt;</code></li>
+                        <li>在自定义列表中，子列表应该放在（　）内部。<br>A. <code>&lt;dt&gt;</code> &nbsp;&nbsp; B. <code>&lt;dd&gt;</code> &nbsp;&nbsp; C. <code>&lt;dl&gt;</code> &nbsp;&nbsp; D. <code>&lt;li&gt;</code></li>
+                        <li>以下关于列表嵌套的说法，正确的是（　）<br>A. 嵌套层级越多越好，能体现内容的丰富性<br>B. 无序列表只能嵌套无序列表<br>C. 建议嵌套不超过 3 层<br>D. 嵌套列表不需要缩进</li>
+                        <li>多级下拉导航菜单最适合使用（　）来实现结构。<br>A. 嵌套的 <code>&lt;dl&gt;</code> &nbsp;&nbsp; B. 嵌套的 <code>&lt;ul&gt;</code> &nbsp;&nbsp; C. 嵌套的 <code>&lt;ol&gt;</code> &nbsp;&nbsp; D. 多个 <code>&lt;div&gt;</code></li>
+                    </ol>
+                    <p><strong>二、简答题</strong></p>
+                    <ol>
+                        <li>为什么建议列表嵌套不超过 3 层？请从用户体验和可访问性两个角度回答。</li>
+                        <li>在商品详情页中，产品参数（名称-值）、功能特点（并列）、使用步骤（有序）应该分别使用什么列表类型？为什么？</li>
+                        <li>请说出至少两个无序列表与有序列表混合嵌套的实际场景。</li>
+                    </ol>
+                    <p><strong>三、上机实践</strong></p>
+                    <ol>
+                        <li>创建一个“网站地图”页面，使用嵌套的无序列表展示网站的层级结构（如：首页 → 产品 → 软件/硬件 → 配件）。</li>
+                        <li>创建一个“学习路线图”，外层使用有序列表（阶段 1、2、3），每个阶段内部使用无序列表罗列该阶段需要掌握的技能。</li>
+                        <li>创建一个“产品详情页”的 HTML 结构，包含：
+                            <ul>
+                                <li>使用 <code>&lt;dl&gt;</code> 展示产品参数（至少 4 组键值对）</li>
+                                <li>使用 <code>&lt;ul&gt;</code> 展示产品特点（至少 4 项）</li>
+                                <li>使用 <code>&lt;ol&gt;</code> 展示使用步骤（至少 3 步）</li>
+                            </ul>
+                        </li>
+                        <li>为上述“学习路线图”添加 CSS 样式，使不同层级的列表有明显的缩进和颜色区分（如一级用蓝色、二级用灰色）。</li>
+                    </ol>
+                    <hr>
+                    <p><strong>本章总结</strong>：第5章我们系统学习了 HTML 中的三种列表类型——无序列表（<code>&lt;ul&gt;</code>）、有序列表（<code>&lt;ol&gt;</code>）和自定义列表（<code>&lt;dl&gt;</code>），以及列表的嵌套与综合应用。列表是网页内容组织中不可或缺的工具，掌握它们不仅能让你更清晰地结构化内容，还能提升网页的语义化水平和可访问性。</p>
+                    <p><strong>下篇预告</strong>：第6章将学习 <strong>图像与多媒体</strong>，包括 <code>&lt;img&gt;</code> 图像标签、<code>&lt;audio&gt;</code> 音频、<code>&lt;video&gt;</code> 视频，以及 <code>&lt;iframe&gt;</code> 内联框架等，让你的网页从“纯文本”走向“富媒体”。敬请期待！</p>
+                </div>
+            `
         }
         ];
 
         // ============================================================
-        // 占位章节（从第5章开始）
+        // 占位章节（从第6章开始）
         // ============================================================
         var placeholderChapters = [
-            { id: 'ch5', title: '第5章 列表与超链接', icon: 'fa-list' },
             { id: 'ch6', title: '第6章 图像与多媒体', icon: 'fa-image' },
             { id: 'ch7', title: '第7章 表格的应用', icon: 'fa-table' },
             { id: 'ch8', title: '第8章 表单与用户交互（上）', icon: 'fa-rectangle-ad' },
@@ -6058,12 +8098,9 @@
                 if (!hasChildren && !isSpecial) {
                     groupDiv.classList.add('no-children');
                 }
-                // 默认展开
                 groupDiv.dataset.collapsed = 'false';
-                // 存储label用于状态恢复
                 groupDiv.dataset.label = group.label;
 
-                // 一级标题
                 var header = document.createElement('div');
                 header.className = 'toc-group-header';
                 var iconSpan = document.createElement('span');
@@ -6084,17 +8121,14 @@
                     header.appendChild(toggleSpan);
                 }
 
-                // 点击事件
                 header.addEventListener('click', function(e) {
                     e.stopPropagation();
                     if (hasChildren) {
                         var isCollapsed = groupDiv.dataset.collapsed === 'true';
                         groupDiv.dataset.collapsed = isCollapsed ? 'false' : 'true';
                         groupDiv.classList.toggle('collapsed', !isCollapsed);
-                        // 保存状态
                         saveGroupState(group.label, !isCollapsed);
                     } else {
-                        // 无子项，跳转
                         if (group.singleIndex !== undefined) {
                             goToChapter(group.singleIndex, true);
                             closeDrawer();
@@ -6107,7 +8141,6 @@
 
                 groupDiv.appendChild(header);
 
-                // 子项
                 if (hasChildren) {
                     var subList = document.createElement('ul');
                     subList.className = 'toc-sub-list';
@@ -6149,11 +8182,9 @@
                 tocList.appendChild(groupDiv);
             });
 
-            // 恢复保存的折叠状态
             restoreGroupStates();
         }
 
-        // 保存和恢复组折叠状态
         function saveGroupState(label, collapsed) {
             try {
                 var key = 'toc-group-states';
@@ -6185,25 +8216,6 @@
         }
 
         function updateTocActive() {
-            var items = tocList.querySelectorAll('.toc-sub-item');
-            items.forEach(function(item, idx) {
-                item.classList.toggle('active', item.querySelector('.sub-num') && item.querySelector('.sub-num')
-                    .textContent && allChapters[currentChapterIndex] && allChapters[currentChapterIndex].title &&
-                    item.querySelector('.sub-title').textContent === allChapters[currentChapterIndex].title);
-            });
-            // 更可靠的方式：通过索引匹配
-            var allSubItems = tocList.querySelectorAll('.toc-sub-item');
-            allSubItems.forEach(function(subItem) {
-                // 获取该子项对应的章节索引
-                // 由于我们无法直接存储，我们通过点击事件中已经绑定的item.index，但我们没有存储。
-                // 在点击事件中我们已经绑定了item.index，但在这里我们无法获取。
-                // 我们换一种方式：在渲染时给每个子项添加 data-index 属性。
-                // 我们重新实现 renderToc 以添加 data-index。
-                // 但由于时间关系，我们将在最终代码中修改。
-            });
-            // 为了正确高亮，我们会在点击时更新，但为了初始高亮，我们会在渲染时设置。
-            // 我们将在最终代码中完善。
-            // 简单实现：遍历所有子项，通过内容匹配（不完美但够用）
             var currentTitle = allChapters[currentChapterIndex] ? allChapters[currentChapterIndex].title : '';
             if (currentTitle) {
                 var allItems = tocList.querySelectorAll('.toc-sub-item');
@@ -6226,11 +8238,9 @@
                 contentArea.scrollTop = 0;
             }
             saveProgress();
-            // 更新目录高亮
             updateTocActive();
         }
 
-        // 进度记忆
         function saveProgress() {
             try {
                 var data = {
@@ -6272,7 +8282,6 @@
                 renderChapter(currentChapterIndex);
                 contentArea.scrollTop = 0;
             }
-            // 更新高亮
             setTimeout(updateTocActive, 50);
         }
 
@@ -6394,7 +8403,6 @@
             el.style.fontSize = fontSize + 'px';
         });
 
-        // 触摸滑动翻页
         var touchStartX = 0,
             touchStartY = 0;
         contentArea.addEventListener('touchstart', function(e) {
@@ -6414,7 +8422,7 @@
             }
         }, { passive: true });
 
-        console.log('📖 HTML阅读器已启动（两级目录，支持折叠）');
+        console.log('📖 HTML阅读器已启动（包含第5章全部内容）');
         console.log('总章节数：', allChapters.length);
     </script>
 </body>
