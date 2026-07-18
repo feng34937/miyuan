@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>米遇安HTML编译器</title>
+    <style>
+        :root {
+            --glass-bg: rgba(18, 18, 32, 0.55);
+            --glass-bg-strong: rgba(22, 22, 40, 0.7);
+            --glass-bg-light: rgba(28, 28, 48, 0.6);
+            --glass-bg-panel: rgba(16, 16, 28, 0.65);
+            --glass-bg-input: rgba(10, 10, 22, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --glass-border-strong: rgba(255, 255, 255, 0.12);
+            --glass-highlight: rgba(255, 255, 255, 0.04);
+            --text-primary: #e8e8f0;
+            --text-secondary: #b0b0c0;
+            --text-muted: #707088;
+            --accent: #7b9fff;
+            --accent-hover: #96b4ff;
+            --accent-glass: rgba(123, 159, 255, 0.2);
+            --green: #5ecf8a;
+            --green-hover: #78e0a0;
+            --green-glass: rgba(94, 207, 138, 0.25);
+            --orange: #f0a050;
+            --orange-hover: #f5b870;
+            --red: #e0556a;
+            --red-hover: #ec7588;
+            --blur-amount: 22px;
+            --blur-saturate: 160%;
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+            --shadow-glass-sm: 0 4px 16px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+            --shadow-glass-lg: 0 12px 40px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            --transition: 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-fast: 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            --toolbar-height: 50px;
+            --statusbar-height: 28px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: var(--font-sans);
+            background: #0a0a16;
+            color: var(--text-primary);
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+        }
+
+        /* 背景光斑 - 为玻璃效果提供丰富的模糊内容 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 15% 25%, rgba(90, 110, 240, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 72% 55%, rgba(160, 90, 210, 0.14) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 78%, rgba(70, 130, 200, 0.15) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 20%, rgba(120, 100, 230, 0.1) 0%, transparent 45%),
+                radial-gradient(ellipse at 55% 40%, rgba(180, 140, 220, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 25% 65%, rgba(60, 150, 210, 0.12) 0%, transparent 50%);
+            backdrop-filter: blur(0px);
+        }
+
+        /* 微妙的网格纹理覆盖层 */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.015;
+            background-image:
+                repeating-linear-gradient(0deg, #fff, #fff 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(90deg, #fff, #fff 1px, transparent 1px, transparent 40px);
+        }
+
+        /* ============ 顶部工具栏 ============ */
+        .toolbar {
+            height: var(--toolbar-height);
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 10px;
+            z-index: 100;
+            position: relative;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .toolbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+        }
+        .toolbar .logo .icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: #c8d8ff;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .toolbar .logo .icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+        }
+        .toolbar .divider {
+            width: 1px;
+            height: 24px;
+            background: var(--glass-border);
+            flex-shrink: 0;
+        }
+        .toolbar .spacer {
+            flex: 1;
+            min-width: 8px;
+        }
+
+        /* 按钮样式 - 玻璃效果 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 0;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            outline: none;
+            letter-spacing: 0.1px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--glass-border-strong);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+        .btn:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.03);
+            transition: transform 0.08s ease;
+        }
+        .btn-run {
+            background: var(--green-glass);
+            color: #d0ffe0;
+            border-color: rgba(94, 207, 138, 0.3);
+            font-weight: 600;
+            min-width: 72px;
+            justify-content: center;
+            letter-spacing: 0.3px;
+            box-shadow: 0 0 0 0 rgba(94, 207, 138, 0);
+            transition: all var(--transition-fast);
+        }
+        .btn-run:hover {
+            background: rgba(94, 207, 138, 0.35);
+            border-color: rgba(94, 207, 138, 0.5);
+            box-shadow: 0 0 20px rgba(94, 207, 138, 0.2), 0 2px 16px rgba(0, 0, 0, 0.25);
+        }
+        .btn-run:active {
+            box-shadow: 0 0 6px rgba(94, 207, 138, 0.35);
+            background: rgba(94, 207, 138, 0.3);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            border-color: var(--glass-border);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--glass-border-strong);
+            color: var(--text-primary);
+        }
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            justify-content: center;
+            font-size: 16px;
+            border-radius: 0;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+            gap: 4px;
+            border-radius: 0;
+        }
+        .btn-auto {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+        }
+        .btn-auto.active {
+            background: var(--accent-glass);
+            border-color: rgba(123, 159, 255, 0.4);
+            color: #c8d8ff;
+            box-shadow: 0 0 18px rgba(123, 159, 255, 0.15), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+        }
+        .btn-auto.active::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            pointer-events: none;
+            animation: pulse-border 2.2s ease-in-out infinite;
+            border-radius: 0;
+        }
+        @keyframes pulse-border {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(123, 159, 255, 0.35);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(123, 159, 255, 0);
+            }
+        }
+        .btn-auto .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 0;
+            background: var(--text-muted);
+            transition: all var(--transition);
+        }
+        .btn-auto.active .dot {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+            animation: blink-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes blink-dot {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* 模板下拉 */
+        .template-select {
+            padding: 7px 12px;
+            border-radius: 0;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            outline: none;
+            transition: all var(--transition-fast);
+            max-width: 140px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 28px;
+        }
+        .template-select:hover {
+            border-color: var(--glass-border-strong);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .template-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(123, 159, 255, 0.1);
+        }
+        .template-select option {
+            background: #1a1a2e;
+            color: var(--text-primary);
+        }
+
+        /* ============ 主体区域 ============ */
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            height: calc(100vh - var(--toolbar-height) - var(--statusbar-height));
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* 编辑器面板 */
+        .editor-panel {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg-panel);
+            backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-glass);
+            border-radius: 0;
+        }
+        .editor-panel .panel-header {
+            display: flex;
+            align-items: center;
+            padding: 7px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            gap: 8px;
+            flex-shrink: 0;
+            font-weight: 500;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+        }
+        .panel-header .dot-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 0;
+            background: var(--accent);
+            box-shadow: 0 0 6px rgba(123, 159, 255, 0.5);
+        }
+        .editor-wrapper {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+        }
+        .line-numbers {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-muted);
+            padding: 14px 0;
+            text-align: right;
+            font-family: var(--font-mono);
+            font-size: 13.5px;
+            line-height: 1.65;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            min-width: 48px;
+            border-right: 1px solid var(--glass-border);
+            flex-shrink: 0;
+            white-space: pre;
+            pointer-events: none;
+            border-radius: 0;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .line-numbers span {
+            display: block;
+            padding: 0 12px 0 6px;
+            transition: color 0.15s;
+            border-radius: 0;
+        }
+        .line-numbers span.active-line {
+            color: #c8d0e8;
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .code-textarea {
+            flex: 1;
+            background: rgba(8, 8, 20, 0.55);
+            color: #d8d8f0;
+            border: none;
+            padding: 14px 16px;
+            font-family: var(--font-mono);
+            font-size: 13.5px;
+            line-height: 1.65;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+            -moz-tab-size: 4;
+            white-space: pre;
+            overflow-wrap: normal;
+            overflow: auto;
+            caret-color: #ffcc66;
+            min-width: 0;
+            border-radius: 0;
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            transition: background var(--transition-fast);
+        }
+        .code-textarea:focus {
+            background: rgba(8, 8, 20, 0.7);
+        }
+        .code-textarea::selection {
+            background: rgba(123, 159, 255, 0.4);
+            color: #fff;
+        }
+        .code-textarea::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .code-textarea::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .code-textarea::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 0;
+        }
+        .code-textarea::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .code-textarea::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* 分隔条 */
+        .resizer {
+            width: 6px;
+            cursor: col-resize;
+            background: rgba(255, 255, 255, 0.03);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+            transition: background var(--transition-fast);
+            border-radius: 0;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .resizer:hover,
+        .resizer.active {
+            background: rgba(123, 159, 255, 0.35);
+            box-shadow: 0 0 16px rgba(123, 159, 255, 0.4);
+        }
+        .resizer::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 0;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+        .resizer:hover::after {
+            opacity: 1;
+        }
+
+        /* 预览面板 */
+        .preview-panel {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(20, 20, 35, 0.45);
+            backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            box-shadow: var(--shadow-glass);
+            border-left: 1px solid var(--glass-border);
+        }
+        .preview-panel .panel-header {
+            display: flex;
+            align-items: center;
+            padding: 7px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            gap: 8px;
+            flex-shrink: 0;
+            font-weight: 500;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+        }
+        .preview-panel .panel-header .dot-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 0;
+            background: var(--green);
+            box-shadow: 0 0 6px rgba(94, 207, 138, 0.5);
+        }
+        .preview-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #ffffff;
+            border-radius: 0;
+        }
+        .preview-placeholder {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            flex-direction: column;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0;
+        }
+        .preview-placeholder .big-icon {
+            font-size: 56px;
+            opacity: 0.4;
+        }
+
+        /* ============ 状态栏 ============ */
+        .statusbar {
+            height: var(--statusbar-height);
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+            gap: 16px;
+            flex-shrink: 0;
+            letter-spacing: 0.3px;
+            box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.02) inset, 0 -4px 16px rgba(0, 0, 0, 0.25);
+            position: relative;
+            z-index: 100;
+            border-radius: 0;
+        }
+        .statusbar .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .statusbar .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 0;
+            background: var(--green);
+            box-shadow: 0 0 4px rgba(94, 207, 138, 0.5);
+        }
+        .statusbar .status-dot.saved {
+            background: var(--green);
+            box-shadow: 0 0 4px rgba(94, 207, 138, 0.5);
+        }
+        .statusbar .status-dot.unsaved {
+            background: var(--orange);
+            box-shadow: 0 0 6px rgba(240, 160, 80, 0.6);
+            animation: pulse-dot 1.2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 6px rgba(240, 160, 80, 0.6);
+            }
+            50% {
+                opacity: 0.35;
+                box-shadow: 0 0 14px rgba(240, 160, 80, 0.9);
+            }
+        }
+
+        /* ============ Toast 通知 ============ */
+        .toast-container {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(20px) saturate(170%);
+            -webkit-backdrop-filter: blur(20px) saturate(170%);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: var(--shadow-glass-lg);
+            border: 1px solid var(--glass-border);
+            animation: toast-in 0.35s cubic-bezier(0.21, 1.02, 0.58, 1) forwards,
+                toast-out 0.3s cubic-bezier(0.55, 0, 1, 0.45) 2s forwards;
+            pointer-events: auto;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 380px;
+        }
+        .toast.success {
+            border-left: 2px solid var(--green);
+        }
+        .toast.info {
+            border-left: 2px solid var(--accent);
+        }
+        .toast.warning {
+            border-left: 2px solid var(--orange);
+        }
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes toast-out {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+        }
+
+        /* ============ 响应式设计 ============ */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .resizer {
+                width: 100%;
+                height: 6px;
+                cursor: row-resize;
+            }
+            .resizer::after {
+                width: 40px;
+                height: 2px;
+            }
+            .editor-panel {
+                flex: 1;
+                min-width: unset;
+                min-height: 200px;
+                border-right: none;
+                border-bottom: 1px solid var(--glass-border);
+            }
+            .preview-panel {
+                flex: 1;
+                min-width: unset;
+                min-height: 200px;
+                border-left: none;
+                border-top: 1px solid var(--glass-border);
+            }
+            .toolbar {
+                gap: 6px;
+                padding: 0 8px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .toolbar .logo {
+                font-size: 12px;
+                gap: 5px;
+            }
+            .toolbar .logo .icon {
+                width: 26px;
+                height: 26px;
+                font-size: 13px;
+            }
+            .btn {
+                padding: 5px 9px;
+                font-size: 11px;
+                gap: 4px;
+                border-radius: 0;
+            }
+            .btn-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+                border-radius: 0;
+            }
+            .btn-sm {
+                padding: 4px 7px;
+                font-size: 10px;
+                border-radius: 0;
+            }
+            .template-select {
+                font-size: 11px;
+                padding: 5px 8px;
+                max-width: 110px;
+                border-radius: 0;
+            }
+            .toolbar .divider {
+                height: 18px;
+            }
+            .line-numbers {
+                font-size: 12px;
+                padding: 10px 0;
+                min-width: 38px;
+            }
+            .line-numbers span {
+                padding: 0 8px 0 4px;
+            }
+            .code-textarea {
+                font-size: 12px;
+                padding: 10px 10px;
+                line-height: 1.6;
+            }
+            .line-numbers {
+                line-height: 1.6;
+                font-size: 12px;
+            }
+            .statusbar {
+                font-size: 10px;
+                gap: 10px;
+                padding: 0 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            .toolbar {
+                gap: 3px;
+                padding: 0 4px;
+            }
+            .btn {
+                padding: 4px 7px;
+                font-size: 10px;
+                gap: 3px;
+                border-radius: 0;
+            }
+            .btn-icon {
+                width: 26px;
+                height: 26px;
+                font-size: 12px;
+                border-radius: 0;
+            }
+            .btn-run {
+                min-width: 50px;
+                padding: 5px 8px;
+            }
+            .template-select {
+                max-width: 90px;
+                font-size: 10px;
+                padding: 4px 6px;
+                border-radius: 0;
+            }
+            .toolbar .logo {
+                font-size: 11px;
+            }
+            .toolbar .logo .icon {
+                width: 22px;
+                height: 22px;
+                font-size: 11px;
+            }
+            .btn-auto {
+                padding: 4px 7px;
+                font-size: 10px;
+                border-radius: 0;
+            }
+            .line-numbers {
+                min-width: 30px;
+                font-size: 11px;
+                padding: 8px 0;
+            }
+            .code-textarea {
+                font-size: 11px;
+                padding: 8px;
+                line-height: 1.55;
+            }
+            .line-numbers {
+                line-height: 1.55;
+                font-size: 11px;
+            }
+            .line-numbers span {
+                padding: 0 6px 0 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 工具栏 ==================== -->
+    <div class="toolbar" id="toolbar">
+        <div class="logo">
+            <div class="icon">&lt;/&gt;</div>
+            <span>米遇安HTML编译器</span>
+        </div>
+        <div class="divider"></div>
+        <button class="btn btn-run" id="btnRun" title="运行代码 (Ctrl+Enter)">
+            ▶ 运行
+        </button>
+        <button class="btn btn-auto" id="btnAutoRun" title="切换自动实时预览">
+            <span class="dot"></span> 实时预览
+        </button>
+        <div class="divider"></div>
+        <button class="btn btn-secondary btn-sm" id="btnClear" title="清空编辑器">
+            🗑 清空
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btnCopy" title="复制代码到剪贴板">
+            📋 复制
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btnDownload" title="下载为HTML文件">
+            💾 下载
+        </button>
+        <div class="divider"></div>
+        <select class="template-select" id="templateSelect" title="选择代码模板">
+            <option value="">📄 选择模板...</option>
+            <option value="html5">HTML5 基础模板</option>
+            <option value="webpage">简单网页</option>
+            <option value="card">卡片布局</option>
+            <option value="form">表单示例</option>
+            <option value="table">表格示例</option>
+            <option value="flex">Flexbox 布局</option>
+            <option value="grid">Grid 网格布局</option>
+        </select>
+        <div class="spacer"></div>
+        <button class="btn btn-secondary btn-icon btn-sm" id="btnResetLayout" title="重置面板布局">
+            ↺
+        </button>
+    </div>
+
+    <!-- ==================== 主体区域 ==================== -->
+    <div class="main-container" id="mainContainer">
+        <!-- 编辑器面板 -->
+        <div class="editor-panel" id="editorPanel">
+            <div class="panel-header">
+                <span class="dot-indicator"></span> HTML 代码编辑器
+            </div>
+            <div class="editor-wrapper" id="editorWrapper">
+                <div class="line-numbers" id="lineNumbers"></div>
+                <textarea class="code-textarea" id="codeTextarea" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="在此输入 HTML 代码..."></textarea>
+            </div>
+        </div>
+
+        <!-- 分隔条 -->
+        <div class="resizer" id="resizer" title="拖拽调整面板大小"></div>
+
+        <!-- 预览面板 -->
+        <div class="preview-panel" id="previewPanel">
+            <div class="panel-header">
+                <span class="dot-indicator"></span> 实时预览
+            </div>
+            <div class="preview-placeholder" id="previewPlaceholder">
+                <span class="big-icon">👁</span>
+                <span>点击 <strong>运行</strong> 或开启 <strong>实时预览</strong> 查看效果</span>
+            </div>
+            <iframe class="preview-iframe" id="previewIframe" style="display:none;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" title="HTML预览"></iframe>
+        </div>
+    </div>
+
+    <!-- ==================== 状态栏 ==================== -->
+    <div class="statusbar" id="statusbar">
+        <span class="status-item">
+            <span class="status-dot saved" id="statusDot"></span>
+            <span id="statusSave">已保存</span>
+        </span>
+        <span class="status-item">行数: <strong id="statusLines">0</strong></span>
+        <span class="status-item">字符: <strong id="statusChars">0</strong></span>
+        <span class="status-item" style="margin-left:auto;">Ctrl+Enter 运行</span>
+    </div>
+
+    <!-- ==================== Toast 通知容器 ==================== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        (function() {
+            // ============ DOM 引用 ============
+            const btnRun = document.getElementById('btnRun');
+            const btnAutoRun = document.getElementById('btnAutoRun');
+            const btnClear = document.getElementById('btnClear');
+            const btnCopy = document.getElementById('btnCopy');
+            const btnDownload = document.getElementById('btnDownload');
+            const btnResetLayout = document.getElementById('btnResetLayout');
+            const templateSelect = document.getElementById('templateSelect');
+            const codeTextarea = document.getElementById('codeTextarea');
+            const lineNumbers = document.getElementById('lineNumbers');
+            const previewIframe = document.getElementById('previewIframe');
+            const previewPlaceholder = document.getElementById('previewPlaceholder');
+            const resizer = document.getElementById('resizer');
+            const mainContainer = document.getElementById('mainContainer');
+            const editorPanel = document.getElementById('editorPanel');
+            const previewPanel = document.getElementById('previewPanel');
+            const statusDot = document.getElementById('statusDot');
+            const statusSave = document.getElementById('statusSave');
+            const statusLines = document.getElementById('statusLines');
+            const statusChars = document.getElementById('statusChars');
+            const toastContainer = document.getElementById('toastContainer');
+            const editorWrapper = document.getElementById('editorWrapper');
+
+            // ============ 状态变量 ============
+            let autoRunEnabled = false;
+            let isSaved = true;
+            let debounceTimer = null;
+            let saveTimer = null;
+            const DEBOUNCE_DELAY = 400;
+            const SAVE_DELAY = 800;
+            const STORAGE_KEY = 'miyuan_html_compiler_code';
+            const LAYOUT_KEY = 'miyuan_html_compiler_layout';
+            const AUTO_RUN_KEY = 'miyuan_html_compiler_auto_run';
+
+            // ============ 模板定义 ============
+            const templates = {
+                html5: `<!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>我的网页</title>
+            <style>
+                body {
+                    font-family: -apple-system, 'PingFang SC', sans-serif;
+                    margin: 0;
+                    padding: 20px;
+                    background: #f9fafb;
+                    color: #333;
+                }
+                h1 { color: #2563eb; }
+            </style>
+        </head>
+        <body>
+            <h1>👋 你好，世界！</h1>
+            <p>这是一个 HTML5 基础模板。</p>
+        </body>
+        </html>`,
+                webpage: `<!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>我的网页</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #f0f2f5; }
+                header { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; padding: 40px 20px; text-align: center; }
+                header h1 { font-size: 2rem; margin-bottom: 8px; }
+                header p { opacity: 0.9; font-size: 1.05rem; }
+                nav { background: #fff; padding: 14px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; gap: 20px; justify-content: center; }
+                nav a { color: #4f46e5; text-decoration: none; font-weight: 500; }
+                nav a:hover { text-decoration: underline; }
+                main { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+                .card { background: #fff; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+                .card h2 { color: #333; margin-bottom: 10px; }
+                .card p { color: #666; line-height: 1.7; }
+                footer { text-align: center; padding: 20px; color: #999; font-size: 0.85rem; }
+            </style>
+        </head>
+        <body>
+            <header>
+                <h1>🌟 欢迎来到我的网页</h1>
+                <p>一个简洁美观的示例页面</p>
+            </header>
+            <nav>
+                <a href="#">首页</a>
+                <a href="#">关于</a>
+                <a href="#">服务</a>
+                <a href="#">联系</a>
+            </nav>
+            <main>
+                <div class="card">
+                    <h2>📝 第一篇文章</h2>
+                    <p>这是一段示例文字。你可以在这里放置任何内容。</p>
+                </div>
+                <div class="card">
+                    <h2>🎨 第二篇文章</h2>
+                    <p>使用 CSS 可以轻松美化你的网页。</p>
+                </div>
+            </main>
+            <footer>© 2024 我的网页 | 使用米遇安HTML编译器创建</footer>
+        </body>
+        </html>`,
+                card: `<!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>卡片布局</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #e8ecf1; padding: 30px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: flex-start; min-height: 100vh; }
+                .card { background: #fff; overflow: hidden; width: 300px; box-shadow: 0 6px 24px rgba(0,0,0,0.08); transition: transform 0.25s, box-shadow 0.25s; }
+                .card:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(0,0,0,0.14); }
+                .card-img { width: 100%; height: 180px; object-fit: cover; display: block; background: linear-gradient(135deg, #f472b6, #8b5cf6); }
+                .card-body { padding: 18px 20px; }
+                .card-body h3 { color: #1a1a2e; margin-bottom: 8px; font-size: 1.15rem; }
+                .card-body p { color: #666; font-size: 0.9rem; line-height: 1.6; }
+                .card-tag { display: inline-block; background: #f0f0ff; color: #4f46e5; padding: 4px 10px; font-size: 0.75rem; margin-top: 10px; font-weight: 500; }
+            </style>
+        </head>
+        <body>
+            <div class="card">
+                <div class="card-img" style="background:linear-gradient(135deg,#f97316,#ef4444);"></div>
+                <div class="card-body">
+                    <h3>🔥 热门推荐</h3>
+                    <p>这是一张精美的卡片组件。</p>
+                    <span class="card-tag">推荐</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);"></div>
+                <div class="card-body">
+                    <h3>💡 创意设计</h3>
+                    <p>使用渐变背景打造现代化UI风格。</p>
+                    <span class="card-tag">设计</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img" style="background:linear-gradient(135deg,#10b981,#06b6d4);"></div>
+                <div class="card-body">
+                    <h3>🚀 快速上手</h3>
+                    <p>简单易用的HTML+CSS卡片布局方案。</p>
+                    <span class="card-tag">教程</span>
+                </div>
+            </div>
+        </body>
+        </html>`,
+                form: `<!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>表单示例</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #f5f5f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+                .form-container { background: #fff; padding: 32px 28px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); width: 100%; max-width: 440px; }
+                .form-container h2 { margin-bottom: 22px; color: #1a1a2e; text-align: center; }
+                .form-group { margin-bottom: 16px; }
+                .form-group label { display: block; margin-bottom: 5px; font-weight: 500; color: #444; font-size: 0.9rem; }
+                .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e8; font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s; outline: none; }
+                .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+                .form-group textarea { resize: vertical; min-height: 90px; }
+                .btn-submit { width: 100%; padding: 12px; background: #4f46e5; color: #fff; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+                .btn-submit:hover { background: #4338ca; }
+                .btn-submit:active { transform: scale(0.98); }
+            </style>
+        </head>
+        <body>
+            <div class="form-container">
+                <h2>📬 联系我们</h2>
+                <div class="form-group">
+                    <label for="name">姓名</label>
+                    <input type="text" id="name" placeholder="请输入您的姓名">
+                </div>
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" placeholder="请输入您的邮箱">
+                </div>
+                <div class="form-group">
+                    <label for="topic">主题</label>
+                    <select id="topic">
+                        <option value="">请选择主题</option>
+                        <option value="general">一般咨询</option>
+                        <option value="support">技术支持</option>
+                        <option value="feedback">反馈建议</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">留言</label>
+                    <textarea id="message" placeholder="请输入您的留言内容..."></textarea>
+                </div>
+                <button class="btn-submit" type="button">发送消息 ✉</button>
+            </div>
+        </body>
+        </html>`,
+                table: `<!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>表格示例</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #f8f9fb; padding: 30px; display: flex; justify-content: center; }
+                .table-wrapper { background: #fff; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); width: 100%; max-width: 700px; }
+                .table-wrapper h2 { padding: 20px 24px 0; color: #1a1a2e; }
+                table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+                th, td { padding: 12px 18px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+                th { background: #fafafc; font-weight: 600; color: #555; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+                tr:hover td { background: #fafbff; }
+                .badge { display: inline-block; padding: 4px 10px; font-size: 0.75rem; font-weight: 500; }
+                .badge-active { background: #e6f7ed; color: #16a34a; }
+                .badge-pending { background: #fff7ed; color: #ea580c; }
+                .badge-inactive { background: #f3f4f6; color: #888; }
+            </style>
+        </head>
+        <body>
+            <div class="table-wrapper">
+                <h2>📊 用户列表</h2>
+                <table>
+                    <thead>
+                        <tr><th>姓名</th><th>邮箱</th><th>角色</th><th>状态</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>张三</td><td>zhangsan@example.com</td><td>管理员</td><td><span class="badge badge-active">活跃</span></td></tr>
+                        <tr><td>李四</td><td>lisi@example.com</td><td>编辑</td><td><span class="badge badge-active">活跃</span></td></tr>
+                        <tr><td>王五</td><td>wangwu@example.com</td><td>用户</td><td><span class="badge badge-pending">待审核</span></td></tr>
+                        <tr><td>赵六</td><td>zhaoliu@example.com</td><td>用户</td><td><span class="badge badge-inactive">停用</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </body>
+        </html>`,
+                flex: `<!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Flexbox 布局</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #f0f2f5; padding: 20px; }
+                h2 { text-align: center; color: #333; margin: 20px 0; }
+                .flex-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
+                .flex-item { background: #fff; padding: 24px; flex: 1 1 200px; max-width: 280px; text-align: center; box-shadow: 0 3px 12px rgba(0,0,0,0.05); }
+                .flex-item .icon { font-size: 40px; margin-bottom: 10px; }
+                .flex-item h3 { color: #333; margin-bottom: 6px; }
+                .flex-item p { color: #777; font-size: 0.85rem; }
+                .flex-center-demo { display: flex; justify-content: center; align-items: center; background: #fff; height: 180px; box-shadow: 0 3px 12px rgba(0,0,0,0.05); margin-bottom: 30px; }
+                .flex-center-demo .inner { background: linear-gradient(135deg,#4f46e5,#7c3aed); color: #fff; padding: 20px 30px; font-weight: 600; }
+            </style>
+        </head>
+        <body>
+            <h2>📐 Flexbox 弹性布局示例</h2>
+            <div class="flex-row">
+                <div class="flex-item"><div class="icon">🚀</div><h3>快速</h3><p>Flexbox 让布局更高效</p></div>
+                <div class="flex-item"><div class="icon">🎯</div><h3>精准</h3><p>轻松控制对齐方式</p></div>
+                <div class="flex-item"><div class="icon">📱</div><h3>响应式</h3><p>适配各种屏幕尺寸</p></div>
+            </div>
+            <h2>居中演示</h2>
+            <div class="flex-center-demo">
+                <div class="inner">✨ 水平垂直居中 ✨</div>
+            </div>
+        </body>
+        </html>`,
+                grid: `<!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Grid 网格布局</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #f0f2f5; padding: 30px; }
+                h2 { text-align: center; color: #333; margin-bottom: 20px; }
+                .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto; }
+                .grid-item { background: #fff; padding: 20px; text-align: center; box-shadow: 0 3px 12px rgba(0,0,0,0.05); min-height: 120px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #555; transition: transform 0.2s; }
+                .grid-item:hover { transform: scale(1.03); }
+                .grid-item:nth-child(1) { background: #fef3c7; color: #b45309; }
+                .grid-item:nth-child(2) { background: #dbeafe; color: #1d4ed8; }
+                .grid-item:nth-child(3) { background: #d1fae5; color: #065f46; }
+                .grid-item:nth-child(4) { background: #fce7f3; color: #9d174d; }
+                .grid-item:nth-child(5) { background: #ede9fe; color: #5b21b6; }
+                .grid-item:nth-child(6) { background: #e0f2fe; color: #0c4a6e; }
+            </style>
+        </head>
+        <body>
+            <h2>🔲 CSS Grid 网格布局</h2>
+            <div class="grid-container">
+                <div class="grid-item">📦 格子 1</div>
+                <div class="grid-item">🎨 格子 2</div>
+                <div class="grid-item">⚡ 格子 3</div>
+                <div class="grid-item">🌟 格子 4</div>
+                <div class="grid-item">💎 格子 5</div>
+                <div class="grid-item">🔥 格子 6</div>
+            </div>
+        </body>
+        </html>`
+            };
+
+            // ============ 初始化 ============
+            function init() {
+                const savedCode = localStorage.getItem(STORAGE_KEY);
+                if (savedCode !== null && savedCode.trim() !== '') {
+                    codeTextarea.value = savedCode;
+                } else {
+                    codeTextarea.value = templates['html5'];
+                }
+
+                const savedAutoRun = localStorage.getItem(AUTO_RUN_KEY);
+                if (savedAutoRun === 'true') {
+                    setAutoRun(true);
+                }
+
+                restoreLayout();
+                updateLineNumbers();
+                updateStatusBar();
+                syncLineScroll();
+                updatePreview();
+                markSaved();
+                setupEventListeners();
+                handleResize();
+            }
+
+            function restoreLayout() {
+                const savedLayout = localStorage.getItem(LAYOUT_KEY);
+                if (savedLayout && window.innerWidth > 768) {
+                    const ratio = parseFloat(savedLayout);
+                    if (ratio > 0.2 && ratio < 0.8) {
+                        const totalWidth = mainContainer.clientWidth;
+                        const editorWidth = totalWidth * ratio;
+                        editorPanel.style.flex = 'none';
+                        editorPanel.style.width = editorWidth + 'px';
+                        previewPanel.style.flex = 'none';
+                        previewPanel.style.width = (totalWidth - editorWidth - resizer.offsetWidth) + 'px';
+                    }
+                }
+            }
+
+            function saveLayout() {
+                if (window.innerWidth <= 768) return;
+                const totalWidth = mainContainer.clientWidth;
+                const editorWidth = editorPanel.getBoundingClientRect().width;
+                const ratio = editorWidth / totalWidth;
+                localStorage.setItem(LAYOUT_KEY, ratio.toString());
+            }
+
+            function setupEventListeners() {
+                btnRun.addEventListener('click', () => {
+                    updatePreview();
+                    showToast('✅ 代码已运行', 'success');
+                });
+
+                btnAutoRun.addEventListener('click', () => {
+                    setAutoRun(!autoRunEnabled);
+                });
+
+                btnClear.addEventListener('click', () => {
+                    if (codeTextarea.value.trim() === '') return;
+                    codeTextarea.value = '';
+                    updateLineNumbers();
+                    updateStatusBar();
+                    updatePreview();
+                    markUnsaved();
+                    codeTextarea.focus();
+                    showToast('🗑 编辑器已清空', 'info');
+                });
+
+                btnCopy.addEventListener('click', () => {
+                    const code = codeTextarea.value;
+                    if (!code.trim()) {
+                        showToast('⚠️ 没有可复制的内容', 'warning');
+                        return;
+                    }
+                    navigator.clipboard.writeText(code).then(() => {
+                        showToast('📋 代码已复制到剪贴板', 'success');
+                    }).catch(() => {
+                        codeTextarea.select();
+                        document.execCommand('copy');
+                        showToast('📋 代码已复制', 'success');
+                    });
+                });
+
+                btnDownload.addEventListener('click', () => {
+                    const code = codeTextarea.value;
+                    if (!code.trim()) {
+                        showToast('⚠️ 没有可下载的内容', 'warning');
+                        return;
+                    }
+                    const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'index.html';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast('💾 文件已下载 (index.html)', 'success');
+                });
+
+                templateSelect.addEventListener('change', () => {
+                    const templateKey = templateSelect.value;
+                    if (!templateKey) return;
+                    if (templates[templateKey]) {
+                        codeTextarea.value = templates[templateKey];
+                        updateLineNumbers();
+                        updateStatusBar();
+                        updatePreview();
+                        markUnsaved();
+                        templateSelect.value = '';
+                        showToast('📄 模板已加载', 'info');
+                    }
+                });
+
+                codeTextarea.addEventListener('input', () => {
+                    updateLineNumbers();
+                    updateStatusBar();
+                    markUnsaved();
+                    if (autoRunEnabled) {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(() => {
+                            updatePreview();
+                        }, DEBOUNCE_DELAY);
+                    }
+                });
+
+                codeTextarea.addEventListener('scroll', syncLineScroll);
+                codeTextarea.addEventListener('keydown', handleKeyDown);
+
+                codeTextarea.addEventListener('paste', () => {
+                    setTimeout(() => {
+                        updateLineNumbers();
+                        updateStatusBar();
+                        if (autoRunEnabled) {
+                            clearTimeout(debounceTimer);
+                            debounceTimer = setTimeout(updatePreview, DEBOUNCE_DELAY);
+                        }
+                    }, 50);
+                });
+
+                resizer.addEventListener('mousedown', startResize);
+                resizer.addEventListener('touchstart', startResizeTouch, { passive: false });
+
+                btnResetLayout.addEventListener('click', resetLayout);
+
+                window.addEventListener('resize', handleResize);
+
+                document.addEventListener('keydown', handleGlobalShortcut);
+
+                window.addEventListener('beforeunload', () => {
+                    saveToStorage();
+                });
+            }
+
+            function handleKeyDown(e) {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const textarea = codeTextarea;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    if (e.shiftKey) {
+                        const lineStart = textarea.value.lastIndexOf('\n', start - 1) + 1;
+                        const currentLine = textarea.value.substring(lineStart, start);
+                        const match = currentLine.match(/^ {1,4}/);
+                        if (match) {
+                            const removeCount = Math.min(match[0].length, 4);
+                            const before = textarea.value.substring(0, lineStart);
+                            const after = textarea.value.substring(lineStart + removeCount);
+                            textarea.value = before + after;
+                            textarea.selectionStart = textarea.selectionEnd = start - removeCount;
+                            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                    } else {
+                        const spaces = '    ';
+                        textarea.value = textarea.value.substring(0, start) + spaces + textarea.value.substring(end);
+                        textarea.selectionStart = textarea.selectionEnd = start + spaces.length;
+                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }
+            }
+
+            function handleGlobalShortcut(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    updatePreview();
+                    showToast('✅ 代码已运行', 'success');
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    e.preventDefault();
+                    saveToStorage();
+                    markSaved();
+                    showToast('💾 代码已保存', 'success');
+                }
+            }
+
+            function updatePreview() {
+                const code = codeTextarea.value;
+                if (!code.trim()) {
+                    previewIframe.style.display = 'none';
+                    previewPlaceholder.style.display = 'flex';
+                    return;
+                }
+                previewPlaceholder.style.display = 'none';
+                previewIframe.style.display = 'block';
+                try {
+                    previewIframe.srcdoc = code;
+                } catch (err) {
+                    previewIframe.srcdoc =
+                        `<html><body style="padding:20px;font-family:sans-serif;color:#e0556a;"><h3>渲染错误</h3><pre>${escapeHtml(err.message)}</pre></body></html>`;
+                }
+            }
+
+            function escapeHtml(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function updateLineNumbers() {
+                const code = codeTextarea.value;
+                const lineCount = code === '' ? 1 : (code.match(/\n/g) || []).length + 1;
+                const endsWithNewline = code.endsWith('\n');
+                const totalLines = endsWithNewline ? lineCount + 1 : lineCount;
+                const displayLines = Math.max(totalLines, 1);
+                let html = '';
+                for (let i = 1; i <= displayLines; i++) {
+                    html += `<span>${i}</span>`;
+                }
+                lineNumbers.innerHTML = html;
+                highlightCurrentLine();
+            }
+
+            function highlightCurrentLine() {
+                const cursorPos = codeTextarea.selectionStart;
+                const textBeforeCursor = codeTextarea.value.substring(0, cursorPos);
+                const currentLineNumber = (textBeforeCursor.match(/\n/g) || []).length + 1;
+                const allSpans = lineNumbers.querySelectorAll('span');
+                allSpans.forEach((span, index) => {
+                    if (index + 1 === currentLineNumber) {
+                        span.classList.add('active-line');
+                    } else {
+                        span.classList.remove('active-line');
+                    }
+                });
+            }
+
+            function syncLineScroll() {
+                lineNumbers.scrollTop = codeTextarea.scrollTop;
+            }
+
+            lineNumbers.addEventListener('click', (e) => {
+                if (e.target.tagName === 'SPAN') {
+                    const lineNum = parseInt(e.target.textContent);
+                    if (!isNaN(lineNum)) {
+                        const lines = codeTextarea.value.split('\n');
+                        let charPos = 0;
+                        for (let i = 0; i < Math.min(lineNum - 1, lines.length); i++) {
+                            charPos += lines[i].length + 1;
+                        }
+                        codeTextarea.focus();
+                        codeTextarea.setSelectionRange(charPos, charPos);
+                        const lineHeight = parseFloat(getComputedStyle(codeTextarea).lineHeight);
+                        const targetScroll = (lineNum - 1) * lineHeight - codeTextarea.clientHeight / 3;
+                        codeTextarea.scrollTop = Math.max(0, targetScroll);
+                        syncLineScroll();
+                    }
+                }
+            });
+
+            codeTextarea.addEventListener('click', highlightCurrentLine);
+            codeTextarea.addEventListener('keyup', highlightCurrentLine);
+
+            function updateStatusBar() {
+                const code = codeTextarea.value;
+                const lineCount = code === '' ? 0 : (code.match(/\n/g) || []).length + 1;
+                const charCount = code.length;
+                statusLines.textContent = lineCount;
+                statusChars.textContent = charCount;
+            }
+
+            function markSaved() {
+                isSaved = true;
+                statusDot.className = 'status-dot saved';
+                statusSave.textContent = '已保存';
+            }
+
+            function markUnsaved() {
+                if (!isSaved) return;
+                isSaved = false;
+                statusDot.className = 'status-dot unsaved';
+                statusSave.textContent = '未保存';
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(() => {
+                    saveToStorage();
+                    markSaved();
+                }, SAVE_DELAY);
+            }
+
+            function saveToStorage() {
+                localStorage.setItem(STORAGE_KEY, codeTextarea.value);
+            }
+
+            function setAutoRun(enabled) {
+                autoRunEnabled = enabled;
+                if (enabled) {
+                    btnAutoRun.classList.add('active');
+                    updatePreview();
+                } else {
+                    btnAutoRun.classList.remove('active');
+                }
+                localStorage.setItem(AUTO_RUN_KEY, enabled.toString());
+            }
+
+            let isResizing = false;
+            let startX = 0;
+            let startY = 0;
+            let startEditorWidth = 0;
+            let startEditorHeight = 0;
+            let startPreviewWidth = 0;
+            let startPreviewHeight = 0;
+            let isRowLayout = true;
+
+            function getLayoutDirection() {
+                return window.innerWidth > 768 ? 'row' : 'column';
+            }
+
+            function startResize(e) {
+                e.preventDefault();
+                isResizing = true;
+                isRowLayout = getLayoutDirection() === 'row';
+                resizer.classList.add('active');
+                document.body.style.cursor = isRowLayout ? 'col-resize' : 'row-resize';
+                document.body.style.userSelect = 'none';
+                const editorRect = editorPanel.getBoundingClientRect();
+                const previewRect = previewPanel.getBoundingClientRect();
+                if (isRowLayout) {
+                    startX = e.clientX;
+                    startEditorWidth = editorRect.width;
+                    startPreviewWidth = previewRect.width;
+                    editorPanel.style.flex = 'none';
+                    previewPanel.style.flex = 'none';
+                } else {
+                    startY = e.clientY;
+                    startEditorHeight = editorRect.height;
+                    startPreviewHeight = previewRect.height;
+                    editorPanel.style.flex = 'none';
+                    previewPanel.style.flex = 'none';
+                }
+                document.addEventListener('mousemove', onResizeMove);
+                document.addEventListener('mouseup', stopResize);
+            }
+
+            function startResizeTouch(e) {
+                e.preventDefault();
+                if (e.touches.length !== 1) return;
+                isResizing = true;
+                isRowLayout = getLayoutDirection() === 'row';
+                resizer.classList.add('active');
+                document.body.style.userSelect = 'none';
+                const editorRect = editorPanel.getBoundingClientRect();
+                const previewRect = previewPanel.getBoundingClientRect();
+                const touch = e.touches[0];
+                if (isRowLayout) {
+                    startX = touch.clientX;
+                    startEditorWidth = editorRect.width;
+                    startPreviewWidth = previewRect.width;
+                    editorPanel.style.flex = 'none';
+                    previewPanel.style.flex = 'none';
+                } else {
+                    startY = touch.clientY;
+                    startEditorHeight = editorRect.height;
+                    startPreviewHeight = previewRect.height;
+                    editorPanel.style.flex = 'none';
+                    previewPanel.style.flex = 'none';
+                }
+                document.addEventListener('touchmove', onResizeMoveTouch, { passive: false });
+                document.addEventListener('touchend', stopResizeTouch);
+            }
+
+            function onResizeMove(e) {
+                if (!isResizing) return;
+                const containerRect = mainContainer.getBoundingClientRect();
+                if (isRowLayout) {
+                    const dx = e.clientX - startX;
+                    let newEditorWidth = startEditorWidth + dx;
+                    const minWidth = 200;
+                    const maxWidth = containerRect.width - resizer.offsetWidth - 200;
+                    newEditorWidth = Math.max(minWidth, Math.min(maxWidth, newEditorWidth));
+                    editorPanel.style.width = newEditorWidth + 'px';
+                    previewPanel.style.width = (containerRect.width - newEditorWidth - resizer.offsetWidth) + 'px';
+                } else {
+                    const dy = e.clientY - startY;
+                    let newEditorHeight = startEditorHeight + dy;
+                    const minHeight = 150;
+                    const maxHeight = containerRect.height - resizer.offsetHeight - 150;
+                    newEditorHeight = Math.max(minHeight, Math.min(maxHeight, newEditorHeight));
+                    editorPanel.style.height = newEditorHeight + 'px';
+                    previewPanel.style.height = (containerRect.height - newEditorHeight - resizer.offsetHeight) + 'px';
+                }
+            }
+
+            function onResizeMoveTouch(e) {
+                if (!isResizing) return;
+                e.preventDefault();
+                if (e.touches.length !== 1) return;
+                const containerRect = mainContainer.getBoundingClientRect();
+                const touch = e.touches[0];
+                if (isRowLayout) {
+                    const dx = touch.clientX - startX;
+                    let newEditorWidth = startEditorWidth + dx;
+                    const minWidth = 200;
+                    const maxWidth = containerRect.width - resizer.offsetWidth - 200;
+                    newEditorWidth = Math.max(minWidth, Math.min(maxWidth, newEditorWidth));
+                    editorPanel.style.width = newEditorWidth + 'px';
+                    previewPanel.style.width = (containerRect.width - newEditorWidth - resizer.offsetWidth) + 'px';
+                } else {
+                    const dy = touch.clientY - startY;
+                    let newEditorHeight = startEditorHeight + dy;
+                    const minHeight = 150;
+                    const maxHeight = containerRect.height - resizer.offsetHeight - 150;
+                    newEditorHeight = Math.max(minHeight, Math.min(maxHeight, newEditorHeight));
+                    editorPanel.style.height = newEditorHeight + 'px';
+                    previewPanel.style.height = (containerRect.height - newEditorHeight - resizer.offsetHeight) + 'px';
+                }
+            }
+
+            function stopResize() {
+                isResizing = false;
+                resizer.classList.remove('active');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+                document.removeEventListener('mousemove', onResizeMove);
+                document.removeEventListener('mouseup', stopResize);
+                saveLayout();
+            }
+
+            function stopResizeTouch() {
+                isResizing = false;
+                resizer.classList.remove('active');
+                document.body.style.userSelect = '';
+                document.removeEventListener('touchmove', onResizeMoveTouch);
+                document.removeEventListener('touchend', stopResizeTouch);
+                saveLayout();
+            }
+
+            function resetLayout() {
+                editorPanel.style.flex = '';
+                editorPanel.style.width = '';
+                editorPanel.style.height = '';
+                previewPanel.style.flex = '';
+                previewPanel.style.width = '';
+                previewPanel.style.height = '';
+                localStorage.removeItem(LAYOUT_KEY);
+                showToast('↺ 面板布局已重置', 'info');
+            }
+
+            function handleResize() {
+                const newLayout = getLayoutDirection();
+                if (newLayout === 'column' && isRowLayout && editorPanel.style.width) {
+                    editorPanel.style.flex = '';
+                    editorPanel.style.width = '';
+                    editorPanel.style.height = '';
+                    previewPanel.style.flex = '';
+                    previewPanel.style.width = '';
+                    previewPanel.style.height = '';
+                }
+                isRowLayout = newLayout === 'row';
+                syncLineScroll();
+                updateLineNumbers();
+            }
+
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 2400);
+            }
+
+            init();
+
+            window.addEventListener('resize', () => {
+                updateLineNumbers();
+                syncLineScroll();
+            });
+
+            console.log('🚀 米遇安HTML编译器已就绪');
+            console.log('  ▶ Ctrl+Enter 运行代码');
+            console.log('  ▶ Ctrl+S 保存代码');
+            console.log('  ▶ 拖拽中间分隔条调整面板大小');
+            console.log('  ▶ 点击行号可跳转到对应行');
+            console.log('  ▶ Tab 插入缩进，Shift+Tab 减少缩进');
+        })();
+    </script>
+</body>
+</html>
