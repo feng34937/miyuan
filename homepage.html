@@ -512,22 +512,31 @@
         .game-name { font-size: 1.1rem; font-weight: 700; color: #0078D7; margin-bottom: 0.3rem; }
         .dark .game-name { color: #5aa9e6; }
         
-        .special-game-card {
-            background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
-            border: 2px solid #ffc107; padding: 1.5rem 1.2rem; margin-top: 1.5rem;
-            position: relative; transition: all 0.35s cubic-bezier(0.2,0.9,0.4,1);
+        /* 小岛奇兵卡片（独立，与系列卡片区分） */
+        .standalone-game-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid #0078D7;
+            padding: 1.5rem 1.2rem;
+            margin-top: 1.5rem;
+            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
-        .special-game-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(255,193,7,0.3); background: rgba(255,255,255,0.94); }
-        .dark .special-game-card { background: rgba(30,31,34,0.9); border-color: #ffc107; }
-        .dark .special-game-card:hover { background: rgba(40,42,48,0.95); }
-        .game-badge {
+        .standalone-game-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0,120,215,0.25); background: rgba(255, 255, 255, 0.94); }
+        .dark .standalone-game-card { background: rgba(30,31,34,0.9); border-color: #5aa9e6; }
+        .dark .standalone-game-card:hover { background: rgba(40,42,48,0.95); }
+        .standalone-game-card .game-badge {
             display: inline-flex; align-items: center; gap: 4px;
             background: #ff9800; color: white; font-size: 0.7rem; font-weight: bold;
-            padding: 2px 8px; margin-right: 6px;
+            padding: 2px 8px;
+            margin-top: 6px;
         }
-        .dark .game-badge { background: #e67e22; }
-        .game-badge.premium { background: #f1c40f; color: #2c3e50; }
-        .game-badge.cooperation { background: #2ecc71; }
+        .dark .standalone-game-card .game-badge { background: #e67e22; }
+        .standalone-game-card .game-badge.premium { background: #f1c40f; color: #2c3e50; }
+        .standalone-game-card .game-badge.cooperation { background: #2ecc71; }
         
         .demo-card {
             background: rgba(255,255,255,0.75); backdrop-filter: blur(12px);
@@ -717,58 +726,26 @@
         <footer class="bg-dark text-white py-8"><div class="container"><div class="grid md:grid-cols-4 gap-5 mb-5"><div><h3 class="text-base font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-xs">实用工具 · 有趣游戏 · 教育文化</p></div><div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link">首页</a></li><li><a href="#about" class="footer-link">关于米遇安</a></li><li><a href="#team" class="footer-link">核心成员</a></li><li><a href="#" onclick="openSection('tools'); return false;" class="footer-link">工具分区</a></li><li><a href="#" onclick="openSection('games'); return false;" class="footer-link">娱乐分区</a></li><li><a href="#" onclick="openSection('education'); return false;" class="footer-link">教育分区</a></li><li><a href="#contact" class="footer-link">联系我们</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">产品系列</h3><ul class="space-y-1 text-xs"><li><a class="footer-link cursor-pointer" onclick="openSection('tools')">工具分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('games')">娱乐分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('education')">教育分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('others')">其他分区</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">联系方式</h3><ul class="space-y-1 text-xs"><li><i class="fas fa-map-marker-alt w-4"></i> 桂林市第一中学</li><li><i class="fas fa-phone w-4"></i> +86 152 0773 8425</li><li><i class="fas fa-envelope w-4"></i> 3493792731@qq.com</li></ul></div></div><div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p>&copy; 2026 米遇安 · 保留所有权利</p><div class="flex justify-center gap-4 mt-1"><a href="#" class="legal-link" onclick="window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); return false;">用户协议</a><a href="#" class="legal-link" onclick="window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); return false;">隐私政策</a></div></div></div></footer>
     </main>
 
-    <!-- 工具分区 - 新增 HTML 编辑器卡片 -->
-    <div id="toolsSection" class="section-page">
-        <div class="section-content p-5 max-w-6xl mx-auto">
-            <h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1>
-            <p class="text-center text-gray-600 text-sm mb-6">实用工具 · 高效便捷</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                <!-- 米遇安计算器 -->
-                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
-                    <i class="fas fa-calculator demo-icon"></i>
-                    <h3 class="text-lg font-bold mb-1">米遇安计算器</h3>
-                    <p class="text-xs text-gray-500 mb-3">便捷计算，快速完成数学运算。</p>
-                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calculator', '_blank')">打开计算器</button>
-                </div>
-                <!-- 米遇安天气 -->
-                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
-                    <i class="fas fa-cloud-sun demo-icon"></i>
-                    <h3 class="text-lg font-bold mb-1">米遇安天气</h3>
-                    <p class="text-xs text-gray-500 mb-3">实时天气，出行必备。</p>
-                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/weather', '_blank')">查看天气</button>
-                </div>
-                <!-- 米遇安时钟 -->
-                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
-                    <i class="fas fa-clock demo-icon"></i>
-                    <h3 class="text-lg font-bold mb-1">米遇安时钟</h3>
-                    <p class="text-xs text-gray-500 mb-3">精准时间，世界时钟。</p>
-                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/clock', '_blank')">查看时钟</button>
-                </div>
-                <!-- 米遇安日历 -->
-                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
-                    <i class="fas fa-calendar-alt demo-icon"></i>
-                    <h3 class="text-lg font-bold mb-1">米遇安日历</h3>
-                    <p class="text-xs text-gray-500 mb-3">日期管理，日程提醒。</p>
-                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calendar', '_blank')">打开日历</button>
-                </div>
-                <!-- 米遇安 HTML 编辑器（新增） -->
-                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
-                    <i class="fas fa-code demo-icon"></i>
-                    <h3 class="text-lg font-bold mb-1">HTML 编辑器</h3>
-                    <p class="text-xs text-gray-500 mb-3">在线编写与预览 HTML 代码。</p>
-                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/html_editor', '_blank')">打开编辑器</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- 工具分区 -->
+    <div id="toolsSection" class="section-page"><div class="section-content p-5 max-w-6xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1><p class="text-center text-gray-600 text-sm mb-6">实用工具 · 高效便捷</p><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-calculator demo-icon"></i><h3 class="text-lg font-bold mb-1">米遇安计算器</h3><p class="text-xs text-gray-500 mb-3">便捷计算，快速完成数学运算。</p><button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calculator', '_blank')">打开计算器</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-cloud-sun demo-icon"></i><h3 class="text-lg font-bold mb-1">米遇安天气</h3><p class="text-xs text-gray-500 mb-3">实时天气，出行必备。</p><button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/weather', '_blank')">查看天气</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-clock demo-icon"></i><h3 class="text-lg font-bold mb-1">米遇安时钟</h3><p class="text-xs text-gray-500 mb-3">精准时间，世界时钟。</p><button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/clock', '_blank')">查看时钟</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-calendar-alt demo-icon"></i><h3 class="text-lg font-bold mb-1">米遇安日历</h3><p class="text-xs text-gray-500 mb-3">日期管理，日程提醒。</p><button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calendar', '_blank')">打开日历</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-code demo-icon"></i><h3 class="text-lg font-bold mb-1">HTML 编辑器</h3><p class="text-xs text-gray-500 mb-3">在线编写与预览 HTML 代码。</p><button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/html_editor', '_blank')">打开编辑器</button></div></div></div></div>
 
-    <!-- 娱乐分区（原游戏分区） -->
-    <div id="gamesSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">娱乐分区</h1><p class="text-center text-gray-600 text-sm mb-4">探索精彩娱乐世界</p><div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList('warfareList')"><i class="fas fa-folder-open series-icon"></i><h2 class="text-lg font-bold">现代战争推演系列</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="fas fa-chevron-down mt-1 text-primary transition-transform" id="warfareArrow"></i></div><div id="warfareList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-gamepad text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演1</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-crosshairs text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演2</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/2', '_blank')">点击试玩</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-rocket text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演3</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-bolt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代冲突</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-tachometer-alt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演4</div><p class="text-xs text-gray-500">最新续作，全新战场</p><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/4', '_blank')">点击试玩</button></div></div><div class="series-card hover-tint mt-5" onmousemove="updateMask(event)" onclick="toggleGameList('chessList')"><i class="fas fa-chess-board series-icon"></i><h2 class="text-lg font-bold">棋类游戏合集</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="fas fa-chevron-down mt-1 text-primary transition-transform" id="chessArrow"></i></div><div id="chessList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-chess-board text-xl text-primary mb-1"></i><div class="game-name text-sm">五子棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/gomoku', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-chess text-xl text-primary mb-1"></i><div class="game-name text-sm">象棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/chinese', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-chess text-xl text-primary mb-1"></i><div class="game-name text-sm">围棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/go', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-chess-queen text-xl text-primary mb-1"></i><div class="game-name text-sm">国际象棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/usual', '_blank')">开始对弈</button></div></div><div class="special-game-card hover-tint mt-5" onmousemove="updateMask(event)"><div class="flex flex-wrap items-center justify-between mb-3"><div class="flex items-center gap-2"><i class="fas fa-user-secret text-3xl text-primary"></i><h2 class="text-lg font-bold">小偷世界</h2></div><div class="flex gap-1"><span class="game-badge cooperation"><i class="fas fa-handshake"></i> 联合</span><span class="game-badge premium"><i class="fas fa-coins"></i> 付费</span></div></div><p class="text-sm text-gray-600 dark:text-gray-400 mb-3">潜入、策略、博弈，体验独特的联合对抗与付费增值玩法。</p><div class="flex justify-between items-center"><span class="text-xs text-yellow-600 dark:text-yellow-400"><i class="fas fa-tools"></i> 研发中 · 敬请期待</span><button class="btn-primary text-xs opacity-70 cursor-default" style="background:#6c757d;">即将上线</button></div></div></div></div>
+    <!-- 娱乐分区（原游戏分区）- 已删除小偷世界，新增小岛奇兵 -->
+    <div id="gamesSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">娱乐分区</h1><p class="text-center text-gray-600 text-sm mb-4">探索精彩娱乐世界</p><div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList('warfareList')"><i class="fas fa-folder-open series-icon"></i><h2 class="text-lg font-bold">现代战争推演系列</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="fas fa-chevron-down mt-1 text-primary transition-transform" id="warfareArrow"></i></div><div id="warfareList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-gamepad text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演1</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-crosshairs text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演2</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/2', '_blank')">点击试玩</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-rocket text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演3</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-bolt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代冲突</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-tachometer-alt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演4</div><p class="text-xs text-gray-500">最新续作，全新战场</p><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/4', '_blank')">点击试玩</button></div></div><div class="series-card hover-tint mt-5" onmousemove="updateMask(event)" onclick="toggleGameList('chessList')"><i class="fas fa-chess-board series-icon"></i><h2 class="text-lg font-bold">棋类游戏合集</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="fas fa-chevron-down mt-1 text-primary transition-transform" id="chessArrow"></i></div><div id="chessList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-chess-board text-xl text-primary mb-1"></i><div class="game-name text-sm">五子棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/gomoku', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-chess text-xl text-primary mb-1"></i><div class="game-name text-sm">象棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/chinese', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-chess text-xl text-primary mb-1"></i><div class="game-name text-sm">围棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/go', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="fas fa-chess-queen text-xl text-primary mb-1"></i><div class="game-name text-sm">国际象棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/usual', '_blank')">开始对弈</button></div></div>
+        <!-- 新增小岛奇兵，独立卡片 -->
+        <div class="standalone-game-card hover-tint mt-5" onmousemove="updateMask(event)">
+            <div class="flex items-center gap-3 mb-2 w-full justify-center">
+                <i class="fas fa-umbrella-beach text-3xl text-primary"></i>
+                <h2 class="text-lg font-bold">小岛奇兵</h2>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">守卫小岛，策略布防，体验塔防与经营的乐趣。</p>
+            <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/isleguard', '_blank')">开始游玩</button>
+        </div>
+    </div></div>
 
     <!-- 教育分区 -->
     <div id="educationSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">教育分区</h1><p class="text-center text-gray-600 text-sm mb-4">启迪智慧 · 传承文化</p><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-landmark demo-icon"></i><h3 class="text-xl font-bold mb-2">米遇安文化</h3><p class="text-gray-600 text-sm leading-relaxed mb-3">米遇安文化致力于传播优秀的教育理念，融合传统智慧与现代科技，为学习者提供有深度、有温度的文化内容。</p><button class="btn-primary text-sm mt-4" onclick="window.open('https://feng34937.github.io/miyuan/education/culture', '_blank')">了解更多 →</button></div></div></div>
 
-    <!-- 其他分区 - 新增米遇安图书 -->
+    <!-- 其他分区 -->
     <div id="othersSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">其他分区</h1><p class="text-center text-gray-600 text-sm mb-4">更多精彩内容</p><div class="grid gap-4 md:grid-cols-2"><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-users demo-icon"></i><h3 class="text-base font-bold">同学信息收集</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://forms.office.com/...', '_blank')">立即使用</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-book demo-icon"></i><h3 class="text-base font-bold">米遇安图书</h3><p class="text-xs text-gray-500">探索知识，阅读世界</p><button class="btn-primary text-xs mt-2" onclick="window.open('https://feng34937.github.io/miyuan/others/books', '_blank')">进入书库</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="fas fa-rocket demo-icon"></i><h3 class="text-base font-bold">成为公测成员</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://forms.office.com/...', '_blank')">立即报名</button></div></div></div></div>
 
     <script>
