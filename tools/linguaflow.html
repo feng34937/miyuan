@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>LinguaFlow · 智能翻译</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <style>
+        :root {
+            --bg: #aaccdd;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --card-border: rgba(255, 255, 255, 0.7);
+            --text: #0b2b44;
+            --text-secondary: #3e5e7c;
+            --text-muted: #6b7b8f;
+            --accent: #3b82f6;
+            --accent-hover: #2266cc;
+            --accent-light: rgba(59, 130, 246, 0.1);
+            --btn-bg: rgba(255, 255, 255, 0.85);
+            --btn-border: rgba(255, 255, 255, 0.6);
+            --btn-hover-bg: #ffffff;
+            --btn-hover-border: #bdd6ff;
+            --shadow-hard: 8px 8px 0 rgba(0, 20, 40, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 4px 8px rgba(0, 20, 40, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+            --shadow-hover: 0 8px 16px rgba(59, 130, 246, 0.15), inset 0 0 0 1px #bdd6ff;
+            --input-bg: rgba(255, 255, 255, 0.55);
+            --textarea-bg: rgba(255, 255, 255, 0.5);
+            --panel-bg: rgba(255, 255, 255, 0.4);
+            --panel-border: rgba(255, 255, 255, 0.7);
+            --detail-bg: rgba(255, 255, 255, 0.2);
+            --detail-border: rgba(255, 255, 255, 0.6);
+            --toast-bg: rgba(30, 28, 26, 0.92);
+            --toast-text: #f5f3f0;
+            --overlay: rgba(0, 0, 0, 0.15);
+            --icon-color: #1e3a5f;
+            --switch-bg: rgba(255, 255, 255, 0.3);
+            --switch-active-bg: #ffffff;
+            --history-hover: rgba(255, 255, 255, 0.7);
+            --badge-bg: rgba(255, 255, 255, 0.6);
+        }
+
+        body.dark {
+            --bg: #1a2a3a;
+            --card-bg: rgba(20, 35, 50, 0.7);
+            --card-border: rgba(60, 80, 100, 0.5);
+            --text: #d4e4f0;
+            --text-secondary: #a0b9d6;
+            --text-muted: #7f95af;
+            --accent: #7aa9ff;
+            --accent-hover: #5a8de0;
+            --accent-light: rgba(122, 169, 255, 0.12);
+            --btn-bg: rgba(30, 50, 70, 0.9);
+            --btn-border: #4a6a8a;
+            --btn-hover-bg: #2a445e;
+            --btn-hover-border: #5a8ab0;
+            --shadow-hard: 8px 8px 0 rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+            --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.4);
+            --input-bg: rgba(30, 50, 70, 0.6);
+            --textarea-bg: rgba(25, 42, 58, 0.55);
+            --panel-bg: rgba(25, 45, 65, 0.5);
+            --panel-border: #3a5a7a;
+            --detail-bg: rgba(20, 35, 50, 0.4);
+            --detail-border: #3a5a7a;
+            --toast-bg: rgba(232, 228, 223, 0.94);
+            --toast-text: #1a1917;
+            --overlay: rgba(0, 0, 0, 0.5);
+            --icon-color: #c0d2ea;
+            --switch-bg: rgba(20, 35, 50, 0.5);
+            --switch-active-bg: #2a445e;
+            --history-hover: rgba(40, 60, 80, 0.6);
+            --badge-bg: rgba(40, 65, 90, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem;
+            color: var(--text);
+            background: var(--bg);
+            transition: background 0.2s, color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 2;
+            max-width: 880px;
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-hard);
+            padding: 1.8rem;
+            border: 1px solid var(--card-border);
+            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.7rem;
+            font-weight: 650;
+            letter-spacing: -0.01em;
+            color: #0b2b44;
+            text-shadow: 0 2px 3px rgba(255, 255, 255, 0.6);
+            user-select: none;
+            white-space: nowrap;
+        }
+        body.dark .logo-wrap { color: #e0edf5; text-shadow: 0 2px 3px rgba(0, 0, 0, 0.3); }
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            font-size: 1.6rem;
+            background: var(--accent);
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        body.dark .logo-icon { border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4); }
+
+        .theme-toggle-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--icon-color);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: 0.15s;
+        }
+        .theme-toggle-btn:hover { background: var(--btn-hover-bg); box-shadow: var(--shadow-hover); transform: scale(1.02); border-color: var(--btn-hover-border); }
+        .theme-toggle-btn:active { transform: scale(0.94); transition: 0.08s ease; }
+
+        .toolbar-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .lang-group { flex: 1; min-width: 130px; display: flex; flex-direction: column; gap: 4px; }
+        .lang-label {
+            font-size: 0.7rem; font-weight: 650; text-transform: uppercase; letter-spacing: 0.06em;
+            color: var(--text-secondary); padding-left: 2px;
+        }
+        .lang-select {
+            width: 100%;
+            padding: 11px 32px 11px 12px;
+            border: 1px solid var(--btn-border);
+            background: var(--btn-bg);
+            font-size: 0.9rem;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%233e5e7c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: 0.15s;
+            outline: none;
+        }
+        .lang-select:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); box-shadow: var(--shadow-hover); }
+        .lang-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light), var(--shadow-sm); }
+        body.dark .lang-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0b9d6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+
+        .swap-btn-wrap { display: flex; align-items: flex-end; padding-bottom: 2px; flex-shrink: 0; }
+        .swap-btn {
+            width: 44px; height: 44px; background: var(--btn-bg); border: 1px solid var(--btn-border);
+            cursor: pointer; font-size: 1.3rem; display: flex; align-items: center; justify-content: center;
+            color: var(--icon-color); box-shadow: var(--shadow-sm); backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px); transition: 0.15s; flex-shrink: 0;
+        }
+        .swap-btn:hover { background: var(--btn-hover-bg); box-shadow: var(--shadow-hover); border-color: var(--btn-hover-border); transform: rotate(180deg); }
+        .swap-btn:active { transform: rotate(180deg) scale(0.88); transition: 0.08s ease; }
+
+        .btn {
+            background: var(--btn-bg); border: 1px solid var(--btn-border); padding: 0 18px;
+            font-weight: 600; font-size: 0.9rem; color: var(--icon-color); display: inline-flex;
+            align-items: center; justify-content: center; gap: 6px;
+            box-shadow: var(--shadow-sm); cursor: pointer; backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px); white-space: nowrap; transition: 0.15s;
+            height: 44px; font-family: 'Inter', system-ui, sans-serif;
+        }
+        .btn:hover { background: var(--btn-hover-bg); box-shadow: var(--shadow-hover); border-color: var(--btn-hover-border); transform: scale(1.02); }
+        .btn:active { transform: scale(0.94); transition: 0.08s ease; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; filter: grayscale(15%); }
+        .btn-accent {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+            font-weight: 650; letter-spacing: 0.02em; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+        .btn-accent:hover { background: var(--accent-hover); border-color: var(--accent-hover); box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4); color: #fff; }
+        body.dark .btn-accent { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); }
+        .btn-accent.loading { pointer-events: none; opacity: 0.7; }
+        .btn-accent .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #fff;
+            border-radius: 50%;          /* 🔴 修复：圆形旋转动画 */
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 2px;
+        }
+        .btn-accent.loading .spinner { display: inline-block; }
+        .btn-accent.loading .btn-text { opacity: 0.7; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .card-panel {
+            background: var(--panel-bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            padding: 1.5rem; border: 1px solid var(--panel-border);
+            box-shadow: inset 0 1px 5px rgba(255, 255, 255, 0.5), 0 12px 24px -8px rgba(0, 20, 40, 0.15);
+            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        body.dark .card-panel { box-shadow: inset 0 1px 5px rgba(255, 255, 255, 0.1), 0 12px 24px -8px rgba(0, 0, 0, 0.4); }
+
+        .text-areas-row { display: flex; gap: 14px; align-items: stretch; }
+        @media (max-width: 720px) { .text-areas-row { flex-direction: column; gap: 10px; } }
+        .text-area-wrapper { flex: 1; position: relative; display: flex; flex-direction: column; min-height: 170px; }
+        .text-area-wrapper textarea {
+            flex: 1; width: 100%; min-height: 170px; padding: 14px 16px; padding-bottom: 44px;
+            border: 1px solid var(--panel-border); background: var(--textarea-bg);
+            font-size: 1rem; font-family: 'Inter', system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text); resize: vertical; line-height: 1.7; transition: all 0.2s;
+            outline: none; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+        }
+        .text-area-wrapper textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); background: var(--btn-hover-bg); }
+        .text-area-wrapper textarea::placeholder { color: #94a3b8; font-style: italic; }
+        body.dark .text-area-wrapper textarea::placeholder { color: #7f95af; }
+        .text-area-wrapper textarea[readonly] { cursor: default; opacity: 0.9; }
+
+        .text-area-actions { position: absolute; bottom: 8px; left: 10px; display: flex; gap: 4px; pointer-events: all; z-index: 2; }
+        .mini-btn {
+            width: 30px; height: 30px; border: 1px solid transparent; background: transparent;
+            cursor: pointer; font-size: 0.95rem; color: var(--text-muted);
+            transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+        }
+        .mini-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+        .mini-btn:active { transform: scale(0.85); transition: 0.06s ease; }
+        .mini-btn.copied { color: #22c55e !important; animation: pop-in 0.4s ease; }
+        @keyframes pop-in { 0%{transform:scale(0.7);}60%{transform:scale(1.25);}100%{transform:scale(1);} }
+
+        .char-count {
+            position: absolute; bottom: 8px; right: 12px; font-size: 0.7rem; font-weight: 600;
+            color: var(--text-muted); pointer-events: none; user-select: none;
+            background: var(--badge-bg); padding: 3px 10px; border: 1px solid var(--panel-border);
+            transition: all 0.2s; z-index: 1;
+        }
+        .char-count.warning { color: #e8853b; border-color: #e8853b; }
+        .char-count.danger { color: #e0483b; border-color: #e0483b; animation: pulse-warn 1.5s ease-in-out infinite; }
+        @keyframes pulse-warn { 0%,100%{opacity:1;}50%{opacity:0.5;} }
+
+        .bottom-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+        .history-section {
+            background: var(--detail-bg); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            border: 1px solid var(--detail-border); padding: 1rem 1.2rem; transition: background 0.2s, border-color 0.2s;
+        }
+        .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+        .history-title { font-weight: 650; font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .history-clear { font-size: 0.75rem; color: var(--text-muted); cursor: pointer; background: none; border: none; text-decoration: underline; text-underline-offset: 3px; font-family: 'Inter', system-ui, sans-serif; transition: color 0.15s; padding: 4px 8px; }
+        .history-clear:hover { color: #e0483b; background: rgba(224,72,59,0.06); }
+        .history-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--panel-border) transparent; padding-right: 4px; }
+        .history-list::-webkit-scrollbar { width: 5px; }
+        .history-list::-webkit-scrollbar-track { background: transparent; }
+        .history-list::-webkit-scrollbar-thumb { background: var(--panel-border); }
+        .history-item { padding: 12px 14px; background: var(--textarea-bg); cursor: pointer; transition: all 0.15s; border: 1px solid transparent; display: flex; flex-direction: column; gap: 5px; }
+        .history-item:hover { background: var(--history-hover); border-color: var(--panel-border); box-shadow: var(--shadow-sm); }
+        .history-item .hi-source { font-size: 0.85rem; color: var(--text); font-weight: 500; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .history-item .hi-target { font-size: 0.8rem; color: var(--accent); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 500; }
+        .history-item .hi-meta { font-size: 0.68rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center; }
+        .history-empty { text-align: center; color: var(--text-muted); padding: 28px 16px; font-size: 0.85rem; }
+        .history-empty .empty-icon { font-size: 2.5rem; display: block; margin-bottom: 8px; opacity: 0.5; }
+
+        .toast {
+            position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--toast-bg); color: var(--toast-text); padding: 11px 22px;
+            font-size: 0.85rem; font-weight: 600; letter-spacing: 0.02em; z-index: 9999;
+            pointer-events: none; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.25);
+            white-space: nowrap; border: 1px solid rgba(255,255,255,0.3);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        .footer-note { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.03em; padding-top: 4px; }
+
+        @media (max-width: 720px) {
+            .app-container { padding: 1rem; gap: 1rem; }
+            .logo-wrap { font-size: 1.3rem; gap: 6px; }
+            .logo-icon { width: 34px; height: 34px; font-size: 1.2rem; }
+            .theme-toggle-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+            .lang-group { min-width: 100px; }
+            .lang-select { padding: 9px 26px 9px 8px; font-size: 0.8rem; background-position: right 6px center; }
+            .swap-btn { width: 36px; height: 36px; font-size: 1.1rem; }
+            .btn { padding: 0 14px; font-size: 0.8rem; height: 38px; }
+            .text-area-wrapper textarea { min-height: 130px; font-size: 0.9rem; padding: 12px; padding-bottom: 38px; }
+            .char-count { font-size: 0.65rem; bottom: 6px; right: 8px; padding: 2px 8px; }
+            .mini-btn { width: 26px; height: 26px; font-size: 0.8rem; }
+            .card-panel { padding: 1rem; }
+            .history-section { padding: 0.8rem; }
+            .toast { bottom: 16px; padding: 9px 16px; font-size: 0.75rem; box-shadow: 4px 4px 0 rgba(0,0,0,0.2); }
+        }
+        @media (max-width: 420px) {
+            .toolbar-row { flex-direction: column; gap: 8px; align-items: stretch; }
+            .lang-group { width: 100%; min-width: 0; }
+            .swap-btn-wrap { align-self: center; padding-bottom: 0; }
+            .swap-btn { transform: rotate(90deg); }
+            .swap-btn:hover { transform: rotate(270deg); }
+            .swap-btn:active { transform: rotate(270deg) scale(0.88); }
+            .bottom-actions { flex-direction: column; gap: 8px; }
+            .bottom-actions .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="app-container" id="appContainer">
+        <div class="header-row">
+            <div class="logo-wrap">
+                <div class="logo-icon"><i class="las la-language"></i></div>
+                <span>LinguaFlow</span>
+            </div>
+            <button class="theme-toggle-btn" id="themeToggle" title="切换深浅主题" aria-label="切换主题">
+                <i class="las la-moon" id="themeIcon"></i>
+            </button>
+        </div>
+
+        <div class="toolbar-row">
+            <div class="lang-group">
+                <label class="lang-label" for="sourceLang">源语言</label>
+                <select class="lang-select" id="sourceLang">
+                    <option value="auto">🔍 自动检测</option>
+                    <option value="en">English 英语</option>
+                    <option value="zh-CN">中文（简体）</option>
+                    <option value="zh-TW">中文（繁体）</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="pt">Português</option>
+                    <option value="ru">Русский</option>
+                    <option value="ar">العربية</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="it">Italiano</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="pl">Polski</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="vi">Tiếng Việt</option>
+                    <option value="th">ไทย</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="ms">Bahasa Melayu</option>
+                    <option value="sv">Svenska</option>
+                    <option value="no">Norsk</option>
+                    <option value="da">Dansk</option>
+                    <option value="fi">Suomi</option>
+                    <option value="el">Ελληνικά</option>
+                    <option value="cs">Čeština</option>
+                    <option value="ro">Română</option>
+                    <option value="hu">Magyar</option>
+                    <option value="uk">Українська</option>
+                    <option value="he">עברית</option>
+                </select>
+            </div>
+            <div class="swap-btn-wrap">
+                <button class="swap-btn" id="swapBtn" title="交换语言" aria-label="交换语言"><i class="las la-exchange-alt"></i></button>
+            </div>
+            <div class="lang-group">
+                <label class="lang-label" for="targetLang">目标语言</label>
+                <select class="lang-select" id="targetLang">
+                    <option value="zh-CN">中文（简体）</option>
+                    <option value="en">English 英语</option>
+                    <option value="zh-TW">中文（繁体）</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="pt">Português</option>
+                    <option value="ru">Русский</option>
+                    <option value="ar">العربية</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="it">Italiano</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="pl">Polski</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="vi">Tiếng Việt</option>
+                    <option value="th">ไทย</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="ms">Bahasa Melayu</option>
+                    <option value="sv">Svenska</option>
+                    <option value="no">Norsk</option>
+                    <option value="da">Dansk</option>
+                    <option value="fi">Suomi</option>
+                    <option value="el">Ελληνικά</option>
+                    <option value="cs">Čeština</option>
+                    <option value="ro">Română</option>
+                    <option value="hu">Magyar</option>
+                    <option value="uk">Українська</option>
+                    <option value="he">עברית</option>
+                </select>
+            </div>
+            <button class="btn" id="pasteBtn" title="粘贴剪贴板内容"><i class="las la-clipboard"></i> 粘贴</button>
+        </div>
+
+        <div class="card-panel">
+            <div class="text-areas-row">
+                <div class="text-area-wrapper">
+                    <textarea id="sourceText" placeholder="输入文字，按 Enter 翻译…" maxlength="5000"></textarea>
+                    <div class="text-area-actions">
+                        <button class="mini-btn" id="speakSourceBtn" title="朗读源文本"><i class="las la-volume-up"></i></button>
+                    </div>
+                    <span class="char-count" id="sourceCharCount">0 / 5000</span>
+                </div>
+                <div class="text-area-wrapper">
+                    <textarea id="targetText" placeholder="翻译结果" readonly></textarea>
+                    <div class="text-area-actions">
+                        <button class="mini-btn" id="copyResultBtn" title="复制译文"><i class="las la-copy"></i></button>
+                        <button class="mini-btn" id="speakResultBtn" title="朗读译文"><i class="las la-volume-up"></i></button>
+                    </div>
+                    <span class="char-count" id="targetCharCount">0</span>
+                </div>
+            </div>
+            <div class="bottom-actions">
+                <button class="btn btn-accent" id="translateBtn">
+                    <span class="spinner"></span>
+                    <span class="btn-text"><i class="las la-language"></i> 翻译</span>
+                </button>
+                <button class="btn" id="clearBtn"><i class="las la-trash-alt"></i> 清空</button>
+            </div>
+        </div>
+
+        <div class="history-section" id="historySection">
+            <div class="history-header">
+                <span class="history-title"><i class="las la-history"></i> 翻译历史</span>
+                <button class="history-clear" id="clearHistoryBtn">清空全部</button>
+            </div>
+            <ul class="history-list" id="historyList">
+                <li class="history-empty"><span class="empty-icon"><i class="las la-clipboard-list"></i></span>暂无记录</li>
+            </ul>
+        </div>
+
+        <div class="footer-note">
+            <span><i class="las la-clock"></i> 时光粒子 · 此刻永恒</span>
+            <span>©2026 米遇安 · LinguaFlow</span>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        (function() {
+            const sourceLangSelect = document.getElementById('sourceLang');
+            const targetLangSelect = document.getElementById('targetLang');
+            const sourceTextarea = document.getElementById('sourceText');
+            const targetTextarea = document.getElementById('targetText');
+            const translateBtn = document.getElementById('translateBtn');
+            const swapBtn = document.getElementById('swapBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const pasteBtn = document.getElementById('pasteBtn');
+            const speakSourceBtn = document.getElementById('speakSourceBtn');
+            const speakResultBtn = document.getElementById('speakResultBtn');
+            const copyResultBtn = document.getElementById('copyResultBtn');
+            const sourceCharCount = document.getElementById('sourceCharCount');
+            const targetCharCount = document.getElementById('targetCharCount');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const historyList = document.getElementById('historyList');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const toast = document.getElementById('toast');
+            const bgCanvas = document.getElementById('bg-canvas');
+            const appContainer = document.getElementById('appContainer');
+
+            const MAX_HISTORY = 20;
+            const MAX_CHARS = 5000;
+            const WARN_CHARS = 3500;
+            let isTranslating = false;
+            let toastTimer = null;
+            let speechVoices = [];
+
+            // 粒子背景
+            const ctx = bgCanvas.getContext('2d');
+            let particles = [], cw, ch, animFrame;
+            function initParticles() {
+                const cnt = Math.floor(cw * ch / 5000) || 25;
+                particles = [];
+                for(let i=0;i<cnt;i++) particles.push({
+                    type: i%3 ? 'sparkle' : 'cloud',
+                    x: Math.random()*cw, y: Math.random()*ch,
+                    size: 2+Math.random()*10, alpha: 0.08+Math.random()*0.18,
+                    radius: 25+Math.random()*55, speedX: 0.05+Math.random()*0.15, speedY: 0.02+Math.random()*0.08
+                });
+            }
+            function drawBg() {
+                if(!ctx) return;
+                ctx.clearRect(0,0,cw,ch);
+                const dark = document.body.classList.contains('dark');
+                ctx.fillStyle = dark ? 'rgba(20,35,50,0.08)' : 'rgba(210,230,250,0.08)';
+                ctx.fillRect(0,0,cw,ch);
+                particles.forEach(p=>{
+                    if(p.type==='cloud'){
+                        const grad=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.radius);
+                        if(dark){ grad.addColorStop(0,`rgba(100,140,180,${p.alpha*0.5})`); grad.addColorStop(1,'rgba(40,60,80,0)'); }
+                        else { grad.addColorStop(0,`rgba(230,242,255,${p.alpha})`); grad.addColorStop(1,'rgba(180,210,240,0)'); }
+                        ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,2*Math.PI); ctx.fill();
+                        p.x+=0.08; if(p.x>cw+100) p.x=-100;
+                    } else {
+                        ctx.fillStyle = dark ? `rgba(180,200,220,${p.alpha*0.7})` : `rgba(255,255,240,${p.alpha})`;
+                        ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.5,0,2*Math.PI); ctx.fill();
+                        p.x+=p.speedX; p.y+=p.speedY; if(p.x>cw+20)p.x=-20; if(p.y>ch+20)p.y=-20;
+                    }
+                });
+            }
+            function animLoop(){ drawBg(); animFrame=requestAnimationFrame(animLoop); }
+            function resizeCanvas(){
+                cw=window.innerWidth; ch=window.innerHeight;
+                bgCanvas.width=cw; bgCanvas.height=ch; initParticles();
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas(); animFrame=requestAnimationFrame(animLoop);
+
+            // 主题
+            function loadTheme(){
+                const saved=localStorage.getItem('linguaflow-theme');
+                if(saved==='dark'){ document.body.classList.add('dark'); themeIcon.className='las la-sun'; }
+                else if(saved==='light'){ document.body.classList.remove('dark'); themeIcon.className='las la-moon'; }
+                else {
+                    if(window.matchMedia('(prefers-color-scheme:dark)').matches){ document.body.classList.add('dark'); themeIcon.className='las la-sun'; }
+                    else themeIcon.className='las la-moon';
+                }
+            }
+            function toggleTheme(){
+                const isDark=document.body.classList.toggle('dark');
+                themeIcon.className=isDark?'las la-sun':'las la-moon';
+                localStorage.setItem('linguaflow-theme',isDark?'dark':'light');
+                themeToggle.style.transform='scale(0.9)'; setTimeout(()=>{themeToggle.style.transform='scale(1)';},150);
+                initParticles();
+            }
+            themeToggle.addEventListener('click', toggleTheme);
+            window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',e=>{
+                if(!localStorage.getItem('linguaflow-theme')){
+                    if(e.matches){ document.body.classList.add('dark'); themeIcon.className='las la-sun'; }
+                    else { document.body.classList.remove('dark'); themeIcon.className='las la-moon'; }
+                    initParticles();
+                }
+            });
+
+            // Toast
+            function showToast(msg,dur=2200){
+                if(toastTimer)clearTimeout(toastTimer);
+                toast.textContent=msg; toast.classList.add('show');
+                toastTimer=setTimeout(()=>{toast.classList.remove('show');toastTimer=null;},dur);
+            }
+
+            // 字符计数
+            function updateCharCounts(){
+                const len=sourceTextarea.value.length;
+                sourceCharCount.textContent=`${len} / ${MAX_CHARS}`;
+                sourceCharCount.classList.remove('warning','danger');
+                if(len>MAX_CHARS*0.9) sourceCharCount.classList.add('danger');
+                else if(len>WARN_CHARS) sourceCharCount.classList.add('warning');
+                targetCharCount.textContent=targetTextarea.value.length>0?`${targetTextarea.value.length} 字符`:'0';
+            }
+            sourceTextarea.addEventListener('input', updateCharCounts);
+
+            // 翻译核心（带重试）
+            async function translate(){
+                const sourceText=sourceTextarea.value.trim();
+                if(!sourceText){ showToast('⚠️ 请输入文字'); sourceTextarea.focus(); return; }
+                if(sourceText.length>MAX_CHARS){ showToast('⚠️ 文本过长'); return; }
+                if(isTranslating) return;
+                const sourceLang=sourceLangSelect.value, targetLang=targetLangSelect.value;
+                if(sourceLang!=='auto' && sourceLang===targetLang){ showToast('⚠️ 语言相同'); return; }
+                isTranslating=true; translateBtn.classList.add('loading'); translateBtn.disabled=true;
+                targetTextarea.value=''; targetCharCount.textContent='0';
+                const langPair=`${sourceLang}|${targetLang}`;
+                let success=false, result='', attempts=0;
+                const maxRetries=2;
+                while(!success && attempts<maxRetries){
+                    try {
+                        result = sourceText.length<=450 ? await translateGet(sourceText,langPair) : await translatePost(sourceText,langPair);
+                        success=true;
+                    } catch(e){
+                        attempts++;
+                        if(attempts>=maxRetries) throw e;
+                        await new Promise(r=>setTimeout(r,1000));
+                    }
+                }
+                targetTextarea.value=result; targetCharCount.textContent=`${result.length} 字符`;
+                updateCharCounts(); addToHistory(sourceText,result,sourceLang,targetLang);
+                showToast('✅ 翻译完成');
+                isTranslating=false; translateBtn.classList.remove('loading'); translateBtn.disabled=false;
+            }
+
+            async function translateGet(text,langPair){
+                const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${encodeURIComponent(langPair)}`;
+                const res=await fetch(url,{signal:AbortSignal.timeout(15000)});
+                if(!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data=await res.json();
+                if(data.responseStatus!==200||!data.responseData?.translatedText) throw new Error(data.responseDetails||'异常');
+                return data.responseData.translatedText;
+            }
+            async function translatePost(text,langPair){
+                const url='https://api.mymemory.translated.net/post';
+                const body=new URLSearchParams(); body.append('q',text); body.append('langpair',langPair);
+                const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString(),signal:AbortSignal.timeout(20000)});
+                if(!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data=await res.json();
+                if(data.responseStatus!==200||!data.responseData?.translatedText) throw new Error(data.responseDetails||'异常');
+                return data.responseData.translatedText;
+            }
+
+            // 键盘：Enter 翻译，Ctrl+Enter 换行
+            sourceTextarea.addEventListener('keydown',e=>{
+                if(e.key==='Enter'){
+                    if(e.ctrlKey||e.metaKey) return;
+                    e.preventDefault();
+                    translate();
+                }
+            });
+
+            translateBtn.addEventListener('click', translate);
+
+            // 交换
+            swapBtn.addEventListener('click',()=>{
+                if(isTranslating) return;
+                const s=sourceLangSelect.value, t=targetLangSelect.value;
+                if(s==='auto'){ sourceLangSelect.value=t; targetLangSelect.value='zh-CN'; }
+                else { sourceLangSelect.value=t; targetLangSelect.value=s; }
+                const st=sourceTextarea.value, tt=targetTextarea.value;
+                if(tt.trim()){ sourceTextarea.value=tt; targetTextarea.value=st; updateCharCounts(); }
+                showToast('🔄 已交换');
+            });
+
+            clearBtn.addEventListener('click',()=>{ if(isTranslating)return; sourceTextarea.value=''; targetTextarea.value=''; updateCharCounts(); sourceTextarea.focus(); showToast('🗑️ 已清空'); });
+            pasteBtn.addEventListener('click',async()=>{
+                if(isTranslating)return;
+                try{ const t=await navigator.clipboard.readText(); if(t.trim()){sourceTextarea.value=t; updateCharCounts(); showToast('📥 已粘贴');} else showToast('📋 空'); }
+                catch{ showToast('⚠️ 无法粘贴'); }
+            });
+
+            copyResultBtn.addEventListener('click',async()=>{
+                const t=targetTextarea.value.trim(); if(!t){ showToast('⚠️ 无内容'); return; }
+                try{ await navigator.clipboard.writeText(t); copyResultBtn.classList.add('copied'); showToast('📋 已复制'); setTimeout(()=>copyResultBtn.classList.remove('copied'),800); }
+                catch{ targetTextarea.select(); document.execCommand('copy'); targetTextarea.blur(); showToast('📋 已复制(降级)'); }
+            });
+
+            // 语音
+            function loadVoices(){
+                if('speechSynthesis' in window){
+                    speechVoices=window.speechSynthesis.getVoices();
+                    if(!speechVoices.length) setTimeout(()=>{speechVoices=window.speechSynthesis.getVoices();},300);
+                }
+            }
+            function getVoice(lang){
+                const voices=window.speechSynthesis.getVoices();
+                if(voices.length) speechVoices=voices;
+                const all=speechVoices.length?speechVoices:voices;
+                if(!all.length) return null;
+                const norm=lang.replace('_','-').toLowerCase(), base=norm.split('-')[0];
+                return all.find(v=>v.lang.replace('_','-').toLowerCase()===norm)||
+                       all.find(v=>v.lang.replace('_','-').toLowerCase().startsWith(norm))||
+                       all.find(v=>v.lang.replace('_','-').toLowerCase().startsWith(base))||
+                       all.find(v=>v.lang.replace('_','-').toLowerCase().includes(base))||null;
+            }
+            function speak(text,lang){
+                if(!('speechSynthesis' in window)){ showToast('⚠️ 不支持朗读'); return; }
+                if(!text.trim()){ showToast('⚠️ 无内容'); return; }
+                window.speechSynthesis.cancel();
+                const u=new SpeechSynthesisUtterance(text);
+                const voice=getVoice(lang); if(voice) u.voice=voice;
+                u.lang=lang.replace('_','-'); u.rate=0.9; u.pitch=1; u.volume=1;
+                u.onerror=e=>{ if(e.error!=='canceled'&&e.error!=='interrupted') showToast('⚠️ 朗读失败'); };
+                window.speechSynthesis.speak(u);
+            }
+            speakSourceBtn.addEventListener('click',()=>{
+                const t=sourceTextarea.value.trim(), lang=sourceLangSelect.value==='auto'?'en':sourceLangSelect.value;
+                if(!t){ showToast('⚠️ 先输入文字'); return; } loadVoices(); speak(t,lang);
+            });
+            speakResultBtn.addEventListener('click',()=>{
+                const t=targetTextarea.value.trim(), lang=targetLangSelect.value;
+                if(!t){ showToast('⚠️ 无译文'); return; } loadVoices(); speak(t,lang);
+            });
+
+            // 历史记录
+            function loadHistory(){
+                try{
+                    const raw=localStorage.getItem('linguaflow-history');
+                    if(raw){ const h=JSON.parse(raw); if(Array.isArray(h)&&h.length){ renderHistory(h); return; } }
+                }catch(e){}
+                renderHistory([]);
+            }
+            function saveHistory(h){ try{ localStorage.setItem('linguaflow-history',JSON.stringify(h)); }catch(e){ showToast('⚠️ 存储满'); } }
+            function addToHistory(src,trg,sl,tl){
+                let h=[];
+                try{ const raw=localStorage.getItem('linguaflow-history'); if(raw) h=JSON.parse(raw); if(!Array.isArray(h)) h=[]; }catch(e){h=[];}
+                if(h.length&&h[0].sourceText===src&&h[0].translatedText===trg&&h[0].sourceLang===sl&&h[0].targetLang===tl) return;
+                h.unshift({sourceText:src,translatedText:trg,sourceLang:sl,targetLang:tl,timestamp:Date.now()});
+                if(h.length>MAX_HISTORY) h=h.slice(0,MAX_HISTORY);
+                saveHistory(h); renderHistory(h);
+            }
+            function renderHistory(h){
+                if(!h||!h.length){
+                    historyList.innerHTML='<li class="history-empty"><span class="empty-icon"><i class="las la-clipboard-list"></i></span>暂无记录</li>';
+                    return;
+                }
+                historyList.innerHTML=h.map((item,i)=>{
+                    const sl=getLangName(item.sourceLang), tl=getLangName(item.targetLang);
+                    const time=formatTime(item.timestamp);
+                    return `<li class="history-item" data-index="${i}"><div class="hi-source">${esc(item.sourceText.slice(0,150))}${item.sourceText.length>150?'…':''}</div><div class="hi-target">→ ${esc(item.translatedText.slice(0,150))}${item.translatedText.length>150?'…':''}</div><div class="hi-meta"><span>${sl} → ${tl}</span><span>·</span><span>${time}</span></div></li>`;
+                }).join('');
+                historyList.querySelectorAll('.history-item').forEach(item=>{
+                    item.addEventListener('click',()=>{
+                        if(isTranslating)return;
+                        const i=parseInt(item.dataset.index);
+                        const raw=localStorage.getItem('linguaflow-history'); if(!raw)return;
+                        try{
+                            const h=JSON.parse(raw);
+                            if(Array.isArray(h)&&h[i]){
+                                const r=h[i];
+                                sourceTextarea.value=r.sourceText; targetTextarea.value=r.translatedText;
+                                if(r.sourceLang!=='auto'&&r.sourceLang) sourceLangSelect.value=r.sourceLang; else sourceLangSelect.value='auto';
+                                if(r.targetLang) targetLangSelect.value=r.targetLang;
+                                updateCharCounts(); showToast('📜 已恢复');
+                                document.querySelector('.card-panel').scrollIntoView({behavior:'smooth'});
+                            }
+                        }catch(e){}
+                    });
+                });
+            }
+            clearHistoryBtn.addEventListener('click',()=>{ if(isTranslating)return; localStorage.removeItem('linguaflow-history'); renderHistory([]); showToast('🗑️ 已清空历史'); });
+            function getLangName(code){
+                const map={'auto':'自动','en':'英语','zh-CN':'简中','zh-TW':'繁中','ja':'日语','ko':'韩语','fr':'法语','de':'德语','es':'西语','pt':'葡语','ru':'俄语','ar':'阿语','hi':'印地','it':'意','nl':'荷','pl':'波','tr':'土','vi':'越','th':'泰','id':'印尼','ms':'马来','sv':'瑞典','no':'挪威','da':'丹麦','fi':'芬兰','el':'希腊','cs':'捷克','ro':'罗','hu':'匈','uk':'乌','he':'希'};
+                return map[code]||code;
+            }
+            function formatTime(ts){ const diff=Date.now()-ts; if(diff<6e4)return'刚刚'; if(diff<36e5)return Math.floor(diff/6e4)+'分前'; if(diff<864e5)return Math.floor(diff/36e5)+'时前'; const d=new Date(ts); return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+            function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+            function init(){
+                loadTheme(); loadVoices(); loadHistory(); updateCharCounts();
+                if('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged=()=>{speechVoices=window.speechSynthesis.getVoices();};
+            }
+            init();
+
+            window.addEventListener('beforeunload',()=>{
+                cancelAnimationFrame(animFrame);
+                if('speechSynthesis' in window) window.speechSynthesis.cancel();
+                if(toastTimer) clearTimeout(toastTimer);
+            });
+        })();
+    </script>
+</body>
+</html>
