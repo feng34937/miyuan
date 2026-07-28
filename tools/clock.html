@@ -7,7 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- 使用 Line Awesome 图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -286,30 +287,30 @@
   <canvas id="clock-canvas"></canvas>
 
   <div class="header-row">
-    <h1><i class="fas fa-clock"></i> 米遇安时钟</h1>
+    <h1><i class="la la-clock"></i> 米遇安时钟</h1>
     <button class="theme-toggle-btn" id="theme-toggle" title="切换深浅主题">
-      <i class="fas fa-moon"></i>
+      <i class="la la-moon"></i>
     </button>
   </div>
 
   <div class="toolbar-row">
     <div class="search-wrapper">
-      <i class="fas fa-search"></i>
+      <i class="la la-search"></i>
       <input type="text" id="city-input" placeholder="搜索城市…" value="本地" autocomplete="off" />
-      <button id="search-btn" style="padding:0 18px;"><i class="fas fa-arrow-right"></i></button>
+      <button id="search-btn" style="padding:0 18px;"><i class="la la-arrow-right"></i></button>
     </div>
     <div class="mode-tabs" id="mode-tabs">
-      <button data-mode="clock" class="active"><i class="fas fa-clock"></i> 时钟</button>
-      <button data-mode="analog"><i class="fas fa-circle"></i> 表盘</button>
-      <button data-mode="stopwatch"><i class="fas fa-stopwatch"></i> 秒表</button>
-      <button data-mode="timer"><i class="fas fa-hourglass-end"></i> 计时器</button>
+      <button data-mode="clock" class="active"><i class="la la-clock"></i> 时钟</button>
+      <button data-mode="analog"><i class="la la-circle"></i> 表盘</button>
+      <button data-mode="stopwatch"><i class="la la-stopwatch"></i> 秒表</button>
+      <button data-mode="timer"><i class="la la-hourglass-half"></i> 计时器</button>
     </div>
-    <button id="locate-btn"><i class="fas fa-location-dot"></i> 定位</button>
-    <button id="select-city-btn"><i class="fas fa-list-ul"></i> 选择城市</button>
+    <button id="locate-btn"><i class="la la-map-marker"></i> 定位</button>
+    <button id="select-city-btn"><i class="la la-list-ul"></i> 选择城市</button>
   </div>
 
   <div class="city-quick" id="timezone-quick">
-    <button data-tz="local" class="active-tz"><i class="fas fa-location-dot"></i> 本地</button>
+    <button data-tz="local" class="active-tz"><i class="la la-map-marker"></i> 本地</button>
     <button data-tz="America/New_York">纽约</button>
     <button data-tz="Europe/London">伦敦</button>
     <button data-tz="Asia/Tokyo">东京</button>
@@ -323,7 +324,7 @@
     <div id="loading-state" class="status-message">⏳ 同步时间…</div>
     <div id="clock-card-content" class="hidden">
       <div class="location-header">
-        <div class="city-name"><i class="fas fa-globe"></i><span id="display-city">本地时区</span></div>
+        <div class="city-name"><i class="la la-globe"></i><span id="display-city">本地时区</span></div>
         <div class="update-time" id="update-time">刚刚更新</div>
       </div>
       <div><span class="time-value" id="time-display">--:--</span><span class="seconds-blink" id="seconds-display">:--</span></div>
@@ -334,7 +335,7 @@
       </div>
       <div class="details-grid" id="clock-details-grid"></div>
       <div class="world-clock-section">
-        <div class="world-clock-title"><i class="fas fa-globe-americas"></i> 世界时钟</div>
+        <div class="world-clock-title"><i class="la la-globe-americas"></i> 世界时钟</div>
         <div class="world-clock-row" id="world-clock-row"></div>
       </div>
     </div>
@@ -352,9 +353,9 @@
   <div id="stopwatch-panel" class="card-panel hidden">
     <div class="stopwatch-display" id="stopwatch-display">00:00.00</div>
     <div class="control-buttons">
-      <button id="sw-start"><i class="fas fa-play"></i> 开始</button>
-      <button id="sw-pause"><i class="fas fa-pause"></i> 暂停</button>
-      <button id="sw-reset"><i class="fas fa-undo-alt"></i> 重置</button>
+      <button id="sw-start"><i class="la la-play"></i> 开始</button>
+      <button id="sw-pause"><i class="la la-pause"></i> 暂停</button>
+      <button id="sw-reset"><i class="la la-undo"></i> 重置</button>
     </div>
   </div>
   <div id="timer-panel" class="card-panel hidden">
@@ -365,14 +366,14 @@
       <div class="timer-input"><label>秒</label><input type="number" id="timer-seconds" min="0" max="59" value="0"></div>
     </div>
     <div class="control-buttons">
-      <button id="timer-start"><i class="fas fa-play"></i> 开始</button>
-      <button id="timer-pause"><i class="fas fa-pause"></i> 暂停</button>
-      <button id="timer-reset"><i class="fas fa-undo-alt"></i> 重置</button>
+      <button id="timer-start"><i class="la la-play"></i> 开始</button>
+      <button id="timer-pause"><i class="la la-pause"></i> 暂停</button>
+      <button id="timer-reset"><i class="la la-undo"></i> 重置</button>
     </div>
   </div>
 
   <div class="footer-note">
-    <span><i class="far fa-clock"></i> 时光粒子 · 此刻永恒</span>
+    <span><i class="la la-clock"></i> 时光粒子 · 此刻永恒</span>
     <span>©2026 米遇安</span>
   </div>
 </div>
@@ -381,11 +382,11 @@
 <div class="city-modal hidden" id="city-modal">
   <div class="city-modal-content">
     <div class="city-modal-header">
-      <h3><i class="fas fa-globe"></i> 选择城市</h3>
+      <h3><i class="la la-globe"></i> 选择城市</h3>
       <button class="close-btn" id="close-city-modal">&times;</button>
     </div>
     <div class="city-search-wrapper">
-      <i class="fas fa-search"></i>
+      <i class="la la-search"></i>
       <input type="text" id="city-filter-input" placeholder="过滤城市…" autocomplete="off" />
     </div>
     <div class="city-list" id="city-list-container"></div>
@@ -401,12 +402,12 @@
     const themeIcon = themeToggle.querySelector('i');
     if (localStorage.getItem('theme') === 'dark') {
       body.classList.add('dark');
-      themeIcon.className = 'fas fa-sun';
+      themeIcon.className = 'la la-sun';
     }
     themeToggle.addEventListener('click', () => {
       body.classList.toggle('dark');
       const dark = body.classList.contains('dark');
-      themeIcon.className = dark ? 'fas fa-sun' : 'fas fa-moon';
+      themeIcon.className = dark ? 'la la-sun' : 'la la-moon';
       localStorage.setItem('theme', dark ? 'dark' : 'light');
       if (currentMode === 'analog') drawAnalogClock();
     });
@@ -603,16 +604,16 @@
       const century = Math.ceil(d.getFullYear()/100);
       const unix = Math.floor(d.getTime()/1000);
       detailsGrid.innerHTML = `
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-day"></i></div><div class="detail-info"><span class="detail-label">年·第几天</span><span class="detail-value">${dayOfYear}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-week"></i></div><div class="detail-info"><span class="detail-label">周数</span><span class="detail-value">${weekNum}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-chart-line"></i></div><div class="detail-info"><span class="detail-label">年进度</span><span class="detail-value">${yearProgress}<span class="detail-unit">%</span></span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-hourglass-half"></i></div><div class="detail-info"><span class="detail-label">一天进度</span><span class="detail-value">${dayProgress}<span class="detail-unit">%</span></span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-sun"></i></div><div class="detail-info"><span class="detail-label">夏令时</span><span class="detail-value">${isDst}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar"></i></div><div class="detail-info"><span class="detail-label">季度</span><span class="detail-value">Q${quarter}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-clock"></i></div><div class="detail-info"><span class="detail-label">时区缩写</span><span class="detail-value">${abbr}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-map-pin"></i></div><div class="detail-info"><span class="detail-label">UTC偏移</span><span class="detail-value">${offset}分</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-hourglass-start"></i></div><div class="detail-info"><span class="detail-label">Unix时间戳</span><span class="detail-value">${unix}</span></div></div>
-        <div class="detail-item"><div class="detail-icon"><i class="fas fa-building"></i></div><div class="detail-info"><span class="detail-label">世纪</span><span class="detail-value">${century}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-calendar-day"></i></div><div class="detail-info"><span class="detail-label">年·第几天</span><span class="detail-value">${dayOfYear}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-calendar-week"></i></div><div class="detail-info"><span class="detail-label">周数</span><span class="detail-value">${weekNum}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-chart-line"></i></div><div class="detail-info"><span class="detail-label">年进度</span><span class="detail-value">${yearProgress}<span class="detail-unit">%</span></span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-hourglass-half"></i></div><div class="detail-info"><span class="detail-label">一天进度</span><span class="detail-value">${dayProgress}<span class="detail-unit">%</span></span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-sun"></i></div><div class="detail-info"><span class="detail-label">夏令时</span><span class="detail-value">${isDst}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-calendar"></i></div><div class="detail-info"><span class="detail-label">季度</span><span class="detail-value">Q${quarter}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-clock"></i></div><div class="detail-info"><span class="detail-label">时区缩写</span><span class="detail-value">${abbr}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-map-pin"></i></div><div class="detail-info"><span class="detail-label">UTC偏移</span><span class="detail-value">${offset}分</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-hourglass-start"></i></div><div class="detail-info"><span class="detail-label">Unix时间戳</span><span class="detail-value">${unix}</span></div></div>
+        <div class="detail-item"><div class="detail-icon"><i class="la la-building"></i></div><div class="detail-info"><span class="detail-label">世纪</span><span class="detail-value">${century}</span></div></div>
       `;
       renderWorldClock();
       loading.classList.add('hidden');
@@ -630,103 +631,22 @@
 
     // 城市选择数据
     const cityList = [
-      { name: "阿布扎比", tz: "Asia/Dubai" },
-      { name: "阿克拉", tz: "Africa/Accra" },
-      { name: "亚的斯亚贝巴", tz: "Africa/Addis_Ababa" },
-      { name: "阿尔及尔", tz: "Africa/Algiers" },
-      { name: "阿拉木图", tz: "Asia/Almaty" },
-      { name: "安曼", tz: "Asia/Amman" },
-      { name: "阿姆斯特丹", tz: "Europe/Amsterdam" },
-      { name: "安卡拉", tz: "Europe/Istanbul" },
-      { name: "安塔那那利佛", tz: "Indian/Antananarivo" },
-      { name: "阿什哈巴德", tz: "Asia/Ashgabat" },
-      { name: "雅典", tz: "Europe/Athens" },
-      { name: "亚特兰大", tz: "America/New_York" },
-      { name: "奥克兰", tz: "Pacific/Auckland" },
-      { name: "巴格达", tz: "Asia/Baghdad" },
-      { name: "巴库", tz: "Asia/Baku" },
-      { name: "曼谷", tz: "Asia/Bangkok" },
-      { name: "巴塞罗那", tz: "Europe/Madrid" },
-      { name: "北京", tz: "Asia/Shanghai" },
-      { name: "贝鲁特", tz: "Asia/Beirut" },
-      { name: "贝尔格莱德", tz: "Europe/Belgrade" },
-      { name: "柏林", tz: "Europe/Berlin" },
-      { name: "波哥大", tz: "America/Bogota" },
-      { name: "波士顿", tz: "America/New_York" },
-      { name: "巴西利亚", tz: "America/Sao_Paulo" },
-      { name: "布里斯班", tz: "Australia/Brisbane" },
-      { name: "布鲁塞尔", tz: "Europe/Brussels" },
-      { name: "布加勒斯特", tz: "Europe/Bucharest" },
-      { name: "布达佩斯", tz: "Europe/Budapest" },
-      { name: "布宜诺斯艾利斯", tz: "America/Argentina/Buenos_Aires" },
-      { name: "开罗", tz: "Africa/Cairo" },
-      { name: "加尔各答", tz: "Asia/Kolkata" },
-      { name: "芝加哥", tz: "America/Chicago" },
-      { name: "科伦坡", tz: "Asia/Colombo" },
-      { name: "哥本哈根", tz: "Europe/Copenhagen" },
-      { name: "达卡", tz: "Asia/Dhaka" },
-      { name: "迪拜", tz: "Asia/Dubai" },
-      { name: "都柏林", tz: "Europe/Dublin" },
-      { name: "法兰克福", tz: "Europe/Berlin" },
-      { name: "哈瓦那", tz: "America/Havana" },
-      { name: "赫尔辛基", tz: "Europe/Helsinki" },
-      { name: "香港", tz: "Asia/Hong_Kong" },
-      { name: "伊斯坦布尔", tz: "Europe/Istanbul" },
-      { name: "雅加达", tz: "Asia/Jakarta" },
-      { name: "约翰内斯堡", tz: "Africa/Johannesburg" },
-      { name: "喀布尔", tz: "Asia/Kabul" },
-      { name: "卡拉奇", tz: "Asia/Karachi" },
-      { name: "基辅", tz: "Europe/Kiev" },
-      { name: "科威特城", tz: "Asia/Kuwait" },
-      { name: "拉各斯", tz: "Africa/Lagos" },
-      { name: "利马", tz: "America/Lima" },
-      { name: "里斯本", tz: "Europe/Lisbon" },
-      { name: "伦敦", tz: "Europe/London" },
-      { name: "洛杉矶", tz: "America/Los_Angeles" },
-      { name: "马德里", tz: "Europe/Madrid" },
-      { name: "马尼拉", tz: "Asia/Manila" },
-      { name: "墨西哥城", tz: "America/Mexico_City" },
-      { name: "迈阿密", tz: "America/New_York" },
-      { name: "米兰", tz: "Europe/Rome" },
-      { name: "明斯克", tz: "Europe/Minsk" },
-      { name: "蒙特利尔", tz: "America/Toronto" },
-      { name: "莫斯科", tz: "Europe/Moscow" },
-      { name: "孟买", tz: "Asia/Kolkata" },
-      { name: "内罗毕", tz: "Africa/Nairobi" },
-      { name: "新德里", tz: "Asia/Kolkata" },
-      { name: "纽约", tz: "America/New_York" },
-      { name: "奥斯陆", tz: "Europe/Oslo" },
-      { name: "巴黎", tz: "Europe/Paris" },
-      { name: "珀斯", tz: "Australia/Perth" },
-      { name: "布拉格", tz: "Europe/Prague" },
-      { name: "雷克雅未克", tz: "Atlantic/Reykjavik" },
-      { name: "里约热内卢", tz: "America/Sao_Paulo" },
-      { name: "罗马", tz: "Europe/Rome" },
-      { name: "旧金山", tz: "America/Los_Angeles" },
-      { name: "圣地亚哥", tz: "America/Santiago" },
-      { name: "圣保罗", tz: "America/Sao_Paulo" },
-      { name: "西雅图", tz: "America/Los_Angeles" },
-      { name: "首尔", tz: "Asia/Seoul" },
-      { name: "上海", tz: "Asia/Shanghai" },
-      { name: "新加坡", tz: "Asia/Singapore" },
-      { name: "斯德哥尔摩", tz: "Europe/Stockholm" },
-      { name: "悉尼", tz: "Australia/Sydney" },
-      { name: "台北", tz: "Asia/Taipei" },
-      { name: "塔林", tz: "Europe/Tallinn" },
-      { name: "第比利斯", tz: "Asia/Tbilisi" },
-      { name: "德黑兰", tz: "Asia/Tehran" },
-      { name: "东京", tz: "Asia/Tokyo" },
-      { name: "多伦多", tz: "America/Toronto" },
-      { name: "温哥华", tz: "America/Vancouver" },
-      { name: "维也纳", tz: "Europe/Vienna" },
-      { name: "维尔纽斯", tz: "Europe/Vilnius" },
-      { name: "华沙", tz: "Europe/Warsaw" },
-      { name: "华盛顿", tz: "America/New_York" },
-      { name: "惠灵顿", tz: "Pacific/Auckland" },
-      { name: "苏黎世", tz: "Europe/Zurich" }
+      { name: "阿布扎比", tz: "Asia/Dubai" },{ name: "阿克拉", tz: "Africa/Accra" },{ name: "亚的斯亚贝巴", tz: "Africa/Addis_Ababa" },
+      { name: "阿尔及尔", tz: "Africa/Algiers" },{ name: "阿拉木图", tz: "Asia/Almaty" },{ name: "安曼", tz: "Asia/Amman" },
+      { name: "阿姆斯特丹", tz: "Europe/Amsterdam" },{ name: "安卡拉", tz: "Europe/Istanbul" },{ name: "雅典", tz: "Europe/Athens" },
+      { name: "亚特兰大", tz: "America/New_York" },{ name: "奥克兰", tz: "Pacific/Auckland" },{ name: "曼谷", tz: "Asia/Bangkok" },
+      { name: "巴塞罗那", tz: "Europe/Madrid" },{ name: "北京", tz: "Asia/Shanghai" },{ name: "柏林", tz: "Europe/Berlin" },
+      { name: "布宜诺斯艾利斯", tz: "America/Argentina/Buenos_Aires" },{ name: "开罗", tz: "Africa/Cairo" },{ name: "芝加哥", tz: "America/Chicago" },
+      { name: "迪拜", tz: "Asia/Dubai" },{ name: "都柏林", tz: "Europe/Dublin" },{ name: "日内瓦", tz: "Europe/Zurich" },
+      { name: "香港", tz: "Asia/Hong_Kong" },{ name: "伊斯坦布尔", tz: "Europe/Istanbul" },{ name: "雅加达", tz: "Asia/Jakarta" },
+      { name: "约翰内斯堡", tz: "Africa/Johannesburg" },{ name: "伦敦", tz: "Europe/London" },{ name: "洛杉矶", tz: "America/Los_Angeles" },
+      { name: "马德里", tz: "Europe/Madrid" },{ name: "墨西哥城", tz: "America/Mexico_City" },{ name: "莫斯科", tz: "Europe/Moscow" },
+      { name: "孟买", tz: "Asia/Kolkata" },{ name: "纽约", tz: "America/New_York" },{ name: "巴黎", tz: "Europe/Paris" },
+      { name: "罗马", tz: "Europe/Rome" },{ name: "旧金山", tz: "America/Los_Angeles" },{ name: "上海", tz: "Asia/Shanghai" },
+      { name: "新加坡", tz: "Asia/Singapore" },{ name: "悉尼", tz: "Australia/Sydney" },{ name: "东京", tz: "Asia/Tokyo" },
+      { name: "多伦多", tz: "America/Toronto" },{ name: "温哥华", tz: "America/Vancouver" },{ name: "苏黎世", tz: "Europe/Zurich" }
     ];
 
-    // 城市模态逻辑
     const cityModal = document.getElementById('city-modal');
     const cityFilterInput = document.getElementById('city-filter-input');
     const cityListContainer = document.getElementById('city-list-container');
@@ -757,12 +677,10 @@
       renderCityList();
       cityFilterInput.focus();
     });
-
     closeCityModal.addEventListener('click', () => cityModal.classList.add('hidden'));
     cityFilterInput.addEventListener('input', (e) => renderCityList(e.target.value));
     cityModal.addEventListener('click', (e) => { if(e.target === cityModal) cityModal.classList.add('hidden'); });
 
-    // 搜索 & 定位
     searchBtn.onclick = () => {
       const city = cityInput.value.trim();
       if(city) {
