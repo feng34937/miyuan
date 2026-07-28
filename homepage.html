@@ -641,6 +641,32 @@
             transition: opacity 0.7s cubic-bezier(0.2,0.9,0.4,1), transform 0.7s cubic-bezier(0.2,0.9,0.4,1);
         }
         .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+        
+        /* 广告横幅样式 */
+        .ad-banner {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 120, 215, 0.25);
+            transition: all 0.3s ease;
+        }
+        .dark .ad-banner {
+            background: rgba(30, 31, 34, 0.9);
+            border-color: rgba(90, 169, 230, 0.3);
+        }
+        .ad-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 120, 215, 0.15);
+        }
+        .dark .ad-banner:hover {
+            box-shadow: 0 8px 20px rgba(90, 169, 230, 0.2);
+        }
+        .ad-banner .ad-icon {
+            font-size: 2.5rem;
+            color: #0078D7;
+        }
+        .dark .ad-banner .ad-icon {
+            color: #5aa9e6;
+        }
     </style>
 </head>
 <body class="font-inter text-dark antialiased">
@@ -711,27 +737,26 @@
             <div class="container">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">关于米遇安</h2>
                 <div class="max-w-5xl mx-auto mb-16">
-                    <!-- 最新动态标题 -->
                     <div class="text-center mb-6">
                         <span class="text-primary text-sm font-semibold">最新动态</span>
                         <h3 class="text-2xl font-bold mt-1">团队动态 · 时刻更新</h3>
                     </div>
-
-                    <!-- ===== 新增广告横幅 ===== -->
-                    <div class="bg-white/80 backdrop-blur-sm border border-primary/30 p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 hover-tint" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-3">
-                            <i class="las la-newspaper text-3xl text-primary"></i>
+                    
+                    <!-- ===== 联合日报广告横幅（新增） ===== -->
+                    <div class="ad-banner hover-tint p-4 md:p-5 mb-6 flex flex-col md:flex-row items-center justify-between gap-4" onmousemove="updateMask(event)">
+                        <div class="flex items-center gap-4">
+                            <i class="las la-newspaper ad-icon"></i>
                             <div>
-                                <h4 class="font-bold text-lg">联合日报 - 时事新闻</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">每日精选，洞悉天下</p>
+                                <h4 class="text-lg font-bold text-primary">联合日报</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">时事新闻 · 洞察世界</p>
                             </div>
                         </div>
-                        <a href="https://feng34937.github.io/miyuan/ass_daily" target="_blank" class="btn-primary text-sm flex items-center gap-1">
+                        <button class="btn-primary text-sm" onclick="window.open('https://feng34937.github.io/miyuan/ass_daily', '_blank')">
                             阅读新闻 <i class="las la-arrow-right ml-1"></i>
-                        </a>
+                        </button>
                     </div>
-
-                    <!-- 轮播区域 -->
+                    
+                    <!-- 团队动态轮播 -->
                     <div class="carousel-container">
                         <button class="carousel-arrow left" id="carouselPrev"><i class="las la-chevron-left"></i></button>
                         <button class="carousel-arrow right" id="carouselNext"><i class="las la-chevron-right"></i></button>
@@ -746,22 +771,26 @@
                     <div class="flex justify-center gap-2 mt-5" id="carouselDotsContainer"></div>
                 </div>
 
-                <div class="max-w-5xl mx-auto"><h3 class="text-2xl font-bold text-center mb-6">📆 里程碑 · 我们的故事</h3><div class="grid md:grid-cols-2 gap-6 bg-secondary p-6">
-                    <div class="space-y-2">
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">1.</span>2026年3月26日，米遇安正式建立；</div>
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">2.</span>2026年3月27日，米遇安第一次集体会议于桂林市第一中学召开；</div>
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">3.</span>2026年4月10日，米遇安第二次集体会议于桂林市第一中学召开；</div>
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">4.</span>2026年4月15日，米遇安第三次集体会议于桂林市第一中学召开；</div>
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">5.</span>2026年4月21日，OTB一次会议召开；</div>
+                <div class="max-w-5xl mx-auto">
+                    <h3 class="text-2xl font-bold text-center mb-6">📆 里程碑 · 我们的故事</h3>
+                    <div class="grid md:grid-cols-2 gap-6 bg-secondary p-6">
+                        <div class="space-y-2">
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">1.</span>2026年3月26日，米遇安正式建立；</div>
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">2.</span>2026年3月27日，米遇安第一次集体会议于桂林市第一中学召开；</div>
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">3.</span>2026年4月10日，米遇安第二次集体会议于桂林市第一中学召开；</div>
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">4.</span>2026年4月15日，米遇安第三次集体会议于桂林市第一中学召开；</div>
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">5.</span>2026年4月21日，OTB一次会议召开；</div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">6.</span>2026年4月25日，发布米遇安官网及部分服务；</div>
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">7.</span>2026年4月30日，试行特邀人士制度；</div>
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">8.</span>2026年5月9日，米遇安第四次集体会议于桂林市第一中学召开；</div>
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">9.</span>2026年5月15日，米遇安第五次集体会议于桂林市第一中学召开；</div>
+                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">10.</span>2026年5月22日，米遇安第六次集体会议于桂林市第一中学召开；</div>
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">6.</span>2026年4月25日，发布米遇安官网及部分服务；</div>
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">7.</span>2026年4月30日，试行特邀人士制度；</div>
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">8.</span>2026年5月9日，米遇安第四次集体会议于桂林市第一中学召开；</div>
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">9.</span>2026年5月15日，米遇安第五次集体会议于桂林市第一中学召开；</div>
-                        <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">10.</span>2026年5月22日，米遇安第六次集体会议于桂林市第一中学召开；</div>
-                    </div>
-                </div><div class="text-center mt-8"><a href="https://www.kdocs.cn/l/coqzdkzo7y8z" target="_blank" class="btn-more text-sm">更多故事 <i class="las la-arrow-right"></i></a></div></div>
+                    <div class="text-center mt-8"><a href="https://www.kdocs.cn/l/coqzdkzo7y8z" target="_blank" class="btn-more text-sm">更多故事 <i class="las la-arrow-right"></i></a></div>
+                </div>
             </div>
         </section>
 
