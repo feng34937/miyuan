@@ -1,0 +1,4209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>小岛奇兵 · 荒岛生存</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0b1a2f;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        #game-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #1a3a4a;
+            border: none;
+            border-radius: 0;
+        }
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #2a5f7a;
+            cursor: pointer;
+            object-fit: fill;
+        }
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .ui-overlay>* {
+            pointer-events: auto;
+        }
+
+        /* 顶部栏 */
+        #top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6vh 1.4vw;
+            background: rgba(40, 30, 20, 0.8);
+            backdrop-filter: blur(6px);
+            color: #f0ece0;
+            font-size: clamp(10px, 1.3vw, 16px);
+            font-weight: 600;
+            border-bottom: 3px solid #6a4a2a;
+            flex-wrap: wrap;
+            gap: 0.4vh;
+            border-radius: 0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            width: 100%;
+        }
+        #top-bar .info-item { display: flex; align-items: center; gap: 0.4vw; }
+        #top-bar .info-item .icon { font-size: clamp(12px, 1.6vw, 20px); filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)); }
+        #top-bar .info-item .label { opacity: 0.7; font-weight: 400; font-size: clamp(8px, 1vw, 12px); }
+        #top-bar .info-item .value { min-width: 1.8vw; text-align: center; background: rgba(0,0,0,0.25); padding: 0 0.6vw; border-radius: 2px; font-weight: 700; font-size: clamp(10px, 1.2vw, 14px); }
+        #day-display { background: rgba(200,180,120,0.15); padding: 0.2vh 1.2vw; border: 1px solid rgba(200,180,120,0.25); border-radius: 2px; }
+        #time-display { padding: 0.2vh 1vw; border: 1px solid rgba(100,200,255,0.15); border-radius: 2px; background: rgba(100,200,255,0.08); }
+        .bar-wrap { display: flex; align-items: center; gap: 0.4vw; }
+        .bar-bg { width: 6vw; min-width: 40px; height: 0.8vh; background: rgba(0,0,0,0.4); border-radius: 2px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+        .bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+        .health-fill { background: linear-gradient(90deg,#ff4a4a,#ff6a6a); box-shadow: 0 0 8px rgba(255,80,80,0.3); }
+        .hunger-fill { background: linear-gradient(90deg,#f7b84a,#f5d84a); box-shadow: 0 0 8px rgba(245,200,80,0.2); }
+        .thirst-fill { background: linear-gradient(90deg,#4ac0f0,#6ad8ff); box-shadow: 0 0 8px rgba(80,200,255,0.2); }
+
+        /* 底部面板 */
+        #bottom-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.6vh 1.4vw 1vh;
+            background: rgba(40,30,20,0.85);
+            backdrop-filter: blur(6px);
+            border-top: 3px solid #6a4a2a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.4vh;
+            border-radius: 0;
+        }
+        #resource-bar { display: flex; gap: 0.8vw; color: #f0ece0; font-size: clamp(10px, 1.2vw, 14px); font-weight: 500; flex-wrap: wrap; }
+        #resource-bar .res-item { display: flex; align-items: center; gap: 0.4vw; background: rgba(0,0,0,0.25); padding: 0.3vh 0.8vw; border: 1px solid rgba(255,255,255,0.06); border-radius: 2px; }
+        #resource-bar .res-item .res-icon { font-size: clamp(12px, 1.4vw, 18px); }
+        #resource-bar .res-item .res-val { font-weight: 700; min-width: 1.6vw; text-align: center; }
+
+        #action-buttons { display: flex; gap: 0.4vw; flex-wrap: wrap; }
+        #action-buttons button { padding: 0.4vh 1vw; border: 1px solid rgba(255,255,255,0.08); border-radius: 2px; font-weight: 600; font-size: clamp(9px, 1vw, 12px); background: rgba(255,255,255,0.06); color: #f0ece0; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(2px); font-family: inherit; white-space: nowrap; text-shadow: 0 1px 1px rgba(0,0,0,0.3); }
+        #action-buttons button:hover { background: rgba(255,255,255,0.18); transform: scale(1.04); border-color: rgba(255,255,255,0.2); }
+        #action-buttons button:active { transform: scale(0.94); }
+        #action-buttons button.primary { background: rgba(200,180,80,0.2); border-color: rgba(200,180,80,0.2); }
+        #action-buttons button.primary:hover { background: rgba(200,180,80,0.35); }
+        #action-buttons button.danger { background: rgba(255,80,80,0.15); border-color: rgba(255,80,80,0.2); }
+        #action-buttons button.danger:hover { background: rgba(255,80,80,0.3); }
+        #action-buttons button.info { background: rgba(100,200,255,0.1); border-color: rgba(100,200,255,0.15); }
+        #action-buttons button.info:hover { background: rgba(100,200,255,0.2); }
+        #action-buttons button.build { background: rgba(150,200,80,0.12); border-color: rgba(150,200,80,0.2); }
+        #action-buttons button.build:hover { background: rgba(150,200,80,0.25); }
+        #action-buttons button.active-mode { background: rgba(255,200,80,0.3); border-color: #f7d05e; box-shadow: 0 0 12px rgba(255,200,80,0.15); }
+
+        /* 日志 */
+        #log-area {
+            position: absolute;
+            bottom: 8vh;
+            left: 1.6vw;
+            max-width: 28vw;
+            max-height: 8vh;
+            overflow-y: auto;
+            color: #e8e0d0;
+            font-size: clamp(9px, 1vw, 13px);
+            font-weight: 400;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+            background: rgba(20,15,10,0.6);
+            backdrop-filter: blur(4px);
+            padding: 0.4vh 1vw;
+            border: 1px solid rgba(255,255,200,0.06);
+            border-radius: 2px;
+            pointer-events: none;
+            line-height: 1.4;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        }
+        #log-area::-webkit-scrollbar { width: 3px; }
+        #log-area::-webkit-scrollbar-track { background: transparent; }
+        #log-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+        #log-area .log-entry { opacity: 0.95; padding: 1px 0; }
+        #log-area .log-entry.log-night { color: #ffcc88; }
+        #log-area .log-entry.log-combat { color: #ff7766; }
+        #log-area .log-entry.log-resource { color: #88dd88; }
+        #log-area .log-entry.log-system { color: #88ccff; }
+        #log-area .log-entry.log-hunger { color: #f5c84a; }
+        #log-area .log-entry.log-thirst { color: #4ac0f0; }
+        #log-area .log-entry.log-build { color: #b0d080; }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: fadeIn 0.3s ease;
+            pointer-events: auto;
+        }
+        .modal-overlay.hidden { display: none; pointer-events: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        .modal-box {
+            background: linear-gradient(145deg, #2a2018, #1a120e);
+            border-radius: 2px;
+            padding: 2.4vh 2.8vw;
+            max-width: 56vw;
+            width: 92%;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.9);
+            border: 1px solid rgba(200,180,120,0.15);
+            color: #f0ece0;
+            text-align: left;
+            animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.85) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-box h2 { font-size: clamp(18px, 2.4vw, 30px); margin-bottom: 0.8vh; font-weight: 700; letter-spacing: 2px; background: linear-gradient(135deg,#f7e05e,#f5b83a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
+        .modal-box .sub-text { font-size: clamp(9px, 1vw, 13px); opacity: 0.5; margin-top: 0.6vh; text-align: center; }
+        .modal-box .divider { height: 1px; background: rgba(255,255,200,0.08); margin: 0.8vh 0; }
+        .modal-box .btn-group { display: flex; gap: 0.8vw; justify-content: center; margin-top: 1.2vh; flex-wrap: wrap; }
+        .modal-box .btn-group button { padding: 0.6vh 2vw; border: 1px solid rgba(255,255,255,0.08); border-radius: 2px; font-size: clamp(11px, 1.2vw, 16px); font-weight: 700; cursor: pointer; transition: all 0.25s; font-family: inherit; min-width: 6vw; background: rgba(255,255,255,0.06); color: #f0ece0; }
+        .modal-box .btn-group button.btn-primary { background: linear-gradient(135deg,#5a9adf,#3a7abe); color: #fff; border-color: #4a8acf; }
+        .modal-box .btn-group button.btn-primary:hover { transform: scale(1.06); box-shadow: 0 8px 30px rgba(60,130,220,0.3); }
+        .modal-box .btn-group button.btn-secondary { background: rgba(255,255,255,0.04); color: #ccd8d8; border: 1px solid rgba(255,255,255,0.08); }
+        .modal-box .btn-group button.btn-secondary:hover { background: rgba(255,255,255,0.12); }
+        .modal-box ul { padding-left: 1.8vw; margin-bottom: 1vh; font-size: clamp(10px, 1vw, 14px); line-height: 1.6; opacity: 0.9; }
+        .modal-box ul li { margin-bottom: 0.2vh; }
+
+        /* 建造网格 */
+        .build-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9vw, 1fr)); gap: 0.6vw; margin: 0.8vh 0; }
+        .build-category { font-size: clamp(12px, 1.2vw, 16px); font-weight: 700; color: #f7e05e; margin: 1vh 0 0.4vh 0; padding: 0.2vh 0; border-bottom: 1px solid rgba(255,255,200,0.08); letter-spacing: 1px; }
+        .build-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); padding: 0.6vh 0.4vw; text-align: center; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
+        .build-item:hover { background: rgba(255,255,255,0.1); transform: scale(1.03); border-color: rgba(255,255,255,0.15); }
+        .build-item .icon { font-size: clamp(18px, 2vw, 28px); display: block; }
+        .build-item .name { font-size: clamp(9px, 0.9vw, 12px); font-weight: 600; margin-top: 0.2vh; }
+        .build-item .cost { font-size: clamp(7px, 0.8vw, 10px); opacity: 0.6; margin-top: 0.2vh; }
+        .build-item .desc { font-size: clamp(6px, 0.7vw, 9px); opacity: 0.4; margin-top: 0.2vh; }
+        .build-item .requirement { font-size: clamp(6px, 0.7vw, 9px); color: #f7d05e; margin-top: 0.2vh; }
+        .build-item .tag { font-size: clamp(6px, 0.6vw, 8px); background: rgba(100,200,255,0.15); padding: 0 0.4vw; display: inline-block; margin-top: 0.2vh; border-radius: 2px; }
+        .build-item.disabled { opacity: 0.3; cursor: not-allowed; }
+        .build-item.disabled:hover { transform: none; background: rgba(255,255,255,0.04); }
+
+        /* 结局 */
+        .modal-box .ending-title { font-size: clamp(22px, 2.6vw, 34px); margin-bottom: 0.4vh; text-align: center; }
+        .modal-box .ending-title.good { background: linear-gradient(135deg,#f7e05e,#f5b83a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .modal-box .ending-title.bad { background: linear-gradient(135deg,#ff6a6a,#cc3333); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .modal-box .ending-video-placeholder { background: rgba(0,0,0,0.3); border-radius: 2px; padding: 1.2vh 1.2vw; margin: 0.8vh 0; border: 1px solid rgba(255,80,80,0.1); font-size: clamp(9px, 0.9vw, 12px); color: #ff9977; line-height: 1.6; text-align: left; max-height: 11vh; overflow-y: auto; font-family: 'Courier New', monospace; }
+        .modal-box .ending-video-placeholder .line { padding: 0.1vh 0; border-bottom: 1px solid rgba(255,80,80,0.05); }
+
+        /* 移动端方向键 */
+        #mobile-controls { display: none; position: absolute; bottom: 9vh; right: 1.2vw; gap: 0.3vh; pointer-events: none; }
+        #mobile-controls button { pointer-events: auto; width: 4.4vw; height: 4.4vw; min-width: 36px; min-height: 36px; max-width: 60px; max-height: 60px; border-radius: 2px; border: 2px solid rgba(255,255,255,0.15); background: rgba(20,15,10,0.6); backdrop-filter: blur(4px); color: #f0ece0; font-size: clamp(14px, 1.8vw, 24px); display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: none; user-select: none; transition: background 0.2s; }
+        #mobile-controls button:hover { background: rgba(255,255,255,0.1); }
+        #mobile-controls .dpad { display: grid; grid-template-columns: 4.4vw 4.4vw 4.4vw; grid-template-rows: 4.4vw 4.4vw 4.4vw; gap: 0.2vw; }
+        #mobile-controls .dpad button { width: 100%; height: 100%; font-size: clamp(12px, 1.6vw, 20px); background: rgba(20,15,10,0.5); }
+        #mobile-controls .dpad .center { background: transparent !important; border-color: transparent !important; pointer-events: none; }
+
+        @media (max-width: 700px) {
+            #mobile-controls { display: flex !important; flex-direction: column; align-items: flex-end; }
+            .build-grid { grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr)); gap: 1vw; }
+            .modal-box { max-width: 92vw; padding: 2vh 4vw; }
+            #log-area { max-width: 60vw; bottom: 10vh; left: 2vw; }
+            #bottom-panel { padding: 1vh 2vw; flex-direction: column; align-items: stretch; gap: 0.5vh; }
+            #resource-bar { justify-content: center; }
+            #action-buttons { justify-content: center; }
+            #top-bar { font-size: clamp(8px, 2.5vw, 12px); padding: 0.5vh 2vw; }
+            .bar-bg { width: 20vw; min-width: 30px; height: 0.6vh; }
+        }
+        @media (max-width: 400px) {
+            .bar-bg { width: 15vw; min-width: 20px; }
+            #action-buttons button { font-size: 8px; padding: 0.2vh 1.5vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-wrapper">
+        <canvas id="gameCanvas" width="1000" height="700"></canvas>
+
+        <div class="ui-overlay" id="uiOverlay">
+            <div id="top-bar">
+                <div class="info-item" id="day-display">
+                    <span class="icon">📅</span>
+                    <span class="label">第</span>
+                    <span class="value" id="dayValue">1</span>
+                    <span class="label">天</span>
+                </div>
+                <div class="info-item" id="time-display">
+                    <span class="icon" id="timeIcon">☀️</span>
+                    <span id="timeLabel">白天</span>
+                    <span style="opacity:0.4;margin:0 0.2vw;">|</span>
+                    <span id="hourDisplay">06:00</span>
+                </div>
+                <div class="bar-wrap"><span class="icon">❤️</span><div class="bar-bg"><div class="bar-fill health-fill" id="healthFill" style="width:100%"></div></div><span id="healthText">10</span></div>
+                <div class="bar-wrap"><span class="icon">🍖</span><div class="bar-bg"><div class="bar-fill hunger-fill" id="hungerFill" style="width:100%"></div></div><span id="hungerText">100</span></div>
+                <div class="bar-wrap"><span class="icon">💧</span><div class="bar-bg"><div class="bar-fill thirst-fill" id="thirstFill" style="width:100%"></div></div><span id="thirstText">100</span></div>
+            </div>
+
+            <div id="log-area"></div>
+
+            <div id="bottom-panel">
+                <div id="resource-bar">
+                    <div class="res-item"><span class="res-icon">🪵</span><span class="res-val" id="woodVal">3</span></div>
+                    <div class="res-item"><span class="res-icon">💧</span><span class="res-val" id="waterVal">4</span></div>
+                    <div class="res-item"><span class="res-icon">🍎</span><span class="res-val" id="foodVal">5</span></div>
+                    <div class="res-item"><span class="res-icon">🛡️</span><span class="res-val" id="defenseVal">0</span></div>
+                </div>
+                <div id="action-buttons">
+                    <button id="btnEat" class="primary">🍽️ 进食</button>
+                    <button id="btnDrink" class="primary">🚰 饮水</button>
+                    <button id="btnNap" class="info">💤 打盹</button>
+                    <button id="btnSleep" class="info">🌙 睡眠</button>
+                    <button id="btnHeavy" class="danger">💥 重击</button>
+                    <button id="btnAttack" class="danger">⚔️ 攻击</button>
+                    <button id="btnBuildMenu" class="build">🏗️ 建造</button>
+                    <button id="btnRules" class="info">📖 规则</button>
+                </div>
+            </div>
+
+            <div id="mobile-controls">
+                <div class="dpad">
+                    <button data-dir="up">▲</button>
+                    <button data-dir="left">◀</button>
+                    <button class="center"></button>
+                    <button data-dir="right">▶</button>
+                    <button data-dir="down">▼</button>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="modalStart">
+                <div class="modal-box">
+                    <h2>🏝️ 小岛奇兵</h2>
+                    <p style="font-size:clamp(14px,1.4vw,20px);font-weight:300;letter-spacing:2px;opacity:0.6;text-align:center;">— 荒岛生存 · 二十日 —</p>
+                    <div class="divider"></div>
+                    <p style="font-size:clamp(13px,1.2vw,18px);">「中正」助手在此。<br>年轻人，你叫什么名字？</p>
+                    <input type="text" id="nameInput" placeholder="输入你的名字..." maxlength="12" autofocus style="width:100%;padding:0.6vh 1.2vw;border-radius:2px;border:2px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:#f0f4f0;font-size:clamp(14px,1.4vw,20px);text-align:center;outline:none;font-family:inherit;" />
+                    <div class="btn-group">
+                        <button class="btn-primary" id="btnStartGame">🌊 登岛</button>
+                    </div>
+                    <div class="sub-text">生存20天，建造家园，装饰小岛，直面命运。<br>🖱️ 点击移动 · ⌨️ WASD/方向键</div>
+                </div>
+            </div>
+
+            <div class="modal-overlay hidden" id="modalRules">
+                <div class="modal-box">
+                    <h2>📖 游戏规则</h2>
+                    <div class="divider"></div>
+                    <ul>
+                        <li><strong>生存目标：</strong>在荒岛上存活20天，迎接命运抉择。</li>
+                        <li><strong>饥渴系统：</strong>饥饿/水分随时间下降（-0.8/-0.6/小时）。<br>进食（🍎）+30饥饿，饮水（💧）+30水分。</li>
+                        <li><strong>资源采集：</strong>白天点击树木（🪵）、果树（🍎）、水源（💧）。</li>
+                        <li><strong>战斗：</strong>普通攻击（空格）伤害=1+木材/3；重击（Q）伤害=3+木材/2，冷却1秒。</li>
+                        <li><strong>建造系统：</strong>点击「🏗️ 建造」选择建筑，点击地面放置。<br>室外建筑：木墙、篝火、渔网、水桶、工作台、木屋等26种。<br>室内物品（需进入木屋）：20种家具装饰。</li>
+                        <li><strong>木屋：</strong>点击木屋的<strong>门</strong>进入/离开，进入后显示室内场景。<br>木屋有血量，可被怪物攻击。</li>
+                        <li><strong>篝火驱怪：</strong>夜晚点燃的篝火会驱散周围120px内的怪物。</li>
+                        <li><strong>结局：</strong>20天后，面临「是否回归大陆？」的抉择。</li>
+                    </ul>
+                    <div class="btn-group">
+                        <button class="btn-primary" id="btnCloseRules">我知道了</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-overlay hidden" id="modalBuild">
+                <div class="modal-box">
+                    <h2>🏗️ 建造菜单</h2>
+                    <div class="divider"></div>
+                    <p style="font-size:clamp(10px,1vw,14px);opacity:0.6;text-align:center;margin-bottom:0.6vh;">选择建筑后点击地面放置</p>
+                    <div id="buildGridContainer"></div>
+                    <div class="btn-group">
+                        <button class="btn-secondary" id="btnCloseBuild">关闭</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-overlay hidden" id="modalEnding">
+                <div class="modal-box" id="endingBox"></div>
+            </div>
+
+            <div class="modal-overlay hidden" id="modalChoice">
+                <div class="modal-box">
+                    <h2>⚖️ 命运的抉择</h2>
+                    <p id="choicePrompt" style="text-align:center;font-size:clamp(13px,1.2vw,18px);line-height:1.7;">二十天过去了……<br>你站在小岛之巅，遥望远方。<br><br><strong style="font-size:clamp(18px,1.8vw,26px);color:#f7e05e;">「是否回归大陆？」</strong></p>
+                    <div class="btn-group">
+                        <button class="btn-yes" id="choiceYes" style="background:linear-gradient(135deg,#f7d05e,#e8a83a);color:#1a2a2a;border:none;border-radius:2px;padding:0.8vh 2.4vw;font-size:clamp(13px,1.2vw,18px);font-weight:700;cursor:pointer;">✅ 是 · 归去</button>
+                        <button class="btn-no" id="choiceNo" style="background:rgba(255,80,80,0.15);color:#ff8888;border:2px solid rgba(255,80,80,0.2);border-radius:2px;padding:0.8vh 2.4vw;font-size:clamp(13px,1.2vw,18px);font-weight:700;cursor:pointer;">❌ 否 · 留下</button>
+                    </div>
+                    <div class="sub-text">这个选择，将决定小岛的未来。</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  《小岛奇兵》 - 完整游戏逻辑 (新增20室外建筑 + 木屋点击门)
+        // ============================================================
+
+        // -------- DOM 引用 --------
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const dayValue = document.getElementById('dayValue');
+        const timeIcon = document.getElementById('timeIcon');
+        const timeLabel = document.getElementById('timeLabel');
+        const hourDisplay = document.getElementById('hourDisplay');
+        const healthFill = document.getElementById('healthFill');
+        const healthText = document.getElementById('healthText');
+        const hungerFill = document.getElementById('hungerFill');
+        const hungerText = document.getElementById('hungerText');
+        const thirstFill = document.getElementById('thirstFill');
+        const thirstText = document.getElementById('thirstText');
+        const foodVal = document.getElementById('foodVal');
+        const woodVal = document.getElementById('woodVal');
+        const waterVal = document.getElementById('waterVal');
+        const defenseVal = document.getElementById('defenseVal');
+        const logArea = document.getElementById('log-area');
+
+        const modalStart = document.getElementById('modalStart');
+        const modalRules = document.getElementById('modalRules');
+        const modalBuild = document.getElementById('modalBuild');
+        const buildGridContainer = document.getElementById('buildGridContainer');
+        const modalEnding = document.getElementById('modalEnding');
+        const endingBox = document.getElementById('endingBox');
+        const modalChoice = document.getElementById('modalChoice');
+        const choicePrompt = document.getElementById('choicePrompt');
+
+        const nameInput = document.getElementById('nameInput');
+        const btnStart = document.getElementById('btnStartGame');
+        const btnEat = document.getElementById('btnEat');
+        const btnDrink = document.getElementById('btnDrink');
+        const btnNap = document.getElementById('btnNap');
+        const btnSleep = document.getElementById('btnSleep');
+        const btnHeavy = document.getElementById('btnHeavy');
+        const btnAttack = document.getElementById('btnAttack');
+        const btnBuildMenu = document.getElementById('btnBuildMenu');
+        const btnCloseBuild = document.getElementById('btnCloseBuild');
+        const btnRules = document.getElementById('btnRules');
+        const btnCloseRules = document.getElementById('btnCloseRules');
+        const choiceYes = document.getElementById('choiceYes');
+        const choiceNo = document.getElementById('choiceNo');
+
+        // ============================================================
+        //  🏗️ 建筑定义 (室外26种 + 室内20种)
+        // ============================================================
+        const BUILDING_TYPES = {
+            // === 室外建筑 (26种) ===
+            // 原有6种
+            wall: {
+                id: 'wall',
+                name: '木墙',
+                icon: '🛡️',
+                woodCost: 5,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '防御+2',
+                hp: 10,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a6a3a';
+                    ctx.fillRect(px - 14, py - 14, 28, 28);
+                    ctx.strokeStyle = '#5a3a1a';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(px - 14, py - 14, 28, 28);
+                    for (let i = -10; i <= 10; i += 8) {
+                        ctx.fillStyle = '#6a4a2a';
+                        ctx.fillRect(px + i - 1, py - 10, 3, 20);
+                    }
+                    ctx.fillStyle = '#7a5a3a';
+                    ctx.fillRect(px - 12, py - 2, 24, 4);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 12, py - 20, 24 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            fire: {
+                id: 'fire',
+                name: '篝火',
+                icon: '🔥',
+                woodCost: 4,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '恢复+驱怪',
+                hp: 6,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    const lit = data.lit !== undefined ? data.lit : true;
+                    const flicker = lit ? Math.sin(Date.now() / 180 + x * 2) * 2 : 0;
+                    if (lit) {
+                        const grad = ctx.createRadialGradient(px, py, 2, px, py, 55);
+                        grad.addColorStop(0, 'rgba(255,200,80,0.12)');
+                        grad.addColorStop(1, 'rgba(255,200,80,0)');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(px, py, 55, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    if (lit) {
+                        ctx.shadowColor = 'rgba(255,120,0,0.3)';
+                        ctx.shadowBlur = 25;
+                        ctx.beginPath();
+                        ctx.moveTo(px, py - 20 + flicker);
+                        ctx.quadraticCurveTo(px - 14, py - 6 + flicker, px - 8, py + 2);
+                        ctx.quadraticCurveTo(px, py - 4, px + 8, py + 2);
+                        ctx.quadraticCurveTo(px + 14, py - 6 + flicker, px, py - 20 + flicker);
+                        ctx.fillStyle = '#ff6633';
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.moveTo(px, py - 14 + flicker * 0.6);
+                        ctx.quadraticCurveTo(px - 9, py - 4 + flicker * 0.6, px - 5, py + 2);
+                        ctx.quadraticCurveTo(px, py - 2, px + 5, py + 2);
+                        ctx.quadraticCurveTo(px + 9, py - 4 + flicker * 0.6, px, py - 14 + flicker * 0.6);
+                        ctx.fillStyle = '#ffaa44';
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                        for (let i = 0; i < 3; i++) {
+                            const a = Date.now() / 300 + i * 2;
+                            const r = 10 + Math.sin(a) * 5;
+                            const sx = px + Math.cos(a + i) * r;
+                            const sy = py - 18 + Math.sin(a * 0.7 + i) * 8;
+                            ctx.fillStyle = `rgba(255,200,100,${0.3 + Math.sin(a)*0.15})`;
+                            ctx.beginPath();
+                            ctx.arc(sx, sy, 1.5 + Math.sin(a * 1.3) * 0.5, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    } else {
+                        ctx.fillStyle = '#4a3a2a';
+                        ctx.beginPath();
+                        ctx.arc(px, py - 4, 12, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#3a2a1a';
+                        ctx.beginPath();
+                        ctx.arc(px, py + 2, 8, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = 'rgba(200,180,150,0.1)';
+                        ctx.font = '10px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('💨', px, py - 10);
+                    }
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(px - 12, py + 2, 4, 10);
+                    ctx.fillRect(px + 8, py + 2, 4, 10);
+                    ctx.fillRect(px - 3, py + 4, 6, 8);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 10, py - 24, 20 * (data.hp / data.maxHp), 3);
+                    }
+                    ctx.fillStyle = 'rgba(255,255,200,0.2)';
+                    ctx.font = '8px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(lit ? '🔥 点燃' : '💤 熄灭', px, py + 30);
+                }
+            },
+            net: {
+                id: 'net',
+                name: '渔网',
+                icon: '🎣',
+                woodCost: 2,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '每2天产1食物',
+                hp: 5,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.strokeStyle = '#4488aa';
+                    ctx.lineWidth = 1.2;
+                    for (let i = -12; i <= 12; i += 6) {
+                        ctx.beginPath();
+                        ctx.moveTo(px + i, py - 16);
+                        ctx.lineTo(px + i + 6, py + 14);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(px - 16, py + i);
+                        ctx.lineTo(px + 14, py + i + 6);
+                        ctx.stroke();
+                    }
+                    ctx.strokeStyle = '#66aaff';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(px - 16, py - 16, 32, 32);
+                    if (data.produceTimer < 60) {
+                        ctx.fillStyle = '#ff8844';
+                        ctx.beginPath();
+                        ctx.ellipse(px + 3, py + 2, 7, 5, 0.2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#ffcc44';
+                        ctx.beginPath();
+                        ctx.ellipse(px - 3, py - 3, 5, 4, -0.2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#ff6633';
+                        ctx.beginPath();
+                        ctx.ellipse(px + 6, py + 6, 4, 3, 0.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 12, py - 20, 24 * (data.hp / data.maxHp), 3);
+                    }
+                    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                    ctx.font = '8px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🎣', px, py + 26);
+                }
+            },
+            bucket: {
+                id: 'bucket',
+                name: '水桶',
+                icon: '🪣',
+                woodCost: 2,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '每2天产1水',
+                hp: 5,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a7a7a';
+                    ctx.fillRect(px - 13, py - 4, 26, 16);
+                    ctx.fillStyle = '#4a6a7a';
+                    ctx.fillRect(px - 11, py - 2, 22, 12);
+                    const waterLevel = data.produceTimer < 60 ? 0.6 : 0.25;
+                    ctx.fillStyle = 'rgba(80,200,255,0.5)';
+                    ctx.fillRect(px - 9, py + 2 + (1 - waterLevel) * 10, 18, waterLevel * 10);
+                    ctx.fillStyle = 'rgba(100,220,255,0.3)';
+                    ctx.fillRect(px - 7, py + 4 + (1 - waterLevel) * 10, 14, waterLevel * 6);
+                    ctx.strokeStyle = '#5a5a5a';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(px, py - 4, 11, Math.PI, 0);
+                    ctx.stroke();
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 10, py - 18, 20 * (data.hp / data.maxHp), 3);
+                    }
+                    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                    ctx.font = '8px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('💧', px, py + 26);
+                }
+            },
+            workbench: {
+                id: 'workbench',
+                name: '工作台',
+                icon: '🔨',
+                woodCost: 4,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '解锁高级建筑',
+                hp: 8,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.fillRect(px - 18, py - 2, 36, 8);
+                    ctx.strokeStyle = '#5a4a2a';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(px - 18, py - 2, 36, 8);
+                    ctx.fillStyle = '#5a4a2a';
+                    ctx.fillRect(px - 16, py + 6, 4, 10);
+                    ctx.fillRect(px + 12, py + 6, 4, 10);
+                    ctx.fillRect(px - 16, py + 6, 4, 10);
+                    ctx.fillRect(px + 12, py + 6, 4, 10);
+                    ctx.fillStyle = '#888';
+                    ctx.fillRect(px - 8, py - 6, 3, 6);
+                    ctx.fillStyle = '#aa8844';
+                    ctx.fillRect(px - 6, py - 4, 2, 4);
+                    ctx.fillStyle = '#888';
+                    ctx.fillRect(px + 4, py - 8, 3, 8);
+                    ctx.fillStyle = '#aa6633';
+                    ctx.fillRect(px + 6, py - 6, 2, 6);
+                    ctx.fillStyle = 'rgba(200,180,150,0.2)';
+                    for (let i = 0; i < 4; i++) {
+                        ctx.fillRect(px - 14 + i * 8, py + 2 + i % 2 * 3, 3, 2);
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 14, py - 12, 28 * (data.hp / data.maxHp), 3);
+                    }
+                    ctx.fillStyle = 'rgba(255,255,200,0.1)';
+                    ctx.font = '7px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🔨', px, py + 24);
+                }
+            },
+            cabin: {
+                id: 'cabin',
+                name: '木屋',
+                icon: '🏠',
+                woodCost: 10,
+                foodCost: 2,
+                waterCost: 1,
+                desc: '可进入（点击门）',
+                hp: 15,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.fillRect(px - 20, py - 2, 40, 28);
+                    ctx.strokeStyle = '#5a4a2a';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(px - 20, py - 2, 40, 28);
+                    ctx.fillStyle = '#6a4a2a';
+                    ctx.beginPath();
+                    ctx.moveTo(px - 24, py - 2);
+                    ctx.lineTo(px, py - 22);
+                    ctx.lineTo(px + 24, py - 2);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.strokeStyle = '#4a2a1a';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    // 门 - 高亮显示可点击
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(px - 5, py + 4, 10, 16);
+                    ctx.fillStyle = '#ccaa44';
+                    ctx.beginPath();
+                    ctx.arc(px + 3, py + 12, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 门框高亮
+                    ctx.strokeStyle = '#8a7a3a';
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(px - 5, py + 4, 10, 16);
+                    // 门把手高亮
+                    ctx.shadowColor = 'rgba(255,200,100,0.3)';
+                    ctx.shadowBlur = 8;
+                    ctx.fillStyle = '#ffdd66';
+                    ctx.beginPath();
+                    ctx.arc(px + 3, py + 12, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    // 窗户
+                    ctx.fillStyle = '#88ccff';
+                    ctx.fillRect(px - 14, py + 4, 6, 6);
+                    ctx.fillRect(px + 8, py + 4, 6, 6);
+                    ctx.strokeStyle = '#4a2a1a';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(px - 14, py + 4, 6, 6);
+                    ctx.strokeRect(px + 8, py + 4, 6, 6);
+                    ctx.fillStyle = '#6a4a3a';
+                    ctx.fillRect(px + 12, py - 14, 6, 10);
+                    ctx.fillStyle = 'rgba(200,200,200,0.1)';
+                    for (let i = 0; i < 3; i++) {
+                        const sx = px + 14 + Math.sin(Date.now() / 500 + i * 2) * 2;
+                        const sy = py - 18 - i * 4;
+                        ctx.fillStyle = `rgba(200,200,200,${0.08 - i*0.02})`;
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, 4 + i * 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 18, py - 26, 36 * (data.hp / data.maxHp), 3);
+                    }
+                    ctx.fillStyle = 'rgba(255,255,200,0.15)';
+                    ctx.font = '8px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🛡️+5', px, py + 40);
+                    // 门提示
+                    if (data.hp > 0) {
+                        ctx.fillStyle = 'rgba(255,255,200,0.25)';
+                        ctx.font = '8px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('🚪 点击门', px, py - 30);
+                    }
+                }
+            },
+
+            // === 新增20种室外建筑 ===
+            fence: {
+                id: 'fence',
+                name: '栅栏',
+                icon: '🪵',
+                woodCost: 3,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '防御+1',
+                hp: 6,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    for (let i = -12; i <= 12; i += 6) {
+                        ctx.fillStyle = '#7a5a3a';
+                        ctx.fillRect(px + i - 1, py - 8, 3, 16);
+                        ctx.fillRect(px + i - 4, py - 4, 8, 2);
+                        ctx.fillRect(px + i - 4, py + 2, 8, 2);
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 12, py - 12, 24 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            well: {
+                id: 'well',
+                name: '水井',
+                icon: '🪣',
+                woodCost: 4,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '每2天产2水',
+                hp: 6,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a5a4a';
+                    ctx.fillRect(px - 10, py - 2, 20, 6);
+                    ctx.fillStyle = '#4a3a2a';
+                    ctx.fillRect(px - 6, py + 2, 12, 8);
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 4, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#5a8aaa';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 4, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#4a3a2a';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(px - 8, py - 12);
+                    ctx.lineTo(px - 12, py - 4);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(px + 8, py - 12);
+                    ctx.lineTo(px + 12, py - 4);
+                    ctx.stroke();
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 10, py - 14, 20 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            garden: {
+                id: 'garden',
+                name: '花园',
+                icon: '🌸',
+                woodCost: 2,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '每2天产1食物',
+                hp: 4,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#4a7a3a';
+                    ctx.fillRect(px - 14, py - 6, 28, 14);
+                    const colors = ['#ff4488', '#ff8844', '#ffcc44', '#44ccff', '#88ff44'];
+                    for (let i = 0; i < 5; i++) {
+                        const a = i * 1.2 + 0.3;
+                        const fx = px + Math.cos(a) * 8;
+                        const fy = py + Math.sin(a) * 5;
+                        ctx.fillStyle = colors[i % colors.length];
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 3 + Math.sin(Date.now() / 500 + i) * 0.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 12, py - 10, 24 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            watchtower: {
+                id: 'watchtower',
+                name: '瞭望塔',
+                icon: '🗼',
+                woodCost: 8,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '防御+3',
+                hp: 10,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 4, py + 4, 8, 16);
+                    ctx.fillStyle = '#5a4a2a';
+                    ctx.fillRect(px - 8, py - 2, 16, 6);
+                    ctx.fillStyle = '#4a3a1a';
+                    ctx.fillRect(px - 12, py - 8, 24, 6);
+                    ctx.fillStyle = '#3a2a0a';
+                    ctx.fillRect(px - 16, py - 14, 32, 6);
+                    // 旗帜
+                    ctx.fillStyle = '#cc3333';
+                    ctx.fillRect(px + 8, py - 18, 10, 4);
+                    ctx.fillRect(px + 8, py - 18, 2, 8);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 14, py - 18, 28 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            dock: {
+                id: 'dock',
+                name: '码头',
+                icon: '⚓',
+                woodCost: 6,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 8,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#7a6a4a';
+                    ctx.fillRect(px - 18, py + 2, 36, 6);
+                    ctx.fillStyle = '#5a4a2a';
+                    for (let i = -14; i <= 14; i += 6) {
+                        ctx.fillRect(px + i, py + 6, 3, 8);
+                    }
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 4, py - 4, 8, 6);
+                    ctx.fillStyle = '#444';
+                    ctx.fillRect(px - 2, py - 8, 4, 4);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 16, py - 6, 32 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            grill: {
+                id: 'grill',
+                name: '烧烤架',
+                icon: '🍖',
+                woodCost: 3,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 4,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#4a4a4a';
+                    ctx.fillRect(px - 10, py + 2, 20, 4);
+                    ctx.fillStyle = '#3a3a3a';
+                    ctx.fillRect(px - 12, py + 6, 4, 6);
+                    ctx.fillRect(px + 8, py + 6, 4, 6);
+                    ctx.fillStyle = '#5a5a5a';
+                    for (let i = -8; i <= 8; i += 4) {
+                        ctx.fillRect(px + i, py, 2, 2);
+                    }
+                    ctx.fillStyle = '#ff6633';
+                    ctx.shadowColor = 'rgba(255,100,0,0.2)';
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    ctx.arc(px, py - 2, 4 + Math.sin(Date.now() / 300) * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 10, py - 6, 20 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            bench: {
+                id: 'bench',
+                name: '长椅',
+                icon: '🪑',
+                woodCost: 3,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 4,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.fillRect(px - 14, py - 2, 28, 4);
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 12, py + 2, 4, 6);
+                    ctx.fillRect(px + 8, py + 2, 4, 6);
+                    ctx.fillStyle = '#7a6a4a';
+                    ctx.fillRect(px - 4, py - 6, 8, 4);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 12, py - 8, 24 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            flagpole: {
+                id: 'flagpole',
+                name: '旗杆',
+                icon: '🚩',
+                woodCost: 2,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 3,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#5a4a3a';
+                    ctx.fillRect(px - 1, py - 14, 3, 22);
+                    ctx.fillStyle = '#cc3333';
+                    ctx.fillRect(px + 2, py - 14, 12, 6);
+                    ctx.fillStyle = '#cc6633';
+                    ctx.fillRect(px + 2, py - 8, 8, 4);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 6, py - 16, 12 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            statue: {
+                id: 'statue',
+                name: '雕塑',
+                icon: '🗿',
+                woodCost: 4,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 5,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a8a8a';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 6, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#7a7a7a';
+                    ctx.fillRect(px - 4, py + 2, 8, 10);
+                    ctx.fillStyle = '#6a6a6a';
+                    ctx.fillRect(px - 2, py + 10, 4, 4);
+                    ctx.fillStyle = '#9a9a9a';
+                    ctx.beginPath();
+                    ctx.arc(px - 4, py - 8, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(px + 4, py - 8, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 8, py - 10, 16 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            fountain: {
+                id: 'fountain',
+                name: '喷泉',
+                icon: '⛲',
+                woodCost: 6,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰+恢复',
+                hp: 6,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a7a7a';
+                    ctx.beginPath();
+                    ctx.ellipse(px, py + 2, 16, 6, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#7a8a8a';
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, 12, 4, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#4a8aaa';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 4, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#5a9aba';
+                    for (let i = 0; i < 4; i++) {
+                        const a = i * 1.5 + Date.now() / 400;
+                        const fx = px + Math.cos(a) * 8;
+                        const fy = py - 6 + Math.sin(a * 0.7) * 4;
+                        ctx.fillStyle = `rgba(100,200,255,${0.2 + Math.sin(a)*0.1})`;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 14, py - 8, 28 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            pavilion: {
+                id: 'pavilion',
+                name: '凉亭',
+                icon: '🏛️',
+                woodCost: 8,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 8,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#7a6a4a';
+                    ctx.fillRect(px - 16, py + 4, 32, 4);
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 14, py + 8, 4, 8);
+                    ctx.fillRect(px + 10, py + 8, 4, 8);
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.beginPath();
+                    ctx.moveTo(px - 20, py + 4);
+                    ctx.lineTo(px, py - 16);
+                    ctx.lineTo(px + 20, py + 4);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.strokeStyle = '#5a4a2a';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 18, py - 18, 36 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            vegetable_garden: {
+                id: 'vegetable_garden',
+                name: '菜园',
+                icon: '🥬',
+                woodCost: 3,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '每2天产2食物',
+                hp: 5,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#3a6a2a';
+                    ctx.fillRect(px - 14, py - 6, 28, 14);
+                    ctx.fillStyle = '#4a8a3a';
+                    for (let i = -10; i <= 10; i += 6) {
+                        for (let j = -4; j <= 4; j += 6) {
+                            ctx.fillRect(px + i, py + j, 4, 4);
+                        }
+                    }
+                    ctx.fillStyle = '#5a9a4a';
+                    ctx.fillRect(px - 8, py - 4, 4, 4);
+                    ctx.fillRect(px + 4, py - 2, 4, 4);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 12, py - 10, 24 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            chicken_coop: {
+                id: 'chicken_coop',
+                name: '鸡舍',
+                icon: '🐔',
+                woodCost: 5,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '每2天产1食物',
+                hp: 6,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#7a6a4a';
+                    ctx.fillRect(px - 14, py - 4, 28, 16);
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 12, py - 2, 24, 12);
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.beginPath();
+                    ctx.moveTo(px - 14, py - 4);
+                    ctx.lineTo(px, py - 16);
+                    ctx.lineTo(px + 14, py - 4);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.fillStyle = '#ff6633';
+                    ctx.beginPath();
+                    ctx.arc(px + 6, py + 2, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#ff8833';
+                    ctx.beginPath();
+                    ctx.arc(px - 6, py + 4, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 12, py - 18, 24 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            sheepfold: {
+                id: 'sheepfold',
+                name: '羊圈',
+                icon: '🐑',
+                woodCost: 5,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '每2天产1食物',
+                hp: 6,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 16, py + 2, 32, 8);
+                    ctx.fillStyle = '#5a4a2a';
+                    ctx.fillRect(px - 14, py + 8, 4, 6);
+                    ctx.fillRect(px + 10, py + 8, 4, 6);
+                    ctx.fillStyle = '#8a8a8a';
+                    ctx.beginPath();
+                    ctx.arc(px - 6, py, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#9a9a9a';
+                    ctx.beginPath();
+                    ctx.arc(px + 6, py + 2, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 14, py - 4, 28 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            beehive: {
+                id: 'beehive',
+                name: '蜂箱',
+                icon: '🐝',
+                woodCost: 4,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '每2天产1食物',
+                hp: 5,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a7a3a';
+                    ctx.fillRect(px - 8, py - 8, 16, 16);
+                    ctx.fillStyle = '#7a6a2a';
+                    for (let i = -6; i <= 6; i += 6) {
+                        ctx.fillRect(px + i, py - 6, 4, 4);
+                        ctx.fillRect(px + i + 3, py - 2, 4, 4);
+                    }
+                    ctx.fillStyle = '#ccaa44';
+                    ctx.beginPath();
+                    ctx.arc(px, py + 2, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = 'rgba(255,200,100,0.1)';
+                    for (let i = 0; i < 3; i++) {
+                        const a = Date.now() / 500 + i * 2;
+                        const fx = px + Math.cos(a) * 12;
+                        const fy = py + Math.sin(a * 0.7) * 8;
+                        ctx.fillStyle = `rgba(255,200,100,${0.05 + Math.sin(a)*0.03})`;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 8, py - 12, 16 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            windmill: {
+                id: 'windmill',
+                name: '磨坊',
+                icon: '🌾',
+                woodCost: 8,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '每2天产1木材',
+                hp: 8,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#7a6a4a';
+                    ctx.fillRect(px - 10, py - 4, 20, 16);
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 8, py - 2, 16, 12);
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.beginPath();
+                    ctx.moveTo(px - 8, py - 4);
+                    ctx.lineTo(px, py - 18);
+                    ctx.lineTo(px + 8, py - 4);
+                    ctx.closePath();
+                    ctx.fill();
+                    // 风车叶片
+                    const angle = Date.now() / 3000;
+                    for (let i = 0; i < 4; i++) {
+                        const a = angle + i * Math.PI / 2;
+                        ctx.fillStyle = '#6a5a3a';
+                        ctx.save();
+                        ctx.translate(px, py - 8);
+                        ctx.rotate(a);
+                        ctx.fillRect(-2, -14, 4, 14);
+                        ctx.fillRect(-10, -2, 14, 4);
+                        ctx.restore();
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 10, py - 20, 20 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            waterwheel: {
+                id: 'waterwheel',
+                name: '水车',
+                icon: '🌊',
+                woodCost: 6,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 6,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 14, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#5a4a2a';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    const angle = Date.now() / 2000;
+                    for (let i = 0; i < 8; i++) {
+                        const a = angle + i * Math.PI / 4;
+                        ctx.fillStyle = '#7a6a4a';
+                        ctx.save();
+                        ctx.translate(px, py);
+                        ctx.rotate(a);
+                        ctx.fillRect(-2, -14, 4, 14);
+                        ctx.restore();
+                    }
+                    ctx.fillStyle = '#4a5a5a';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 12, py - 16, 24 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            lighthouse: {
+                id: 'lighthouse',
+                name: '灯塔',
+                icon: '🗼',
+                woodCost: 10,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '驱怪+恢复',
+                hp: 10,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a7a6a';
+                    ctx.fillRect(px - 6, py + 2, 12, 16);
+                    ctx.fillStyle = '#7a6a5a';
+                    ctx.fillRect(px - 4, py, 8, 6);
+                    ctx.fillStyle = '#6a5a4a';
+                    ctx.fillRect(px - 8, py - 4, 16, 6);
+                    // 灯光
+                    const lit = data.lit !== undefined ? data.lit : true;
+                    if (lit) {
+                        ctx.shadowColor = 'rgba(255,200,100,0.4)';
+                        ctx.shadowBlur = 40;
+                        ctx.fillStyle = '#ffdd88';
+                        ctx.beginPath();
+                        ctx.arc(px, py - 10, 6 + Math.sin(Date.now() / 500) * 1, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                        ctx.fillStyle = 'rgba(255,200,100,0.05)';
+                        ctx.beginPath();
+                        ctx.arc(px, py - 10, 30 + Math.sin(Date.now() / 300) * 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        ctx.fillStyle = '#5a5a5a';
+                        ctx.beginPath();
+                        ctx.arc(px, py - 10, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 8, py - 12, 16 * (data.hp / data.maxHp), 3);
+                    }
+                    ctx.fillStyle = 'rgba(255,255,200,0.15)';
+                    ctx.font = '7px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(lit ? '💡' : '🌙', px, py + 26);
+                }
+            },
+            bell_tower: {
+                id: 'bell_tower',
+                name: '钟楼',
+                icon: '🔔',
+                woodCost: 8,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 8,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#7a6a4a';
+                    ctx.fillRect(px - 6, py + 2, 12, 16);
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 8, py - 4, 16, 6);
+                    ctx.fillStyle = '#5a4a2a';
+                    ctx.fillRect(px - 10, py - 10, 20, 6);
+                    // 钟
+                    ctx.fillStyle = '#ccaa44';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 16, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#aa8833';
+                    ctx.fillRect(px - 1, py - 12, 2, 4);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 8, py - 20, 16 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+            arch: {
+                id: 'arch',
+                name: '拱门',
+                icon: '🏛️',
+                woodCost: 5,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '装饰',
+                hp: 6,
+                category: '室外',
+                indoor: false,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#7a6a4a';
+                    ctx.fillRect(px - 16, py + 2, 4, 14);
+                    ctx.fillRect(px + 12, py + 2, 4, 14);
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.beginPath();
+                    ctx.moveTo(px - 16, py + 2);
+                    ctx.quadraticCurveTo(px, py - 12, px + 16, py + 2);
+                    ctx.strokeStyle = '#6a5a3a';
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+                    // 顶部装饰
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 4, py - 12, 8, 4);
+                    if (data.hp < data.maxHp) {
+                        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+                        ctx.fillRect(px - 14, py - 14, 28 * (data.hp / data.maxHp), 3);
+                    }
+                }
+            },
+
+            // === 室内物品 (20种) ===
+            chair: {
+                id: 'chair',
+                name: '木椅',
+                icon: '🪑',
+                woodCost: 2,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 3,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a6a4a';
+                    ctx.fillRect(px - 2, py - 12, 4, 10);
+                    ctx.fillRect(px - 8, py - 8, 16, 4);
+                    ctx.fillRect(px - 10, py - 2, 20, 4);
+                    ctx.fillRect(px - 8, py + 2, 3, 10);
+                    ctx.fillRect(px + 5, py + 2, 3, 10);
+                    ctx.fillRect(px - 8, py + 2, 3, 10);
+                    ctx.fillRect(px + 5, py + 2, 3, 10);
+                }
+            },
+            table: {
+                id: 'table',
+                name: '木桌',
+                icon: '🪵',
+                woodCost: 3,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 4,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.fillRect(px - 14, py - 2, 28, 4);
+                    ctx.fillStyle = '#6a5a3a';
+                    ctx.fillRect(px - 12, py - 4, 4, 4);
+                    ctx.fillRect(px + 8, py - 4, 4, 4);
+                    ctx.fillStyle = '#5a4a2a';
+                    ctx.fillRect(px - 12, py + 2, 3, 8);
+                    ctx.fillRect(px + 9, py + 2, 3, 8);
+                    ctx.fillRect(px - 12, py + 2, 3, 8);
+                    ctx.fillRect(px + 9, py + 2, 3, 8);
+                }
+            },
+            bookshelf: {
+                id: 'bookshelf',
+                name: '书架',
+                icon: '📚',
+                woodCost: 4,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 4,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#7a5a3a';
+                    ctx.fillRect(px - 12, py - 14, 24, 28);
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(px - 10, py - 12, 20, 2);
+                    ctx.fillRect(px - 10, py - 6, 20, 2);
+                    ctx.fillRect(px - 10, py, 20, 2);
+                    ctx.fillRect(px - 10, py + 6, 20, 2);
+                    const colors = ['#cc3333', '#33aa33', '#3366cc', '#cc8833', '#8833cc'];
+                    for (let i = 0; i < 5; i++) {
+                        ctx.fillStyle = colors[i % colors.length];
+                        ctx.fillRect(px - 8 + i * 4, py - 10 + Math.sin(i) * 2, 3, 4 + i % 3 * 2);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        ctx.fillStyle = colors[(i + 2) % colors.length];
+                        ctx.fillRect(px - 8 + i * 5, py - 4 + Math.sin(i + 1) * 2, 3, 4 + i % 3 * 2);
+                    }
+                }
+            },
+            carpet: {
+                id: 'carpet',
+                name: '地毯',
+                icon: '🧶',
+                woodCost: 1,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a3a3a';
+                    ctx.fillRect(px - 18, py - 10, 36, 20);
+                    ctx.fillStyle = '#aa4a4a';
+                    ctx.fillRect(px - 16, py - 8, 32, 16);
+                    ctx.fillStyle = '#6a2a2a';
+                    for (let i = 0; i < 6; i++) {
+                        ctx.fillRect(px - 14 + i * 6, py - 6 + i % 2 * 2, 3, 3);
+                    }
+                }
+            },
+            painting: {
+                id: 'painting',
+                name: '挂画',
+                icon: '🖼️',
+                woodCost: 2,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a4a2a';
+                    ctx.fillRect(px - 12, py - 14, 24, 2);
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.fillRect(px - 10, py - 12, 20, 18);
+                    ctx.strokeStyle = '#5a3a1a';
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(px - 10, py - 12, 20, 18);
+                    ctx.fillStyle = '#4a8a4a';
+                    ctx.fillRect(px - 8, py - 4, 16, 8);
+                    ctx.fillStyle = '#3a6a3a';
+                    ctx.beginPath();
+                    ctx.moveTo(px - 8, py - 4);
+                    ctx.lineTo(px, py - 10);
+                    ctx.lineTo(px + 8, py - 4);
+                    ctx.fill();
+                    ctx.fillStyle = '#88ccff';
+                    ctx.fillRect(px - 6, py - 10, 4, 4);
+                    ctx.fillRect(px + 2, py - 10, 4, 4);
+                }
+            },
+            flowerpot: {
+                id: 'flowerpot',
+                name: '花盆',
+                icon: '🌺',
+                woodCost: 1,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a6a4a';
+                    ctx.fillRect(px - 6, py - 2, 12, 8);
+                    ctx.fillStyle = '#6a4a2a';
+                    ctx.fillRect(px - 4, py, 8, 4);
+                    ctx.fillStyle = '#4a8a3a';
+                    for (let i = 0; i < 3; i++) {
+                        const a = i * 1.2 + 0.3;
+                        const fx = px + Math.cos(a) * 6;
+                        const fy = py - 6 + Math.sin(a) * 4;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 4 + Math.sin(Date.now() / 500 + i) * 0.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.fillStyle = '#cc3333';
+                    ctx.beginPath();
+                    ctx.arc(px + 2, py - 8, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#33cc33';
+                    ctx.beginPath();
+                    ctx.arc(px - 3, py - 6, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            },
+            candlestick: {
+                id: 'candlestick',
+                name: '烛台',
+                icon: '🕯️',
+                woodCost: 1,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#ccaa44';
+                    ctx.fillRect(px - 4, py - 2, 8, 4);
+                    ctx.fillStyle = '#aa8833';
+                    ctx.fillRect(px - 2, py - 10, 4, 8);
+                    ctx.fillStyle = '#ffcc44';
+                    ctx.shadowColor = 'rgba(255,200,100,0.3)';
+                    ctx.shadowBlur = 15;
+                    ctx.beginPath();
+                    ctx.arc(px, py - 12, 4 + Math.sin(Date.now() / 200) * 1, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = 'rgba(255,200,100,0.1)';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 12, 12 + Math.sin(Date.now() / 150) * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            },
+            chest: {
+                id: 'chest',
+                name: '储物箱',
+                icon: '📦',
+                woodCost: 3,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 5,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a6a3a';
+                    ctx.fillRect(px - 14, py - 6, 28, 16);
+                    ctx.fillStyle = '#6a4a2a';
+                    ctx.fillRect(px - 12, py - 4, 24, 12);
+                    ctx.fillStyle = '#aa8844';
+                    ctx.fillRect(px - 10, py - 6, 20, 2);
+                    ctx.fillStyle = '#ccaa44';
+                    ctx.fillRect(px - 3, py - 2, 6, 4);
+                    ctx.fillRect(px - 1, py - 6, 2, 4);
+                }
+            },
+            fireplace: {
+                id: 'fireplace',
+                name: '壁炉',
+                icon: '🔥',
+                woodCost: 5,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 6,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a4a3a';
+                    ctx.fillRect(px - 16, py - 6, 32, 18);
+                    ctx.fillStyle = '#4a2a1a';
+                    ctx.fillRect(px - 12, py - 2, 24, 12);
+                    ctx.fillStyle = '#ff6633';
+                    ctx.shadowColor = 'rgba(255,100,0,0.2)';
+                    ctx.shadowBlur = 20;
+                    ctx.beginPath();
+                    ctx.arc(px, py + 2, 6 + Math.sin(Date.now() / 300) * 1, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffaa44';
+                    ctx.beginPath();
+                    ctx.arc(px, py + 1, 4 + Math.sin(Date.now() / 250) * 0.8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.fillRect(px - 14, py - 6, 4, 2);
+                    ctx.fillRect(px + 10, py - 6, 4, 2);
+                }
+            },
+            window: {
+                id: 'window',
+                name: '窗户',
+                icon: '🪟',
+                woodCost: 2,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 3,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#88ccff';
+                    ctx.fillRect(px - 14, py - 12, 28, 24);
+                    ctx.strokeStyle = '#6a4a2a';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(px - 14, py - 12, 28, 24);
+                    ctx.strokeRect(px - 2, py - 12, 4, 24);
+                    ctx.strokeRect(px - 14, py - 2, 28, 4);
+                    ctx.fillStyle = 'rgba(80,160,80,0.15)';
+                    ctx.fillRect(px - 10, py - 4, 20, 6);
+                    ctx.fillStyle = 'rgba(80,200,255,0.2)';
+                    ctx.fillRect(px - 10, py - 10, 20, 6);
+                }
+            },
+            curtain: {
+                id: 'curtain',
+                name: '窗帘',
+                icon: '🧵',
+                woodCost: 1,
+                foodCost: 0,
+                waterCost: 1,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a3a6a';
+                    for (let i = 0; i < 6; i++) {
+                        const w = 4 + Math.sin(i * 1.2) * 2;
+                        ctx.fillRect(px - 14 + i * 5, py - 12 + Math.sin(i * 0.8) * 2, w, 20 + Math.sin(i * 1.5) * 4);
+                    }
+                    ctx.fillStyle = '#8a4a8a';
+                    ctx.fillRect(px - 16, py - 12, 2, 22);
+                    ctx.fillRect(px + 14, py - 12, 2, 22);
+                }
+            },
+            lamp: {
+                id: 'lamp',
+                name: '台灯',
+                icon: '💡',
+                woodCost: 2,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a6a4a';
+                    ctx.fillRect(px - 4, py, 8, 4);
+                    ctx.fillStyle = '#8a7a5a';
+                    ctx.fillRect(px - 2, py - 10, 4, 10);
+                    ctx.fillStyle = '#ffdd88';
+                    ctx.shadowColor = 'rgba(255,200,100,0.2)';
+                    ctx.shadowBlur = 20;
+                    ctx.beginPath();
+                    ctx.arc(px, py - 12, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#ffcc66';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 12, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            },
+            clock: {
+                id: 'clock',
+                name: '时钟',
+                icon: '🕐',
+                woodCost: 2,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a4a2a';
+                    ctx.fillRect(px - 10, py - 10, 20, 20);
+                    ctx.fillStyle = '#f0e8d0';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    const now = Date.now() / 1000;
+                    const sec = now % 60;
+                    const min = (now / 60) % 60;
+                    const hr = (now / 3600) % 12;
+                    ctx.strokeStyle = '#222';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(px + Math.sin(hr * Math.PI / 6) * 4, py - Math.cos(hr * Math.PI / 6) * 4);
+                    ctx.stroke();
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(px + Math.sin(min * Math.PI / 30) * 6, py - Math.cos(min * Math.PI / 30) * 6);
+                    ctx.stroke();
+                    ctx.strokeStyle = '#cc3333';
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(px + Math.sin(sec * Math.PI / 30) * 7, py - Math.cos(sec * Math.PI / 30) * 7);
+                    ctx.stroke();
+                    ctx.strokeStyle = '#6a4a2a';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(px, py, 8, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            },
+            vase: {
+                id: 'vase',
+                name: '花瓶',
+                icon: '🏺',
+                woodCost: 1,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a8aaa';
+                    ctx.beginPath();
+                    ctx.moveTo(px - 6, py + 4);
+                    ctx.quadraticCurveTo(px - 8, py - 2, px - 4, py - 8);
+                    ctx.quadraticCurveTo(px, py - 12, px + 4, py - 8);
+                    ctx.quadraticCurveTo(px + 8, py - 2, px + 6, py + 4);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.fillStyle = '#5a7a9a';
+                    ctx.fillRect(px - 4, py + 2, 8, 4);
+                    ctx.fillStyle = '#ff4488';
+                    for (let i = 0; i < 4; i++) {
+                        const a = i * 1.5 + 0.2;
+                        const fx = px + Math.cos(a) * 5;
+                        const fy = py - 10 + Math.sin(a) * 4;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.fillStyle = '#44cc44';
+                    ctx.fillRect(px - 1, py - 12, 2, 6);
+                }
+            },
+            shelf: {
+                id: 'shelf',
+                name: '木架',
+                icon: '🧺',
+                woodCost: 3,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 4,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#7a5a3a';
+                    ctx.fillRect(px - 14, py - 2, 28, 4);
+                    ctx.fillRect(px - 14, py - 10, 28, 4);
+                    ctx.fillRect(px - 14, py + 6, 28, 4);
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(px - 14, py - 2, 3, 12);
+                    ctx.fillRect(px + 11, py - 2, 3, 12);
+                    ctx.fillRect(px - 14, py - 10, 3, 8);
+                    ctx.fillRect(px + 11, py - 10, 3, 8);
+                    ctx.fillStyle = '#cc8833';
+                    ctx.fillRect(px - 10, py - 8, 4, 4);
+                    ctx.fillStyle = '#33aa33';
+                    ctx.fillRect(px - 4, py - 8, 4, 4);
+                    ctx.fillStyle = '#cc3333';
+                    ctx.fillRect(px + 2, py - 8, 4, 4);
+                    ctx.fillStyle = '#3366cc';
+                    ctx.fillRect(px + 6, py + 8, 4, 4);
+                }
+            },
+            cushion: {
+                id: 'cushion',
+                name: '坐垫',
+                icon: '🟤',
+                woodCost: 1,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 2,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#8a5a4a';
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, 12, 8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#aa7a6a';
+                    ctx.beginPath();
+                    ctx.ellipse(px, py - 1, 8, 5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#6a4a3a';
+                    for (let i = 0; i < 4; i++) {
+                        const a = i * 1.5 + 0.2;
+                        ctx.fillRect(px + Math.cos(a) * 6 - 1, py + Math.sin(a) * 3 - 1, 2, 2);
+                    }
+                }
+            },
+            screen: {
+                id: 'screen',
+                name: '屏风',
+                icon: '🪭',
+                woodCost: 4,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 5,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    for (let i = 0; i < 3; i++) {
+                        const fx = px - 12 + i * 12;
+                        ctx.fillStyle = '#8a7a5a';
+                        ctx.fillRect(fx, py - 12, 10, 24);
+                        ctx.fillStyle = '#6a5a3a';
+                        ctx.fillRect(fx + 1, py - 10, 8, 20);
+                        ctx.fillStyle = '#8a7a5a';
+                        ctx.fillRect(fx, py - 12, 2, 24);
+                        ctx.fillRect(fx + 8, py - 12, 2, 24);
+                        ctx.fillStyle = '#aa8a6a';
+                        ctx.beginPath();
+                        ctx.arc(fx + 5, py - 4, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#6a4a3a';
+                        ctx.fillRect(fx + 2, py + 4, 6, 2);
+                    }
+                }
+            },
+            chandelier: {
+                id: 'chandelier',
+                name: '吊灯',
+                icon: '💎',
+                woodCost: 3,
+                foodCost: 0,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 3,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#ccaa44';
+                    ctx.fillRect(px - 2, py - 14, 4, 4);
+                    ctx.fillStyle = '#aa8833';
+                    ctx.beginPath();
+                    ctx.moveTo(px - 12, py - 10);
+                    ctx.lineTo(px, py);
+                    ctx.lineTo(px + 12, py - 10);
+                    ctx.closePath();
+                    ctx.fill();
+                    for (let i = 0; i < 5; i++) {
+                        const a = i * 1.2 - 1.2;
+                        const fx = px + Math.sin(a) * 10;
+                        const fy = py - 6 + Math.cos(a) * 4;
+                        ctx.fillStyle = '#ffdd88';
+                        ctx.shadowColor = 'rgba(255,200,100,0.15)';
+                        ctx.shadowBlur = 12;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 3 + Math.sin(Date.now() / 300 + i) * 0.5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                    ctx.fillStyle = '#887744';
+                    ctx.fillRect(px - 1, py - 12, 2, 4);
+                    ctx.fillRect(px - 10, py - 10, 2, 3);
+                    ctx.fillRect(px + 8, py - 10, 2, 3);
+                }
+            },
+            bonsai: {
+                id: 'bonsai',
+                name: '盆栽',
+                icon: '🌳',
+                woodCost: 2,
+                foodCost: 1,
+                waterCost: 0,
+                desc: '室内装饰',
+                hp: 3,
+                category: '室内',
+                indoor: true,
+                render: function(x, y, data, ox, oy) {
+                    const px = x + ox,
+                        py = y + oy;
+                    ctx.fillStyle = '#6a4a3a';
+                    ctx.fillRect(px - 6, py + 2, 12, 6);
+                    ctx.fillStyle = '#4a3a2a';
+                    ctx.fillRect(px - 4, py + 4, 8, 3);
+                    ctx.fillStyle = '#5a3a2a';
+                    ctx.fillRect(px - 1, py - 2, 2, 6);
+                    ctx.fillStyle = '#3a8a3a';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 4, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#4a9a4a';
+                    ctx.beginPath();
+                    ctx.arc(px - 4, py - 6, 7, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#5aaa5a';
+                    ctx.beginPath();
+                    ctx.arc(px + 4, py - 6, 7, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#6aba5a';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 10, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        };
+
+        // -------- 游戏状态 --------
+        const G = {
+            playerName: '旅人',
+            health: 10,
+            maxHealth: 10,
+            hunger: 100,
+            maxHunger: 100,
+            thirst: 100,
+            maxThirst: 100,
+            food: 5,
+            wood: 3,
+            water: 4,
+            defense: 0,
+            day: 1,
+            hour: 6,
+            isDay: true,
+            trees: [],
+            fruitTrees: [],
+            waterSources: [],
+            monsters: [],
+            walls: [],
+            monsterSpawnTimer: 0,
+            isRunning: false,
+            gameOver: false,
+            endingTriggered: false,
+            choiceMade: false,
+            frame: 0,
+            harvestCooldown: 0,
+            playerX: 500,
+            playerY: 400,
+            targetX: 500,
+            targetY: 400,
+            moveSpeed: 5.0,
+            islandOffsetX: 0,
+            islandOffsetY: 0,
+            isFloating: false,
+            floatProgress: 0,
+            attackCooldown: 0,
+            heavyCooldown: 0,
+            logMessages: [],
+            logMax: 8,
+            audioCtx: null,
+            musicPlaying: false,
+            endingChoice: null,
+            endingDisplayed: false,
+            keys: { up: false, down: false, left: false, right: false },
+            monstersKilled: 0,
+            hungerTick: 0,
+            thirstTick: 0,
+            buildMode: false,
+            buildType: null,
+            isResting: false,
+            restTimer: 0,
+            restType: '',
+            poisonTimer: 0,
+            insideCabin: false,
+            currentCabin: null,
+            cabinEnterCooldown: 0,
+            dayTransition: 0,
+            transitionPhase: 'none',
+            prevHour: 6,
+        };
+
+        // -------- 工具函数 --------
+        function rand(min, max) { return Math.random() * (max - min) + min; }
+
+        function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
+
+        function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+        function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+        // -------- 日志 --------
+        function addLog(text, type = 'system') {
+            G.logMessages.unshift({ text, type });
+            if (G.logMessages.length > G.logMax) G.logMessages.pop();
+            renderLog();
+        }
+
+        function renderLog() {
+            logArea.innerHTML = G.logMessages.map(m =>
+                `<div class="log-entry log-${m.type}">${m.text}</div>`
+            ).join('');
+        }
+
+        // -------- 初始化资源 --------
+        function initResources() {
+            G.trees = [];
+            G.fruitTrees = [];
+            G.waterSources = [];
+            for (let i = 0; i < 14; i++) {
+                let angle = rand(0, Math.PI * 2);
+                let radius = rand(60, 210);
+                let x = 500 + Math.cos(angle) * radius + rand(-35, 35);
+                let y = 380 + Math.sin(angle) * radius * 0.7 + rand(-35, 35);
+                G.trees.push({ x, y, harvested: false, regrowTimer: 0, maxRegrow: 180 });
+            }
+            for (let i = 0; i < 6; i++) {
+                let angle = rand(0, Math.PI * 2);
+                let radius = rand(50, 190);
+                let x = 500 + Math.cos(angle) * radius + rand(-25, 25);
+                let y = 380 + Math.sin(angle) * radius * 0.7 + rand(-25, 25);
+                G.fruitTrees.push({ x, y, harvested: false, regrowTimer: 0, maxRegrow: 240 });
+            }
+            for (let i = 0; i < 3; i++) {
+                let angle = rand(0, Math.PI * 2);
+                let radius = rand(40, 170);
+                let x = 500 + Math.cos(angle) * radius + rand(-20, 20);
+                let y = 380 + Math.sin(angle) * radius * 0.7 + rand(-20, 20);
+                G.waterSources.push({ x, y, harvested: false, regrowTimer: 0, maxRegrow: 200 });
+            }
+        }
+
+        function initPlayer() {
+            G.playerX = 500 + rand(-60, 60);
+            G.playerY = 380 + rand(-60, 60);
+            G.targetX = G.playerX;
+            G.targetY = G.playerY;
+        }
+
+        // -------- 怪物生成 --------
+        function spawnMonster() {
+            if (G.isDay) return;
+            if (G.monsters.length >= 4 + Math.floor(G.day / 3)) return;
+            let side = randInt(0, 3);
+            let x, y;
+            switch (side) {
+                case 0:
+                    x = rand(20, 980);
+                    y = 20;
+                    break;
+                case 1:
+                    x = 980;
+                    y = rand(20, 680);
+                    break;
+                case 2:
+                    x = rand(20, 980);
+                    y = 680;
+                    break;
+                case 3:
+                    x = 20;
+                    y = rand(20, 680);
+                    break;
+            }
+            if (dist({ x, y }, { x: 500, y: 380 }) < 120) {
+                x = 500 + Math.cos(rand(0, Math.PI * 2)) * rand(150, 350);
+                y = 380 + Math.sin(rand(0, Math.PI * 2)) * rand(150, 280);
+            }
+            const isElite = Math.random() < 0.2;
+            const hp = (isElite ? 6 : 3) + Math.floor(G.day / 4);
+            const attack = (isElite ? 2 : 1) + Math.floor(G.day / 5);
+            G.monsters.push({
+                x,
+                y,
+                health: hp,
+                maxHealth: hp,
+                attackPower: attack,
+                speed: 0.6 + G.day * 0.02,
+                attackTimer: 0,
+                hitCooldown: 0,
+                size: 24 + Math.min(G.day, 10) * 0.5 + (isElite ? 8 : 0),
+                angle: rand(0, Math.PI * 2),
+                isElite: isElite,
+                poisonTimer: 0,
+            });
+            addLog(`👾 ${isElite?'⭐精英':''}怪物登岛！ (${G.monsters.length}只)`, 'combat');
+        }
+
+        // -------- 工作台检测 --------
+        function hasWorkbench() {
+            return G.walls.some(w => w.type === 'workbench' && w.hp > 0);
+        }
+
+        // -------- 木屋切换 (通过门) --------
+        function toggleCabin(cabin) {
+            if (!cabin || cabin.hp <= 0) return;
+            if (G.insideCabin) {
+                if (G.currentCabin === cabin) {
+                    G.insideCabin = false;
+                    G.currentCabin = null;
+                    addLog('🚪 你离开了木屋', 'system');
+                    if (G.isResting) {
+                        G.isResting = false;
+                        addLog('⏳ 离开木屋，休息中断', 'system');
+                    }
+                }
+            } else {
+                G.insideCabin = true;
+                G.currentCabin = cabin;
+                if (!cabin.indoorItems) cabin.indoorItems = [];
+                addLog('🚪 你进入了木屋，看到温暖的室内', 'system');
+                if (cabin.hp < cabin.maxHp * 0.3) {
+                    addLog('⚠️ 木屋受损严重，请及时修复（重新建造）', 'system');
+                }
+            }
+            updateUI();
+        }
+
+        // -------- 检测是否点击到木屋的门 --------
+        function isClickOnCabinDoor(cabin, cx, cy) {
+            if (!cabin || cabin.hp <= 0) return false;
+            // 门在木屋中心偏下位置: x范围 -5~5, y范围 4~20 (相对木屋中心)
+            const dx = cx - cabin.x;
+            const dy = cy - cabin.y;
+            return dx >= -5 && dx <= 5 && dy >= 4 && dy <= 20;
+        }
+
+        // -------- 初始化游戏 --------
+        function initGame() {
+            G.health = G.maxHealth;
+            G.hunger = G.maxHunger;
+            G.thirst = G.maxThirst;
+            G.food = 5;
+            G.wood = 3;
+            G.water = 4;
+            G.defense = 0;
+            G.day = 1;
+            G.hour = 6;
+            G.isDay = true;
+            G.frame = 0;
+            G.gameOver = false;
+            G.endingTriggered = false;
+            G.choiceMade = false;
+            G.isFloating = false;
+            G.floatProgress = 0;
+            G.islandOffsetX = 0;
+            G.islandOffsetY = 0;
+            G.monsters = [];
+            G.walls = [];
+            G.monsterSpawnTimer = 0;
+            G.attackCooldown = 0;
+            G.heavyCooldown = 0;
+            G.harvestCooldown = 0;
+            G.logMessages = [];
+            G.endingChoice = null;
+            G.endingDisplayed = false;
+            G.monstersKilled = 0;
+            G.keys = { up: false, down: false, left: false, right: false };
+            G.hungerTick = 0;
+            G.thirstTick = 0;
+            G.buildMode = false;
+            G.buildType = null;
+            G.isResting = false;
+            G.restTimer = 0;
+            G.restType = '';
+            G.poisonTimer = 0;
+            G.insideCabin = false;
+            G.currentCabin = null;
+            G.cabinEnterCooldown = 0;
+            G.dayTransition = 0;
+            G.transitionPhase = 'none';
+            G.prevHour = 6;
+            initResources();
+            initPlayer();
+            updateUI();
+            addLog('🌊 你漂流到了这座荒岛……', 'system');
+            addLog('💡 白天采集，夜晚战斗，管理饥渴！', 'system');
+            addLog('🏠 建造木屋，点击门进入，装饰室内', 'build');
+            addLog(`👋 你好，${G.playerName}！`, 'system');
+            addLog('⌨️ WASD移动 | 空格攻击 | Q重击 | R打盹 | T睡眠 | B建造', 'system');
+            G.isRunning = true;
+            updateBuildGrid();
+        }
+
+        // -------- UI 更新 --------
+        function updateUI() {
+            dayValue.textContent = G.day;
+            const h = G.hour;
+            const isDay = G.isDay;
+            timeIcon.textContent = isDay ? '☀️' : '🌙';
+            timeLabel.textContent = isDay ? '白天' : '夜晚';
+            const hh = Math.floor(h);
+            const mm = Math.floor((h - hh) * 60);
+            hourDisplay.textContent = `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+            const hpPct = (G.health / G.maxHealth) * 100;
+            healthFill.style.width = Math.max(0, hpPct) + '%';
+            healthText.textContent = Math.round(G.health);
+            const hungPct = (G.hunger / G.maxHunger) * 100;
+            hungerFill.style.width = Math.max(0, hungPct) + '%';
+            hungerText.textContent = Math.round(G.hunger);
+            const thirPct = (G.thirst / G.maxThirst) * 100;
+            thirstFill.style.width = Math.max(0, thirPct) + '%';
+            thirstText.textContent = Math.round(G.thirst);
+            foodVal.textContent = Math.round(G.food);
+            woodVal.textContent = Math.round(G.wood);
+            waterVal.textContent = Math.round(G.water);
+            defenseVal.textContent = G.defense;
+        }
+
+        // -------- 建造网格 (分类展示) --------
+        function updateBuildGrid() {
+            buildGridContainer.innerHTML = '';
+            const hasWB = hasWorkbench();
+
+            const categories = {};
+            for (const [key, def] of Object.entries(BUILDING_TYPES)) {
+                const cat = def.category || '室外';
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push({ key, def });
+            }
+
+            for (const [catName, items] of Object.entries(categories)) {
+                const catDiv = document.createElement('div');
+                catDiv.className = 'build-category';
+                catDiv.textContent = catName + ' 🏗️ (' + items.length + '种)';
+                buildGridContainer.appendChild(catDiv);
+
+                const grid = document.createElement('div');
+                grid.className = 'build-grid';
+
+                for (const { key, def } of items) {
+                    const div = document.createElement('div');
+                    div.className = 'build-item';
+                    let disabled = false;
+                    let reason = '';
+                    const canAfford = G.wood >= def.woodCost && G.food >= def.foodCost && G.water >= def.waterCost;
+
+                    if (def.indoor && !G.insideCabin) {
+                        disabled = true;
+                        reason = '需进入木屋';
+                    } else if (def.requiresWorkbench && !hasWB) {
+                        disabled = true;
+                        reason = '需要工作台';
+                    } else if (!canAfford) {
+                        disabled = true;
+                        reason = '资源不足';
+                    }
+
+                    if (disabled) div.classList.add('disabled');
+                    div.innerHTML = `
+                        <span class="icon">${def.icon}</span>
+                        <div class="name">${def.name}</div>
+                        <div class="cost">🪵${def.woodCost} ${def.foodCost>0?'🍎'+def.foodCost:''} ${def.waterCost>0?'💧'+def.waterCost:''}</div>
+                        <div class="desc">${def.desc}</div>
+                        ${reason ? `<div class="requirement">⚠️ ${reason}</div>` : ''}
+                        ${def.indoor ? `<div class="tag">🏠 室内</div>` : ''}
+                    `;
+                    div.addEventListener('click', () => {
+                        if (disabled) {
+                            if (def.indoor && !G.insideCabin) {
+                                addLog('🏠 请先进入木屋才能放置室内物品！', 'build');
+                            } else if (def.requiresWorkbench && !hasWB) {
+                                addLog('🔨 需要先建造工作台！', 'build');
+                            } else {
+                                addLog('⚠️ 资源不足！', 'resource');
+                            }
+                            return;
+                        }
+                        modalBuild.classList.add('hidden');
+                        G.buildMode = true;
+                        G.buildType = key;
+                        addLog(`🏗️ 选择建造：${def.name}，点击地面放置`, 'build');
+                    });
+                    grid.appendChild(div);
+                }
+                buildGridContainer.appendChild(grid);
+            }
+        }
+
+        // -------- 放置建筑 --------
+        function placeBuilding(x, y) {
+            if (!G.buildMode || !G.buildType) return;
+            const def = BUILDING_TYPES[G.buildType];
+            if (!def) return;
+
+            if (def.indoor && !G.insideCabin) {
+                addLog('🏠 请先进入木屋才能放置室内物品！', 'build');
+                return;
+            }
+            if (!def.indoor && G.insideCabin) {
+                addLog('⛔ 室外建筑不能放在木屋内', 'build');
+                return;
+            }
+            if (def.requiresWorkbench && !hasWorkbench()) {
+                addLog('🔨 需要工作台才能建造此建筑！', 'build');
+                return;
+            }
+            if (G.wood < def.woodCost) { addLog('🪵 木材不足', 'resource'); return; }
+            if (G.food < def.foodCost) { addLog('🍎 食物不足', 'resource'); return; }
+            if (G.water < def.waterCost) { addLog('💧 水不足', 'resource'); return; }
+
+            if (!def.indoor) {
+                if (dist({ x, y }, { x: 500, y: 380 }) > 200) {
+                    addLog('⛔ 请在岛内建造', 'build');
+                    return;
+                }
+                for (let w of G.walls) {
+                    if (dist({ x, y }, w) < 30) { addLog('⛔ 这里已有建筑', 'build'); return; }
+                }
+            } else {
+                const cabin = G.currentCabin;
+                if (!cabin) { addLog('⛔ 未在木屋内', 'build'); return; }
+                if (Math.abs(x) > 80 || Math.abs(y) > 60) {
+                    addLog('⛔ 请在木屋内部放置', 'build');
+                    return;
+                }
+                const items = cabin.indoorItems || [];
+                for (let item of items) {
+                    if (dist({ x, y }, item) < 25) { addLog('⛔ 这里已有物品', 'build'); return; }
+                }
+            }
+
+            G.wood -= def.woodCost;
+            G.food -= def.foodCost;
+            G.water -= def.waterCost;
+
+            const building = {
+                type: G.buildType,
+                x: x,
+                y: y,
+                hp: def.hp,
+                maxHp: def.hp,
+                lit: true,
+                produceTimer: 0,
+                indoor: def.indoor || false,
+            };
+
+            if (def.indoor) {
+                const cabin = G.currentCabin;
+                if (!cabin) { addLog('⛔ 未在木屋内', 'build'); return; }
+                if (!cabin.indoorItems) cabin.indoorItems = [];
+                cabin.indoorItems.push(building);
+                addLog(`🏠 在屋内放置了 ${def.name}！`, 'build');
+            } else {
+                G.walls.push(building);
+                // 防御加成
+                if (G.buildType === 'wall') G.defense += 2;
+                if (G.buildType === 'fence') G.defense += 1;
+                if (G.buildType === 'watchtower') G.defense += 3;
+                if (G.buildType === 'cabin') G.defense += 5;
+                if (G.buildType === 'workbench') G.defense += 1;
+                if (G.buildType === 'lighthouse') G.defense += 2;
+                addLog(`🏗️ 建造了 ${def.name}！`, 'build');
+            }
+
+            if (G.buildType === 'workbench' && !modalBuild.classList.contains('hidden')) {
+                updateBuildGrid();
+            }
+            updateUI();
+            G.buildMode = false;
+            G.buildType = null;
+            if (!modalBuild.classList.contains('hidden')) {
+                updateBuildGrid();
+            }
+        }
+
+        // -------- 篝火/灯塔切换 --------
+        function toggleLight(x, y) {
+            for (let w of G.walls) {
+                if ((w.type === 'fire' || w.type === 'lighthouse') && dist({ x, y }, w) < 25) {
+                    w.lit = !w.lit;
+                    addLog(`💡 ${w.type === 'fire' ? '篝火' : '灯塔'}已${w.lit ? '点燃' : '熄灭'}`, 'build');
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // -------- 攻击 --------
+        function performAttack(type) {
+            if (!G.isRunning || G.gameOver || G.endingTriggered || G.isResting) return;
+            if (G.isDay) { addLog('☀️ 白天没有怪物', 'system'); return; }
+            if (G.monsters.length === 0) { addLog('👾 没有怪物', 'system'); return; }
+            if (G.insideCabin) { addLog('🏠 你在木屋内，无法攻击', 'system'); return; }
+
+            if (type === 'normal' && G.attackCooldown > 0) {
+                addLog('⏳ 攻击冷却中，请稍后', 'combat');
+                return;
+            }
+            if (type === 'heavy' && G.heavyCooldown > 0) {
+                addLog('⏳ 重击冷却中（约1秒），请稍后', 'combat');
+                return;
+            }
+
+            let nearest = null;
+            let nearDist = Infinity;
+            G.monsters.forEach(m => {
+                const d = dist({ x: G.playerX, y: G.playerY }, m);
+                if (d < nearDist) { nearDist = d;
+                    nearest = m; }
+            });
+            if (!nearest || nearDist > 200) { addLog('👾 没有怪物在附近', 'system'); return; }
+
+            let damage = 0;
+            if (type === 'normal') {
+                damage = 1 + Math.floor(G.wood / 3);
+                G.attackCooldown = 15;
+                addLog(`⚔️ 普通攻击 ${damage} 伤害`, 'combat');
+            } else if (type === 'heavy') {
+                damage = 3 + Math.floor(G.wood / 2);
+                G.heavyCooldown = 60;
+                addLog(`💥 重击 ${damage} 伤害！(冷却1秒)`, 'combat');
+            }
+
+            nearest.health -= damage;
+            if (nearest.health <= 0) {
+                const idx = G.monsters.indexOf(nearest);
+                if (idx > -1) G.monsters.splice(idx, 1);
+                G.monstersKilled++;
+                addLog(`⚔️ 击杀怪物！ (剩余${G.monsters.length}只)`, 'combat');
+                if (Math.random() < 0.3) { G.food += 1;
+                    addLog('🍖 掉落食物', 'resource'); }
+                if (Math.random() < 0.2) { G.wood += 1;
+                    addLog('🪵 掉落木材', 'resource'); }
+            }
+            updateUI();
+        }
+
+        // -------- 休息 --------
+        function startRest(type) {
+            if (!G.isRunning || G.gameOver || G.endingTriggered) return;
+            if (G.isResting) { addLog('⏳ 已经在休息', 'system'); return; }
+            if (type === 'sleep' && G.insideCabin) {
+                G.isResting = true;
+                G.restTimer = 120;
+                G.restType = 'sleep';
+                addLog('🌙 在木屋内安稳睡眠……', 'system');
+                updateUI();
+                return;
+            }
+            if (type === 'nap') {
+                G.isResting = true;
+                G.restTimer = 60;
+                G.restType = 'nap';
+                addLog('💤 开始打盹……', 'system');
+                updateUI();
+                return;
+            }
+            if (type === 'sleep') {
+                if (!G.isDay) {
+                    if (G.monsters.length > 0 && !G.insideCabin) {
+                        addLog('🌙 夜晚有怪物，无法安心睡眠！', 'combat');
+                        return;
+                    }
+                    G.isResting = true;
+                    G.restTimer = 120;
+                    G.restType = 'sleep';
+                    addLog('🌙 开始睡眠……', 'system');
+                } else { addLog('☀️ 白天不能睡眠，打个盹吧', 'system'); }
+            }
+            updateUI();
+        }
+
+        // -------- 进食/饮水 --------
+        function eatFood() {
+            if (!G.isRunning || G.gameOver || G.endingTriggered || G.isResting) return;
+            if (G.food < 1) { addLog('🍽️ 没有食物！', 'resource'); return; }
+            if (G.hunger >= G.maxHunger) { addLog('🍽️ 你已经饱了', 'system'); return; }
+            G.food -= 1;
+            G.hunger = Math.min(G.hunger + 30, G.maxHunger);
+            addLog(`🍽️ 进食 +30 饥饿 (${Math.round(G.hunger)})`, 'hunger');
+            updateUI();
+        }
+
+        function drinkWater() {
+            if (!G.isRunning || G.gameOver || G.endingTriggered || G.isResting) return;
+            if (G.water < 1) { addLog('🚰 没有水！', 'resource'); return; }
+            if (G.thirst >= G.maxThirst) { addLog('🚰 你不渴', 'system'); return; }
+            G.water -= 1;
+            G.thirst = Math.min(G.thirst + 30, G.maxThirst);
+            addLog(`🚰 饮水 +30 水分 (${Math.round(G.thirst)})`, 'thirst');
+            updateUI();
+        }
+
+        // -------- 建筑产出处理 --------
+        function processBuildingProduction() {
+            for (let w of G.walls) {
+                if (w.type === 'net') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.food += 1;
+                        addLog('🎣 渔网捕获了 1 食物！', 'resource');
+                        updateUI(); }
+                }
+                if (w.type === 'bucket') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.water += 1;
+                        addLog('🪣 水桶收集了 1 水！', 'resource');
+                        updateUI(); }
+                }
+                if (w.type === 'well') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.water += 2;
+                        addLog('🪣 水井产出了 2 水！', 'resource');
+                        updateUI(); }
+                }
+                if (w.type === 'garden') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.food += 1;
+                        addLog('🌸 花园产出了 1 食物！', 'resource');
+                        updateUI(); }
+                }
+                if (w.type === 'vegetable_garden') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.food += 2;
+                        addLog('🥬 菜园产出了 2 食物！', 'resource');
+                        updateUI(); }
+                }
+                if (w.type === 'chicken_coop') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.food += 1;
+                        addLog('🐔 鸡舍产出了 1 食物！', 'resource');
+                        updateUI(); }
+                }
+                if (w.type === 'sheepfold') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.food += 1;
+                        addLog('🐑 羊圈产出了 1 食物！', 'resource');
+                        updateUI(); }
+                }
+                if (w.type === 'beehive') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.food += 1;
+                        addLog('🐝 蜂箱产出了 1 食物！', 'resource');
+                        updateUI(); }
+                }
+                if (w.type === 'windmill') {
+                    w.produceTimer = (w.produceTimer || 0) + 1;
+                    if (w.produceTimer >= 2) { w.produceTimer = 0;
+                        G.wood += 1;
+                        addLog('🌾 磨坊产出了 1 木材！', 'resource');
+                        updateUI(); }
+                }
+            }
+        }
+
+        // -------- 主更新循环 --------
+        function update() {
+            if (!G.isRunning || G.gameOver || G.endingTriggered) return;
+            G.frame++;
+            if (G.cabinEnterCooldown > 0) G.cabinEnterCooldown--;
+
+            const speed = 0.4;
+            const prevHour = G.hour;
+            G.hour += speed / 60;
+
+            if (G.hour >= 24) {
+                G.hour = 0;
+                G.day++;
+                if (G.day > 20) { G.day = 20;
+                    triggerEnding(); return; }
+                addLog(`📅 第 ${G.day} 天开始了`, 'system');
+                if (G.water < 1) { G.health -= 1;
+                    addLog('😰 缺水，生命 -1', 'resource'); } else { G.water -= 1;
+                    addLog('💧 消耗了 1 水', 'resource'); }
+                if (G.health <= 0) { G.health = 0;
+                    G.gameOver = true;
+                    addLog('💀 你没能撑过去……', 'combat');
+                    showGameOver(); return; }
+                resetResourcesDaily();
+                processBuildingProduction();
+                updateUI();
+            }
+
+            const wasDay = G.isDay;
+            G.isDay = (G.hour >= 5 && G.hour < 19);
+
+            if (wasDay !== G.isDay) {
+                if (!G.isDay) {
+                    G.transitionPhase = 'sunset';
+                    G.dayTransition = 0;
+                    addLog('🌅 日落……', 'system');
+                } else {
+                    G.transitionPhase = 'sunrise';
+                    G.dayTransition = 0;
+                    addLog('🌅 日出……', 'system');
+                }
+            }
+
+            if (G.transitionPhase !== 'none') {
+                G.dayTransition += 0.02;
+                if (G.dayTransition >= 1) {
+                    G.dayTransition = 1;
+                    G.transitionPhase = 'none';
+                    if (!G.isDay) {
+                        addLog('🌙 夜幕降临…… 怪物即将出现！', 'night');
+                    } else {
+                        addLog('☀️ 天亮了！ 怪物退散！', 'system');
+                        G.monsters = [];
+                    }
+                }
+            }
+
+            if (!G.isDay && G.monsters.length < 6 + Math.floor(G.day / 2)) {
+                G.monsterSpawnTimer--;
+                if (G.monsterSpawnTimer <= 0) {
+                    spawnMonster();
+                    G.monsterSpawnTimer = Math.max(60, 200 - G.day * 5) + randInt(0, 60);
+                }
+            } else if (G.isDay) { G.monsterSpawnTimer = 60; }
+
+            // 饥渴
+            G.hunger -= 0.8 * (speed / 60);
+            if (G.hunger < 0) G.hunger = 0;
+            if (G.hunger <= 0) {
+                G.hungerTick++;
+                if (G.hungerTick >= 30) {
+                    G.hungerTick = 0;
+                    G.health -= 1;
+                    addLog('💔 饥饿难耐，生命 -1', 'hunger');
+                    if (G.health <= 0) { G.health = 0;
+                        G.gameOver = true;
+                        addLog('💀 你被饥饿击倒了……', 'hunger');
+                        showGameOver(); return; }
+                    updateUI();
+                }
+            } else { G.hungerTick = 0; }
+
+            G.thirst -= 0.6 * (speed / 60);
+            if (G.thirst < 0) G.thirst = 0;
+            if (G.thirst <= 0) {
+                G.thirstTick++;
+                if (G.thirstTick >= 30) {
+                    G.thirstTick = 0;
+                    G.health -= 1;
+                    addLog('💧 极度干渴，生命 -1', 'thirst');
+                    if (G.health <= 0) { G.health = 0;
+                        G.gameOver = true;
+                        addLog('💀 你被干渴击倒了……', 'thirst');
+                        showGameOver(); return; }
+                    updateUI();
+                }
+            } else { G.thirstTick = 0; }
+
+            if (G.poisonTimer > 0) {
+                G.poisonTimer--;
+                if (G.poisonTimer % 10 === 0) {
+                    G.health -= 1;
+                    addLog('☠️ 毒素发作，生命 -1', 'combat');
+                    if (G.health <= 0) { G.health = 0;
+                        G.gameOver = true;
+                        addLog('💀 你死于剧毒……', 'combat');
+                        showGameOver(); return; }
+                    updateUI();
+                }
+            }
+
+            // 篝火/灯塔恢复 (外部)
+            if (!G.insideCabin) {
+                let fireNearby = false;
+                for (let w of G.walls) {
+                    if ((w.type === 'fire' || w.type === 'lighthouse') && w.lit && dist({ x: G.playerX, y: G.playerY },
+                        w) < 60) { fireNearby = true; break; }
+                }
+                if (fireNearby && G.frame % 12 === 0 && G.health < G.maxHealth) {
+                    G.health = Math.min(G.health + 0.3, G.maxHealth);
+                    updateUI();
+                }
+                // 喷泉恢复
+                let fountainNearby = false;
+                for (let w of G.walls) {
+                    if (w.type === 'fountain' && dist({ x: G.playerX, y: G.playerY }, w) < 40) { fountainNearby = true; break; }
+                }
+                if (fountainNearby && G.frame % 20 === 0 && G.health < G.maxHealth) {
+                    G.health = Math.min(G.health + 0.2, G.maxHealth);
+                    updateUI();
+                }
+            }
+
+            // 木屋恢复 (在屋内)
+            if (G.insideCabin && G.currentCabin && G.currentCabin.hp > 0) {
+                if (G.frame % 15 === 0 && G.health < G.maxHealth) {
+                    G.health = Math.min(G.health + 0.8, G.maxHealth);
+                    updateUI();
+                }
+                if (G.frame % 20 === 0 && G.hunger < G.maxHunger) {
+                    G.hunger = Math.min(G.hunger + 0.3, G.maxHunger);
+                    updateUI();
+                }
+                if (G.frame % 20 === 0 && G.thirst < G.maxThirst) {
+                    G.thirst = Math.min(G.thirst + 0.2, G.maxThirst);
+                    updateUI();
+                }
+            }
+
+            [...G.trees, ...G.fruitTrees, ...G.waterSources].forEach(r => {
+                if (r.harvested) {
+                    r.regrowTimer--;
+                    if (r.regrowTimer <= 0) { r.harvested = false;
+                        r.regrowTimer = 0; }
+                }
+            });
+
+            if (!G.insideCabin) {
+                let dx = 0,
+                    dy = 0;
+                if (G.keys.left) dx -= 1;
+                if (G.keys.right) dx += 1;
+                if (G.keys.up) dy -= 1;
+                if (G.keys.down) dy += 1;
+                if (dx !== 0 || dy !== 0) {
+                    G.targetX = clamp(G.playerX + dx * G.moveSpeed, 280, 720);
+                    G.targetY = clamp(G.playerY + dy * G.moveSpeed, 240, 520);
+                }
+                G.playerX += (G.targetX - G.playerX) * 0.25;
+                G.playerY += (G.targetY - G.playerY) * 0.25;
+                G.playerX = clamp(G.playerX, 280, 720);
+                G.playerY = clamp(G.playerY, 240, 520);
+            }
+
+            if (G.isResting) {
+                G.restTimer--;
+                if (G.restType === 'nap') {
+                    if (G.frame % 10 === 0) {
+                        G.hunger = Math.min(G.hunger + 2, G.maxHunger);
+                        G.thirst = Math.min(G.thirst + 1.5, G.maxThirst);
+                        G.health = Math.min(G.health + 0.5, G.maxHealth);
+                    }
+                    if (G.restTimer <= 0) { G.isResting = false;
+                        addLog('💤 打盹结束', 'system'); }
+                } else if (G.restType === 'sleep') {
+                    let sleepMult = G.insideCabin ? 1.8 : 1.0;
+                    if (G.frame % 8 === 0) {
+                        G.hunger = Math.min(G.hunger + 3 * sleepMult, G.maxHunger);
+                        G.thirst = Math.min(G.thirst + 2 * sleepMult, G.maxThirst);
+                        G.health = Math.min(G.health + 1 * sleepMult, G.maxHealth);
+                    }
+                    if (G.restTimer <= 0) { G.isResting = false;
+                        addLog('🌅 睡到天亮', 'system');
+                        G.hour = 5.5; }
+                }
+                updateUI();
+                if (!G.insideCabin && G.monsters.length > 0 && !G.isDay) {
+                    G.isResting = false;
+                    addLog('⚠️ 休息被怪物打断！', 'combat');
+                }
+                if (!G.isResting && G.restType === 'sleep') { G.hour = 5.5; }
+            }
+
+            // ---- 怪物AI (含篝火/灯塔驱散 + 木屋攻击) ----
+            const lightSources = G.walls.filter(w => (w.type === 'fire' || w.type === 'lighthouse') && w.lit && w.hp > 0);
+            const lightPositions = lightSources.map(w => ({ x: w.x, y: w.y }));
+
+            let cabins = G.walls.filter(w => w.type === 'cabin' && w.hp > 0);
+
+            for (let i = G.monsters.length - 1; i >= 0; i--) {
+                const m = G.monsters[i];
+                if (m.hitCooldown > 0) m.hitCooldown--;
+                if (m.poisonTimer > 0) m.poisonTimer--;
+
+                // 光源驱散
+                if (!G.isDay && lightPositions.length > 0) {
+                    let closestLight = null;
+                    let closestDist = Infinity;
+                    for (let f of lightPositions) {
+                        const d = dist({ x: m.x, y: m.y }, f);
+                        if (d < closestDist) { closestDist = d;
+                            closestLight = f; }
+                    }
+                    if (closestLight && closestDist < 120) {
+                        const angle = Math.atan2(m.y - closestLight.y, m.x - closestLight.x);
+                        const pushStrength = 1.2 + (120 - closestDist) / 120 * 0.8;
+                        m.x += Math.cos(angle) * pushStrength * 1.5;
+                        m.y += Math.sin(angle) * pushStrength * 1.5;
+                        if (dist({ x: m.x, y: m.y }, { x: 500, y: 380 }) > 250) {
+                            addLog(`💡 怪物被光吓退，逃入大海！`, 'combat');
+                            G.monsters.splice(i, 1);
+                            continue;
+                        }
+                        m.angle = angle;
+                        m.x = clamp(m.x, 20, 980);
+                        m.y = clamp(m.y, 20, 680);
+                        continue;
+                    }
+                }
+
+                // 攻击木屋
+                let targetCabin = null;
+                let targetCabinDist = Infinity;
+                if (G.insideCabin && G.currentCabin) {
+                    targetCabin = G.currentCabin;
+                    targetCabinDist = dist({ x: m.x, y: m.y }, targetCabin);
+                } else {
+                    for (let c of cabins) {
+                        const d = dist({ x: m.x, y: m.y }, c);
+                        if (d < 150 && d < targetCabinDist) {
+                            targetCabinDist = d;
+                            targetCabin = c;
+                        }
+                    }
+                }
+
+                if (targetCabin && targetCabinDist < 80 && !G.isDay) {
+                    if (m.attackTimer <= 0) {
+                        targetCabin.hp -= m.attackPower;
+                        m.attackTimer = 30;
+                        if (targetCabin.hp <= 0) {
+                            const idx = G.walls.indexOf(targetCabin);
+                            if (idx > -1) {
+                                G.walls.splice(idx, 1);
+                                G.defense -= 5;
+                                addLog(`🏠 木屋被摧毁！`, 'build');
+                                if (G.insideCabin && G.currentCabin === targetCabin) {
+                                    G.insideCabin = false;
+                                    G.currentCabin = null;
+                                    addLog('💥 你被弹出木屋！', 'system');
+                                    if (G.isResting) {
+                                        G.isResting = false;
+                                        addLog('⏳ 休息中断', 'system');
+                                    }
+                                }
+                            }
+                            updateUI();
+                        }
+                        m.x = clamp(m.x, 20, 980);
+                        m.y = clamp(m.y, 20, 680);
+                        continue;
+                    } else {
+                        m.x = clamp(m.x, 20, 980);
+                        m.y = clamp(m.y, 20, 680);
+                        continue;
+                    }
+                }
+
+                if (G.insideCabin && G.currentCabin && G.currentCabin.hp > 0) {
+                    m.x += (Math.random() - 0.5) * 0.5;
+                    m.y += (Math.random() - 0.5) * 0.5;
+                    m.x = clamp(m.x, 20, 980);
+                    m.y = clamp(m.y, 20, 680);
+                    continue;
+                }
+
+                // 攻击其他建筑
+                let targetWall = null;
+                let minWallDist = Infinity;
+                for (let w of G.walls) {
+                    if (w.type === 'cabin') continue;
+                    const d = dist({ x: m.x, y: m.y }, { x: w.x, y: w.y });
+                    if (d < minWallDist && d < 50) {
+                        minWallDist = d;
+                        targetWall = w;
+                    }
+                }
+
+                if (targetWall && !G.isDay && !G.insideCabin) {
+                    if (m.attackTimer <= 0) {
+                        targetWall.hp -= m.attackPower;
+                        m.attackTimer = 30;
+                        if (targetWall.hp <= 0) {
+                            const idx = G.walls.indexOf(targetWall);
+                            if (idx > -1) {
+                                const type = targetWall.type;
+                                G.walls.splice(idx, 1);
+                                if (type === 'wall') G.defense -= 2;
+                                if (type === 'fence') G.defense -= 1;
+                                if (type === 'watchtower') G.defense -= 3;
+                                if (type === 'workbench') G.defense -= 1;
+                                if (type === 'lighthouse') G.defense -= 2;
+                                addLog(`🛡️ ${BUILDING_TYPES[type]?.name||'建筑'}被摧毁！`, 'build');
+                            }
+                            updateUI();
+                        }
+                    }
+                } else {
+                    if (!G.insideCabin) {
+                        const dx2 = G.playerX - m.x;
+                        const dy2 = G.playerY - m.y;
+                        const d = Math.hypot(dx2, dy2);
+                        if (d > 0) {
+                            const moveSpeed = m.speed * (G.isDay ? 0 : 1);
+                            m.x += (dx2 / d) * moveSpeed;
+                            m.y += (dy2 / d) * moveSpeed;
+                            m.angle = Math.atan2(dy2, dx2);
+                        }
+                        if (d < 40 && !G.isDay) {
+                            if (m.attackTimer <= 0) {
+                                let dmg = m.attackPower;
+                                dmg = Math.max(1, dmg - Math.floor(G.defense / 2));
+                                G.health -= dmg;
+                                addLog(`💢 怪物攻击！ -${dmg} 生命`, 'combat');
+                                m.attackTimer = 30;
+                                if (m.isElite) { G.poisonTimer = 60;
+                                    addLog('☠️ 你中毒了！', 'combat'); }
+                                if (G.health <= 0) { G.health = 0;
+                                    G.gameOver = true;
+                                    addLog('💀 你倒在了荒岛上……', 'combat');
+                                    showGameOver(); return; }
+                                updateUI();
+                            }
+                        }
+                    }
+                }
+                if (m.attackTimer > 0) m.attackTimer--;
+                m.x = clamp(m.x, 20, 980);
+                m.y = clamp(m.y, 20, 680);
+            }
+
+            if (G.attackCooldown > 0) G.attackCooldown--;
+            if (G.heavyCooldown > 0) G.heavyCooldown--;
+            if (G.harvestCooldown > 0) G.harvestCooldown--;
+
+            if (G.isFloating) {
+                G.floatProgress += 0.004;
+                if (G.floatProgress >= 1) G.floatProgress = 1;
+                G.islandOffsetX = -Math.sin(G.floatProgress * Math.PI * 0.5) * 120;
+                G.islandOffsetY = -Math.sin(G.floatProgress * Math.PI * 0.5) * 40;
+                if (G.floatProgress > 0.1 && !G.musicPlaying) { playEndingMusic(); }
+            }
+            updateUI();
+        }
+
+        // -------- 每日重置 --------
+        function resetResourcesDaily() {
+            G.trees.forEach(t => { if (t.harvested && Math.random() < 0.2) t.harvested = false; });
+            G.fruitTrees.forEach(t => { if (t.harvested && Math.random() < 0.25) t.harvested = false; });
+            G.waterSources.forEach(t => { if (t.harvested && Math.random() < 0.3) t.harvested = false; });
+        }
+
+        // -------- 结局 --------
+        function triggerEnding() {
+            if (G.endingTriggered) return;
+            G.endingTriggered = true;
+            G.isRunning = false;
+            showChoiceDialog();
+        }
+
+        function showChoiceDialog() {
+            modalChoice.classList.remove('hidden');
+            choicePrompt.innerHTML =
+                `
+                二十天过去了……<br>
+                你在岛上经历了无数风雨。<br>
+                你站在小岛之巅，遥望远方。<br><br>
+                <strong style="font-size:20px;color:#f7e05e;">「是否回归大陆？」</strong>
+                <br><span style="font-size:13px;opacity:0.5;">—— 这个选择将决定命运 ——</span>
+            `;
+        }
+
+        function handleChoice(choice) {
+            modalChoice.classList.add('hidden');
+            G.endingChoice = choice;
+            G.choiceMade = true;
+            if (choice === 'yes') {
+                G.isFloating = true;
+                G.floatProgress = 0;
+                G.isRunning = true;
+                addLog('🌅 你选择了回归…… 小岛开始漂移！', 'system');
+                setTimeout(() => { showEnding('good'); }, 4000);
+            } else { showEnding('bad'); }
+        }
+
+        function showEnding(type) {
+            if (G.endingDisplayed) return;
+            G.endingDisplayed = true;
+            G.isRunning = false;
+            modalEnding.classList.remove('hidden');
+            if (type === 'good') {
+                endingBox.innerHTML = `
+                    <div class="ending-title good">🏝️ 归 · 航</div>
+                    <p style="font-size:16px;font-weight:300;letter-spacing:4px;opacity:0.8;text-align:center;">
+                        「小岛缓缓漂移，<br>向着大陆的方向……」
+                    </p>
+                    <div class="divider"></div>
+                    <p style="font-size:14px;line-height:1.8;opacity:0.9;text-align:center;">
+                        ${G.playerName}，你做出了正确的选择。<br>
+                        小岛回到了大陆的怀抱。<br>
+                        <span style="color:#f7e05e;font-weight:600;">—— 两岸一家，血脉相连 ——</span>
+                    </p>
+                    <div style="margin:10px 0;font-size:13px;opacity:0.5;text-align:center;">🎵 《东南苦行山》· 高潮</div>
+                    <div class="btn-group">
+                        <button class="btn-primary" onclick="location.reload()">🔄 重新开始</button>
+                    </div>
+                    <div class="sub-text">感谢游玩《小岛奇兵》</div>
+                `;
+            } else {
+                endingBox.innerHTML = `
+                    <div class="ending-title bad">⛓️ 孤 · 岛</div>
+                    <p style="font-size:16px;font-weight:300;letter-spacing:4px;opacity:0.8;text-align:center;">
+                        「你选择了留下，<br>但历史的回声不会消失……」
+                    </p>
+                    <div class="divider"></div>
+                    <div class="ending-video-placeholder">
+                        <div class="line">📹 老一辈的告诫：</div>
+                        <div class="line" style="color:#ffaa77;">「孩子啊，我们曾经漂泊过……</div>
+                        <div class="line" style="color:#ffaa77;">但终归要回到母亲的怀抱。</div>
+                        <div class="line" style="color:#ffaa77;">岛屿再美，也离不开大陆的支撑。</div>
+                        <div class="line" style="color:#ffaa77;">历史不会忘记，血脉不会断绝。</div>
+                        <div class="line" style="color:#ffaa77;">愿你早日明白，家国一体……」</div>
+                        <div class="line" style="color:#ff8866;margin-top:4px;border-top:1px solid rgba(255,80,80,0.08);padding-top:4px;">
+                            ⚠️ 你选择了孤立，但时代洪流终将汇合。
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn-primary" onclick="location.reload()">🔄 重新开始</button>
+                    </div>
+                    <div class="sub-text">历史的选择，终将走向统一。</div>
+                `;
+                playSadSound();
+            }
+        }
+
+        function showGameOver() {
+            G.isRunning = false;
+            modalEnding.classList.remove('hidden');
+            endingBox.innerHTML = `
+                <div class="ending-title bad">💀 陨 · 落</div>
+                <p style="text-align:center;">你在荒岛上耗尽了最后一丝力气……</p>
+                <div class="divider"></div>
+                <p style="font-size:13px;opacity:0.6;text-align:center;">生存了 ${G.day} 天，${G.playerName} 的故事到此为止。</p>
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="location.reload()">🔄 重新开始</button>
+                </div>
+            `;
+        }
+
+        // ============================================================
+        //  🎵 音乐
+        // ============================================================
+        function initAudio() {
+            if (!G.audioCtx) { G.audioCtx = new(window.AudioContext || window.webkitAudioContext)(); }
+            return G.audioCtx;
+        }
+
+        function playEndingMusic() {
+            if (G.musicPlaying) return;
+            try {
+                const ctx = initAudio();
+                if (!ctx) return;
+                G.musicPlaying = true;
+                const notes = [
+                    [523, 0.3],
+                    [659, 0.3],
+                    [784, 0.4],
+                    [880, 0.3],
+                    [784, 0.3],
+                    [880, 0.5],
+                    [988, 0.4],
+                    [784, 0.3],
+                    [880, 0.3],
+                    [988, 0.5],
+                    [1175, 0.4],
+                    [1047, 0.3],
+                    [880, 0.3],
+                    [784, 0.5],
+                    [880, 0.4],
+                    [988, 0.6],
+                ];
+                let time = ctx.currentTime + 0.1;
+                notes.forEach(([freq, dur]) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.20, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(time);
+                    osc.stop(time + dur);
+                    time += dur + 0.05;
+                });
+                const playChord = (freqs, t, dur) => {
+                    freqs.forEach(f => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = f;
+                        gain.gain.setValueAtTime(0.06, t);
+                        gain.gain.exponentialRampToValueAtTime(0.005, t + dur);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(t);
+                        osc.stop(t + dur);
+                    });
+                };
+                const chordTimes = [0, 0.6, 1.2, 1.8, 2.4, 3.0, 3.6, 4.2];
+                const chordFreqs = [
+                    [523, 659, 784],
+                    [587, 740, 880],
+                    [659, 784, 988],
+                    [784, 988, 1175],
+                    [659, 784, 988],
+                    [587, 740, 880],
+                    [523, 659, 784],
+                    [659, 784, 988]
+                ];
+                chordTimes.forEach((t, i) => {
+                    const base = ctx.currentTime + 0.1 + t;
+                    playChord(chordFreqs[i % chordFreqs.length], base, 0.6);
+                });
+                const bass = ctx.createOscillator();
+                const bassGain = ctx.createGain();
+                bass.type = 'sawtooth';
+                bass.frequency.value = 130;
+                bassGain.gain.setValueAtTime(0.08, ctx.currentTime + 0.1);
+                bassGain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 6);
+                bass.connect(bassGain);
+                bassGain.connect(ctx.destination);
+                bass.start(ctx.currentTime + 0.1);
+                bass.stop(ctx.currentTime + 6);
+            } catch (e) { console.warn('音乐播放失败:', e);
+                G.musicPlaying = false; }
+        }
+
+        function playSadSound() {
+            try {
+                const ctx = initAudio();
+                if (!ctx) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(200, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 2);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 2.5);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 2.5);
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(160, ctx.currentTime + 0.3);
+                osc2.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 2.3);
+                gain2.gain.setValueAtTime(0.10, ctx.currentTime + 0.3);
+                gain2.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 2.8);
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.start(ctx.currentTime + 0.3);
+                osc2.stop(ctx.currentTime + 2.8);
+            } catch (e) { /* ignore */ }
+        }
+
+        // -------- 初始化canvas尺寸 --------
+        function initCanvasSize() {
+            const wrapper = document.getElementById('game-wrapper');
+            const rect = wrapper.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        window.addEventListener('resize', initCanvasSize);
+
+        // ============================================================
+        //  🎨 渲染
+        // ============================================================
+        function render() {
+            const W = canvas.width;
+            const H = canvas.height;
+            ctx.clearRect(0, 0, W, H);
+
+            const scaleX = W / 1000;
+            const scaleY = H / 700;
+            ctx.save();
+            ctx.scale(scaleX, scaleY);
+
+            drawGameContent();
+
+            ctx.restore();
+        }
+
+        function drawGameContent() {
+            const W = 1000,
+                H = 700;
+            ctx.save();
+
+            let transitionAlpha = 0;
+            if (G.transitionPhase !== 'none') {
+                transitionAlpha = G.dayTransition;
+                transitionAlpha = transitionAlpha * transitionAlpha * (3 - 2 * transitionAlpha);
+            }
+
+            if (G.insideCabin && G.currentCabin) {
+                drawInterior();
+            } else {
+                drawExterior();
+            }
+
+            if (transitionAlpha > 0.01) {
+                const phase = G.transitionPhase;
+                const alpha = transitionAlpha * 0.25;
+                if (phase === 'sunset') {
+                    const grad = ctx.createRadialGradient(500, 350, 50, 500, 350, 700);
+                    grad.addColorStop(0, `rgba(255,150,50,${alpha * 0.8})`);
+                    grad.addColorStop(0.5, `rgba(200,80,30,${alpha * 0.6})`);
+                    grad.addColorStop(1, `rgba(20,10,40,${alpha * 0.4})`);
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, W, H);
+                } else if (phase === 'sunrise') {
+                    const grad = ctx.createRadialGradient(500, 350, 50, 500, 350, 700);
+                    grad.addColorStop(0, `rgba(255,200,100,${alpha * 0.6})`);
+                    grad.addColorStop(0.5, `rgba(255,150,80,${alpha * 0.4})`);
+                    grad.addColorStop(1, `rgba(40,30,60,${alpha * 0.3})`);
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, W, H);
+                }
+            }
+
+            ctx.restore();
+        }
+
+        // -------- 绘制室内 --------
+        function drawInterior() {
+            const W = 1000,
+                H = 700;
+            const cabin = G.currentCabin;
+            const ox = G.islandOffsetX || 0;
+            const oy = G.islandOffsetY || 0;
+            const cx = cabin.x + ox;
+            const cy = cabin.y + oy;
+
+            ctx.fillStyle = '#d4c8a8';
+            ctx.fillRect(0, 0, W, H);
+            const floorY = H - 180;
+            ctx.fillStyle = '#8a7a5a';
+            ctx.fillRect(0, floorY, W, H - floorY);
+            for (let i = 0; i < 20; i++) {
+                const y = floorY + i * 10;
+                ctx.strokeStyle = 'rgba(60,50,30,0.1)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(W, y);
+                ctx.stroke();
+            }
+            for (let i = 0; i < 30; i++) {
+                const x = i * 35;
+                ctx.strokeStyle = 'rgba(60,50,30,0.05)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x, floorY);
+                ctx.lineTo(x, H);
+                ctx.stroke();
+            }
+            ctx.fillStyle = '#c0b090';
+            ctx.fillRect(0, 80, W, 4);
+            ctx.fillRect(0, 85, W, 2);
+
+            for (let wx of [60, W - 80]) {
+                ctx.fillStyle = '#88ccff';
+                ctx.fillRect(wx, 120, 60, 50);
+                ctx.strokeStyle = '#6a4a2a';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(wx, 120, 60, 50);
+                ctx.strokeRect(wx + 28, 120, 4, 50);
+                ctx.strokeRect(wx, 143, 60, 4);
+                ctx.fillStyle = 'rgba(60,160,60,0.2)';
+                ctx.fillRect(wx + 6, 135, 20, 12);
+                ctx.fillStyle = 'rgba(80,200,255,0.15)';
+                ctx.fillRect(wx + 6, 125, 20, 8);
+            }
+
+            const items = cabin.indoorItems || [];
+            for (let item of items) {
+                const def = BUILDING_TYPES[item.type];
+                if (def && def.render) {
+                    def.render(item.x, item.y, item, cx, cy);
+                }
+            }
+
+            // 玩家在室内（小）
+            const px = cx + 0;
+            const py = cy + 20;
+            ctx.shadowColor = 'rgba(255,200,100,0.1)';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(px, py - 12, 14, 0, Math.PI * 2);
+            ctx.fillStyle = '#f5d8b0';
+            ctx.fill();
+            ctx.fillStyle = '#3a7a5a';
+            ctx.beginPath();
+            ctx.ellipse(px, py + 4, 12, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#f5d8b0';
+            ctx.beginPath();
+            ctx.arc(px, py - 16, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#222';
+            ctx.beginPath();
+            ctx.arc(px - 4, py - 18, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(px + 4, py - 18, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#884422';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.arc(px, py - 12, 5, 0.1, Math.PI - 0.1);
+            ctx.stroke();
+            ctx.fillStyle = '#5a7a3a';
+            ctx.fillRect(px - 12, py - 26, 24, 3);
+            ctx.fillRect(px - 7, py - 30, 14, 4);
+            ctx.fillStyle = 'rgba(255,255,200,0.4)';
+            ctx.font = '10px "Microsoft YaHei", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(G.playerName, px, py + 28);
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = 'rgba(100,200,255,0.15)';
+            ctx.font = '11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🏠 在木屋内 · 点击门离开 · 可建造室内物品', 500, H - 20);
+        }
+
+        // -------- 绘制室外 --------
+        function drawExterior() {
+            const W = 1000,
+                H = 700;
+            const isNight = !G.isDay;
+            const ox = G.islandOffsetX || 0;
+            const oy = G.islandOffsetY || 0;
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, H);
+            if (isNight) {
+                gradient.addColorStop(0, '#0a1a2a');
+                gradient.addColorStop(0.5, '#0d2238');
+                gradient.addColorStop(1, '#0a1a2a');
+            } else {
+                gradient.addColorStop(0, '#4a8fbf');
+                gradient.addColorStop(0.5, '#5aa5d5');
+                gradient.addColorStop(1, '#3a7faf');
+            }
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, W, H);
+
+            ctx.globalAlpha = 0.12;
+            for (let i = 0; i < 6; i++) {
+                ctx.beginPath();
+                const yBase = 80 + i * 100 + Math.sin(G.frame * 0.008 + i * 1.2) * 20;
+                ctx.moveTo(0, yBase);
+                for (let x = 0; x <= W; x += 4) {
+                    const y = yBase + Math.sin(x * 0.015 + G.frame * 0.01 + i * 1.5) * 12;
+                    ctx.lineTo(x, y);
+                }
+                ctx.strokeStyle = isNight ? 'rgba(100,180,255,0.05)' : 'rgba(255,255,255,0.06)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+
+            const islandCX = 500 + ox;
+            const islandCY = 380 + oy;
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
+            ctx.shadowBlur = 25;
+            ctx.beginPath();
+            ctx.ellipse(islandCX, islandCY, 250, 170, 0, 0, Math.PI * 2);
+            ctx.fillStyle = isNight ? '#5a6a4a' : '#d4c08a';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.ellipse(islandCX, islandCY, 225, 148, 0, 0, Math.PI * 2);
+            ctx.fillStyle = isNight ? '#3a5a3a' : '#6aaa4a';
+            ctx.fill();
+            for (let i = 0; i < 60; i++) {
+                const a = rand(0, Math.PI * 2);
+                const r = rand(0, 190);
+                const x = islandCX + Math.cos(a) * r * 0.9;
+                const y = islandCY + Math.sin(a) * r * 0.75;
+                ctx.fillStyle = isNight ? `rgba(60,100,60,${rand(0.05,0.15)})` : `rgba(80,160,60,${rand(0.05,0.15)})`;
+                ctx.fillRect(x, y, rand(2, 4), rand(3, 6));
+            }
+            ctx.restore();
+
+            for (let w of G.walls) {
+                const def = BUILDING_TYPES[w.type];
+                if (def && def.render) { def.render(w.x, w.y, w, ox, oy); }
+            }
+
+            for (let tree of G.trees) {
+                const x = tree.x + ox,
+                    y = tree.y + oy;
+                if (tree.harvested) { ctx.globalAlpha = 0.25; } else { ctx.globalAlpha = 1; }
+                ctx.fillStyle = 'rgba(0,0,0,0.05)';
+                ctx.fillRect(x - 2, y + 4, 10, 14);
+                ctx.fillStyle = '#6a4a2a';
+                ctx.fillRect(x - 2, y - 2, 6, 18);
+                ctx.fillStyle = '#7a5a3a';
+                ctx.fillRect(x, y, 2, 14);
+                const shades = isNight ? ['#2a4a2a', '#3a5a3a', '#4a6a3a'] : ['#3a8a2a', '#4a9a3a', '#5aaa4a'];
+                ctx.beginPath();
+                ctx.arc(x, y - 12, 22, 0, Math.PI * 2);
+                ctx.fillStyle = shades[0];
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x - 12, y - 8, 18, 0, Math.PI * 2);
+                ctx.fillStyle = shades[1];
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x + 12, y - 8, 18, 0, Math.PI * 2);
+                ctx.fillStyle = shades[1];
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x - 6, y - 16, 14, 0, Math.PI * 2);
+                ctx.fillStyle = shades[2];
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x + 6, y - 16, 14, 0, Math.PI * 2);
+                ctx.fillStyle = shades[2];
+                ctx.fill();
+                if (!tree.harvested) {
+                    ctx.fillStyle = 'rgba(255,255,200,0.1)';
+                    ctx.font = '10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🪵', x, y - 32);
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            for (let tree of G.fruitTrees) {
+                const x = tree.x + ox,
+                    y = tree.y + oy;
+                if (tree.harvested) { ctx.globalAlpha = 0.25; } else { ctx.globalAlpha = 1; }
+                ctx.fillStyle = '#6a4a2a';
+                ctx.fillRect(x - 2, y - 2, 6, 16);
+                ctx.fillStyle = '#7a5a3a';
+                ctx.fillRect(x, y, 2, 12);
+                const shades = isNight ? ['#3a5a3a', '#4a6a3a'] : ['#5aaa3a', '#6aba4a'];
+                ctx.beginPath();
+                ctx.arc(x, y - 12, 20, 0, Math.PI * 2);
+                ctx.fillStyle = shades[0];
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x - 10, y - 8, 16, 0, Math.PI * 2);
+                ctx.fillStyle = shades[1];
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x + 10, y - 8, 16, 0, Math.PI * 2);
+                ctx.fillStyle = shades[1];
+                ctx.fill();
+                if (!tree.harvested) {
+                    for (let i = 0; i < 4; i++) {
+                        const a = i * 1.2 + 0.3;
+                        const fx = x + Math.cos(a) * 12;
+                        const fy = y - 12 + Math.sin(a) * 10;
+                        ctx.fillStyle = '#cc3333';
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 3 + Math.sin(G.frame * 0.02 + i) * 0.5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#ee4444';
+                        ctx.beginPath();
+                        ctx.arc(fx - 1, fy - 1, 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.fillStyle = 'rgba(255,200,100,0.1)';
+                    ctx.font = '10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🍎', x, y - 32);
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            for (let src of G.waterSources) {
+                const x = src.x + ox,
+                    y = src.y + oy;
+                if (src.harvested) { ctx.globalAlpha = 0.25; } else { ctx.globalAlpha = 1; }
+                const grad = ctx.createRadialGradient(x, y, 2, x, y, 20);
+                grad.addColorStop(0, isNight ? '#3a7a9a' : '#6ad0f0');
+                grad.addColorStop(0.7, isNight ? '#2a5a7a' : '#4ab0e0');
+                grad.addColorStop(1, isNight ? '#1a3a5a' : '#3a8fbf');
+                ctx.beginPath();
+                ctx.ellipse(x, y, 20, 12, 0, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
+                ctx.fill();
+                for (let i = 0; i < 3; i++) {
+                    const phase = G.frame * 0.03 + i * 1.2;
+                    const r = 6 + i * 4 + Math.sin(phase) * 2;
+                    ctx.strokeStyle = `rgba(255,255,255,${0.08 - i*0.02})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.ellipse(x + Math.sin(phase * 0.7) * 3, y + Math.cos(phase * 0.5) * 2, r, r * 0.5, 0.2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.beginPath();
+                ctx.ellipse(x - 4, y - 3, 6, 3, -0.2, 0, Math.PI * 2);
+                ctx.fill();
+                if (!src.harvested) {
+                    ctx.fillStyle = 'rgba(100,200,255,0.1)';
+                    ctx.font = '10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('💧', x, y - 22);
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            for (let m of G.monsters) {
+                const x = m.x + ox,
+                    y = m.y + oy;
+                const size = m.size || 24;
+                ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                ctx.beginPath();
+                ctx.ellipse(x + 2, y + size * 0.6, size * 0.7, size * 0.3, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowColor = 'rgba(255,0,0,0.2)';
+                ctx.shadowBlur = 15;
+                const grad = ctx.createRadialGradient(x - size * 0.2, y - size * 0.2, 2, x, y, size);
+                if (m.isElite) {
+                    grad.addColorStop(0, '#ff9966');
+                    grad.addColorStop(0.5, '#dd4422');
+                    grad.addColorStop(1, '#881111');
+                } else {
+                    grad.addColorStop(0, '#ff7766');
+                    grad.addColorStop(0.5, '#cc3333');
+                    grad.addColorStop(1, '#771111');
+                }
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'rgba(255,200,100,0.3)';
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = '#ffdd44';
+                ctx.beginPath();
+                ctx.arc(x - size * 0.35, y - size * 0.15, size * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x + size * 0.35, y - size * 0.15, size * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#220000';
+                ctx.beginPath();
+                ctx.arc(x - size * 0.35 + Math.cos(m.angle) * size * 0.1, y - size * 0.15 + Math.sin(m.angle) * size * 0.1,
+                    size * 0.15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x + size * 0.35 + Math.cos(m.angle) * size * 0.1, y - size * 0.15 + Math.sin(m.angle) * size * 0.1,
+                    size * 0.15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ddddcc';
+                for (let i = -2; i <= 2; i++) {
+                    ctx.fillRect(x + i * size * 0.15 - 2, y + size * 0.2, 4, size * 0.2);
+                }
+                if (m.isElite) {
+                    ctx.strokeStyle = '#ffaa00';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    ctx.arc(x, y, size + 6, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.fillStyle = '#ffaa00';
+                    ctx.font = '12px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('⭐', x, y - size - 10);
+                }
+                if (m.health < m.maxHealth) {
+                    const bw = size * 1.3;
+                    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                    ctx.fillRect(x - bw / 2, y - size - 12, bw, 4);
+                    ctx.fillStyle = '#44ff44';
+                    ctx.fillRect(x - bw / 2, y - size - 12, bw * (m.health / m.maxHealth), 4);
+                }
+                if (m.attackTimer > 0) {
+                    ctx.strokeStyle = `rgba(255,200,0,${0.3 + Math.sin(G.frame*0.3)*0.2})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size + 10 + Math.sin(G.frame * 0.2) * 4, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            // 玩家 (仅在外部显示，且不在木屋内)
+            if (!G.insideCabin) {
+                const px = G.playerX + ox,
+                    py = G.playerY + oy;
+                ctx.shadowColor = 'rgba(255,200,100,0.15)';
+                ctx.shadowBlur = 10;
+
+                if (G.isResting) {
+                    ctx.save();
+                    ctx.translate(px, py + 12);
+                    ctx.rotate(Math.PI / 2);
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, 18, 12, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f5d8b0';
+                    ctx.fill();
+                    ctx.fillStyle = '#3a7a5a';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 8, 14, 10, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#e8c8a0';
+                    ctx.beginPath();
+                    ctx.ellipse(0, -4, 14, 10, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#4a3a2a';
+                    ctx.fillRect(-6, -6, 4, 2);
+                    ctx.fillRect(2, -6, 4, 2);
+                    ctx.strokeStyle = '#884422';
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.arc(0, -2, 6, 0.2, Math.PI - 0.2);
+                    ctx.stroke();
+                    ctx.fillStyle = '#5a7a3a';
+                    ctx.fillRect(-12, -12, 24, 4);
+                    ctx.fillRect(-8, -18, 16, 6);
+                    ctx.strokeStyle = '#f5d8b0';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(-12, -2);
+                    ctx.lineTo(-18, 6);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(12, -2);
+                    ctx.lineTo(18, 6);
+                    ctx.stroke();
+                    ctx.strokeStyle = '#3a5a4a';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(-6, 16);
+                    ctx.lineTo(-10, 26);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(6, 16);
+                    ctx.lineTo(10, 26);
+                    ctx.stroke();
+                    ctx.restore();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = 'rgba(255,255,200,0.35)';
+                    ctx.font = '18px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('💤', px + 22, py - 22);
+                } else {
+                    ctx.shadowBlur = 10;
+                    ctx.strokeStyle = '#3a5a4a';
+                    ctx.lineWidth = 5;
+                    ctx.beginPath();
+                    ctx.moveTo(px - 6, py + 14);
+                    ctx.lineTo(px - 10, py + 28);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(px + 6, py + 14);
+                    ctx.lineTo(px + 10, py + 28);
+                    ctx.stroke();
+                    ctx.fillStyle = '#3a7a5a';
+                    ctx.beginPath();
+                    ctx.ellipse(px, py + 4, 15, 16, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#4a8a6a';
+                    ctx.fillRect(px - 6, py + 6, 12, 6);
+                    ctx.strokeStyle = '#f5d8b0';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(px - 14, py + 2);
+                    ctx.lineTo(px - 22, py + 14);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(px + 14, py + 2);
+                    ctx.lineTo(px + 22, py + 14);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(px, py - 8, 18, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f5d8b0';
+                    ctx.fill();
+                    ctx.fillStyle = '#4a3a2a';
+                    ctx.beginPath();
+                    ctx.arc(px, py - 16, 16, Math.PI, 0);
+                    ctx.fill();
+                    ctx.fillRect(px - 14, py - 16, 28, 6);
+                    ctx.fillStyle = '#2a1a0a';
+                    ctx.beginPath();
+                    ctx.arc(px - 6, py - 10, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(px + 6, py - 10, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(px - 5, py - 11, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(px + 7, py - 11, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#884422';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(px, py - 4, 7, 0.1, Math.PI - 0.1);
+                    ctx.stroke();
+                    ctx.fillStyle = '#5a7a3a';
+                    ctx.fillRect(px - 16, py - 22, 32, 4);
+                    ctx.fillRect(px - 10, py - 30, 20, 8);
+                    ctx.fillStyle = '#4a6a2a';
+                    ctx.fillRect(px - 18, py - 22, 36, 2);
+                    ctx.fillStyle = 'rgba(255,150,150,0.15)';
+                    ctx.beginPath();
+                    ctx.ellipse(px - 10, py - 4, 4, 3, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.ellipse(px + 10, py - 4, 4, 3, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'rgba(255,255,200,0.5)';
+                ctx.font = '13px "Microsoft YaHei", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(G.playerName, px, py + 48);
+            } else {
+                // 在屋内，显示"在屋内"标记
+                const cabin = G.currentCabin;
+                if (cabin && cabin.hp > 0) {
+                    const cx = cabin.x + ox;
+                    const cy = cabin.y + oy - 10;
+                    ctx.fillStyle = 'rgba(255,255,100,0.3)';
+                    ctx.font = '16px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('👤 在屋内', cx, cy);
+                }
+            }
+
+            if (isNight) {
+                ctx.fillStyle = 'rgba(0,0,30,0.1)';
+                ctx.fillRect(0, 0, W, H);
+                for (let i = 0; i < 50; i++) {
+                    const sx = (i * 137 + 50) % W;
+                    const sy = (i * 251 + 30) % (H * 0.35);
+                    const br = 0.15 + Math.sin(G.frame * 0.015 + i * 1.3) * 0.1;
+                    const size = 0.5 + Math.sin(G.frame * 0.02 + i * 0.7) * 0.5;
+                    ctx.fillStyle = `rgba(255,255,240,${Math.max(0,br)})`;
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.shadowColor = 'rgba(255,240,200,0.1)';
+                ctx.shadowBlur = 30;
+                ctx.fillStyle = 'rgba(255,240,200,0.4)';
+                ctx.beginPath();
+                ctx.arc(850, 70, 35, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255,240,200,0.25)';
+                ctx.beginPath();
+                ctx.arc(860, 60, 28, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            } else {
+                ctx.shadowColor = 'rgba(255,200,50,0.1)';
+                ctx.shadowBlur = 50;
+                const grad = ctx.createRadialGradient(120, 70, 10, 120, 70, 50);
+                grad.addColorStop(0, 'rgba(255,230,120,0.5)');
+                grad.addColorStop(1, 'rgba(255,220,80,0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(120, 70, 50, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255,230,120,0.5)';
+                ctx.beginPath();
+                ctx.arc(120, 70, 30, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255,240,180,0.3)';
+                ctx.beginPath();
+                ctx.arc(120, 70, 20, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            if (G.isFloating && G.floatProgress > 0.1) {
+                ctx.fillStyle = `rgba(255,215,100,${0.25 + Math.sin(G.frame*0.03)*0.1})`;
+                ctx.font = 'bold 22px "Microsoft YaHei", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🌊 归 · 航', 500, 50);
+            }
+
+            if (G.isDay && G.harvestCooldown === 0 && !G.insideCabin) {
+                ctx.fillStyle = 'rgba(255,255,200,0.08)';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('点击树木🌲采木材 · 点击果树🍎采食物 · 点击水源💧取水', 500, 680);
+            } else if (!G.isDay && G.monsters.length > 0 && !G.insideCabin) {
+                ctx.fillStyle = 'rgba(255,100,80,0.15)';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`⚔️ 点击怪物攻击！ (${G.monsters.length}只)`, 500, 680);
+            } else if (G.insideCabin) {
+                ctx.fillStyle = 'rgba(100,200,255,0.1)';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🏠 你在木屋内，点击门离开', 500, 680);
+            }
+            if (G.buildMode) {
+                ctx.fillStyle = 'rgba(150,200,80,0.2)';
+                ctx.font = '15px sans-serif';
+                ctx.textAlign = 'center';
+                const def = BUILDING_TYPES[G.buildType];
+                ctx.fillText(`🏗️ 放置 ${def?def.name:'建筑'} (点击地面)`, 500, 660);
+            }
+        }
+
+        // ============================================================
+        //  🖱️ 交互 (木屋点击门)
+        // ============================================================
+        function handleCanvasClick(e) {
+            if (!G.isRunning || G.gameOver || G.endingTriggered) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const mx = (e.clientX - rect.left) * scaleX;
+            const my = (e.clientY - rect.top) * scaleY;
+
+            // 转换为内部坐标 (1000x700)
+            const cx = mx / (canvas.width / 1000);
+            const cy = my / (canvas.height / 700);
+
+            const ox = G.islandOffsetX || 0;
+            const oy = G.islandOffsetY || 0;
+            const gx = cx - ox;
+            const gy = cy - oy;
+
+            if (G.buildMode && G.buildType) {
+                if (G.insideCabin && G.currentCabin) {
+                    const cabin = G.currentCabin;
+                    const relX = gx - cabin.x;
+                    const relY = gy - cabin.y;
+                    placeBuilding(relX, relY);
+                } else {
+                    placeBuilding(gx, gy);
+                }
+                return;
+            }
+
+            // 光源切换 (篝火/灯塔)
+            for (let w of G.walls) {
+                if ((w.type === 'fire' || w.type === 'lighthouse') && dist({ x: gx, y: gy }, w) < 25) {
+                    toggleLight(gx, gy);
+                    return;
+                }
+            }
+
+            // 木屋：只有点击门才能进入/离开
+            for (let w of G.walls) {
+                if (w.type === 'cabin' && w.hp > 0) {
+                    // 检查是否点击到门
+                    if (isClickOnCabinDoor(w, gx, gy)) {
+                        if (G.cabinEnterCooldown <= 0) {
+                            toggleCabin(w);
+                            G.cabinEnterCooldown = 30;
+                        }
+                        return;
+                    }
+                }
+            }
+
+            // 白天采集
+            if (G.isDay && !G.insideCabin) {
+                if (G.harvestCooldown > 0) return;
+                for (let tree of G.trees) {
+                    if (tree.harvested) continue;
+                    if (dist({ x: gx, y: gy }, tree) < 35) {
+                        tree.harvested = true;
+                        tree.regrowTimer = tree.maxRegrow;
+                        G.wood += 1;
+                        G.harvestCooldown = 15;
+                        addLog(`🪵 采集木材 (共${Math.round(G.wood)})`, 'resource');
+                        updateUI();
+                        return;
+                    }
+                }
+                for (let tree of G.fruitTrees) {
+                    if (tree.harvested) continue;
+                    if (dist({ x: gx, y: gy }, tree) < 32) {
+                        tree.harvested = true;
+                        tree.regrowTimer = tree.maxRegrow;
+                        G.food += 1;
+                        G.harvestCooldown = 15;
+                        addLog(`🍎 采集食物 (共${Math.round(G.food)})`, 'resource');
+                        updateUI();
+                        return;
+                    }
+                }
+                for (let src of G.waterSources) {
+                    if (src.harvested) continue;
+                    if (dist({ x: gx, y: gy }, src) < 30) {
+                        src.harvested = true;
+                        src.regrowTimer = src.maxRegrow;
+                        G.water += 1;
+                        G.harvestCooldown = 15;
+                        addLog(`💧 采集水 (共${Math.round(G.water)})`, 'resource');
+                        updateUI();
+                        return;
+                    }
+                }
+                G.targetX = clamp(gx, 280, 720);
+                G.targetY = clamp(gy, 240, 520);
+                return;
+            }
+
+            // 夜晚攻击
+            if (!G.isDay && !G.insideCabin && G.monsters.length > 0) {
+                if (G.attackCooldown > 0) return;
+                let hit = false;
+                for (let i = G.monsters.length - 1; i >= 0; i--) {
+                    const m = G.monsters[i];
+                    if (dist({ x: gx, y: gy }, m) < m.size + 20) {
+                        let dmg = 1 + Math.floor(G.wood / 3);
+                        m.health -= dmg;
+                        G.attackCooldown = 15;
+                        if (m.health <= 0) {
+                            G.monsters.splice(i, 1);
+                            G.monstersKilled++;
+                            addLog(`⚔️ 击杀怪物！ (剩余${G.monsters.length}只)`, 'combat');
+                            if (Math.random() < 0.3) { G.food += 1;
+                                addLog('🍖 掉落食物', 'resource'); }
+                            if (Math.random() < 0.2) { G.wood += 1;
+                                addLog('🪵 掉落木材', 'resource'); }
+                            updateUI();
+                        } else {
+                            addLog(`💥 攻击怪物！ (${Math.round(m.health)}/${Math.round(m.maxHealth)} HP)`, 'combat');
+                        }
+                        hit = true;
+                        break;
+                    }
+                }
+                if (!hit) { G.targetX = clamp(gx, 280, 720);
+                    G.targetY = clamp(gy, 240, 520); }
+                updateUI();
+            }
+        }
+
+        // ============================================================
+        //  🚀 启动
+        // ============================================================
+        function startGame() {
+            const name = nameInput.value.trim() || '旅人';
+            G.playerName = name;
+            modalStart.classList.add('hidden');
+            initGame();
+            initAudio();
+            if (!window._loopStarted) { window._loopStarted = true;
+                gameLoop(); }
+        }
+
+        function gameLoop() {
+            update();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ---- 键盘 ----
+        document.addEventListener('keydown', (e) => {
+            const key = e.key;
+            if (key === 'w' || key === 'W' || key === 'ArrowUp') G.keys.up = true;
+            if (key === 's' || key === 'S' || key === 'ArrowDown') G.keys.down = true;
+            if (key === 'a' || key === 'A' || key === 'ArrowLeft') G.keys.left = true;
+            if (key === 'd' || key === 'D' || key === 'ArrowRight') G.keys.right = true;
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 's', 'S', 'a', 'A', 'd', 'D'].includes(key)) { e
+                    .preventDefault(); }
+            if (key === ' ') { e.preventDefault();
+                performAttack('normal'); }
+            if (key === 'q' || key === 'Q') { e.preventDefault();
+                performAttack('heavy'); }
+            if (key === 'r' || key === 'R') { e.preventDefault();
+                startRest('nap'); }
+            if (key === 't' || key === 'T') { e.preventDefault();
+                startRest('sleep'); }
+            if (key === 'e' || key === 'E') { e.preventDefault();
+                eatFood(); }
+            if (key === 'd' || key === 'D') { e.preventDefault();
+                drinkWater(); }
+            if (key === 'b' || key === 'B') { e.preventDefault();
+                btnBuildMenu.click(); }
+        });
+        document.addEventListener('keyup', (e) => {
+            const key = e.key;
+            if (key === 'w' || key === 'W' || key === 'ArrowUp') G.keys.up = false;
+            if (key === 's' || key === 'S' || key === 'ArrowDown') G.keys.down = false;
+            if (key === 'a' || key === 'A' || key === 'ArrowLeft') G.keys.left = false;
+            if (key === 'd' || key === 'D' || key === 'ArrowRight') G.keys.right = false;
+        });
+
+        // ---- 移动端 ----
+        document.querySelectorAll('#mobile-controls [data-dir]').forEach(btn => {
+            const dir = btn.dataset.dir;
+            const start = (e) => {
+                e.preventDefault();
+                if (dir === 'up') G.keys.up = true;
+                if (dir === 'down') G.keys.down = true;
+                if (dir === 'left') G.keys.left = true;
+                if (dir === 'right') G.keys.right = true;
+            };
+            const end = (e) => {
+                e.preventDefault();
+                if (dir === 'up') G.keys.up = false;
+                if (dir === 'down') G.keys.down = false;
+                if (dir === 'left') G.keys.left = false;
+                if (dir === 'right') G.keys.right = false;
+            };
+            btn.addEventListener('touchstart', start, { passive: false });
+            btn.addEventListener('touchend', end, { passive: false });
+            btn.addEventListener('touchcancel', end, { passive: false });
+            btn.addEventListener('mousedown', start);
+            btn.addEventListener('mouseup', end);
+            btn.addEventListener('mouseleave', end);
+        });
+
+        // ---- UI 事件 ----
+        btnStart.addEventListener('click', startGame);
+        nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') startGame(); });
+        canvas.addEventListener('click', handleCanvasClick);
+
+        btnEat.addEventListener('click', eatFood);
+        btnDrink.addEventListener('click', drinkWater);
+        btnNap.addEventListener('click', () => startRest('nap'));
+        btnSleep.addEventListener('click', () => startRest('sleep'));
+        btnHeavy.addEventListener('click', () => performAttack('heavy'));
+        btnAttack.addEventListener('click', () => performAttack('normal'));
+
+        btnBuildMenu.addEventListener('click', () => {
+            if (!G.isRunning || G.gameOver || G.endingTriggered) return;
+            updateBuildGrid();
+            modalBuild.classList.remove('hidden');
+        });
+        btnCloseBuild.addEventListener('click', () => {
+            modalBuild.classList.add('hidden');
+            G.buildMode = false;
+            G.buildType = null;
+        });
+
+        btnRules.addEventListener('click', () => { modalRules.classList.remove('hidden'); });
+        btnCloseRules.addEventListener('click', () => { modalRules.classList.add('hidden'); });
+
+        choiceYes.addEventListener('click', () => handleChoice('yes'));
+        choiceNo.addEventListener('click', () => handleChoice('no'));
+
+        document.querySelectorAll('.modal-overlay').forEach(el => {
+            el.addEventListener('click', (e) => { if (e.target === el) { /* ignore */ } });
+        });
+
+        canvas.addEventListener('click', () => {
+            if (G.audioCtx && G.audioCtx.state === 'suspended') G.audioCtx.resume();
+        });
+
+        initCanvasSize();
+        nameInput.focus();
+        render();
+
+        console.log('🏝️ 小岛奇兵 · 豪华版 (26室外建筑 + 木屋点击门)');
+        console.log('⌨️ WASD移动 | 空格攻击 | Q重击 | R打盹 | T睡眠 | B建造');
+        console.log('🚪 点击木屋的门进入/离开，屋内可放置20种家具');
+    </script>
+</body>
+</html>
