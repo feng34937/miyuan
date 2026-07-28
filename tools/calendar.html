@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>米遇安日历 · 布局优化</title>
+  <title>米遇安日历 · Line Awesome 图标</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Line Awesome 图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -195,7 +196,6 @@
     .footer-note { margin-top: 22px; display: flex; justify-content: space-between; font-size: 0.75rem; color: #1e3a5f; border-top: 1px solid rgba(255,255,255,0.5); padding-top: 14px; }
     body.dark .footer-note { color: #bdd1e5; border-top-color: #3a5a7a; }
 
-    /* 优化后的模态框样式 */
     .modal {
       position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1000;
       background: rgba(0,0,0,0.25); backdrop-filter: blur(6px);
@@ -267,8 +267,8 @@
   <canvas id="calendar-canvas"></canvas>
 
   <div class="header-row">
-    <h1><i class="fas fa-calendar-alt"></i> 米遇安日历</h1>
-    <button class="theme-toggle-btn" id="theme-toggle" title="切换深浅主题"><i class="fas fa-moon"></i></button>
+    <h1><i class="las la-calendar-alt"></i> 米遇安日历</h1>
+    <button class="theme-toggle-btn" id="theme-toggle" title="切换深浅主题"><i class="las la-moon"></i></button>
   </div>
 
   <div class="toolbar-row">
@@ -276,30 +276,30 @@
       <div class="scroll-column" id="year-column"></div>
       <div class="scroll-column" id="month-column"></div>
       <div class="scroll-column" id="day-column"></div>
-      <button class="picker-go-btn" id="picker-go-btn"><i class="fas fa-arrow-right"></i> 跳转</button>
+      <button class="picker-go-btn" id="picker-go-btn"><i class="las la-arrow-right"></i> 跳转</button>
     </div>
     <div class="toolbar-actions">
       <div class="view-toggle">
-        <button class="view-btn active" data-view="month"><i class="far fa-calendar-alt"></i> 月</button>
-        <button class="view-btn" data-view="year"><i class="far fa-calendar"></i> 年</button>
+        <button class="view-btn active" data-view="month"><i class="lar la-calendar-alt"></i> 月</button>
+        <button class="view-btn" data-view="year"><i class="lar la-calendar"></i> 年</button>
       </div>
-      <button id="add-event-btn"><i class="fas fa-plus"></i> 新建日程</button>
+      <button id="add-event-btn"><i class="las la-plus"></i> 新建日程</button>
     </div>
   </div>
 
   <div class="nav-section" id="month-nav">
     <div class="month-year"><span id="current-month-year">2026年4月</span></div>
     <div class="nav-arrows">
-      <button class="nav-btn" id="prev-month"><i class="fas fa-chevron-left"></i></button>
-      <button class="nav-btn" id="next-month"><i class="fas fa-chevron-right"></i></button>
-      <button class="nav-btn" id="today-btn"><i class="fas fa-calendar-check"></i> 今天</button>
+      <button class="nav-btn" id="prev-month"><i class="las la-chevron-left"></i></button>
+      <button class="nav-btn" id="next-month"><i class="las la-chevron-right"></i></button>
+      <button class="nav-btn" id="today-btn"><i class="las la-calendar-check"></i> 今天</button>
     </div>
   </div>
   <div class="nav-section hidden" id="year-nav">
     <div class="month-year"><span id="current-year-display">2026年</span></div>
     <div class="nav-arrows">
-      <button class="nav-btn" id="prev-year"><i class="fas fa-chevron-left"></i></button>
-      <button class="nav-btn" id="next-year"><i class="fas fa-chevron-right"></i></button>
+      <button class="nav-btn" id="prev-year"><i class="las la-chevron-left"></i></button>
+      <button class="nav-btn" id="next-year"><i class="las la-chevron-right"></i></button>
       <button class="nav-btn" id="today-year-btn">今年</button>
     </div>
   </div>
@@ -311,7 +311,7 @@
 
   <div class="selected-info">
     <div class="selected-date-wrap">
-      <i class="fas fa-map-pin" style="color:#2c5f8a;"></i>
+      <i class="las la-map-pin" style="color:#2c5f8a;"></i>
       <span>选中</span>
       <span id="selected-date-text"></span>
     </div>
@@ -320,7 +320,7 @@
     </div>
   </div>
   <div class="footer-note">
-    <span><i class="far fa-calendar-check"></i> 公历·农历节日 | 日程管理</span>
+    <span><i class="lar la-calendar-check"></i> 公历·农历节日 | 日程管理</span>
     <span>©2026 米遇安</span>
   </div>
 </div>
@@ -329,24 +329,24 @@
 <div class="modal hidden" id="event-modal">
   <div class="modal-content">
     <div class="modal-header">
-      <h3><i class="fas fa-calendar-plus"></i> 新建日程</h3>
+      <h3><i class="las la-calendar-plus"></i> 新建日程</h3>
       <button class="close-modal-btn" id="close-event-modal">&times;</button>
     </div>
     <div class="form-group">
-      <label><i class="far fa-calendar"></i> 日期</label>
+      <label><i class="lar la-calendar"></i> 日期</label>
       <input type="date" id="event-date" />
     </div>
     <div class="form-group">
-      <label><i class="far fa-edit"></i> 标题</label>
+      <label><i class="lar la-edit"></i> 标题</label>
       <input type="text" id="event-title" placeholder="例如：团队会议" />
     </div>
     <div class="form-group">
-      <label><i class="far fa-clock"></i> 时间（可选）</label>
+      <label><i class="lar la-clock"></i> 时间（可选）</label>
       <input type="time" id="event-time" />
     </div>
     <div class="modal-actions">
       <button class="nav-btn" id="cancel-event-btn">取消</button>
-      <button class="nav-btn" id="save-event-btn"><i class="fas fa-check"></i> 保存</button>
+      <button class="nav-btn" id="save-event-btn"><i class="las la-check"></i> 保存</button>
     </div>
   </div>
 </div>
@@ -356,11 +356,14 @@
     const body = document.body;
     const themeToggle = document.getElementById('theme-toggle');
     const themeIcon = themeToggle.querySelector('i');
-    if (localStorage.getItem('theme') === 'dark') { body.classList.add('dark'); themeIcon.className = 'fas fa-sun'; }
+    if (localStorage.getItem('theme') === 'dark') { 
+      body.classList.add('dark'); 
+      themeIcon.className = 'las la-sun'; 
+    }
     themeToggle.addEventListener('click', () => {
       body.classList.toggle('dark');
       const isDark = body.classList.contains('dark');
-      themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      themeIcon.className = isDark ? 'las la-sun' : 'las la-moon';
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
@@ -600,7 +603,7 @@
     function renderEventList(date){
       const evs = getEvents(date);
       if (evs.length===0) { eventListDiv.innerHTML='<span style="opacity:0.7;">✨ 无日程</span>'; return; }
-      eventListDiv.innerHTML = evs.map(e=>`<div class="event-item"><span>${e.time||'全天'} ${e.title}</span><button data-id="${e.id}" class="delete-event"><i class="fas fa-trash"></i></button></div>`).join('');
+      eventListDiv.innerHTML = evs.map(e=>`<div class="event-item"><span>${e.time||'全天'} ${e.title}</span><button data-id="${e.id}" class="delete-event"><i class="las la-trash"></i></button></div>`).join('');
       document.querySelectorAll('.delete-event').forEach(btn=>{ btn.addEventListener('click', (e)=>{ e.stopPropagation(); delEvent(selectedDate, Number(btn.dataset.id)); renderEventList(selectedDate); renderCalendarView(); }); });
     }
 
