@@ -17,6 +17,9 @@
                         primary: '#0078D7',
                         secondary: '#F8F9FA',
                         dark: '#212529',
+                        'primary-light': '#5aa9e6',
+                        'ad-start': '#0f172a',
+                        'ad-end': '#1e293b',
                     },
                     fontFamily: { inter: ['Inter', 'sans-serif'] },
                     borderRadius: {
@@ -42,7 +45,12 @@
                         scaleIn: { '0%': { opacity: '0', transform: 'scale(0.98)' },
                             '100%': { opacity: '1', transform: 'scale(1)' } },
                         gentleBounce: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-3px)' } },
-                        slideInRight: { '0%': { transform: 'translateX(100%)' }, '100%': { transform: 'translateX(0)' } }
+                        slideInRight: { '0%': { transform: 'translateX(100%)' }, '100%': { transform: 'translateX(0)' } },
+                        shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+                        glowPulse: { '0%,100%': { boxShadow: '0 0 20px rgba(0,120,215,0.2)' },
+                            '50%': { boxShadow: '0 0 40px rgba(0,120,215,0.5)' } },
+                        starFloat: { '0%,100%': { transform: 'translateY(0) scale(1)' },
+                            '50%': { transform: 'translateY(-10px) scale(1.05)' } },
                     },
                     animation: {
                         float: 'float 5s ease-in-out infinite',
@@ -52,7 +60,10 @@
                         fadeInUp: 'fadeInUp 0.6s cubic-bezier(0.2,0.9,0.3,1) forwards',
                         scaleIn: 'scaleIn 0.4s cubic-bezier(0.2,0.9,0.3,1) forwards',
                         gentleBounce: 'gentleBounce 0.3s cubic-bezier(0.2,0.9,0.4,1)',
-                        slideInRight: 'slideInRight 0.3s cubic-bezier(0.2,0.9,0.4,1) forwards'
+                        slideInRight: 'slideInRight 0.3s cubic-bezier(0.2,0.9,0.4,1) forwards',
+                        shimmer: 'shimmer 3s infinite linear',
+                        glowPulse: 'glowPulse 2s ease-in-out infinite',
+                        starFloat: 'starFloat 4s ease-in-out infinite',
                     }
                 }
             }
@@ -63,25 +74,25 @@
             scroll-behavior: smooth;
         }
 
-        /* 强制直角，保留圆形头像 */
         .rounded-md,
         .rounded-lg,
         .rounded-xl,
         .rounded-2xl,
         .rounded,
         button,
-        [class*="rounded-"]:not(.rounded-full):not(.team-avatar-wrapper):not(.team-avatar):not(.carousel-dot) {
+        [class*="rounded-"]:not(.rounded-full):not(.team-avatar-wrapper):not(.team-avatar):not(.carousel-dot):not(.ad-dot):not(.ad-arrow-btn) {
             border-radius: 0px !important;
         }
         .rounded-full,
         .team-avatar-wrapper,
         .team-avatar,
         .carousel-dot,
+        .ad-dot,
+        .ad-arrow-btn,
         .timeline-item::before {
             border-radius: 9999px !important;
         }
 
-        /* 导航栏玻璃效果 */
         #navbar {
             position: fixed !important;
             top: 0 !important;
@@ -129,7 +140,6 @@
             background-color: #121212;
         }
 
-        /* 移动端侧边栏遮罩 */
         .mobile-menu-overlay {
             position: fixed;
             top: 0;
@@ -148,7 +158,6 @@
             visibility: visible;
         }
 
-        /* 侧边栏样式 - iOS 26玻璃效果，占屏幕四分之三 */
         .mobile-sidebar {
             position: fixed;
             top: 0;
@@ -243,13 +252,10 @@
             border-top-color: rgba(255, 255, 255, 0.1);
             color: #9ca3af;
         }
-
-        /* 隐藏原有的移动端菜单 */
         #mobileMenu {
             display: none !important;
         }
 
-        /* 其余样式保持与原版一致 */
         .dark .bg-secondary {
             background-color: #1a1c1e;
         }
@@ -1134,30 +1140,351 @@
             transform: translateY(0);
         }
 
-        /* 广告横幅样式 */
-        .ad-banner {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 120, 215, 0.25);
-            transition: all 0.3s ease;
+        /* ===== 花哨广告轮播样式 ===== */
+        .ad-carousel-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, #0b1a2e, #1a2a3e);
+            border: 1px solid rgba(90, 169, 230, 0.25);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+            box-shadow: 0 8px 32px rgba(0, 120, 215, 0.15);
         }
-        .dark .ad-banner {
-            background: rgba(30, 31, 34, 0.9);
-            border-color: rgba(90, 169, 230, 0.3);
+        .dark .ad-carousel-wrapper {
+            background: linear-gradient(145deg, #0a1628, #16243a);
+            border-color: rgba(90, 169, 230, 0.2);
         }
-        .ad-banner:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 120, 215, 0.15);
+        .ad-carousel-wrapper:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(0, 120, 215, 0.25);
         }
-        .dark .ad-banner:hover {
-            box-shadow: 0 8px 20px rgba(90, 169, 230, 0.2);
+        .dark .ad-carousel-wrapper:hover {
+            box-shadow: 0 16px 48px rgba(90, 169, 230, 0.2);
         }
-        .ad-banner .ad-icon {
-            font-size: 2.5rem;
-            color: #0078D7;
+
+        /* 背景光晕 */
+        .ad-carousel-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 120, 215, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 70%, rgba(90, 169, 230, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
-        .dark .ad-banner .ad-icon {
+
+        .ad-carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.2, 0.85, 0.4, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .ad-slide {
+            flex: 0 0 100%;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            min-height: 100px;
+            position: relative;
+        }
+        @media (min-width: 768px) {
+            .ad-slide {
+                flex-direction: row;
+                padding: 1.5rem 2.5rem;
+                min-height: 110px;
+            }
+        }
+
+        .ad-slide-content {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex: 1;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 图标容器带发光效果 */
+        .ad-icon-wrapper {
+            flex-shrink: 0;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 120, 215, 0.12);
+            border: 1px solid rgba(90, 169, 230, 0.2);
+            position: relative;
+            transition: all 0.4s ease;
+        }
+        .ad-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border: 1px solid rgba(90, 169, 230, 0.1);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .ad-slide:hover .ad-icon-wrapper::after {
+            opacity: 1;
+        }
+        .ad-icon-wrapper .ad-icon {
+            font-size: 2rem;
             color: #5aa9e6;
+        }
+        .dark .ad-icon-wrapper .ad-icon {
+            color: #7bb3e0;
+        }
+
+        /* 文字区域 */
+        .ad-text h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f0f4fa;
+            letter-spacing: 0.3px;
+        }
+        .dark .ad-text h4 {
+            color: #e8edf4;
+        }
+        .ad-text p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .dark .ad-text p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* 合作标签 — 更醒目 */
+        .coop-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: #0f172a;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 3px 12px 3px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.35);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            animation: glowPulse 2.5s ease-in-out infinite;
+        }
+        .coop-badge i {
+            font-size: 0.75rem;
+        }
+        .dark .coop-badge {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0f172a;
+        }
+
+        /* 广告按钮 - 更炫 */
+        .ad-action-btn {
+            background: linear-gradient(135deg, #0078D7, #005a9e);
+            color: white;
+            padding: 0.5rem 1.6rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(0, 120, 215, 0.3);
+        }
+        .ad-action-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg) translateX(-100%);
+            transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .ad-action-btn:hover::before {
+            transform: rotate(45deg) translateX(100%);
+        }
+        .ad-action-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 28px rgba(0, 120, 215, 0.5);
+            background: linear-gradient(135deg, #1a8bdf, #0066b3);
+        }
+        .dark .ad-action-btn {
+            background: linear-gradient(135deg, #5aa9e6, #3a8ac9);
+            color: #0f172a;
+            box-shadow: 0 4px 16px rgba(90, 169, 230, 0.3);
+        }
+        .dark .ad-action-btn:hover {
+            background: linear-gradient(135deg, #7bb3e0, #4a9ad6);
+            box-shadow: 0 8px 28px rgba(90, 169, 230, 0.5);
+        }
+
+        .ad-action-btn.ad-btn-gold {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+        }
+        .ad-action-btn.ad-btn-gold:hover {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            box-shadow: 0 8px 32px rgba(245, 158, 11, 0.6);
+        }
+        .dark .ad-action-btn.ad-btn-gold {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0f172a;
+        }
+        .dark .ad-action-btn.ad-btn-gold:hover {
+            background: linear-gradient(135deg, #fcd34d, #fbbf24);
+        }
+
+        /* 广告导航箭头 — 更精致 */
+        .ad-arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            font-size: 1rem;
+        }
+        .ad-arrow-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .ad-arrow-btn.left {
+            left: 8px;
+        }
+        .ad-arrow-btn.right {
+            right: 8px;
+        }
+        @media (min-width: 768px) {
+            .ad-arrow-btn.left {
+                left: 12px;
+            }
+            .ad-arrow-btn.right {
+                right: 12px;
+            }
+        }
+
+        /* 广告指示点 — 更亮 */
+        .ad-dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            border-radius: 50% !important;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .ad-dot.active {
+            width: 32px;
+            background: #5aa9e6 !important;
+            border-radius: 0px !important;
+            border-color: #5aa9e6;
+            box-shadow: 0 0 20px rgba(90, 169, 230, 0.5);
+        }
+        .dark .ad-dot.active {
+            background: #7bb3e0 !important;
+            box-shadow: 0 0 24px rgba(90, 169, 230, 0.6);
+        }
+        .ad-dot:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.15);
+        }
+        .ad-dot.active:hover {
+            transform: scale(1.05);
+        }
+
+        .ad-carousel-dots {
+            position: absolute;
+            bottom: 0.6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.6rem;
+            z-index: 15;
+        }
+
+        /* 星星装饰（花哨） */
+        .ad-stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .ad-stars span {
+            position: absolute;
+            display: block;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: starFloat 6s ease-in-out infinite alternate;
+        }
+        .ad-stars span:nth-child(1) {
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+            width: 3px;
+            height: 3px;
+        }
+        .ad-stars span:nth-child(2) {
+            top: 70%;
+            left: 85%;
+            animation-delay: 1.2s;
+            width: 2px;
+            height: 2px;
+        }
+        .ad-stars span:nth-child(3) {
+            top: 30%;
+            left: 92%;
+            animation-delay: 2.5s;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 215, 0, 0.3);
+        }
+        .ad-stars span:nth-child(4) {
+            top: 80%;
+            left: 5%;
+            animation-delay: 0.8s;
+            width: 2px;
+            height: 2px;
+        }
+        .ad-stars span:nth-child(5) {
+            top: 10%;
+            left: 55%;
+            animation-delay: 3.2s;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 215, 0, 0.2);
+        }
+        .ad-stars span:nth-child(6) {
+            top: 50%;
+            left: 45%;
+            animation-delay: 1.8s;
+            width: 2px;
+            height: 2px;
         }
     </style>
 </head>
@@ -1234,18 +1561,59 @@
                         <h3 class="text-2xl font-bold mt-1">团队动态 · 时刻更新</h3>
                     </div>
 
-                    <!-- 联合日报广告横幅 -->
-                    <div class="ad-banner hover-tint p-4 md:p-5 mb-6 flex flex-col md:flex-row items-center justify-between gap-4" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-4">
-                            <i class="las la-newspaper ad-icon"></i>
-                            <div>
-                                <h4 class="text-lg font-bold text-primary">联合日报</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">时事新闻 · 洞察世界</p>
+                    <!-- ===== 花哨广告轮播 ===== -->
+                    <div class="ad-carousel-wrapper mb-6">
+                        <!-- 星星装饰 -->
+                        <div class="ad-stars">
+                            <span></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
+
+                        <!-- 左右箭头 -->
+                        <button class="ad-arrow-btn left" id="adPrevBtn" aria-label="上一则广告"><i class="las la-chevron-left"></i></button>
+                        <button class="ad-arrow-btn right" id="adNextBtn" aria-label="下一则广告"><i class="las la-chevron-right"></i></button>
+
+                        <div class="ad-carousel-track" id="adCarouselTrack">
+                            <!-- 幻灯片 1：联合日报 -->
+                            <div class="ad-slide">
+                                <div class="ad-slide-content">
+                                    <div class="ad-icon-wrapper">
+                                        <i class="las la-newspaper ad-icon"></i>
+                                    </div>
+                                    <div class="ad-text">
+                                        <h4>联合日报</h4>
+                                        <p>时事新闻 · 洞察世界</p>
+                                    </div>
+                                </div>
+                                <button class="ad-action-btn" onclick="window.open('https://feng34937.github.io/miyuan/ass_daily', '_blank')">
+                                    阅读新闻 <i class="las la-arrow-right ml-1"></i>
+                                </button>
+                            </div>
+
+                            <!-- 幻灯片 2：无尽星域（合作组织：艾奥） -->
+                            <div class="ad-slide">
+                                <div class="ad-slide-content">
+                                    <div class="ad-icon-wrapper">
+                                        <i class="las la-rocket ad-icon"></i>
+                                    </div>
+                                    <div class="ad-text">
+                                        <h4 class="flex items-center gap-2 flex-wrap">
+                                            无尽星域
+                                            <span class="coop-badge"><i class="las la-handshake"></i> 合作 · 艾奥</span>
+                                        </h4>
+                                        <p>参战于整个宇宙</p>
+                                    </div>
+                                </div>
+                                <button class="ad-action-btn ad-btn-gold" onclick="window.open('https://szr1760.github.io/wujinxingyu', '_blank')">
+                                    立即参战 <i class="las la-arrow-right ml-1"></i>
+                                </button>
                             </div>
                         </div>
-                        <button class="btn-primary text-sm" onclick="window.open('https://feng34937.github.io/miyuan/ass_daily', '_blank')">
-                            阅读新闻 <i class="las la-arrow-right ml-1"></i>
-                        </button>
+
+                        <!-- 指示点 -->
+                        <div class="ad-carousel-dots" id="adCarouselDots">
+                            <span class="ad-dot active" data-index="0"></span>
+                            <span class="ad-dot" data-index="1"></span>
+                        </div>
                     </div>
 
                     <!-- 团队动态轮播 -->
@@ -1348,7 +1716,7 @@
 
     <!-- 娱乐分区 -->
     <div id="gamesSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">娱乐分区</h1><p class="text-center text-gray-600 text-sm mb-4">探索精彩娱乐世界</p><div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList('warfareList')"><i class="las la-folder-open series-icon"></i><h2 class="text-lg font-bold">现代战争推演系列</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="las la-chevron-down mt-1 text-primary transition-transform" id="warfareArrow"></i></div><div id="warfareList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-gamepad text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演1</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-crosshairs text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演2</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/2', '_blank')">点击试玩</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-rocket text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演3</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-bolt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代冲突</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-tachometer-alt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演4</div><p class="text-xs text-gray-500">最新续作，全新战场</p><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/4', '_blank')">点击试玩</button></div></div>
-        <!-- 棋类游戏合集（已新增陆战棋） -->
+        <!-- 棋类游戏合集 -->
         <div class="series-card hover-tint mt-5" onmousemove="updateMask(event)" onclick="toggleGameList('chessList')"><i class="las la-chess-board series-icon"></i><h2 class="text-lg font-bold">棋类游戏合集</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="las la-chevron-down mt-1 text-primary transition-transform" id="chessArrow"></i></div>
         <div id="chessList" class="game-list">
             <div class="game-item hover-tint" onmousemove="updateMask(event)">
@@ -1371,7 +1739,6 @@
                 <div class="game-name text-sm">国际象棋游戏</div>
                 <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/usual', '_blank')">开始对弈</button>
             </div>
-            <!-- 新增：陆战棋 -->
             <div class="game-item hover-tint" onmousemove="updateMask(event)">
                 <i class="las la-flag text-xl text-primary mb-1"></i>
                 <div class="game-name text-sm">陆战棋</div>
@@ -1392,7 +1759,7 @@
     <div id="othersSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">其他分区</h1><p class="text-center text-gray-600 text-sm mb-4">更多精彩内容</p><div class="grid gap-4 md:grid-cols-2"><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="las la-users demo-icon"></i><h3 class="text-base font-bold">同学信息收集</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://forms.office.com/...', '_blank')">立即使用</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="las la-book demo-icon"></i><h3 class="text-base font-bold">米遇安图书</h3><p class="text-xs text-gray-500">探索知识，阅读世界</p><button class="btn-primary text-xs mt-2" onclick="window.open('https://feng34937.github.io/miyuan/others/books', '_blank')">进入书库</button></div><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="las la-rocket demo-icon"></i><h3 class="text-base font-bold">成为公测成员</h3><button class="btn-primary text-xs mt-2" onclick="window.open('https://forms.office.com/...', '_blank')">立即报名</button></div></div></div></div>
 
     <script>
-        // ===== 标题轮播功能 =====
+        // ===== 标题轮播 =====
         const slogans = [
             { main: '欢迎来到', sub: '米遇安' },
             { main: '做大做强', sub: '兴创辉煌' },
@@ -1407,48 +1774,21 @@
         function rotateSlogan() {
             if (isTransitioning) return;
             isTransitioning = true;
-
             mainEl.classList.add('fade-out');
             subEl.classList.add('fade-out');
-
             setTimeout(() => {
                 currentSloganIndex = (currentSloganIndex + 1) % slogans.length;
                 const next = slogans[currentSloganIndex];
                 mainEl.textContent = next.main;
                 subEl.textContent = next.sub;
-
                 mainEl.classList.remove('fade-out');
                 subEl.classList.remove('fade-out');
                 isTransitioning = false;
             }, 500);
         }
-
         setInterval(rotateSlogan, 3500);
 
-        // ===== 其他功能 =====
-        function performSearch() { let q = document.getElementById('searchInput')?.value.trim(); if (q) { window.open(
-                `https://www.bing.com/search?q=${encodeURIComponent(q)}`, '_blank'); } else { alert('请输入关键词'); } }
-
-        function handleSearchKeypress(e) { if (e.key === 'Enter') performSearch(); }
-
-        function showPrivacyPolicy() { window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); }
-
-        function showUserAgreement() { window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); }
-
-        function closeModal(e) {
-            if (e && e.target !== document.getElementById('legalModal') && !e.target.classList?.contains('modal-close') && !e
-                .target.closest?.('.modal-footer button')) {
-                if (e.target === document.getElementById('legalModal')) {
-                    document.getElementById('legalModal').classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-                return;
-            }
-            document.getElementById('legalModal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // 深色模式跟随系统
+        // ===== 深色模式 =====
         function setThemeFromSystem() {
             const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.classList.toggle('dark', isDark);
@@ -1480,11 +1820,10 @@
         };
         document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
         document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
-
         window.addEventListener('scroll', () => document.getElementById('navbar')?.classList.toggle('navbar-scrolled', window
             .scrollY > 30));
 
-        // 侧边栏控制
+        // ===== 侧边栏 =====
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('mobileSidebar');
         const overlay = document.getElementById('mobileMenuOverlay');
@@ -1503,7 +1842,7 @@
         if (overlay) overlay.addEventListener('click', closeSidebar);
         sidebarLinks.forEach(link => link.addEventListener('click', closeSidebar));
 
-        // 轮播逻辑
+        // ===== 团队动态轮播 =====
         let currentSlide = 0,
             totalSlides = 5,
             track = document.getElementById('carouselTrack'),
@@ -1541,6 +1880,78 @@
         updateCarousel();
         startAutoPlay();
 
+        // ===== 广告轮播（花哨版） =====
+        let adCurrentSlide = 0;
+        const adTotalSlides = 2;
+        const adTrack = document.getElementById('adCarouselTrack');
+        const adDots = document.querySelectorAll('#adCarouselDots .ad-dot');
+        let adAutoPlayInterval;
+
+        function updateAdCarousel() {
+            if (!adTrack) return;
+            adTrack.style.transform = `translateX(-${adCurrentSlide * 100}%)`;
+            adDots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === adCurrentSlide);
+            });
+        }
+
+        function goToAdSlide(index) {
+            if (index >= 0 && index < adTotalSlides && index !== adCurrentSlide) {
+                adCurrentSlide = index;
+                updateAdCarousel();
+                resetAdAutoPlay();
+            }
+        }
+
+        function nextAdSlide() {
+            adCurrentSlide = (adCurrentSlide + 1) % adTotalSlides;
+            updateAdCarousel();
+        }
+
+        function prevAdSlide() {
+            adCurrentSlide = (adCurrentSlide - 1 + adTotalSlides) % adTotalSlides;
+            updateAdCarousel();
+        }
+
+        function startAdAutoPlay() {
+            if (adAutoPlayInterval) clearInterval(adAutoPlayInterval);
+            adAutoPlayInterval = setInterval(nextAdSlide, 4000);
+        }
+
+        function resetAdAutoPlay() {
+            if (adAutoPlayInterval) {
+                clearInterval(adAutoPlayInterval);
+                startAdAutoPlay();
+            }
+        }
+
+        // 箭头事件
+        document.getElementById('adPrevBtn')?.addEventListener('click', () => { prevAdSlide();
+            resetAdAutoPlay(); });
+        document.getElementById('adNextBtn')?.addEventListener('click', () => { nextAdSlide();
+            resetAdAutoPlay(); });
+
+        // 指示点点击
+        adDots.forEach((dot) => {
+            dot.addEventListener('click', function() {
+                const index = parseInt(this.dataset.index);
+                goToAdSlide(index);
+            });
+        });
+
+        // 悬停暂停
+        const adContainer = document.querySelector('.ad-carousel-wrapper');
+        if (adContainer) {
+            adContainer.addEventListener('mouseenter', () => {
+                if (adAutoPlayInterval) clearInterval(adAutoPlayInterval);
+            });
+            adContainer.addEventListener('mouseleave', startAdAutoPlay);
+        }
+
+        updateAdCarousel();
+        startAdAutoPlay();
+
+        // ===== 其他功能 =====
         let openStates = { warfareList: false, chessList: false };
         window.toggleGameList = function(listId) {
             const listElement = document.getElementById(listId);
@@ -1605,6 +2016,21 @@
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         }, { threshold: 0.1 });
         animateElements.forEach(el => observer.observe(el));
+
+        // 关闭模态框
+        function closeModal(e) {
+            if (e && e.target !== document.getElementById('legalModal') && !e.target.classList?.contains('modal-close') && !e
+                .target.closest?.('.modal-footer button')) {
+                if (e.target === document.getElementById('legalModal')) {
+                    document.getElementById('legalModal').classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+                return;
+            }
+            document.getElementById('legalModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        window.closeModal = closeModal;
     </script>
 </body>
 </html>
