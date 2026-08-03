@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>军棋对战 - 自适应版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0078D7', // Windows 10 默认蓝
+                        secondary: '#E6F2FF',
+                        board: '#FDF5E6',
+                        black: '#1f2937',
+                        white: '#FFFFFF',
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @layer utilities {
+            .piece-shadow {
+                filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.1)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.08));
+            }
+            .btn-hover {
+                transition: all 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+            
+            /* 核心布局：修复最右列截断问题，画布宽度增加到720，高度增加至860 */
+            #gameCanvas {
+                display: block;
+                width: 100%;
+                max-width: 720px; /* 匹配新画布宽度 */
+                max-height: 75vh;
+                height: auto;
+                aspect-ratio: 720 / 860; /* 匹配新画布宽高比 */
+                cursor: pointer;
+                background: #f9f9f9;
+                border: 2px solid #0078D7;
+                box-sizing: border-box;
+            }
+            .highlight {
+                outline: 3px solid #ffeb3b;
+                outline-offset: -3px;
+                box-shadow: 0 0 15px rgba(255, 235, 59, 0.6);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4 font-sans">
+    <div class="max-w-5xl w-full bg-white shadow-xl overflow-hidden border border-gray-200">
+        <!-- 头部（0 圆角） -->
+        <div class="bg-primary text-white p-6 text-center">
+            <h1 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold tracking-wide"><i class="fa-solid fa-chess-queen mr-2"></i>军棋对战</h1>
+            <p class="text-secondary mt-1 text-sm">严格规则 · 蓝黑双人对弈</p>
+        </div>
+        
+        <!-- 主体区 -->
+        <div class="p-4 md:p-6 flex flex-col md:flex-row gap-6">
+            <!-- 棋盘区：修正画布尺寸为 720x860，已移除下方状态栏文字 -->
+            <div class="flex-1 flex flex-col justify-center items-center relative bg-[#FDF5E6] shadow-sm p-2 border border-gray-200">
+                <canvas id="gameCanvas" width="720" height="860"></canvas>
+            </div>
+            
+            <!-- 右侧信息区（0 圆角） -->
+            <div class="w-full md:w-80 flex flex-col gap-5">
+                <div class="bg-gray-50 p-4 shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-semibold mb-3 flex items-center text-primary">
+                        <i class="fa-solid fa-circle-info mr-2"></i>对战状态
+                    </h2>
+                    <div class="space-y-2 text-sm bg-white p-3 border border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">当前回合</span>
+                            <div class="flex items-center gap-2">
+                                <div id="currentPlayer" class="w-5 h-5 bg-primary border border-blue-800 piece-shadow"></div>
+                                <span id="playerText" class="font-bold text-primary">蓝方</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between border-t pt-2 mt-2">
+                            <span class="text-gray-600">走棋步数</span>
+                            <span id="moveCount" class="font-mono">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 shadow-sm border border-gray-200 flex-1">
+                    <h2 class="text-lg font-semibold mb-3 flex items-center text-primary">
+                        <i class="fa-solid fa-book mr-2"></i>核心规则
+                    </h2>
+                    <ul class="text-xs text-gray-700 space-y-2 pl-1 list-disc list-inside">
+                        <li><b>行营</b>内棋子不可被攻击，移动只能走一步。</li>
+                        <li>在<b>铁道</b>上可直线无距离限制移动。</li>
+                        <li><b>炸弹</b>撞谁谁死。<b>地雷</b>不可移动，只能由<b>工兵</b>挖掉。</li>
+                        <li>吃掉对方<b>司令</b> 或 全部<b>地雷</b>，即为获胜！</li>
+                    </ul>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button id="restartBtn" class="flex-1 bg-primary hover:bg-blue-700 text-white py-3 px-4 font-bold shadow btn-hover border border-blue-800">
+                        <i class="fa-solid fa-rotate-right mr-2"></i>重新开局
+                    </button>
+                    <button id="undoBtn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 px-4 font-bold shadow btn-hover border border-gray-300">
+                        <i class="fa-solid fa-arrow-rotate-left mr-2"></i>悔棋
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-50 p-3 text-center text-xs text-gray-400 border-t border-gray-200">
+            <p>© 2026 · 军棋双人明棋演示</p>
+        </div>
+    </div>
+
+    <!-- 胜利模态框（0 圆角） -->
+    <div id="winModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-8 max-w-sm w-full mx-4 shadow-2xl transform transition-transform duration-300 scale-95 border border-gray-300">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 flex items-center justify-center mx-auto mb-4 border border-green-300">
+                    <i class="fa-solid fa-trophy text-3xl text-yellow-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-2 text-gray-800" id="winnerText">蓝方获胜!</h2>
+                <p class="text-gray-500 mb-6">恭喜赢得了这场军棋对战!</p>
+                <button id="newGameBtn" class="w-full bg-primary hover:bg-blue-700 text-white py-3 px-4 font-bold shadow btn-hover border border-blue-800">
+                    再来一局
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ---------------- 游戏配置 ----------------
+            const COLS = 5, ROWS = 12;
+            const CELL_W = 120, CELL_H = 65;
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // ---------------- 棋子数据 ----------------
+            const RANK_VALUES = { '地雷':0,'炸弹':1,'工兵':2,'排长':3,'连长':4,'营长':5,'团长':6,'旅长':7,'师长':8,'军长':9,'司令':10 };
+            
+            // 棋盘地形
+            const MAP_DATA = [
+                ["大本营","兵站","大本营","兵站","大本营"],
+                ["兵站","行营","兵站","行营","兵站"],
+                ["兵站","兵站","行营","兵站","兵站"],
+                ["兵站","行营","兵站","行营","兵站"],
+                ["兵站","兵站","兵站","兵站","兵站"],
+                ["前线","蓝方","前线","黑方","前线"],
+                ["兵站","兵站","兵站","兵站","兵站"],
+                ["兵站","行营","兵站","行营","兵站"],
+                ["兵站","兵站","行营","兵站","兵站"],
+                ["兵站","行营","兵站","行营","兵站"],
+                ["兵站","兵站","兵站","兵站","兵站"],
+                ["大本营","兵站","大本营","兵站","大本营"]
+            ];
+
+            // ---------------- 游戏状态 ----------------
+            let board = [];      
+            let currentTeam = '蓝'; 
+            let isGameActive = true;
+            let moveHistory = [];
+            let selectedR = -1, selectedC = -1;
+            let moveCount = 0;
+
+            // DOM 引用
+            const currentPlayerEl = document.getElementById('currentPlayer');
+            const playerText = document.getElementById('playerText');
+            const moveCountEl = document.getElementById('moveCount');
+            const winModal = document.getElementById('winModal');
+            const winnerText = document.getElementById('winnerText');
+
+            // ---------------- 工具函数（完美适配 720x860 画布） ----------------
+            function getCenter(r, c) {
+                // 左侧留白 60px，右侧留白 60px。5列*120px = 600px。 60 + 600 + 60 = 720px
+                return { x: 60 + c * CELL_W + CELL_W/2, y: 40 + r * CELL_H + CELL_H/2 };
+            }
+            function isInMap(r, c) { return r >= 0 && r < ROWS && c >= 0 && c < COLS; }
+            function getTerrain(r, c) { return MAP_DATA[r][c]; }
+
+            // ---------------- 初始布局 ----------------
+            function initBoard() {
+                board = Array(ROWS).fill().map(() => Array(COLS).fill(null));
+                moveHistory = [];
+                moveCount = 0;
+                selectedR = -1; selectedC = -1;
+
+                const blueLayout = [
+                    ['工兵', '营长', '团长', '旅长', '工兵'],
+                    ['师长', null, '军长', null, '地雷'],
+                    ['炸弹', null, '司令', null, '地雷'],
+                    ['排长', '连长', '团长', '营长', '地雷']
+                ];
+                const blackLayout = [
+                    ['地雷', '营长', '团长', '旅长', '地雷'],
+                    ['炸弹', null, '司令', null, '地雷'],
+                    ['师长', null, '军长', null, '工兵'],
+                    ['排长', '连长', '团长', '营长', '工兵']
+                ];
+
+                for(let r=0; r<4; r++) {
+                    for(let c=0; c<5; c++) {
+                        let rank = blueLayout[r][c];
+                        if(rank) board[11-r][c] = { team:'蓝', rank:rank, value:RANK_VALUES[rank] };
+                    }
+                }
+                for(let r=0; r<4; r++) {
+                    for(let c=0; c<5; c++) {
+                        let rank = blackLayout[r][c];
+                        if(rank) board[r][c] = { team:'黑', rank:rank, value:RANK_VALUES[rank] };
+                    }
+                }
+                
+                currentTeam = '蓝';
+                isGameActive = true;
+            }
+
+            // ---------------- 绘图函数 ----------------
+            function drawBoard() {
+                ctx.clearRect(0, 0, 720, 860);
+                
+                const themeColor = '#0078D7';
+                ctx.strokeStyle = themeColor;
+                ctx.lineWidth = 2;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 14px "Segoe UI", sans-serif';
+                ctx.fillStyle = themeColor;
+
+                // 画线
+                for (let r=0; r<ROWS-1; r++) {
+                    for (let c=0; c<COLS; c++) {
+                        const p1 = getCenter(r,c), p2 = getCenter(r+1,c);
+                        ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
+                    }
+                }
+                for (let r=0; r<ROWS; r++) {
+                    for (let c=0; c<COLS-1; c++) {
+                        const p1 = getCenter(r,c), p2 = getCenter(r,c+1);
+                        ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
+                    }
+                }
+
+                // 画地形图
+                for (let r=0; r<ROWS; r++) {
+                    for (let c=0; c<COLS; c++) {
+                        const terrain = MAP_DATA[r][c];
+                        const cx = getCenter(r,c).x, cy = getCenter(r,c).y;
+                        ctx.fillStyle = '#fff'; 
+                        ctx.strokeStyle = themeColor;
+                        ctx.lineWidth = 2;
+
+                        // 兵站宽度 110，行营半径 28，大本营宽度 120
+                        if (terrain === '兵站') {
+                            ctx.fillRect(cx-55, cy-20, 110, 40);
+                            ctx.strokeRect(cx-55, cy-20, 110, 40);
+                        } else if (terrain === '行营') {
+                            ctx.beginPath(); ctx.arc(cx, cy, 28, 0, 2*Math.PI);
+                            ctx.fill(); ctx.stroke();
+                        } else {
+                            ctx.fillRect(cx-60, cy-20, 120, 40);
+                            ctx.strokeRect(cx-60, cy-20, 120, 40);
+                        }
+                        ctx.fillStyle = themeColor;
+                        ctx.fillText(terrain, cx, cy);
+                    }
+                }
+
+                // 画棋子
+                for (let r=0; r<ROWS; r++) {
+                    for (let c=0; c<COLS; c++) {
+                        const p = board[r][c];
+                        if(!p) continue;
+                        const cx = getCenter(r,c).x, cy = getCenter(r,c).y;
+                        const isBlue = p.team === '蓝';
+                        
+                        ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
+                        ctx.beginPath(); ctx.arc(cx, cy, 22, 0, 2*Math.PI);
+                        ctx.fillStyle = isBlue ? '#0078D7' : '#2d3748';
+                        ctx.fill();
+                        ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+                        ctx.strokeStyle = '#ffffff'; ctx.lineWidth=2; ctx.stroke();
+                        
+                        ctx.fillStyle = '#fff'; ctx.font = 'bold 13px "Segoe UI", sans-serif';
+                        ctx.fillText(p.rank, cx, cy);
+                    }
+                }
+
+                // 画选中高亮
+                if (selectedR >= 0 && selectedC >= 0 && board[selectedR][selectedC]) {
+                    const cx = getCenter(selectedR, selectedC).x, cy = getCenter(selectedR, selectedC).y;
+                    ctx.shadowBlur = 15; ctx.shadowColor = '#ffeb3b';
+                    ctx.strokeStyle = '#ffeb3b'; ctx.lineWidth = 4;
+                    ctx.beginPath(); ctx.arc(cx, cy, 24, 0, 2*Math.PI);
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            // ---------------- 核心移动逻辑 ----------------
+            function isRailClear(r1, c1, r2, c2) {
+                if (r1 === r2) {
+                    let minC = Math.min(c1, c2), maxC = Math.max(c1, c2);
+                    for (let c = minC + 1; c < maxC; c++) {
+                        if (board[r1][c]) return false;
+                    }
+                    return true;
+                } else if (c1 === c2) {
+                    let minR = Math.min(r1, r2), maxR = Math.max(r1, r2);
+                    for (let r = minR + 1; r < maxR; r++) {
+                        if (board[r][c1]) return false;
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            function canMove(fromR, fromC, toR, toC) {
+                const fromT = getTerrain(fromR, fromC);
+                const toT = getTerrain(toR, toC);
+                const dR = Math.abs(fromR - toR), dC = Math.abs(fromC - toC);
+                
+                if(board[fromR][fromC].rank === '地雷') return false;
+                if(toT === '大本营') return false; 
+                if(board[toR][toC] && board[toR][toC].team === board[fromR][fromC].team) return false;
+
+                if(fromT === '行营' || toT === '行营') {
+                    return (dR + dC === 1);
+                }
+                
+                if(fromT === '兵站' && toT === '兵站') {
+                    if(dR === 0 && dC > 0 && isRailClear(fromR, fromC, toR, toC)) return true;
+                    if(dC === 0 && dR > 0 && isRailClear(fromR, fromC, toR, toC)) return true;
+                    if(dR + dC === 1) return true;
+                }
+                return false;
+            }
+
+            function battle(attacker, defender) {
+                if(attacker.rank === '炸弹') return 'attacker_dies';
+                if(attacker.rank === '工兵' && defender.rank === '地雷') return 'win';
+                if(defender.rank === '地雷') return 'lose';
+                if(attacker.value > defender.value) return 'win';
+                if(attacker.value < defender.value) return 'lose';
+                return 'attacker_dies';
+            }
+
+            function handleClick(e) {
+                if(!isGameActive) return;
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+                const mouseX = (e.clientX - rect.left) * scaleX;
+                const mouseY = (e.clientY - rect.top) * scaleY;
+                const col = Math.floor((mouseX - 60) / CELL_W);
+                const row = Math.floor((mouseY - 40) / CELL_H);
+                if(!isInMap(row, col)) return;
+
+                const piece = board[row][col];
+                
+                if(piece && piece.team === currentTeam) {
+                    selectedR = row; selectedC = col;
+                    drawBoard();
+                    return;
+                }
+
+                if(selectedR >= 0) {
+                    const selectedPiece = board[selectedR][selectedC];
+                    if(selectedR === row && selectedC === col) {
+                        selectedR = -1; selectedC = -1; drawBoard(); return;
+                    }
+                    
+                    if(canMove(selectedR, selectedC, row, col)) {
+                        moveHistory.push({ from:{r:selectedR,c:selectedC}, to:{r:row,c:col}, fromPiece:board[selectedR][selectedC], toPiece:board[row][col] });
+                        moveCount++;
+
+                        if(board[row][col]) {
+                            const res = battle(selectedPiece, board[row][col]);
+                            if(res === 'win') {
+                                board[row][col] = selectedPiece;
+                                board[selectedR][selectedC] = null;
+                            } else if(res === 'lose') {
+                                board[selectedR][selectedC] = null;
+                            } else {
+                                board[selectedR][selectedC] = null;
+                                board[row][col] = null;
+                            }
+                        } else {
+                            board[row][col] = selectedPiece;
+                            board[selectedR][selectedC] = null;
+                        }
+
+                        selectedR = -1; selectedC = -1;
+                        drawBoard();
+
+                        const enemyTeam = currentTeam === '蓝' ? '黑' : '蓝';
+                        let enemyCommanderDead = true, enemyMinesDead = true;
+                        for (let r=0; r<ROWS; r++) {
+                            for (let c=0; c<COLS; c++) {
+                                const p = board[r][c];
+                                if(p && p.team === enemyTeam) {
+                                    if(p.rank === '司令') enemyCommanderDead = false;
+                                    if(p.rank === '地雷') enemyMinesDead = false;
+                                }
+                            }
+                        }
+                        
+                        if(enemyCommanderDead) { endGame(currentTeam); return; }
+                        if(enemyMinesDead) { endGame(currentTeam); return; }
+
+                        currentTeam = currentTeam === '蓝' ? '黑' : '蓝';
+                        updateStatus();
+                    } else {
+                        selectedR = -1; selectedC = -1; drawBoard();
+                    }
+                }
+            }
+
+            // ---------------- 结束游戏与更新状态 ----------------
+            function endGame(winner) {
+                isGameActive = false;
+                winModal.classList.remove('hidden');
+                setTimeout(() => {
+                    winModal.classList.add('opacity-100');
+                    winModal.querySelector('div').classList.remove('scale-95');
+                    winModal.querySelector('div').classList.add('scale-100');
+                }, 10);
+                winnerText.textContent = `${winner}方获胜!`;
+            }
+
+            function updateStatus() {
+                if(!isGameActive) return;
+                currentPlayerEl.className = `w-5 h-5 ${currentTeam === '蓝' ? 'bg-primary' : 'bg-gray-800'} border ${currentTeam === '蓝' ? 'border-blue-800' : 'border-gray-500'} piece-shadow`;
+                playerText.textContent = `${currentTeam}方`;
+                playerText.className = `font-bold ${currentTeam === '蓝' ? 'text-primary' : 'text-gray-800'}`;
+                moveCountEl.textContent = moveCount;
+            }
+
+            // ---------------- 重新开始与悔棋 ----------------
+            function resetGame() {
+                initBoard();
+                selectedR = -1; selectedC = -1;
+                winModal.classList.add('hidden');
+                winModal.classList.remove('opacity-100');
+                drawBoard();
+                updateStatus();
+            }
+
+            function undoMove() {
+                if(!isGameActive || moveHistory.length === 0 || selectedR !== -1) return;
+                const last = moveHistory.pop();
+                moveCount--;
+                board[last.from.r][last.from.c] = last.fromPiece;
+                board[last.to.r][last.to.c] = last.toPiece;
+                currentTeam = currentTeam === '蓝' ? '黑' : '蓝';
+                drawBoard(); updateStatus();
+            }
+
+            // ---------------- 事件绑定 ----------------
+            canvas.addEventListener('click', handleClick);
+            document.getElementById('restartBtn').addEventListener('click', resetGame);
+            document.getElementById('undoBtn').addEventListener('click', undoMove);
+            document.getElementById('newGameBtn').addEventListener('click', resetGame);
+
+            // 启动
+            initBoard();
+            drawBoard();
+            updateStatus();
+        });
+    </script>
+</body>
+</html>
