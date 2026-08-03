@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>米遇安 · 创新与教育</title>
     <!-- Tailwind + Line Awesome -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
     <script>
         tailwind.config = {
@@ -29,14 +30,19 @@
                         full: '9999px',
                     },
                     keyframes: {
-                        float: { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-6px)'} },
-                        gradientShift: { '0%':{backgroundPosition:'0% 50%'}, '50%':{backgroundPosition:'100% 50%'}, '100%':{backgroundPosition:'0% 50%'} },
-                        folderExpand: { '0%':{opacity:'0',transform:'translateY(-8px) scale(0.98)'}, '100%':{opacity:'1',transform:'translateY(0) scale(1)'} },
-                        modalSlideUp: { '0%':{opacity:'0',transform:'translateY(20px)'}, '100%':{opacity:'1',transform:'translateY(0)'} },
-                        fadeInUp: { '0%':{opacity:'0',transform:'translateY(20px)'}, '100%':{opacity:'1',transform:'translateY(0)'} },
-                        scaleIn: { '0%':{opacity:'0',transform:'scale(0.98)'}, '100%':{opacity:'1',transform:'scale(1)'} },
-                        gentleBounce: { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-3px)'} },
-                        slideInRight: { '0%':{transform:'translateX(100%)'}, '100%':{transform:'translateX(0)'} }
+                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
+                        gradientShift: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' } },
+                        folderExpand: { '0%': { opacity: '0', transform: 'translateY(-8px) scale(0.98)' },
+                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)' } },
+                        modalSlideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        scaleIn: { '0%': { opacity: '0', transform: 'scale(0.98)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' } },
+                        gentleBounce: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-3px)' } },
+                        slideInRight: { '0%': { transform: 'translateX(100%)' }, '100%': { transform: 'translateX(0)' } }
                     },
                     animation: {
                         float: 'float 5s ease-in-out infinite',
@@ -53,16 +59,28 @@
         }
     </script>
     <style>
-        * { scroll-behavior: smooth; }
-        
+        * {
+            scroll-behavior: smooth;
+        }
+
         /* 强制直角，保留圆形头像 */
-        .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded, button, [class*="rounded-"]:not(.rounded-full):not(.team-avatar-wrapper):not(.team-avatar):not(.carousel-dot) {
+        .rounded-md,
+        .rounded-lg,
+        .rounded-xl,
+        .rounded-2xl,
+        .rounded,
+        button,
+        [class*="rounded-"]:not(.rounded-full):not(.team-avatar-wrapper):not(.team-avatar):not(.carousel-dot) {
             border-radius: 0px !important;
         }
-        .rounded-full, .team-avatar-wrapper, .team-avatar, .carousel-dot, .timeline-item::before {
+        .rounded-full,
+        .team-avatar-wrapper,
+        .team-avatar,
+        .carousel-dot,
+        .timeline-item::before {
             border-radius: 9999px !important;
         }
-        
+
         /* 导航栏玻璃效果 */
         #navbar {
             position: fixed !important;
@@ -84,12 +102,12 @@
         }
         .navbar-scrolled {
             background: rgba(255, 255, 255, 0.85) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
             padding: 8px 0;
         }
         .dark .navbar-scrolled {
             background: rgba(20, 22, 27, 0.92) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
         }
         #navbar .container {
             max-width: 1400px;
@@ -100,15 +118,17 @@
                 padding: 0 1.25rem;
             }
         }
-        
+
         body {
             margin: 0;
             padding-top: 74px !important;
             background-color: #ffffff;
             transition: background-color 0.3s ease;
         }
-        .dark body { background-color: #121212; }
-        
+        .dark body {
+            background-color: #121212;
+        }
+
         /* 移动端侧边栏遮罩 */
         .mobile-menu-overlay {
             position: fixed;
@@ -127,7 +147,7 @@
             opacity: 1;
             visibility: visible;
         }
-        
+
         /* 侧边栏样式 - iOS 26玻璃效果，占屏幕四分之三 */
         .mobile-sidebar {
             position: fixed;
@@ -223,20 +243,33 @@
             border-top-color: rgba(255, 255, 255, 0.1);
             color: #9ca3af;
         }
-        
+
         /* 隐藏原有的移动端菜单 */
         #mobileMenu {
             display: none !important;
         }
-        
+
         /* 其余样式保持与原版一致 */
-        .dark .bg-secondary { background-color: #1a1c1e; }
-        .dark .bg-white { background-color: #1e1f22; }
-        .dark .text-dark { color: #f0f0f0; }
-        .dark .text-gray-600, .dark .text-gray-700 { color: #a0a0a0 !important; }
-        .dark .text-primary { color: #5aa9e6 !important; }
-        .dark .border-gray-100 { border-color: #2a2a2a; }
-        
+        .dark .bg-secondary {
+            background-color: #1a1c1e;
+        }
+        .dark .bg-white {
+            background-color: #1e1f22;
+        }
+        .dark .text-dark {
+            color: #f0f0f0;
+        }
+        .dark .text-gray-600,
+        .dark .text-gray-700 {
+            color: #a0a0a0 !important;
+        }
+        .dark .text-primary {
+            color: #5aa9e6 !important;
+        }
+        .dark .border-gray-100 {
+            border-color: #2a2a2a;
+        }
+
         .dynamic-gradient-text {
             background: linear-gradient(90deg, #0078D7, #2b88d9, #0078D7, #005a9e, #0078D7);
             background-size: 300% 300%;
@@ -251,21 +284,31 @@
             background: linear-gradient(90deg, #5aa9e6, #7bb3e0, #5aa9e6, #3a7ca5, #5aa9e6);
             background-size: 300% 300%;
         }
-        
+
         .hero-title {
             font-size: 3rem;
             line-height: 1.2;
         }
-        @media (min-width: 768px) { .hero-title { font-size: 4rem; } }
-        @media (min-width: 1024px) { .hero-title { font-size: 5rem; } }
-        
-        .slogan-main, .slogan-sub {
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: 5rem;
+            }
+        }
+
+        .slogan-main,
+        .slogan-sub {
             transition: opacity 0.5s ease;
         }
-        .slogan-main.fade-out, .slogan-sub.fade-out {
+        .slogan-main.fade-out,
+        .slogan-sub.fade-out {
             opacity: 0;
         }
-        
+
         .card-hover {
             transition: all 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             will-change: transform, box-shadow;
@@ -279,14 +322,14 @@
         }
         .card-hover:hover {
             transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 25px 35px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,120,215,0.2) !important;
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 120, 215, 0.2) !important;
             background: rgba(255, 255, 255, 0.94);
         }
         .dark .card-hover:hover {
             background: rgba(40, 42, 48, 0.94);
-            box-shadow: 0 25px 35px -12px rgba(0,0,0,0.3), 0 0 0 1px rgba(90,169,230,0.3) !important;
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(90, 169, 230, 0.3) !important;
         }
-        
+
         .hover-tint {
             position: relative;
             isolation: isolate;
@@ -296,19 +339,26 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0,120,215,0.25) 0%, rgba(0,120,215,0.08) 40%, transparent 75%);
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 120, 215, 0.25) 0%, rgba(0, 120,
+                        215, 0.08) 40%, transparent 75%);
             opacity: 0;
-            transition: opacity 0.5s cubic-bezier(0.2,0.9,0.4,1);
+            transition: opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
             pointer-events: none;
             z-index: 1;
             border-radius: inherit;
         }
         .dark .hover-tint::before {
-            background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(90,169,230,0.32) 0%, rgba(90,169,230,0.1) 40%, transparent 75%);
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(90, 169, 230, 0.32) 0%, rgba(90, 169,
+                        230, 0.1) 40%, transparent 75%);
         }
-        .hover-tint:hover::before { opacity: 1; }
-        .hover-tint > * { position: relative; z-index: 2; }
-        
+        .hover-tint:hover::before {
+            opacity: 1;
+        }
+        .hover-tint>* {
+            position: relative;
+            z-index: 2;
+        }
+
         .hero-section {
             position: relative;
             isolation: isolate;
@@ -319,67 +369,120 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at var(--hero-x,50%) var(--hero-y,50%), rgba(0,120,215,0.15) 0%, rgba(0,120,215,0.04) 45%, transparent 80%);
+            background: radial-gradient(circle at var(--hero-x, 50%) var(--hero-y, 50%), rgba(0, 120, 215, 0.15) 0%, rgba(0,
+                        120, 215, 0.04) 45%, transparent 80%);
             opacity: 0;
             transition: opacity 0.6s ease;
             pointer-events: none;
             z-index: 1;
         }
-        .hero-section:hover::before { opacity: 1; }
-        .hero-section > * { position: relative; z-index: 2; }
-        
+        .hero-section:hover::before {
+            opacity: 1;
+        }
+        .hero-section>* {
+            position: relative;
+            z-index: 2;
+        }
+
         .carousel-container {
             position: relative;
             max-width: 760px;
             margin: 0 auto;
             overflow: hidden;
-            background: rgba(255,255,255,0.75);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(16px);
-            border: 0.5px solid rgba(255,255,255,0.3);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
             transition: box-shadow 0.3s ease;
         }
-        .dark .carousel-container { background: rgba(30,31,34,0.8); border-color: rgba(255,255,255,0.06); }
-        .carousel-container:hover { box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
-        .carousel-track { display: flex; transition: transform 0.6s cubic-bezier(0.2,0.85,0.4,1); }
-        .carousel-card { flex: 0 0 100%; }
-        .carousel-card .card-content { padding: 2rem 1.8rem; text-align: center; transition: all 0.3s ease; }
+        .dark .carousel-container {
+            background: rgba(30, 31, 34, 0.8);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .carousel-container:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.2, 0.85, 0.4, 1);
+        }
+        .carousel-card {
+            flex: 0 0 100%;
+        }
+        .carousel-card .card-content {
+            padding: 2rem 1.8rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
         .icon-wrapper {
-            transition: all 0.5s cubic-bezier(0.2,0.9,0.4,1);
+            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
             display: inline-block;
-            background: rgba(0,120,215,0.08);
+            background: rgba(0, 120, 215, 0.08);
             padding: 1rem;
             margin-bottom: 1.2rem;
         }
-        .carousel-card:hover .icon-wrapper { transform: scale(1.03) translateY(-2px); background: rgba(0,120,215,0.12); }
-        
-        .carousel-arrow {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            width: 38px; height: 38px;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(12px);
-            border: 0.5px solid rgba(255,255,255,0.3);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; color: #0078D7;
-            cursor: pointer; z-index: 20;
-            transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        .carousel-card:hover .icon-wrapper {
+            transform: scale(1.03) translateY(-2px);
+            background: rgba(0, 120, 215, 0.12);
         }
-        .carousel-arrow:hover { background: #0078D7; color: white; border-color: #0078D7; transform: translateY(-50%) scale(1.08); }
-        .dark .carousel-arrow { background: rgba(30,31,34,0.9); color: #5aa9e6; border-color: rgba(255,255,255,0.08); }
-        .dark .carousel-arrow:hover { background: #5aa9e6; color: #121212; }
-        .carousel-arrow.left { left: 12px; }
-        .carousel-arrow.right { right: 12px; }
-        
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #0078D7;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .carousel-arrow:hover {
+            background: #0078D7;
+            color: white;
+            border-color: #0078D7;
+            transform: translateY(-50%) scale(1.08);
+        }
+        .dark .carousel-arrow {
+            background: rgba(30, 31, 34, 0.9);
+            color: #5aa9e6;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+        .dark .carousel-arrow:hover {
+            background: #5aa9e6;
+            color: #121212;
+        }
+        .carousel-arrow.left {
+            left: 12px;
+        }
+        .carousel-arrow.right {
+            right: 12px;
+        }
+
         .carousel-dot {
-            width: 8px; height: 8px;
+            width: 8px;
+            height: 8px;
             background-color: #cbd5e1;
-            transition: all 0.25s cubic-bezier(0.2,0.9,0.4,1);
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
             cursor: pointer;
             border-radius: 50% !important;
         }
-        .carousel-dot.active { width: 28px; background-color: #0078D7 !important; border-radius: 0px !important; }
-        .dark .carousel-dot.active { background-color: #5aa9e6 !important; }
-        
+        .carousel-dot.active {
+            width: 28px;
+            background-color: #0078D7 !important;
+            border-radius: 0px !important;
+        }
+        .dark .carousel-dot.active {
+            background-color: #5aa9e6 !important;
+        }
+
         .timeline-item {
             position: relative;
             padding-left: 1.6rem;
@@ -390,138 +493,317 @@
         }
         .timeline-item::before {
             content: '';
-            position: absolute; left: -7px; top: 0.45rem;
-            width: 12px; height: 12px;
+            position: absolute;
+            left: -7px;
+            top: 0.45rem;
+            width: 12px;
+            height: 12px;
             background: #0078D7;
-            transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1);
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .timeline-item:hover::before { transform: scale(1.25); box-shadow: 0 0 8px #0078D7; }
-        
+        .timeline-item:hover::before {
+            transform: scale(1.25);
+            box-shadow: 0 0 8px #0078D7;
+        }
+
         .team-avatar-wrapper {
-            width: 100px; height: 100px; margin: 0 auto 1rem;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
             background: linear-gradient(135deg, #0078D7, #2b88d9);
             padding: 3px;
-            box-shadow: 0 6px 12px -6px rgba(0,120,215,0.25);
-            transition: all 0.4s cubic-bezier(0.2,0.9,0.4,1);
+            box-shadow: 0 6px 12px -6px rgba(0, 120, 215, 0.25);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
         .team-avatar {
-            width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: 700;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
             color: #0078D7;
             background: white;
         }
-        .dark .team-avatar-wrapper { background: linear-gradient(135deg, #5aa9e6, #7bb3e0); }
-        .dark .team-avatar { background: #2a2a2a; color: #5aa9e6; }
-        .card-hover:hover .team-avatar-wrapper { transform: scale(1.03) rotate(1deg); }
-        
+        .dark .team-avatar-wrapper {
+            background: linear-gradient(135deg, #5aa9e6, #7bb3e0);
+        }
+        .dark .team-avatar {
+            background: #2a2a2a;
+            color: #5aa9e6;
+        }
+        .card-hover:hover .team-avatar-wrapper {
+            transform: scale(1.03) rotate(1deg);
+        }
+
         .btn-primary {
-            background: #0078D7; color: white; padding: 0.6rem 1.4rem;
-            transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1);
-            display: inline-block; font-size: 0.875rem; font-weight: 500;
-            border: none; cursor: pointer; position: relative; overflow: hidden;
+            background: #0078D7;
+            color: white;
+            padding: 0.6rem 1.4rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: inline-block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
         .btn-primary::after {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 0; height: 0; background: rgba(255,255,255,0.3);
-            border-radius: 50%; transform: translate(-50%,-50%);
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
             transition: width 0.4s, height 0.4s;
         }
-        .btn-primary:active::after { width: 200px; height: 200px; }
-        .btn-primary:hover { background: #005a9e; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,120,215,0.3); }
-        .dark .btn-primary { background: #5aa9e6; color: #121212; }
-        .dark .btn-primary:hover { background: #7bb3e0; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(90,169,230,0.3); }
-        
+        .btn-primary:active::after {
+            width: 200px;
+            height: 200px;
+        }
+        .btn-primary:hover {
+            background: #005a9e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 120, 215, 0.3);
+        }
+        .dark .btn-primary {
+            background: #5aa9e6;
+            color: #121212;
+        }
+        .dark .btn-primary:hover {
+            background: #7bb3e0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(90, 169, 230, 0.3);
+        }
+
         .btn-disabled {
-            background: #6c757d; color: white; padding: 0.6rem 1.4rem;
-            display: inline-block; font-size: 0.875rem; font-weight: 500;
-            border: none; cursor: default; opacity: 0.7;
+            background: #6c757d;
+            color: white;
+            padding: 0.6rem 1.4rem;
+            display: inline-block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: default;
+            opacity: 0.7;
         }
-        .dark .btn-disabled { background: #4a4f55; color: #e0e0e0; }
-        
+        .dark .btn-disabled {
+            background: #4a4f55;
+            color: #e0e0e0;
+        }
+
         .btn-outline {
-            border: 1.5px solid #0078D7; color: #0078D7; padding: 0.6rem 1.4rem;
-            transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1);
-            background: transparent; font-weight: 500;
+            border: 1.5px solid #0078D7;
+            color: #0078D7;
+            padding: 0.6rem 1.4rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            background: transparent;
+            font-weight: 500;
         }
-        .btn-outline:hover { background: rgba(0,120,215,0.08); transform: translateY(-2px); }
-        .dark .btn-outline { border-color: #5aa9e6; color: #5aa9e6; }
-        .dark .btn-outline:hover { background: rgba(90,169,230,0.15); transform: translateY(-2px); }
-        
+        .btn-outline:hover {
+            background: rgba(0, 120, 215, 0.08);
+            transform: translateY(-2px);
+        }
+        .dark .btn-outline {
+            border-color: #5aa9e6;
+            color: #5aa9e6;
+        }
+        .dark .btn-outline:hover {
+            background: rgba(90, 169, 230, 0.15);
+            transform: translateY(-2px);
+        }
+
         .btn-partition {
-            border: 1.5px solid #0078D7; color: #0078D7; padding: 0.5rem 1.2rem;
-            background: transparent; transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1);
-            font-size: 0.85rem; font-weight: 500;
+            border: 1.5px solid #0078D7;
+            color: #0078D7;
+            padding: 0.5rem 1.2rem;
+            background: transparent;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            font-size: 0.85rem;
+            font-weight: 500;
         }
-        .btn-partition:hover { background: rgba(0,120,215,0.08); transform: translateY(-2px); }
-        .dark .btn-partition { border-color: #5aa9e6; color: #5aa9e6; }
-        .dark .btn-partition:hover { background: rgba(90,169,230,0.15); transform: translateY(-2px); }
-        
+        .btn-partition:hover {
+            background: rgba(0, 120, 215, 0.08);
+            transform: translateY(-2px);
+        }
+        .dark .btn-partition {
+            border-color: #5aa9e6;
+            color: #5aa9e6;
+        }
+        .dark .btn-partition:hover {
+            background: rgba(90, 169, 230, 0.15);
+            transform: translateY(-2px);
+        }
+
         .btn-more {
-            border: 1.5px solid #0078D7; color: #0078D7; padding: 0.6rem 1.6rem;
-            gap: 8px; transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1);
-            font-weight: 500; background: transparent;
+            border: 1.5px solid #0078D7;
+            color: #0078D7;
+            padding: 0.6rem 1.6rem;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            font-weight: 500;
+            background: transparent;
         }
-        .btn-more:hover { background: #0078D7; color: white; transform: translateY(-2px); gap: 12px; }
-        .dark .btn-more { border-color: #5aa9e6; color: #5aa9e6; }
-        .dark .btn-more:hover { background: #5aa9e6; color: #121212; transform: translateY(-2px); gap: 12px; }
-        
+        .btn-more:hover {
+            background: #0078D7;
+            color: white;
+            transform: translateY(-2px);
+            gap: 12px;
+        }
+        .dark .btn-more {
+            border-color: #5aa9e6;
+            color: #5aa9e6;
+        }
+        .dark .btn-more:hover {
+            background: #5aa9e6;
+            color: #121212;
+            transform: translateY(-2px);
+            gap: 12px;
+        }
+
         .section-page {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: white; z-index: 50000; overflow-y: auto;
-            transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2,0.9,0.4,1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            z-index: 50000;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
             padding-top: 74px;
         }
-        .dark .section-page { background: #121212; }
-        .section-page.active { transform: translateX(0); }
-        
+        .dark .section-page {
+            background: #121212;
+        }
+        .section-page.active {
+            transform: translateX(0);
+        }
+
         .page-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: rgba(0,0,0,0.3); z-index: 40000; opacity: 0;
-            pointer-events: none; transition: opacity 0.25s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 40000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
             backdrop-filter: blur(2px);
         }
-        .page-overlay.active { opacity: 1; pointer-events: auto; }
-        
+        .page-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .nav-back-button {
-            display: flex; align-items: center; gap: 6px;
-            padding: 5px 12px; background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(12px); border: 0.5px solid rgba(255,255,255,0.3);
-            color: #0078D7; cursor: pointer; transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            color: #0078D7;
+            cursor: pointer;
+            transition: all 0.2s ease;
             font-size: 0.85rem;
         }
-        .nav-back-button:hover { background: #0078D7; color: white; transform: translateX(-3px); }
-        .dark .nav-back-button { background: rgba(30,31,34,0.7); color: #5aa9e6; border-color: rgba(255,255,255,0.08); }
-        .dark .nav-back-button:hover { background: #5aa9e6; color: #121212; }
-        
+        .nav-back-button:hover {
+            background: #0078D7;
+            color: white;
+            transform: translateX(-3px);
+        }
+        .dark .nav-back-button {
+            background: rgba(30, 31, 34, 0.7);
+            color: #5aa9e6;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+        .dark .nav-back-button:hover {
+            background: #5aa9e6;
+            color: #121212;
+        }
+
         .series-card {
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
-            border: 1.5px solid #0078D7; padding: 1.5rem 1.2rem;
-            cursor: pointer; transition: all 0.35s cubic-bezier(0.2,0.9,0.4,1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid #0078D7;
+            padding: 1.5rem 1.2rem;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .series-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0,120,215,0.2); background: rgba(255,255,255,0.92); }
-        .dark .series-card { background: rgba(30,31,34,0.8); border-color: #5aa9e6; }
-        .dark .series-card:hover { background: rgba(40,42,48,0.92); }
-        .series-icon { font-size: 2.2rem; color: #0078D7; margin-bottom: 0.6rem; transition: transform 0.3s ease; }
-        .series-card:hover .series-icon { transform: scale(1.05); }
-        
+        .series-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 120, 215, 0.2);
+            background: rgba(255, 255, 255, 0.92);
+        }
+        .dark .series-card {
+            background: rgba(30, 31, 34, 0.8);
+            border-color: #5aa9e6;
+        }
+        .dark .series-card:hover {
+            background: rgba(40, 42, 48, 0.92);
+        }
+        .series-icon {
+            font-size: 2.2rem;
+            color: #0078D7;
+            margin-bottom: 0.6rem;
+            transition: transform 0.3s ease;
+        }
+        .series-card:hover .series-icon {
+            transform: scale(1.05);
+        }
+
         .game-list {
-            display: none; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
-            gap: 1.2rem; margin-top: 1.5rem; padding-top: 1.5rem;
-            border-top: 2px dashed rgba(0,120,215,0.2);
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed rgba(0, 120, 215, 0.2);
         }
-        .game-list.active { display: grid; animation: folderExpand 0.3s ease-out forwards; }
+        .game-list.active {
+            display: grid;
+            animation: folderExpand 0.3s ease-out forwards;
+        }
         .game-item {
-            background: rgba(0,120,215,0.04); backdrop-filter: blur(8px);
-            padding: 1rem; text-align: center; transition: all 0.25s ease;
-            border: 1px solid rgba(0,120,215,0.1);
+            background: rgba(0, 120, 215, 0.04);
+            backdrop-filter: blur(8px);
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(0, 120, 215, 0.1);
         }
-        .game-item:hover { transform: translateY(-3px); background: rgba(0,120,215,0.08); border-color: rgba(0,120,215,0.2); }
-        .dark .game-item { background: rgba(90,169,230,0.06); border-color: rgba(90,169,230,0.15); }
-        .dark .game-item:hover { background: rgba(90,169,230,0.12); }
-        .game-name { font-size: 1.1rem; font-weight: 700; color: #0078D7; margin-bottom: 0.3rem; }
-        .dark .game-name { color: #5aa9e6; }
-        
+        .game-item:hover {
+            transform: translateY(-3px);
+            background: rgba(0, 120, 215, 0.08);
+            border-color: rgba(0, 120, 215, 0.2);
+        }
+        .dark .game-item {
+            background: rgba(90, 169, 230, 0.06);
+            border-color: rgba(90, 169, 230, 0.15);
+        }
+        .dark .game-item:hover {
+            background: rgba(90, 169, 230, 0.12);
+        }
+        .game-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0078D7;
+            margin-bottom: 0.3rem;
+        }
+        .dark .game-name {
+            color: #5aa9e6;
+        }
+
         .standalone-game-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -534,114 +816,324 @@
             align-items: center;
             text-align: center;
         }
-        .standalone-game-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0,120,215,0.25); background: rgba(255, 255, 255, 0.94); }
-        .dark .standalone-game-card { background: rgba(30,31,34,0.9); border-color: #5aa9e6; }
-        .dark .standalone-game-card:hover { background: rgba(40,42,48,0.95); }
+        .standalone-game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 120, 215, 0.25);
+            background: rgba(255, 255, 255, 0.94);
+        }
+        .dark .standalone-game-card {
+            background: rgba(30, 31, 34, 0.9);
+            border-color: #5aa9e6;
+        }
+        .dark .standalone-game-card:hover {
+            background: rgba(40, 42, 48, 0.95);
+        }
         .standalone-game-card .game-badge {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: #ff9800; color: white; font-size: 0.7rem; font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #ff9800;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
             padding: 2px 8px;
             margin-top: 6px;
         }
-        .dark .standalone-game-card .game-badge { background: #e67e22; }
-        .standalone-game-card .game-badge.premium { background: #f1c40f; color: #2c3e50; }
-        .standalone-game-card .game-badge.cooperation { background: #2ecc71; }
-        
+        .dark .standalone-game-card .game-badge {
+            background: #e67e22;
+        }
+        .standalone-game-card .game-badge.premium {
+            background: #f1c40f;
+            color: #2c3e50;
+        }
+        .standalone-game-card .game-badge.cooperation {
+            background: #2ecc71;
+        }
+
         .demo-card {
-            background: rgba(255,255,255,0.75); backdrop-filter: blur(12px);
-            padding: 1.8rem 1.2rem; text-align: center;
-            transition: all 0.4s cubic-bezier(0.2,0.9,0.4,1);
-            border: 0.5px solid rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            padding: 1.8rem 1.2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
         }
-        .demo-card:hover { transform: translateY(-6px); border-color: #0078D7; background: rgba(255,255,255,0.88); box-shadow: 0 15px 30px -10px rgba(0,0,0,0.12); }
-        .demo-icon { font-size: 2.4rem; color: #0078D7; margin-bottom: 0.8rem; transition: transform 0.4s cubic-bezier(0.2,0.9,0.4,1); }
-        .demo-card:hover .demo-icon { transform: scale(1.05) rotate(2deg); }
-        .dark .demo-card { background: rgba(30,31,34,0.8); border-color: rgba(255,255,255,0.06); }
-        .dark .demo-card:hover { background: rgba(40,42,48,0.92); border-color: #5aa9e6; }
-        
-        .search-container { max-width: 100%; margin-top: 1rem; }
+        .demo-card:hover {
+            transform: translateY(-6px);
+            border-color: #0078D7;
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.12);
+        }
+        .demo-icon {
+            font-size: 2.4rem;
+            color: #0078D7;
+            margin-bottom: 0.8rem;
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .demo-card:hover .demo-icon {
+            transform: scale(1.05) rotate(2deg);
+        }
+        .dark .demo-card {
+            background: rgba(30, 31, 34, 0.8);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .dark .demo-card:hover {
+            background: rgba(40, 42, 48, 0.92);
+            border-color: #5aa9e6;
+        }
+
+        .search-container {
+            max-width: 100%;
+            margin-top: 1rem;
+        }
         .search-input {
-            width: 100%; padding: 0.6rem 1rem; border: 1px solid rgba(0,0,0,0.1);
-            font-size: 0.875rem; transition: all 0.25s ease;
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(8px);
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.875rem;
+            transition: all 0.25s ease;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
         }
-        .dark .search-input { background: rgba(30,31,34,0.8); border-color: rgba(255,255,255,0.1); color: #f0f0f0; }
-        .search-input:focus { outline: none; border-color: #0078D7; box-shadow: 0 0 0 3px rgba(0,120,215,0.15); transform: scale(1.01); }
+        .dark .search-input {
+            background: rgba(30, 31, 34, 0.8);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #f0f0f0;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #0078D7;
+            box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.15);
+            transform: scale(1.01);
+        }
         .search-btn {
-            background: #0078D7; color: white; padding: 0.6rem 1.2rem;
-            border: none; cursor: pointer; transition: all 0.2s; font-size: 0.875rem;
+            background: #0078D7;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
         }
-        .search-btn:hover { background: #005a9e; transform: translateY(-1px); }
-        .dark .search-btn { background: #5aa9e6; color: #121212; }
-        .dark .search-btn:hover { background: #7bb3e0; transform: translateY(-1px); }
-        
+        .search-btn:hover {
+            background: #005a9e;
+            transform: translateY(-1px);
+        }
+        .dark .search-btn {
+            background: #5aa9e6;
+            color: #121212;
+        }
+        .dark .search-btn:hover {
+            background: #7bb3e0;
+            transform: translateY(-1px);
+        }
+
         .thanks-section {
-            max-width: 800px; margin: 2.5rem auto 0; padding: 1.8rem 1.2rem;
-            background: rgba(255,255,255,0.65); backdrop-filter: blur(16px);
-            text-align: center; transition: all 0.3s ease;
-            border: 0.5px solid rgba(255,255,255,0.3);
+            max-width: 800px;
+            margin: 2.5rem auto 0;
+            padding: 1.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
         }
-        .thanks-section:hover { transform: translateY(-3px); background: rgba(255,255,255,0.8); border-color: #e2e8f0; }
-        .dark .thanks-section { background: rgba(30,31,34,0.7); border-color: rgba(255,255,255,0.06); }
-        .dark .thanks-section:hover { background: rgba(40,42,48,0.85); }
-        .thanks-title { font-size: 1.3rem; font-weight: 700; color: #0078D7; margin-bottom: 0.5rem; }
-        .dark .thanks-title { color: #5aa9e6; }
+        .thanks-section:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.8);
+            border-color: #e2e8f0;
+        }
+        .dark .thanks-section {
+            background: rgba(30, 31, 34, 0.7);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .dark .thanks-section:hover {
+            background: rgba(40, 42, 48, 0.85);
+        }
+        .thanks-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0078D7;
+            margin-bottom: 0.5rem;
+        }
+        .dark .thanks-title {
+            color: #5aa9e6;
+        }
         .thanks-item {
-            display: flex; flex-direction: column; align-items: center;
-            cursor: pointer; transition: all 0.2s ease; padding: 0.4rem 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.4rem 0.8rem;
         }
-        .thanks-item:hover { transform: translateY(-3px); }
-        .thanks-icon { font-size: 1.8rem; color: #0078D7; transition: transform 0.2s; margin-bottom: 0.2rem; }
-        .thanks-item:hover .thanks-icon { transform: scale(1.05); }
-        .dark .thanks-icon { color: #5aa9e6; }
-        .thanks-item span { color: #4b5563; }
-        .dark .thanks-item span { color: #9ca3af; }
-        
-        .footer-link, .legal-link { cursor: pointer; transition: all 0.25s ease; color: #9ca3af; }
-        .footer-link:hover, .legal-link:hover { color: #0078D7 !important; transform: translateX(3px); }
-        .dark .footer-link:hover, .dark .legal-link:hover { color: #5aa9e6 !important; }
-        
+        .thanks-item:hover {
+            transform: translateY(-3px);
+        }
+        .thanks-icon {
+            font-size: 1.8rem;
+            color: #0078D7;
+            transition: transform 0.2s;
+            margin-bottom: 0.2rem;
+        }
+        .thanks-item:hover .thanks-icon {
+            transform: scale(1.05);
+        }
+        .dark .thanks-icon {
+            color: #5aa9e6;
+        }
+        .thanks-item span {
+            color: #4b5563;
+        }
+        .dark .thanks-item span {
+            color: #9ca3af;
+        }
+
+        .footer-link,
+        .legal-link {
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: #9ca3af;
+        }
+        .footer-link:hover,
+        .legal-link:hover {
+            color: #0078D7 !important;
+            transform: translateX(3px);
+        }
+        .dark .footer-link:hover,
+        .dark .legal-link:hover {
+            color: #5aa9e6 !important;
+        }
+
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-            z-index: 200000; display: flex; align-items: center; justify-content: center;
-            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 200000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
         .modal-container {
-            background: rgba(255,255,255,0.85); backdrop-filter: blur(24px);
-            width: 90%; max-width: 550px; max-height: 70vh; overflow: hidden;
-            display: flex; flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            border: 0.5px solid rgba(255,255,255,0.3);
-            animation: modalSlideUp 0.3s cubic-bezier(0.2,0.9,0.4,1) forwards;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            width: 90%;
+            max-width: 550px;
+            max-height: 70vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
         }
-        .dark .modal-container { background: rgba(30,31,34,0.9); border: 0.5px solid rgba(255,255,255,0.08); }
-        .modal-header { padding: 0.8rem 1.2rem; border-bottom: 0.5px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .dark .modal-header { border-bottom-color: rgba(255,255,255,0.08); }
-        .modal-header h2 { font-size: 1.1rem; font-weight: 700; color: #0078D7; margin: 0; }
-        .dark .modal-header h2 { color: #5aa9e6; }
-        .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 0.5rem; color: #6b7280; }
-        .modal-close:hover { color: #0078D7; }
-        .dark .modal-close { color: #9ca3af; }
-        .dark .modal-close:hover { color: #5aa9e6; }
-        .modal-body { padding: 1.2rem; overflow-y: auto; line-height: 1.5; font-size: 0.875rem; color: #374151; }
-        .dark .modal-body { color: #d1d5db; }
-        .modal-footer { padding: 0.8rem 1.2rem; border-top: 0.5px solid rgba(0,0,0,0.05); display: flex; justify-content: flex-end; }
-        .dark .modal-footer { border-top-color: rgba(255,255,255,0.08); }
-        .modal-footer button { background: #0078D7; color: white; padding: 0.4rem 1rem; border: none; cursor: pointer; font-size: 0.8rem; }
-        .dark .modal-footer button { background: #5aa9e6; color: #121212; }
-        .dark .modal-footer button:hover { background: #7bb3e0; }
-        
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-        @media (max-width: 768px) { .container { padding: 0 1rem; } }
-        
+        .dark .modal-container {
+            background: rgba(30, 31, 34, 0.9);
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+        }
+        .modal-header {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dark .modal-header {
+            border-bottom-color: rgba(255, 255, 255, 0.08);
+        }
+        .modal-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0078D7;
+            margin: 0;
+        }
+        .dark .modal-header h2 {
+            color: #5aa9e6;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 0.5rem;
+            color: #6b7280;
+        }
+        .modal-close:hover {
+            color: #0078D7;
+        }
+        .dark .modal-close {
+            color: #9ca3af;
+        }
+        .dark .modal-close:hover {
+            color: #5aa9e6;
+        }
+        .modal-body {
+            padding: 1.2rem;
+            overflow-y: auto;
+            line-height: 1.5;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+        .dark .modal-body {
+            color: #d1d5db;
+        }
+        .modal-footer {
+            padding: 0.8rem 1.2rem;
+            border-top: 0.5px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: flex-end;
+        }
+        .dark .modal-footer {
+            border-top-color: rgba(255, 255, 255, 0.08);
+        }
+        .modal-footer button {
+            background: #0078D7;
+            color: white;
+            padding: 0.4rem 1rem;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .dark .modal-footer button {
+            background: #5aa9e6;
+            color: #121212;
+        }
+        .dark .modal-footer button:hover {
+            background: #7bb3e0;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+        }
+
         .animate-on-scroll {
-            opacity: 0; transform: translateY(25px);
-            transition: opacity 0.7s cubic-bezier(0.2,0.9,0.4,1), transform 0.7s cubic-bezier(0.2,0.9,0.4,1);
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.7s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
-        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* 广告横幅样式 */
         .ad-banner {
             background: rgba(255, 255, 255, 0.85);
@@ -741,7 +1233,7 @@
                         <span class="text-primary text-sm font-semibold">最新动态</span>
                         <h3 class="text-2xl font-bold mt-1">团队动态 · 时刻更新</h3>
                     </div>
-                    
+
                     <!-- 联合日报广告横幅 -->
                     <div class="ad-banner hover-tint p-4 md:p-5 mb-6 flex flex-col md:flex-row items-center justify-between gap-4" onmousemove="updateMask(event)">
                         <div class="flex items-center gap-4">
@@ -755,7 +1247,7 @@
                             阅读新闻 <i class="las la-arrow-right ml-1"></i>
                         </button>
                     </div>
-                    
+
                     <!-- 团队动态轮播 -->
                     <div class="carousel-container">
                         <button class="carousel-arrow left" id="carouselPrev"><i class="las la-chevron-left"></i></button>
@@ -797,60 +1289,53 @@
         <section id="team" class="py-16 md:py-20 bg-secondary"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">核心成员</h2><p class="text-center text-gray-600 text-sm mb-8">五位核心成员，各司其职，共同驱动团队创新</p><div class="grid grid-cols-2 md:grid-cols-5 gap-5"><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">诗</div></div><h3 class="font-bold">诗福</h3><p class="text-primary text-xs">团长 / 产品架构师</p><p class="text-xs text-gray-500 mt-1">团队创始人，核心设计</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">星</div></div><h3 class="font-bold">星斗</h3><p class="text-primary text-xs">技术总监 / 架构师</p><p class="text-xs text-gray-500 mt-1">技术架构与服务器</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">汐</div></div><h3 class="font-bold">千汐</h3><p class="text-primary text-xs">运营总监 / 用户洞察</p><p class="text-xs text-gray-500 mt-1">用户体验与反馈分析</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">五</div></div><h3 class="font-bold">五谷砸麦</h3><p class="text-primary text-xs">内容策划 / 创意设计</p><p class="text-xs text-gray-500 mt-1">内容创作与视觉设计</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">辅</div></div><h3 class="font-bold">辅助线</h3><p class="text-primary text-xs">测试 / 质量保障</p><p class="text-xs text-gray-500 mt-1">全流程测试与稳定性</p></div></div></div></section>
 
         <section id="contact" class="py-16 md:py-20"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">保持联系</h2><p class="text-center text-gray-600 text-sm mb-8">任何想法、合作或疑问，欢迎找到我们</p><div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-4 bg-secondary p-5"><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-map-marker-alt text-primary"></i></div><div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-phone text-primary"></i></div><div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-envelope text-primary"></i></div><div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div></div></div>
-            <div class="thanks-section hover-tint" onmousemove="updateMask(event)"><h3 class="thanks-title">特别鸣谢</h3><p class="text-gray-500 text-xs mb-3">感谢以下平台与个人的支持</p><div class="flex flex-wrap justify-center gap-2"><div class="thanks-item" onclick="window.open('https://github.com','_blank')"><i class="lab la-github thanks-icon"></i><span class="text-xs">GitHub</span></div><div class="thanks-item" onclick="window.open('https://www.microsoft.com','_blank')"><i class="lab la-microsoft thanks-icon"></i><span class="text-xs">Microsoft</span></div><div class="thanks-item" onclick="window.open('https://chat.openai.com','_blank')"><i class="las la-comment-dots thanks-icon"></i><span class="text-xs">ChatGPT</span></div><div class="thanks-item" onclick="window.open('https://www.deepseek.com','_blank')"><i class="las la-brain thanks-icon"></i><span class="text-xs">DeepSeek</span></div><div class="thanks-item" onclick="window.open('https://www.wps.cn','_blank')"><i class="las la-file-alt thanks-icon"></i><span class="text-xs">金山办公</span></div><div class="thanks-item"><i class="las la-user-graduate thanks-icon"></i><span class="text-xs">钟平</span></div><div class="thanks-item"><i class="las la-user-circle thanks-icon"></i><span class="text-xs">李志顺</span></div></div></div></div></section>
+                <div class="thanks-section hover-tint" onmousemove="updateMask(event)"><h3 class="thanks-title">特别鸣谢</h3><p class="text-gray-500 text-xs mb-3">感谢以下平台与个人的支持</p><div class="flex flex-wrap justify-center gap-2"><div class="thanks-item" onclick="window.open('https://github.com','_blank')"><i class="lab la-github thanks-icon"></i><span class="text-xs">GitHub</span></div><div class="thanks-item" onclick="window.open('https://www.microsoft.com','_blank')"><i class="lab la-microsoft thanks-icon"></i><span class="text-xs">Microsoft</span></div><div class="thanks-item" onclick="window.open('https://chat.openai.com','_blank')"><i class="las la-comment-dots thanks-icon"></i><span class="text-xs">ChatGPT</span></div><div class="thanks-item" onclick="window.open('https://www.deepseek.com','_blank')"><i class="las la-brain thanks-icon"></i><span class="text-xs">DeepSeek</span></div><div class="thanks-item" onclick="window.open('https://www.wps.cn','_blank')"><i class="las la-file-alt thanks-icon"></i><span class="text-xs">金山办公</span></div><div class="thanks-item"><i class="las la-user-graduate thanks-icon"></i><span class="text-xs">钟平</span></div><div class="thanks-item"><i class="las la-user-circle thanks-icon"></i><span class="text-xs">李志顺</span></div></div></div></div></section>
 
         <footer class="bg-dark text-white py-8"><div class="container"><div class="grid md:grid-cols-4 gap-5 mb-5"><div><h3 class="text-base font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-xs">实用工具 · 有趣游戏 · 教育文化</p></div><div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link">首页</a></li><li><a href="#about" class="footer-link">关于米遇安</a></li><li><a href="#team" class="footer-link">核心成员</a></li><li><a href="#" onclick="openSection('tools'); return false;" class="footer-link">工具分区</a></li><li><a href="#" onclick="openSection('games'); return false;" class="footer-link">娱乐分区</a></li><li><a href="#" onclick="openSection('education'); return false;" class="footer-link">教育分区</a></li><li><a href="#contact" class="footer-link">联系我们</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">产品系列</h3><ul class="space-y-1 text-xs"><li><a class="footer-link cursor-pointer" onclick="openSection('tools')">工具分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('games')">娱乐分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('education')">教育分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('others')">其他分区</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">联系方式</h3><ul class="space-y-1 text-xs"><li><i class="las la-map-marker-alt w-4"></i> 桂林市第一中学</li><li><i class="las la-phone w-4"></i> +86 152 0773 8425</li><li><i class="las la-envelope w-4"></i> 3493792731@qq.com</li></ul></div></div><div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p>&copy; 2026 米遇安 · 保留所有权利</p><div class="flex justify-center gap-4 mt-1"><a href="#" class="legal-link" onclick="window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); return false;">用户协议</a><a href="#" class="legal-link" onclick="window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); return false;">隐私政策</a></div></div></div></footer>
     </main>
 
-    <!-- 工具分区 - 新增 米遇安硕普（位于 LinguaFlow 前） -->
+    <!-- 工具分区 -->
     <div id="toolsSection" class="section-page">
         <div class="section-content p-5 max-w-6xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1>
             <p class="text-center text-gray-600 text-sm mb-6">实用工具 · 高效便捷</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                <!-- 米遇安计算器 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-calculator demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安计算器</h3>
                     <p class="text-xs text-gray-500 mb-3">便捷计算，快速完成数学运算。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calculator', '_blank')">打开计算器</button>
                 </div>
-                <!-- 米遇安天气 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-cloud-sun demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安天气</h3>
                     <p class="text-xs text-gray-500 mb-3">实时天气，出行必备。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/weather', '_blank')">查看天气</button>
                 </div>
-                <!-- 米遇安时钟 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-clock demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安时钟</h3>
                     <p class="text-xs text-gray-500 mb-3">精准时间，世界时钟。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/clock', '_blank')">查看时钟</button>
                 </div>
-                <!-- 米遇安日历 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-calendar-alt demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安日历</h3>
                     <p class="text-xs text-gray-500 mb-3">日期管理，日程提醒。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calendar', '_blank')">打开日历</button>
                 </div>
-                <!-- HTML 编辑器 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-code demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">HTML 编辑器</h3>
                     <p class="text-xs text-gray-500 mb-3">在线编写与预览 HTML 代码。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/html_editor', '_blank')">打开编辑器</button>
                 </div>
-                <!-- 米遇安硕普（新增） -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-puzzle-piece demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安硕普</h3>
                     <p class="text-xs text-gray-500 mb-3">实用小部件，丰富您的页面。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/super', '_blank')">打开小部件</button>
                 </div>
-                <!-- LinguaFlow -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-language demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">LinguaFlow</h3>
@@ -862,7 +1347,37 @@
     </div>
 
     <!-- 娱乐分区 -->
-    <div id="gamesSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">娱乐分区</h1><p class="text-center text-gray-600 text-sm mb-4">探索精彩娱乐世界</p><div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList('warfareList')"><i class="las la-folder-open series-icon"></i><h2 class="text-lg font-bold">现代战争推演系列</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="las la-chevron-down mt-1 text-primary transition-transform" id="warfareArrow"></i></div><div id="warfareList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-gamepad text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演1</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-crosshairs text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演2</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/2', '_blank')">点击试玩</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-rocket text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演3</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-bolt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代冲突</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-tachometer-alt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演4</div><p class="text-xs text-gray-500">最新续作，全新战场</p><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/4', '_blank')">点击试玩</button></div></div><div class="series-card hover-tint mt-5" onmousemove="updateMask(event)" onclick="toggleGameList('chessList')"><i class="las la-chess-board series-icon"></i><h2 class="text-lg font-bold">棋类游戏合集</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="las la-chevron-down mt-1 text-primary transition-transform" id="chessArrow"></i></div><div id="chessList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-chess-board text-xl text-primary mb-1"></i><div class="game-name text-sm">五子棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/gomoku', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-chess text-xl text-primary mb-1"></i><div class="game-name text-sm">象棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/chinese', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-chess text-xl text-primary mb-1"></i><div class="game-name text-sm">围棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/go', '_blank')">开始对弈</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-chess-queen text-xl text-primary mb-1"></i><div class="game-name text-sm">国际象棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/usual', '_blank')">开始对弈</button></div></div>
+    <div id="gamesSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">娱乐分区</h1><p class="text-center text-gray-600 text-sm mb-4">探索精彩娱乐世界</p><div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList('warfareList')"><i class="las la-folder-open series-icon"></i><h2 class="text-lg font-bold">现代战争推演系列</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="las la-chevron-down mt-1 text-primary transition-transform" id="warfareArrow"></i></div><div id="warfareList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-gamepad text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演1</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-crosshairs text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演2</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/2', '_blank')">点击试玩</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-rocket text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演3</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-bolt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代冲突</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-tachometer-alt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演4</div><p class="text-xs text-gray-500">最新续作，全新战场</p><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/4', '_blank')">点击试玩</button></div></div>
+        <!-- 棋类游戏合集（已新增陆战棋） -->
+        <div class="series-card hover-tint mt-5" onmousemove="updateMask(event)" onclick="toggleGameList('chessList')"><i class="las la-chess-board series-icon"></i><h2 class="text-lg font-bold">棋类游戏合集</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="las la-chevron-down mt-1 text-primary transition-transform" id="chessArrow"></i></div>
+        <div id="chessList" class="game-list">
+            <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                <i class="las la-chess-board text-xl text-primary mb-1"></i>
+                <div class="game-name text-sm">五子棋游戏</div>
+                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/gomoku', '_blank')">开始对弈</button>
+            </div>
+            <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                <i class="las la-chess text-xl text-primary mb-1"></i>
+                <div class="game-name text-sm">象棋游戏</div>
+                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/chinese', '_blank')">开始对弈</button>
+            </div>
+            <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                <i class="las la-chess text-xl text-primary mb-1"></i>
+                <div class="game-name text-sm">围棋游戏</div>
+                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/go', '_blank')">开始对弈</button>
+            </div>
+            <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                <i class="las la-chess-queen text-xl text-primary mb-1"></i>
+                <div class="game-name text-sm">国际象棋游戏</div>
+                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/usual', '_blank')">开始对弈</button>
+            </div>
+            <!-- 新增：陆战棋 -->
+            <div class="game-item hover-tint" onmousemove="updateMask(event)">
+                <i class="las la-flag text-xl text-primary mb-1"></i>
+                <div class="game-name text-sm">陆战棋</div>
+                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/battleship_game', '_blank')">开始对弈</button>
+            </div>
+        </div>
         <div class="standalone-game-card hover-tint mt-5" onmousemove="updateMask(event)">
             <div class="flex items-center gap-3 mb-2 w-full justify-center"><i class="las la-umbrella-beach text-3xl text-primary"></i><h2 class="text-lg font-bold">小岛奇兵</h2></div>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">守卫小岛，策略布防，体验塔防与经营的乐趣。</p>
@@ -892,16 +1407,16 @@
         function rotateSlogan() {
             if (isTransitioning) return;
             isTransitioning = true;
-            
+
             mainEl.classList.add('fade-out');
             subEl.classList.add('fade-out');
-            
+
             setTimeout(() => {
                 currentSloganIndex = (currentSloganIndex + 1) % slogans.length;
                 const next = slogans[currentSloganIndex];
                 mainEl.textContent = next.main;
                 subEl.textContent = next.sub;
-                
+
                 mainEl.classList.remove('fade-out');
                 subEl.classList.remove('fade-out');
                 isTransitioning = false;
@@ -909,30 +1424,35 @@
         }
 
         setInterval(rotateSlogan, 3500);
-        
+
         // ===== 其他功能 =====
-        function performSearch(){ let q=document.getElementById('searchInput')?.value.trim(); if(q){ window.open(`https://www.bing.com/search?q=${encodeURIComponent(q)}`,'_blank'); } else { alert('请输入关键词'); } }
-        function handleSearchKeypress(e){ if(e.key==='Enter') performSearch(); }
-        
-        function showPrivacyPolicy(){ window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); }
-        function showUserAgreement(){ window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); }
-        function closeModal(e){ 
-            if(e && e.target!==document.getElementById('legalModal') && !e.target.classList?.contains('modal-close') && !e.target.closest?.('.modal-footer button')) { 
-                if(e.target===document.getElementById('legalModal')){ 
-                    document.getElementById('legalModal').classList.remove('active'); 
-                    document.body.style.overflow=''; 
-                } 
-                return; 
-            } 
-            document.getElementById('legalModal').classList.remove('active'); 
-            document.body.style.overflow=''; 
+        function performSearch() { let q = document.getElementById('searchInput')?.value.trim(); if (q) { window.open(
+                `https://www.bing.com/search?q=${encodeURIComponent(q)}`, '_blank'); } else { alert('请输入关键词'); } }
+
+        function handleSearchKeypress(e) { if (e.key === 'Enter') performSearch(); }
+
+        function showPrivacyPolicy() { window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); }
+
+        function showUserAgreement() { window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); }
+
+        function closeModal(e) {
+            if (e && e.target !== document.getElementById('legalModal') && !e.target.classList?.contains('modal-close') && !e
+                .target.closest?.('.modal-footer button')) {
+                if (e.target === document.getElementById('legalModal')) {
+                    document.getElementById('legalModal').classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+                return;
+            }
+            document.getElementById('legalModal').classList.remove('active');
+            document.body.style.overflow = '';
         }
-        
+
         // 深色模式跟随系统
         function setThemeFromSystem() {
             const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.classList.toggle('dark', isDark);
-            ['darkModeIcon','darkModeIconMobile'].forEach(id => {
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
             });
@@ -944,7 +1464,7 @@
         if (savedDark !== null) {
             const isDark = savedDark === 'true';
             document.documentElement.classList.toggle('dark', isDark);
-            ['darkModeIcon','darkModeIconMobile'].forEach(id => {
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
             });
@@ -952,7 +1472,7 @@
         const toggleDark = () => {
             const isDark = !document.documentElement.classList.contains('dark');
             document.documentElement.classList.toggle('dark', isDark);
-            ['darkModeIcon','darkModeIconMobile'].forEach(id => {
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
             });
@@ -960,61 +1480,129 @@
         };
         document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
         document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
-        
-        window.addEventListener('scroll',()=>document.getElementById('navbar')?.classList.toggle('navbar-scrolled',window.scrollY>30));
-        
+
+        window.addEventListener('scroll', () => document.getElementById('navbar')?.classList.toggle('navbar-scrolled', window
+            .scrollY > 30));
+
         // 侧边栏控制
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('mobileSidebar');
         const overlay = document.getElementById('mobileMenuOverlay');
         const closeSidebarBtn = document.getElementById('closeSidebarBtn');
         const sidebarLinks = document.querySelectorAll('.sidebar-link');
-        function openSidebar() { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
-        function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+
+        function openSidebar() { sidebar.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; }
+
+        function closeSidebar() { sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = ''; }
         if (menuBtn) menuBtn.addEventListener('click', openSidebar);
         if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
         if (overlay) overlay.addEventListener('click', closeSidebar);
         sidebarLinks.forEach(link => link.addEventListener('click', closeSidebar));
-        
+
         // 轮播逻辑
-        let currentSlide=0,totalSlides=5,track=document.getElementById('carouselTrack'),autoPlayInterval;
-        function updateCarousel(){ if(track) track.style.transform=`translateX(-${currentSlide*100}%)`; document.querySelectorAll('.carousel-dot').forEach((d,i)=>d.classList.toggle('active',i===currentSlide)); }
-        window.goToSlide=function(i){ if(i>=0&&i<totalSlides){ currentSlide=i; updateCarousel(); resetAutoPlay(); } };
-        function nextSlide(){ currentSlide=(currentSlide+1)%totalSlides; updateCarousel(); }
-        function prevSlide(){ currentSlide=(currentSlide-1+totalSlides)%totalSlides; updateCarousel(); }
-        function startAutoPlay(){ autoPlayInterval=setInterval(nextSlide,5000); }
-        function resetAutoPlay(){ clearInterval(autoPlayInterval); startAutoPlay(); }
-        document.getElementById('carouselPrev')?.addEventListener('click',()=>{ prevSlide(); resetAutoPlay(); });
-        document.getElementById('carouselNext')?.addEventListener('click',()=>{ nextSlide(); resetAutoPlay(); });
-        let carouselContainer=document.querySelector('.carousel-container'); if(carouselContainer){ carouselContainer.addEventListener('mouseenter',()=>clearInterval(autoPlayInterval)); carouselContainer.addEventListener('mouseleave',startAutoPlay); }
-        const dotsContainer=document.getElementById('carouselDotsContainer'); if(dotsContainer){ dotsContainer.innerHTML=''; for(let i=0;i<totalSlides;i++){ let dot=document.createElement('button'); dot.className='carousel-dot'; dot.onclick=()=>goToSlide(i); dotsContainer.appendChild(dot); } }
-        updateCarousel(); startAutoPlay();
-        
+        let currentSlide = 0,
+            totalSlides = 5,
+            track = document.getElementById('carouselTrack'),
+            autoPlayInterval;
+
+        function updateCarousel() { if (track) track.style.transform = `translateX(-${currentSlide*100}%)`;
+            document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide)); }
+        window.goToSlide = function(i) { if (i >= 0 && i < totalSlides) { currentSlide = i;
+                updateCarousel();
+                resetAutoPlay(); } };
+
+        function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel(); }
+
+        function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel(); }
+
+        function startAutoPlay() { autoPlayInterval = setInterval(nextSlide, 5000); }
+
+        function resetAutoPlay() { clearInterval(autoPlayInterval);
+            startAutoPlay(); }
+        document.getElementById('carouselPrev')?.addEventListener('click', () => { prevSlide();
+            resetAutoPlay(); });
+        document.getElementById('carouselNext')?.addEventListener('click', () => { nextSlide();
+            resetAutoPlay(); });
+        let carouselContainer = document.querySelector('.carousel-container');
+        if (carouselContainer) { carouselContainer.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+            carouselContainer.addEventListener('mouseleave', startAutoPlay); }
+        const dotsContainer = document.getElementById('carouselDotsContainer');
+        if (dotsContainer) { dotsContainer.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) { let dot = document.createElement('button');
+                dot.className = 'carousel-dot';
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot); } }
+        updateCarousel();
+        startAutoPlay();
+
         let openStates = { warfareList: false, chessList: false };
         window.toggleGameList = function(listId) {
             const listElement = document.getElementById(listId);
             const arrowElement = document.getElementById(listId.replace('List', 'Arrow'));
             if (!listElement || !arrowElement) return;
             openStates[listId] = !openStates[listId];
-            if (openStates[listId]) { listElement.classList.add('active'); arrowElement.style.transform = 'rotate(180deg)'; } 
-            else { listElement.classList.remove('active'); arrowElement.style.transform = 'rotate(0deg)'; }
+            if (openStates[listId]) { listElement.classList.add('active');
+                arrowElement.style.transform = 'rotate(180deg)'; } else { listElement.classList.remove('active');
+                arrowElement.style.transform = 'rotate(0deg)'; }
         };
-        
-        function updateMask(ev){ let el=ev.currentTarget,rect=el.getBoundingClientRect(),x=(ev.clientX-rect.left)/rect.width,y=(ev.clientY-rect.top)/rect.height; x=Math.min(1,Math.max(0,x)); y=Math.min(1,Math.max(0,y)); el.style.setProperty('--x',x*100+'%'); el.style.setProperty('--y',y*100+'%'); }
-        function updateHeroMask(ev){ let hero=ev.currentTarget,rect=hero.getBoundingClientRect(),x=(ev.clientX-rect.left)/rect.width,y=(ev.clientY-rect.top)/rect.height; hero.style.setProperty('--hero-x',Math.min(1,Math.max(0,x))*100+'%'); hero.style.setProperty('--hero-y',Math.min(1,Math.max(0,y))*100+'%'); }
-        function resetHeroMask(ev){ let hero=ev.currentTarget; hero.style.setProperty('--hero-x','50%'); hero.style.setProperty('--hero-y','50%'); }
-        window.updateMask=updateMask; window.updateHeroMask=updateHeroMask; window.resetHeroMask=resetHeroMask;
-        
-        let currentOpenSection=null;
-        function openSection(s){ let el=document.getElementById(s+'Section'),overlay=document.getElementById('pageOverlay'),back=document.getElementById('navBackButtonContainer'); if(el){ currentOpenSection=s; if(back) back.style.display='block'; el.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow='hidden'; } }
-        function closeSection(s){ let el=document.getElementById(s+'Section'),overlay=document.getElementById('pageOverlay'),back=document.getElementById('navBackButtonContainer'); if(el){ if(back) back.style.display='none'; el.classList.remove('active'); overlay.classList.remove('active'); currentOpenSection=null; document.body.style.overflow=''; } }
-        function closeCurrentSection(){ if(currentOpenSection) closeSection(currentOpenSection); }
-        function closeAllSections(){ if(currentOpenSection) closeSection(currentOpenSection); }
-        window.openSection=openSection; window.closeCurrentSection=closeCurrentSection; window.closeAllSections=closeAllSections;
-        
+
+        function updateMask(ev) { let el = ev.currentTarget,
+                rect = el.getBoundingClientRect(),
+                x = (ev.clientX - rect.left) / rect.width,
+                y = (ev.clientY - rect.top) / rect.height;
+            x = Math.min(1, Math.max(0, x));
+            y = Math.min(1, Math.max(0, y));
+            el.style.setProperty('--x', x * 100 + '%');
+            el.style.setProperty('--y', y * 100 + '%'); }
+
+        function updateHeroMask(ev) { let hero = ev.currentTarget,
+                rect = hero.getBoundingClientRect(),
+                x = (ev.clientX - rect.left) / rect.width,
+                y = (ev.clientY - rect.top) / rect.height;
+            hero.style.setProperty('--hero-x', Math.min(1, Math.max(0, x)) * 100 + '%');
+            hero.style.setProperty('--hero-y', Math.min(1, Math.max(0, y)) * 100 + '%'); }
+
+        function resetHeroMask(ev) { let hero = ev.currentTarget;
+            hero.style.setProperty('--hero-x', '50%');
+            hero.style.setProperty('--hero-y', '50%'); }
+        window.updateMask = updateMask;
+        window.updateHeroMask = updateHeroMask;
+        window.resetHeroMask = resetHeroMask;
+
+        let currentOpenSection = null;
+
+        function openSection(s) { let el = document.getElementById(s + 'Section'),
+                overlay = document.getElementById('pageOverlay'),
+                back = document.getElementById('navBackButtonContainer'); if (el) { currentOpenSection = s; if (back) back
+                    .style.display = 'block';
+                el.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; } }
+
+        function closeSection(s) { let el = document.getElementById(s + 'Section'),
+                overlay = document.getElementById('pageOverlay'),
+                back = document.getElementById('navBackButtonContainer'); if (el) { if (back) back.style.display = 'none';
+                el.classList.remove('active');
+                overlay.classList.remove('active');
+                currentOpenSection = null;
+                document.body.style.overflow = ''; } }
+
+        function closeCurrentSection() { if (currentOpenSection) closeSection(currentOpenSection); }
+
+        function closeAllSections() { if (currentOpenSection) closeSection(currentOpenSection); }
+        window.openSection = openSection;
+        window.closeCurrentSection = closeCurrentSection;
+        window.closeAllSections = closeAllSections;
+
         const animateElements = document.querySelectorAll('.animate-on-scroll');
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         }, { threshold: 0.1 });
         animateElements.forEach(el => observer.observe(el));
     </script>
