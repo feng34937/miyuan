@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>米遇安Markdown编辑器</title>
+
+    <!-- Markdown 解析库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+    </script>
+    <!-- 代码高亮库 -->
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/highlight.min.js">
+    </script>
+
+    <style>
+        :root {
+            --glass-bg: rgba(18, 18, 32, 0.55);
+            --glass-bg-strong: rgba(22, 22, 40, 0.7);
+            --glass-bg-panel: rgba(16, 16, 28, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --glass-border-strong: rgba(255, 255, 255, 0.12);
+            --text-primary: #e8e8f0;
+            --text-secondary: #b0b0c0;
+            --text-muted: #707088;
+            --accent: #7b9fff;
+            --accent-warm: #f0a050;
+            --green: #5ecf8a;
+            --orange: #f0a050;
+            --pink: #e87d9f;
+            --cyan: #5ecfcf;
+            --blur-amount: 22px;
+            --blur-saturate: 160%;
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', 'JetBrains Mono', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei',
+                sans-serif;
+            --toolbar-height: 52px;
+            --statusbar-height: 28px;
+            --radius-sm: 0px;
+            --radius-md: 0px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: var(--font-sans);
+            background: #0a0a16;
+            color: var(--text-primary);
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 18% 20%, rgba(90, 110, 240, 0.16) 0%, transparent 55%),
+                radial-gradient(ellipse at 72% 50%, rgba(160, 90, 210, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 75%, rgba(70, 130, 200, 0.14) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 15%, rgba(240, 160, 80, 0.08) 0%, transparent 45%);
+            animation: bgShift 20s ease-in-out infinite;
+        }
+        @keyframes bgShift {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            33% {
+                opacity: 0.85;
+            }
+            66% {
+                opacity: 1.1;
+            }
+        }
+
+        .toolbar {
+            height: var(--toolbar-height);
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 7px;
+            z-index: 100;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 4px 20px rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .toolbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .toolbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-weight: 700;
+            font-size: 13.5px;
+            color: #fff;
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.3px;
+        }
+        .toolbar .logo .icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #c8d8ff;
+            font-weight: 800;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--radius-sm);
+            letter-spacing: -0.5px;
+            transition: all var(--transition-smooth);
+        }
+        .toolbar .logo:hover .icon {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 18px rgba(123, 159, 255, 0.35);
+        }
+
+        .toolbar .divider {
+            width: 1px;
+            height: 22px;
+            background: var(--glass-border-strong);
+            flex-shrink: 0;
+            margin: 0 3px;
+            border-radius: 1px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            font-size: 12.5px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.035);
+            color: var(--text-primary);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.2px;
+            outline: none;
+            position: relative;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--glass-border-strong);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-0.5px);
+        }
+        .btn:active {
+            transform: scale(0.96);
+            transition: transform 0.08s;
+        }
+        .btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: var(--radius-sm);
+        }
+
+        .btn-fmt {
+            padding: 7px 9px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0;
+            min-width: 32px;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+        .btn-fmt:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .btn-fmt .kbd-hint {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-left: 2px;
+            opacity: 0.7;
+        }
+
+        .btn-run {
+            background: rgba(94, 207, 138, 0.2);
+            border-color: rgba(94, 207, 138, 0.3);
+            color: #c8ffe0;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .btn-run:hover {
+            background: rgba(94, 207, 138, 0.3);
+            border-color: rgba(94, 207, 138, 0.5);
+            box-shadow: 0 0 20px rgba(94, 207, 138, 0.25);
+        }
+
+        .btn-auto {
+            transition: all var(--transition-smooth);
+        }
+        .btn-auto.active {
+            background: rgba(123, 159, 255, 0.22);
+            border-color: rgba(123, 159, 255, 0.45);
+            color: #c8d8ff;
+            box-shadow: 0 0 16px rgba(123, 159, 255, 0.2);
+            font-weight: 600;
+        }
+        .btn-auto .indicator-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            display: inline-block;
+            transition: all var(--transition-smooth);
+            flex-shrink: 0;
+        }
+        .btn-auto.active .indicator-dot {
+            background: #7b9fff;
+            box-shadow: 0 0 8px rgba(123, 159, 255, 0.7);
+            animation: dotPulse 1.6s infinite;
+        }
+        @keyframes dotPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 8px rgba(123, 159, 255, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 18px rgba(123, 159, 255, 1), 0 0 30px rgba(123, 159, 255, 0.5);
+            }
+        }
+
+        .template-select {
+            padding: 7px 26px 7px 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            font-size: 12.5px;
+            cursor: pointer;
+            outline: none;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+            letter-spacing: 0.2px;
+            font-family: var(--font-sans);
+        }
+        .template-select:hover {
+            border-color: var(--glass-border-strong);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .template-select:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: var(--radius-sm);
+        }
+
+        .btn-reset {
+            margin-left: auto;
+            flex-shrink: 0;
+            opacity: 0.8;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            height: calc(100vh - var(--toolbar-height) - var(--statusbar-height));
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .editor-panel,
+        .preview-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            box-shadow: var(--shadow-glass);
+            transition: box-shadow var(--transition-smooth);
+        }
+        .editor-panel {
+            background: var(--glass-bg-panel);
+            border-right: 1px solid var(--glass-border);
+            min-width: 100px;
+        }
+        .preview-panel {
+            background: rgba(20, 20, 35, 0.45);
+            border-left: 1px solid var(--glass-border);
+            min-width: 100px;
+        }
+
+        .panel-header {
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.015);
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        .dot-indicator {
+            width: 7px;
+            height: 7px;
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(123, 159, 255, 0.6);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .preview-panel .dot-indicator {
+            background: var(--green);
+            box-shadow: 0 0 8px rgba(94, 207, 138, 0.6);
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        .line-numbers {
+            background: rgba(0, 0, 0, 0.22);
+            color: var(--text-muted);
+            padding: 14px 0;
+            text-align: right;
+            font-family: var(--font-mono);
+            font-size: 13.5px;
+            line-height: 1.68;
+            overflow: hidden;
+            user-select: none;
+            min-width: 50px;
+            border-right: 1px solid var(--glass-border);
+            flex-shrink: 0;
+            white-space: pre;
+            letter-spacing: 0;
+        }
+        .line-numbers span {
+            display: block;
+            padding: 0 10px 0 6px;
+            transition: all 0.1s;
+        }
+        .line-numbers span.active-line {
+            color: #c8d0e8;
+            background: rgba(255, 255, 255, 0.04);
+            font-weight: 500;
+        }
+
+        .code-textarea {
+            flex: 1;
+            background: rgba(8, 8, 20, 0.55);
+            color: #d8d8f0;
+            border: none;
+            padding: 14px 16px;
+            font-family: var(--font-mono);
+            font-size: 13.5px;
+            line-height: 1.68;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+            white-space: pre;
+            overflow: auto;
+            caret-color: #ffcc66;
+            border-radius: 0;
+            letter-spacing: 0;
+            transition: background var(--transition-smooth);
+        }
+        .code-textarea:focus {
+            background: rgba(8, 8, 20, 0.7);
+            box-shadow: inset 0 0 30px rgba(123, 159, 255, 0.04);
+        }
+        .code-textarea::selection {
+            background: rgba(123, 159, 255, 0.35);
+            color: #fff;
+        }
+        .code-textarea::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .code-textarea::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .code-textarea::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 0px;
+        }
+        .code-textarea::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .resizer {
+            width: 7px;
+            cursor: col-resize;
+            background: rgba(255, 255, 255, 0.025);
+            flex-shrink: 0;
+            z-index: 10;
+            transition: all var(--transition-smooth);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            position: relative;
+        }
+        .resizer::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 3px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            transition: all var(--transition-smooth);
+        }
+        .resizer:hover,
+        .resizer.active {
+            background: rgba(123, 159, 255, 0.3);
+            box-shadow: 0 0 20px rgba(123, 159, 255, 0.4);
+        }
+        .resizer:hover::after,
+        .resizer.active::after {
+            background: rgba(255, 255, 255, 0.5);
+            height: 50px;
+            box-shadow: 0 0 14px rgba(123, 159, 255, 0.6);
+        }
+
+        .preview-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #fff;
+            border-radius: 0;
+        }
+        .preview-placeholder {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: all var(--transition-smooth);
+        }
+        .preview-placeholder .ph-icon {
+            font-size: 56px;
+            opacity: 0.35;
+            filter: grayscale(0.3);
+            transition: all var(--transition-smooth);
+        }
+        .preview-placeholder:hover .ph-icon {
+            opacity: 0.55;
+            transform: translateY(-4px);
+        }
+
+        .statusbar {
+            height: var(--statusbar-height);
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--blur-saturate));
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+            gap: 16px;
+            flex-shrink: 0;
+            z-index: 100;
+            letter-spacing: 0.2px;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: all var(--transition-smooth);
+        }
+        .status-dot.unsaved {
+            background: var(--orange);
+            animation: statusPulse 1.3s infinite;
+            box-shadow: 0 0 8px rgba(240, 160, 80, 0.6);
+        }
+        @keyframes statusPulse {
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 8px rgba(240, 160, 80, 0.6);
+            }
+            50% {
+                opacity: 0.35;
+                box-shadow: 0 0 2px rgba(240, 160, 80, 0.2);
+            }
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .status-item strong {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 62px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid var(--glass-border-strong);
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+            animation: toastIn 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards,
+                toastOut 0.35s 2.2s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
+            pointer-events: auto;
+            letter-spacing: 0.2px;
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(70px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(50px) scale(0.85);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .toolbar {
+                gap: 4px;
+                padding: 0 8px;
+            }
+            .btn-fmt {
+                padding: 6px 7px;
+                font-size: 11px;
+                min-width: 26px;
+            }
+            .btn-fmt .kbd-hint {
+                display: none;
+            }
+            .btn {
+                padding: 6px 9px;
+                font-size: 11.5px;
+                gap: 3px;
+            }
+            .toolbar .divider {
+                margin: 0 1px;
+                height: 16px;
+            }
+            .template-select {
+                font-size: 11px;
+                padding: 6px 20px 6px 8px;
+                max-width: 90px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .resizer {
+                width: 100%;
+                height: 7px;
+                cursor: row-resize;
+            }
+            .resizer::after {
+                width: 36px;
+                height: 3px;
+            }
+            .resizer:hover::after,
+            .resizer.active::after {
+                width: 50px;
+                height: 3px;
+            }
+            .editor-panel,
+            .preview-panel {
+                min-width: unset;
+                min-height: 150px;
+            }
+            .btn-fmt {
+                padding: 5px 6px;
+                font-size: 10px;
+                min-width: 22px;
+            }
+            .btn {
+                padding: 5px 7px;
+                font-size: 10.5px;
+            }
+            .toolbar .logo span {
+                font-size: 11px;
+            }
+            .toolbar .logo .icon {
+                width: 26px;
+                height: 26px;
+                font-size: 13px;
+            }
+            .toolbar {
+                gap: 2px;
+                padding: 0 5px;
+                height: 44px;
+            }
+            .toolbar .divider {
+                height: 14px;
+                margin: 0 0px;
+            }
+            .template-select {
+                font-size: 10px;
+                padding: 5px 16px 5px 6px;
+                max-width: 70px;
+            }
+            .btn-reset {
+                font-size: 10px;
+                padding: 5px 7px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar" id="toolbar">
+        <div class="logo">
+            <span class="icon">M↓</span>
+            <span>米遇安Markdown编辑器</span>
+        </div>
+
+        <span class="divider"></span>
+
+        <button class="btn btn-fmt" id="btnBold" title="加粗 (Ctrl+B)">B<span class="kbd-hint">⌘B</span></button>
+        <button class="btn btn-fmt" id="btnItalic" title="斜体 (Ctrl+I)">I<span class="kbd-hint">⌘I</span></button>
+        <button class="btn btn-fmt" id="btnHeading" title="标题 (Ctrl+H)">H<span class="kbd-hint">⌘H</span></button>
+        <button class="btn btn-fmt" id="btnCode" title="代码 (Ctrl+`)">&lt;/&gt;<span class="kbd-hint">⌘`</span></button>
+        <button class="btn btn-fmt" id="btnLink" title="链接 (Ctrl+K)">🔗<span class="kbd-hint">⌘K</span></button>
+        <button class="btn btn-fmt" id="btnImage" title="图片">🖼</button>
+        <button class="btn btn-fmt" id="btnList" title="无序列表">≡</button>
+        <button class="btn btn-fmt" id="btnQuote" title="引用">❝</button>
+        <button class="btn btn-fmt" id="btnTable" title="插入表格">⊞</button>
+
+        <span class="divider"></span>
+
+        <button class="btn btn-run" id="btnRun" title="运行预览 (Ctrl+Enter)">▶ 运行</button>
+        <button class="btn btn-auto" id="btnAutoRun" title="切换实时预览">
+            <span class="indicator-dot"></span> 实时
+        </button>
+
+        <span class="divider"></span>
+
+        <select class="template-select" id="templateSelect" title="加载模板">
+            <option value="">📄 模板...</option>
+            <option value="basic">📝 基础 Markdown</option>
+            <option value="readme">📘 README 模板</option>
+            <option value="blog">✍️ 博客文章</option>
+            <option value="docs">📚 技术文档</option>
+        </select>
+
+        <button class="btn" id="btnClear" title="清空编辑器">🗑 清空</button>
+        <button class="btn" id="btnCopy" title="复制 Markdown 源码">📋 复制</button>
+        <button class="btn" id="btnDownloadMd" title="下载 .md 文件">💾 下载MD</button>
+        <button class="btn" id="btnExportHtml" title="导出为 HTML 文件">🌐 导出HTML</button>
+        <button class="btn btn-reset" id="btnResetLayout" title="重置面板布局">↺</button>
+    </div>
+
+    <div class="main-container" id="mainContainer">
+        <div class="editor-panel" id="editorPanel">
+            <div class="panel-header">
+                <span class="dot-indicator"></span> Markdown 源码
+            </div>
+            <div class="editor-wrapper">
+                <div class="line-numbers" id="lineNumbers"></div>
+                <textarea class="code-textarea" id="codeTextarea"
+            placeholder="在此输入 Markdown 代码...&#10;&#10;支持 GFM 语法、代码高亮、表格、任务列表等"></textarea>
+            </div>
+        </div>
+
+        <div class="resizer" id="resizer" title="拖拽调整面板大小"></div>
+
+        <div class="preview-panel" id="previewPanel">
+            <div class="panel-header">
+                <span class="dot-indicator"></span> 实时预览
+            </div>
+            <div class="preview-placeholder" id="previewPlaceholder">
+                <span class="ph-icon">📖</span>
+                <span>点击「运行」或开启「实时预览」查看效果</span>
+                <span style="font-size:11px;color:#666;">支持 GFM · 代码高亮 · 表格 · 任务列表</span>
+            </div>
+            <iframe class="preview-iframe" id="previewIframe" style="display:none;"
+        sandbox="allow-scripts allow-same-origin" title="Markdown 预览"></iframe>
+        </div>
+    </div>
+
+    <div class="statusbar">
+        <span class="status-item">
+            <span class="status-dot saved" id="statusDot"></span>
+            <span id="statusSave">已保存</span>
+        </span>
+        <span class="status-item">行: <strong id="statusLines">0</strong></span>
+        <span class="status-item">字符: <strong id="statusChars">0</strong></span>
+        <span class="status-item">字数: <strong id="statusWords">0</strong></span>
+        <span class="status-item" id="statusCursor" style="color:var(--text-muted);"></span>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        (function() {
+            const btnRun = document.getElementById('btnRun');
+            const btnAutoRun = document.getElementById('btnAutoRun');
+            const btnClear = document.getElementById('btnClear');
+            const btnCopy = document.getElementById('btnCopy');
+            const btnDownloadMd = document.getElementById('btnDownloadMd');
+            const btnExportHtml = document.getElementById('btnExportHtml');
+            const btnResetLayout = document.getElementById('btnResetLayout');
+            const btnBold = document.getElementById('btnBold');
+            const btnItalic = document.getElementById('btnItalic');
+            const btnHeading = document.getElementById('btnHeading');
+            const btnCode = document.getElementById('btnCode');
+            const btnLink = document.getElementById('btnLink');
+            const btnImage = document.getElementById('btnImage');
+            const btnList = document.getElementById('btnList');
+            const btnQuote = document.getElementById('btnQuote');
+            const btnTable = document.getElementById('btnTable');
+            const templateSelect = document.getElementById('templateSelect');
+            const codeTextarea = document.getElementById('codeTextarea');
+            const lineNumbers = document.getElementById('lineNumbers');
+            const previewIframe = document.getElementById('previewIframe');
+            const previewPlaceholder = document.getElementById('previewPlaceholder');
+            const resizer = document.getElementById('resizer');
+            const mainContainer = document.getElementById('mainContainer');
+            const editorPanel = document.getElementById('editorPanel');
+            const previewPanel = document.getElementById('previewPanel');
+            const statusDot = document.getElementById('statusDot');
+            const statusSave = document.getElementById('statusSave');
+            const statusLines = document.getElementById('statusLines');
+            const statusChars = document.getElementById('statusChars');
+            const statusWords = document.getElementById('statusWords');
+            const statusCursor = document.getElementById('statusCursor');
+            const toastContainer = document.getElementById('toastContainer');
+
+            let autoRun = false;
+            let isSaved = true;
+            let debounceTimer = null;
+            let saveTimer = null;
+            const DEBOUNCE_DELAY = 380;
+            const SAVE_DELAY = 900;
+            const STORAGE_KEY = 'md_editor_code_v3';
+            const LAYOUT_KEY = 'md_editor_layout_v3';
+            const AUTO_KEY = 'md_editor_auto_v3';
+
+            const templates = {
+                basic: `# 欢迎使用 米遇安Markdown编辑器
+
+## 基本语法
+
+**加粗文字** 、*斜体文字* 、~~删除线~~ 、\`行内代码\`
+
+### 列表
+
+- 无序列表项 1
+- 无序列表项 2
+  - 嵌套子项
+
+1. 有序列表项 1
+2. 有序列表项 2
+
+### 引用
+
+> 这是一段引用文字
+> 可以跨多行
+
+### 代码块
+
+\`\`\`javascript
+function greet(name) {
+    console.log(\`你好，\${name}！\`);
+}
+greet('世界');
+\`\`\`
+
+### 链接与图片
+
+[访问 GitHub](https://github.com)
+
+### 表格
+
+| 功能 | 状态 | 优先级 |
+|------|------|--------|
+| 编辑器 | ✅ 完成 | 高 |
+| 预览 | ✅ 完成 | 高 |
+| 导出 | ✅ 完成 | 中 |
+
+### 任务列表
+
+- [x] 已完成的任务
+- [ ] 待完成的任务
+- [ ] 计划中的功能
+
+---
+
+> 开始编辑吧！🎉
+`,
+                readme: `# 项目名称
+
+![版本](https://img.shields.io/badge/version-1.0.0-blue)
+![许可证](https://img.shields.io/badge/license-MIT-green)
+
+## 📖 简介
+
+这是一个示例项目的 README 文件。
+
+## ✨ 特性
+
+- 🚀 高性能
+- 🎨 美观的界面
+- 🔧 易于配置
+- 📦 轻量级
+
+## 📦 安装
+
+\`\`\`bash
+npm install my-project
+# 或者
+yarn add my-project
+\`\`\`
+
+## 🛠 使用
+
+\`\`\`javascript
+import { MyLib } from 'my-project';
+
+const instance = new MyLib({
+    theme: 'dark',
+    lang: 'zh-CN'
+});
+
+instance.init();
+\`\`\`
+
+## 📚 API 文档
+
+| 方法 | 参数 | 返回值 | 说明 |
+|------|------|--------|------|
+| \`init()\` | config | void | 初始化 |
+| \`destroy()\` | - | void | 销毁实例 |
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📄 许可证
+
+MIT © 2024
+`,
+                blog: `# 我的博客文章标题
+
+> 发表于 2024年 · 阅读时间约 5 分钟
+
+---
+
+## 引言
+
+这是一篇示例博客文章。Markdown 让写作变得简单而优雅。
+
+## 正文
+
+### 第一部分
+
+在当今快速发展的技术世界中，** Markdown ** 已经成为技术写作的事实标准。它简洁、易读、跨平台。
+
+### 第二部分
+
+以下是几个关键优势：
+
+1. **纯文本格式**——任何编辑器都能打开
+2. **易于版本控制**——与 Git 完美配合
+3. **转换灵活**——可转为 HTML、PDF 等多种格式
+
+## 代码示例
+
+\`\`\`python
+def fibonacci(n):
+    """计算斐波那契数列"""
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# 打印前10项
+for i in range(10):
+    print(fibonacci(i), end=' ')
+\`\`\`
+
+## 总结
+
+> Markdown 让写作回归本质——专注于内容本身。
+
+---
+
+*感谢阅读！欢迎在评论区交流。*
+`,
+                docs: `# API 接口文档
+
+## 概述
+
+本文档描述了 REST API 的使用方法。
+
+## 基础 URL
+
+\`\`\`
+https://api.example.com/v2
+\`\`\`
+
+## 认证方式
+
+所有 API 请求需要在 Header 中携带 Token：
+
+\`\`\`http
+Authorization: Bearer <your-token>
+\`\`\`
+
+## 接口列表
+
+### 1. 获取用户信息
+
+**请求**
+
+\`\`\`http
+GET /users/{id}
+\`\`\`
+
+**参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| id | string | 是 | 用户 ID |
+| fields | string | 否 | 返回字段，逗号分隔 |
+
+**响应示例**
+
+\`\`\`json
+{
+    "code": 200,
+    "data": {
+        "id": "usr_001",
+        "name": "张三",
+        "email": "zhangsan@example.com"
+    },
+    "message": "success"
+}
+\`\`\`
+
+### 2. 错误码
+
+| 错误码 | 说明 |
+|--------|------|
+| 400 | 请求参数错误 |
+| 401 | 未认证 |
+| 404 | 资源不存在 |
+| 500 | 服务器内部错误 |
+
+## 速率限制
+
+- 每个 API Key 每分钟最多 **60** 次请求
+- 超出限制返回 \`429 Too Many Requests\`
+
+---
+
+> 最后更新：2024年
+`
+            };
+
+            function configureMarked() {
+                if (typeof marked === 'undefined') {
+                    window._markedAvailable = false;
+                    return;
+                }
+                window._markedAvailable = true;
+
+                if (typeof hljs !== 'undefined') {
+                    marked.setOptions({
+                        gfm: true,
+                        breaks: true,
+                        pedantic: false,
+                        sanitize: false,
+                        smartLists: true,
+                        smartypants: true,
+                        highlight: function(code, lang) {
+                            if (lang && hljs.getLanguage(lang)) {
+                                try {
+                                    return hljs.highlight(code, { language: lang, ignoreIllegals: true })
+                                        .value;
+                                } catch (e) {}
+                            }
+                            try {
+                                return hljs.highlightAuto(code).value;
+                            } catch (e) {
+                                return code;
+                            }
+                        }
+                    });
+                } else {
+                    marked.setOptions({
+                        gfm: true,
+                        breaks: true,
+                        pedantic: false,
+                        sanitize: false,
+                        smartLists: true,
+                        smartypants: true,
+                    });
+                }
+            }
+            configureMarked();
+
+            function buildPreviewHtml(markdownContent) {
+                let bodyContent;
+                if (window._markedAvailable && typeof marked !== 'undefined') {
+                    try {
+                        bodyContent = marked.parse(markdownContent);
+                    } catch (e) {
+                        bodyContent = '<pre>' + escapeHtml(markdownContent) + '</pre>';
+                    }
+                } else {
+                    bodyContent = '<pre>' + escapeHtml(markdownContent) + '</pre>';
+                }
+
+                const hljsTheme = 'https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark.min.css';
+
+                return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="${hljsTheme}">
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --text: #24292f;
+            --text-secondary: #57606a;
+            --border: #d0d7de;
+            --code-bg: #f6f8fa;
+            --blockquote-bg: #f3f4f6;
+            --blockquote-border: #7b9fff;
+            --link-color: #4f6ef7;
+            --table-stripe: #f6f8fa;
+            --heading-color: #1a1a2e;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --radius: 0px;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+                'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 32px 28px;
+            max-width: 820px;
+            margin: 0 auto;
+            -webkit-font-smoothing: antialiased;
+            word-break: break-word;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--heading-color);
+            font-weight: 700;
+            margin-top: 1.6em;
+            margin-bottom: 0.6em;
+            line-height: 1.35;
+            letter-spacing: -0.01em;
+        }
+        h1 { font-size: 2em; border-bottom: 2px solid var(--border); padding-bottom: 0.35em; }
+        h2 { font-size: 1.55em; border-bottom: 1px solid var(--border); padding-bottom: 0.25em; }
+        h3 { font-size: 1.28em; }
+        h4 { font-size: 1.1em; }
+        p { margin-bottom: 1em; }
+        a { color: var(--link-color); text-decoration: none; border-bottom: 1px solid transparent;
+            transition: all 0.2s; }
+        a:hover { border-bottom-color: var(--link-color); }
+        strong { font-weight: 700; color: #1a1a2e; }
+        code {
+            background: var(--code-bg);
+            padding: 2px 7px;
+            border-radius: 0px;
+            font-family: 'SF Mono','Cascadia Code','Fira Code','Consolas','JetBrains Mono',monospace;
+            font-size: 0.88em;
+            color: #d63384;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        pre {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 18px 20px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            margin: 1.2em 0;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.08);
+            line-height: 1.55;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            color: inherit;
+            font-size: 0.9em;
+            border-radius: 0;
+        }
+        blockquote {
+            border-left: 4px solid var(--blockquote-border);
+            background: var(--blockquote-bg);
+            padding: 12px 18px;
+            margin: 1.2em 0;
+            border-radius: 0px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        blockquote p:last-child { margin-bottom: 0; }
+        ul, ol { margin: 0.8em 0; padding-left: 1.8em; }
+        li { margin: 0.35em 0; }
+        li > ul, li > ol { margin: 0.2em 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2em 0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: #f0f2f5;
+            font-weight: 700;
+            color: var(--heading-color);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        tr:nth-child(even) td { background: var(--table-stripe); }
+        tr:hover td { background: #eef1f5; }
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+            margin: 2em 0;
+        }
+        img { max-width: 100%; height: auto; border-radius: var(--radius);
+            box-shadow: var(--shadow-sm); margin: 0.8em 0; }
+        input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: #5ecf8a;
+            transform: scale(1.15);
+            cursor: pointer;
+        }
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d0d7de; border-radius: 0px; }
+        ::-webkit-scrollbar-thumb:hover { background: #b0b7c0; }
+        @media print {
+            body { padding: 20px; max-width: none; background: #fff; }
+            pre { background: #f6f8fa; color: #24292f; border: 1px solid #d0d7de; }
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1a1a24;
+                --text: #e0e0e8;
+                --text-secondary: #a8a8b8;
+                --border: #3a3a4a;
+                --code-bg: #252535;
+                --blockquote-bg: #22222e;
+                --blockquote-border: #7b9fff;
+                --link-color: #8babff;
+                --table-stripe: #1f1f2c;
+                --heading-color: #e8e8f4;
+                --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            }
+            code { color: #f0a0b8; border-color: rgba(255,255,255,0.08); }
+            th { background: #252535; }
+            tr:hover td { background: #282838; }
+            body { background: var(--bg); }
+        }
+    </style>
+</head>
+<body>
+    ${bodyContent}
+    <script>
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', function() {
+                this.setAttribute('checked', this.checked ? 'checked' : '');
+            });
+        });
+    <\/script>
+</body>
+</html>`;
+            }
+
+            function escapeHtml(text) {
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+                return text.replace(/[&<>"']/g, c => map[c]);
+            }
+
+            function updatePreview() {
+                const code = codeTextarea.value;
+                if (!code.trim()) {
+                    previewIframe.style.display = 'none';
+                    previewPlaceholder.style.display = 'flex';
+                    return;
+                }
+                previewPlaceholder.style.display = 'none';
+                previewIframe.style.display = 'block';
+                const html = buildPreviewHtml(code);
+                previewIframe.srcdoc = html;
+            }
+
+            function updateLineNumbers() {
+                const lines = codeTextarea.value.split('\n');
+                const count = Math.max(lines.length, 1);
+                let html = '';
+                for (let i = 0; i < count; i++) {
+                    html += `<span>${i + 1}</span>`;
+                }
+                lineNumbers.innerHTML = html;
+                highlightActiveLine();
+            }
+
+            function highlightActiveLine() {
+                const pos = codeTextarea.selectionStart;
+                const line = codeTextarea.value.substring(0, pos).split('\n').length;
+                const spans = lineNumbers.children;
+                for (let i = 0; i < spans.length; i++) {
+                    spans[i].classList.toggle('active-line', i + 1 === line);
+                }
+            }
+
+            function updateStatusBar() {
+                const text = codeTextarea.value;
+                const lines = text.split('\n').length;
+                statusLines.textContent = lines;
+                statusChars.textContent = text.length;
+                statusWords.textContent = countWords(text);
+                updateCursorInfo();
+            }
+
+            function countWords(text) {
+                if (!text.trim()) return 0;
+                const cjk = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) || []).length;
+                const english = text.replace(/[\u4e00-\u9fff\u3400-\u4dbf]/g, ' ')
+                    .split(/\s+/)
+                    .filter(w => w.length > 0 && /[a-zA-Z0-9]/.test(w)).length;
+                return cjk + english;
+            }
+
+            function updateCursorInfo() {
+                const pos = codeTextarea.selectionStart;
+                const textBefore = codeTextarea.value.substring(0, pos);
+                const line = textBefore.split('\n').length;
+                const lastNewline = textBefore.lastIndexOf('\n');
+                const col = pos - lastNewline;
+                statusCursor.textContent = `光标: ${line}:${col}`;
+            }
+
+            function markSaved() {
+                isSaved = true;
+                statusDot.className = 'status-dot saved';
+                statusSave.textContent = '已保存';
+            }
+
+            function markUnsaved() {
+                if (!isSaved) return;
+                isSaved = false;
+                statusDot.className = 'status-dot unsaved';
+                statusSave.textContent = '未保存';
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(saveNow, SAVE_DELAY);
+            }
+
+            function saveNow() {
+                localStorage.setItem(STORAGE_KEY, codeTextarea.value);
+                markSaved();
+            }
+
+            function setAutoRun(enabled) {
+                autoRun = enabled;
+                btnAutoRun.classList.toggle('active', enabled);
+                localStorage.setItem(AUTO_KEY, enabled ? 'true' : 'false');
+                if (enabled) {
+                    updatePreview();
+                }
+            }
+
+            function showToast(msg) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = msg;
+                toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 2600);
+            }
+
+            function wrapSelection(before, after, placeholder) {
+                const ta = codeTextarea;
+                const start = ta.selectionStart;
+                const end = ta.selectionEnd;
+                const selected = ta.value.substring(start, end);
+
+                if (selected.length > 0) {
+                    const replacement = before + selected + after;
+                    ta.value = ta.value.substring(0, start) + replacement + ta.value.substring(end);
+                    ta.selectionStart = start;
+                    ta.selectionEnd = start + replacement.length;
+                } else {
+                    const insertText = before + (placeholder || '') + after;
+                    ta.value = ta.value.substring(0, start) + insertText + ta.value.substring(end);
+                    const cursorPos = start + before.length + (placeholder ? placeholder.length : 0);
+                    ta.selectionStart = cursorPos;
+                    ta.selectionEnd = cursorPos;
+                }
+                ta.focus();
+                ta.dispatchEvent(new Event('input', { bubbles: true }));
+                updateLineNumbers();
+                updateStatusBar();
+                markUnsaved();
+                if (autoRun) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(updatePreview, DEBOUNCE_DELAY);
+                }
+            }
+
+            function insertAtCursor(text, cursorOffset) {
+                const ta = codeTextarea;
+                const start = ta.selectionStart;
+                const end = ta.selectionEnd;
+                ta.value = ta.value.substring(0, start) + text + ta.value.substring(end);
+                const pos = start + (cursorOffset !== undefined ? cursorOffset : text.length);
+                ta.selectionStart = pos;
+                ta.selectionEnd = pos;
+                ta.focus();
+                ta.dispatchEvent(new Event('input', { bubbles: true }));
+                updateLineNumbers();
+                updateStatusBar();
+                markUnsaved();
+                if (autoRun) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(updatePreview, DEBOUNCE_DELAY);
+                }
+            }
+
+            function getLineStart() {
+                const ta = codeTextarea;
+                const pos = ta.selectionStart;
+                const textBefore = ta.value.substring(0, pos);
+                const lastNL = textBefore.lastIndexOf('\n');
+                return lastNL + 1;
+            }
+
+            function restoreLayout() {
+                const saved = localStorage.getItem(LAYOUT_KEY);
+                if (saved && window.innerWidth > 768) {
+                    const ratio = parseFloat(saved);
+                    if (ratio > 0.1 && ratio < 0.9) {
+                        const total = mainContainer.clientWidth;
+                        const editorW = Math.round(total * ratio);
+                        editorPanel.style.flex = 'none';
+                        editorPanel.style.width = editorW + 'px';
+                        previewPanel.style.flex = 'none';
+                        previewPanel.style.width = (total - editorW - resizer.offsetWidth) + 'px';
+                    }
+                }
+            }
+
+            function saveLayout() {
+                if (window.innerWidth <= 768) return;
+                const total = mainContainer.clientWidth;
+                const editorW = editorPanel.getBoundingClientRect().width;
+                const ratio = editorW / total;
+                if (ratio > 0.1 && ratio < 0.9) {
+                    localStorage.setItem(LAYOUT_KEY, ratio.toString());
+                }
+            }
+
+            function resetLayout() {
+                editorPanel.style.flex = '';
+                editorPanel.style.width = '';
+                editorPanel.style.height = '';
+                previewPanel.style.flex = '';
+                previewPanel.style.width = '';
+                previewPanel.style.height = '';
+                localStorage.removeItem(LAYOUT_KEY);
+                showToast('↺ 布局已重置');
+            }
+
+            let isResizing = false;
+            let startX, startY, startEditorW, startEditorH, startPreviewW, startPreviewH;
+            let isRowLayout = true;
+
+            function getDirection() {
+                return window.innerWidth > 768 ? 'row' : 'column';
+            }
+
+            function startResize(e) {
+                e.preventDefault();
+                isResizing = true;
+                isRowLayout = getDirection() === 'row';
+                resizer.classList.add('active');
+                document.body.style.cursor = isRowLayout ? 'col-resize' : 'row-resize';
+                document.body.style.userSelect = 'none';
+                const editorRect = editorPanel.getBoundingClientRect();
+                const previewRect = previewPanel.getBoundingClientRect();
+                if (isRowLayout) {
+                    startX = e.clientX;
+                    startEditorW = editorRect.width;
+                    startPreviewW = previewRect.width;
+                    editorPanel.style.flex = 'none';
+                    previewPanel.style.flex = 'none';
+                } else {
+                    startY = e.clientY;
+                    startEditorH = editorRect.height;
+                    startPreviewH = previewRect.height;
+                    editorPanel.style.flex = 'none';
+                    previewPanel.style.flex = 'none';
+                }
+                document.addEventListener('mousemove', onResizeMove);
+                document.addEventListener('mouseup', stopResize);
+            }
+
+            function startResizeTouch(e) {
+                e.preventDefault();
+                if (e.touches.length !== 1) return;
+                isResizing = true;
+                isRowLayout = getDirection() === 'row';
+                resizer.classList.add('active');
+                document.body.style.userSelect = 'none';
+                const editorRect = editorPanel.getBoundingClientRect();
+                const previewRect = previewPanel.getBoundingClientRect();
+                const touch = e.touches[0];
+                if (isRowLayout) {
+                    startX = touch.clientX;
+                    startEditorW = editorRect.width;
+                    startPreviewW = previewRect.width;
+                    editorPanel.style.flex = 'none';
+                    previewPanel.style.flex = 'none';
+                } else {
+                    startY = touch.clientY;
+                    startEditorH = editorRect.height;
+                    startPreviewH = previewRect.height;
+                    editorPanel.style.flex = 'none';
+                    previewPanel.style.flex = 'none';
+                }
+                document.addEventListener('touchmove', onResizeMoveTouch, { passive: false });
+                document.addEventListener('touchend', stopResizeTouch);
+            }
+
+            function onResizeMove(e) {
+                if (!isResizing) return;
+                const containerRect = mainContainer.getBoundingClientRect();
+                if (isRowLayout) {
+                    const dx = e.clientX - startX;
+                    let newW = startEditorW + dx;
+                    const minW = 100;
+                    const maxW = containerRect.width - resizer.offsetWidth - 100;
+                    newW = Math.max(minW, Math.min(maxW, newW));
+                    editorPanel.style.width = newW + 'px';
+                    previewPanel.style.width = (containerRect.width - newW - resizer.offsetWidth) + 'px';
+                } else {
+                    const dy = e.clientY - startY;
+                    let newH = startEditorH + dy;
+                    const minH = 100;
+                    const maxH = containerRect.height - resizer.offsetHeight - 100;
+                    newH = Math.max(minH, Math.min(maxH, newH));
+                    editorPanel.style.height = newH + 'px';
+                    previewPanel.style.height = (containerRect.height - newH - resizer.offsetHeight) + 'px';
+                }
+            }
+
+            function onResizeMoveTouch(e) {
+                if (!isResizing) return;
+                e.preventDefault();
+                if (e.touches.length !== 1) return;
+                const containerRect = mainContainer.getBoundingClientRect();
+                const touch = e.touches[0];
+                if (isRowLayout) {
+                    const dx = touch.clientX - startX;
+                    let newW = startEditorW + dx;
+                    const minW = 100;
+                    const maxW = containerRect.width - resizer.offsetWidth - 100;
+                    newW = Math.max(minW, Math.min(maxW, newW));
+                    editorPanel.style.width = newW + 'px';
+                    previewPanel.style.width = (containerRect.width - newW - resizer.offsetWidth) + 'px';
+                } else {
+                    const dy = touch.clientY - startY;
+                    let newH = startEditorH + dy;
+                    const minH = 100;
+                    const maxH = containerRect.height - resizer.offsetHeight - 100;
+                    newH = Math.max(minH, Math.min(maxH, newH));
+                    editorPanel.style.height = newH + 'px';
+                    previewPanel.style.height = (containerRect.height - newH - resizer.offsetHeight) + 'px';
+                }
+            }
+
+            function stopResize() {
+                isResizing = false;
+                resizer.classList.remove('active');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+                document.removeEventListener('mousemove', onResizeMove);
+                document.removeEventListener('mouseup', stopResize);
+                saveLayout();
+            }
+
+            function stopResizeTouch() {
+                isResizing = false;
+                resizer.classList.remove('active');
+                document.body.style.userSelect = '';
+                document.removeEventListener('touchmove', onResizeMoveTouch);
+                document.removeEventListener('touchend', stopResizeTouch);
+                saveLayout();
+            }
+
+            function handleResize() {
+                const newDir = getDirection();
+                if (newDir === 'column' && isRowLayout && editorPanel.style.width) {
+                    resetLayout();
+                }
+                isRowLayout = newDir === 'row';
+            }
+
+            function exportHtml() {
+                const code = codeTextarea.value;
+                if (!code.trim()) {
+                    showToast('⚠️ 无内容可导出');
+                    return;
+                }
+                const fullHtml = buildPreviewHtml(code);
+                const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'document.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('🌐 HTML 已导出');
+            }
+
+            function bindEvents() {
+                btnRun.onclick = () => {
+                    updatePreview();
+                    showToast('✅ 预览已更新');
+                };
+
+                btnAutoRun.onclick = () => setAutoRun(!autoRun);
+
+                btnClear.onclick = () => {
+                    if (!codeTextarea.value.trim()) return;
+                    codeTextarea.value = '';
+                    updateLineNumbers();
+                    updateStatusBar();
+                    updatePreview();
+                    markUnsaved();
+                    codeTextarea.focus();
+                    showToast('🗑 已清空');
+                };
+
+                btnCopy.onclick = () => {
+                    if (!codeTextarea.value.trim()) return showToast('⚠️ 无内容可复制');
+                    navigator.clipboard.writeText(codeTextarea.value).then(() => {
+                        showToast('📋 已复制 Markdown 源码');
+                    }).catch(() => showToast('⚠️ 复制失败'));
+                };
+
+                btnDownloadMd.onclick = () => {
+                    if (!codeTextarea.value.trim()) return showToast('⚠️ 无内容可下载');
+                    const blob = new Blob([codeTextarea.value], { type: 'text/markdown;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'document.md';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast('💾 已下载 document.md');
+                };
+
+                btnExportHtml.onclick = exportHtml;
+
+                templateSelect.onchange = () => {
+                    const key = templateSelect.value;
+                    if (key && templates[key]) {
+                        codeTextarea.value = templates[key];
+                        updateLineNumbers();
+                        updateStatusBar();
+                        updatePreview();
+                        markUnsaved();
+                        templateSelect.value = '';
+                        showToast('📄 模板已加载');
+                    }
+                };
+
+                btnBold.onclick = () => wrapSelection('**', '**', '加粗文字');
+                btnItalic.onclick = () => wrapSelection('*', '*', '斜体文字');
+                btnHeading.onclick = () => {
+                    const lineStart = getLineStart();
+                    const textAfter = codeTextarea.value.substring(lineStart);
+                    const match = textAfter.match(/^(#{1,6}\s)?/);
+                    const currentHashes = match ? match[0] : '';
+                    if (currentHashes && currentHashes.length < 8) {
+                        const newHashes = '#'.repeat(Math.min((currentHashes.trim().length || 0) + 1, 6)) +
+                            ' ';
+                        codeTextarea.value = codeTextarea.value.substring(0, lineStart) + newHashes +
+                            textAfter.substring(currentHashes.length);
+                        codeTextarea.selectionStart = codeTextarea.selectionEnd = lineStart + newHashes
+                            .length;
+                    } else {
+                        insertAtCursor('## ', 3);
+                    }
+                    codeTextarea.focus();
+                    codeTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    updateLineNumbers();
+                    updateStatusBar();
+                    markUnsaved();
+                    if (autoRun) { clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(updatePreview, DEBOUNCE_DELAY); }
+                };
+                btnCode.onclick = () => {
+                    const ta = codeTextarea;
+                    const start = ta.selectionStart;
+                    const end = ta.selectionEnd;
+                    const selected = ta.value.substring(start, end);
+                    if (selected.includes('\n')) {
+                        wrapSelection('```\n', '\n```', '代码块');
+                    } else {
+                        wrapSelection('`', '`', '代码');
+                    }
+                };
+                btnLink.onclick = () => wrapSelection('[', '](url)', '链接文字');
+                btnImage.onclick = () => wrapSelection('![', '](url)', '图片描述');
+                btnList.onclick = () => {
+                    const lineStart = getLineStart();
+                    insertAtCursor('- ', 2);
+                };
+                btnQuote.onclick = () => {
+                    const lineStart = getLineStart();
+                    insertAtCursor('> ', 2);
+                };
+                btnTable.onclick = () => {
+                    const tableTemplate =
+                        '\n| 列1 | 列2 | 列3 |\n|-----|-----|-----|\n| 内容 | 内容 | 内容 |\n';
+                    insertAtCursor(tableTemplate, tableTemplate.length);
+                };
+
+                codeTextarea.oninput = () => {
+                    updateLineNumbers();
+                    updateStatusBar();
+                    markUnsaved();
+                    if (autoRun) {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(updatePreview, DEBOUNCE_DELAY);
+                    }
+                };
+                codeTextarea.onscroll = () => {
+                    lineNumbers.scrollTop = codeTextarea.scrollTop;
+                };
+                codeTextarea.onclick = highlightActiveLine;
+                codeTextarea.onkeyup = (e) => {
+                    highlightActiveLine();
+                    updateCursorInfo();
+                };
+                codeTextarea.onpaste = () => {
+                    setTimeout(() => {
+                        updateLineNumbers();
+                        updateStatusBar();
+                        if (autoRun) updatePreview();
+                    }, 60);
+                };
+
+                codeTextarea.onkeydown = function(e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        const ta = codeTextarea;
+                        const start = ta.selectionStart;
+                        const end = ta.selectionEnd;
+                        if (e.shiftKey) {
+                            const lineStart = ta.value.lastIndexOf('\n', start - 1) + 1;
+                            const line = ta.value.substring(lineStart, start);
+                            const match = line.match(/^ {1,4}/);
+                            if (match) {
+                                const len = Math.min(match[0].length, 4);
+                                ta.value = ta.value.substring(0, lineStart) + ta.value.substring(lineStart +
+                                    len);
+                                ta.selectionStart = ta.selectionEnd = start - len;
+                                ta.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        } else {
+                            const spaces = '    ';
+                            ta.value = ta.value.substring(0, start) + spaces + ta.value.substring(end);
+                            ta.selectionStart = ta.selectionEnd = start + spaces.length;
+                            ta.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                    }
+                };
+
+                resizer.onmousedown = startResize;
+                resizer.ontouchstart = startResizeTouch;
+                btnResetLayout.onclick = resetLayout;
+                window.onresize = handleResize;
+
+                document.onkeydown = function(e) {
+                    const mod = e.ctrlKey || e.metaKey;
+                    if (mod && e.key === 'Enter') {
+                        e.preventDefault();
+                        updatePreview();
+                        showToast('✅ 预览已更新');
+                    }
+                    if (mod && e.key === 's') {
+                        e.preventDefault();
+                        saveNow();
+                        showToast('💾 已保存到本地');
+                    }
+                    if (mod && e.key === 'b') {
+                        e.preventDefault();
+                        wrapSelection('**', '**', '加粗文字');
+                    }
+                    if (mod && e.key === 'i') {
+                        e.preventDefault();
+                        wrapSelection('*', '*', '斜体文字');
+                    }
+                    if (mod && e.key === 'h') {
+                        e.preventDefault();
+                        btnHeading.onclick();
+                    }
+                    if (mod && e.key === 'k') {
+                        e.preventDefault();
+                        wrapSelection('[', '](url)', '链接文字');
+                    }
+                    if (mod && e.key === '`') {
+                        e.preventDefault();
+                        btnCode.onclick();
+                    }
+                    if (mod && e.shiftKey && e.key === 'E') {
+                        e.preventDefault();
+                        exportHtml();
+                    }
+                };
+
+                window.onbeforeunload = () => {
+                    saveNow();
+                };
+            }
+
+            function init() {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                codeTextarea.value = saved && saved.trim() ? saved : templates.basic;
+
+                const autoSaved = localStorage.getItem(AUTO_KEY);
+                if (autoSaved === 'true') setAutoRun(true);
+
+                restoreLayout();
+                updateLineNumbers();
+                updateStatusBar();
+                updatePreview();
+                markSaved();
+                bindEvents();
+                updateCursorInfo();
+                codeTextarea.focus();
+
+                console.log('%c📝 米遇安Markdown编辑器已就绪 %c| %c玻璃态UI · GFM支持 · 代码高亮 · 实时预览',
+                    'color:#7b9fff;font-weight:bold;',
+                    '',
+                    'color:#b0b0c0;');
+                console.log('%c快捷键: %cCtrl+Enter 运行 | Ctrl+S 保存 | Ctrl+B 加粗 | Ctrl+I 斜体 | Ctrl+K 链接 | Ctrl+H 标题',
+                    'color:#f0a050;',
+                    'color:#e8e8f0;');
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
