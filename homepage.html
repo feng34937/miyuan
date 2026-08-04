@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>米遇安 · 创新与教育</title>
-    <!-- Tailwind + Line Awesome (备用) -->
+    <!-- Tailwind + Line Awesome -->
     <script src="https://cdn.tailwindcss.com">
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
@@ -1217,7 +1217,6 @@
             z-index: 1;
         }
 
-        /* 图标容器（适配 Emoji） */
         .ad-icon-wrapper {
             flex-shrink: 0;
             width: 52px;
@@ -1261,7 +1260,6 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
-        /* 合作标签 — 更醒目 */
         .coop-badge {
             display: inline-flex;
             align-items: center;
@@ -1286,7 +1284,6 @@
             color: #0f172a;
         }
 
-        /* 广告按钮 */
         .ad-action-btn {
             background: linear-gradient(135deg, #0078D7, #005a9e);
             color: white;
@@ -1346,7 +1343,6 @@
             background: linear-gradient(135deg, #fcd34d, #fbbf24);
         }
 
-        /* 广告箭头 */
         .ad-arrow-btn {
             position: absolute;
             top: 50%;
@@ -1386,7 +1382,6 @@
             }
         }
 
-        /* 广告指示点 */
         .ad-dot {
             width: 10px;
             height: 10px;
@@ -1425,7 +1420,6 @@
             z-index: 15;
         }
 
-        /* 星星装饰 */
         .ad-stars {
             position: absolute;
             top: 0;
@@ -1564,7 +1558,7 @@
                         <h3 class="text-2xl font-bold mt-1">团队动态 · 时刻更新</h3>
                     </div>
 
-                    <!-- ===== 花哨广告轮播（图标已替换为 Emoji） ===== -->
+                    <!-- ===== 广告轮播 ===== -->
                     <div class="ad-carousel-wrapper mb-6">
                         <div class="ad-stars">
                             <span></span><span></span><span></span><span></span><span></span><span></span>
@@ -1615,7 +1609,7 @@
                         </div>
                     </div>
 
-                    <!-- 团队动态轮播（不变） -->
+                    <!-- 团队动态轮播 -->
                     <div class="carousel-container">
                         <button class="carousel-arrow left" id="carouselPrev"><i class="las la-chevron-left"></i></button>
                         <button class="carousel-arrow right" id="carouselNext"><i class="las la-chevron-right"></i></button>
@@ -1630,7 +1624,7 @@
                     <div class="flex justify-center gap-2 mt-5" id="carouselDotsContainer"></div>
                 </div>
 
-                <!-- 里程碑（不变） -->
+                <!-- 里程碑 -->
                 <div class="max-w-5xl mx-auto">
                     <h3 class="text-2xl font-bold text-center mb-6">📆 里程碑 · 我们的故事</h3>
                     <div class="grid md:grid-cols-2 gap-6 bg-secondary p-6">
@@ -1662,53 +1656,67 @@
         <footer class="bg-dark text-white py-8"><div class="container"><div class="grid md:grid-cols-4 gap-5 mb-5"><div><h3 class="text-base font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-xs">实用工具 · 有趣游戏 · 教育文化</p></div><div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link">首页</a></li><li><a href="#about" class="footer-link">关于米遇安</a></li><li><a href="#team" class="footer-link">核心成员</a></li><li><a href="#" onclick="openSection('tools'); return false;" class="footer-link">工具分区</a></li><li><a href="#" onclick="openSection('games'); return false;" class="footer-link">娱乐分区</a></li><li><a href="#" onclick="openSection('education'); return false;" class="footer-link">教育分区</a></li><li><a href="#contact" class="footer-link">联系我们</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">产品系列</h3><ul class="space-y-1 text-xs"><li><a class="footer-link cursor-pointer" onclick="openSection('tools')">工具分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('games')">娱乐分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('education')">教育分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('others')">其他分区</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">联系方式</h3><ul class="space-y-1 text-xs"><li><i class="las la-map-marker-alt w-4"></i> 桂林市第一中学</li><li><i class="las la-phone w-4"></i> +86 152 0773 8425</li><li><i class="las la-envelope w-4"></i> 3493792731@qq.com</li></ul></div></div><div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p>&copy; 2026 米遇安 · 保留所有权利</p><div class="flex justify-center gap-4 mt-1"><a href="#" class="legal-link" onclick="window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); return false;">用户协议</a><a href="#" class="legal-link" onclick="window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); return false;">隐私政策</a></div></div></div></footer>
     </main>
 
-    <!-- 工具分区 -->
+    <!-- ===== 工具分区（调整顺序：HTML 编辑器移至 Markdown 编辑器前） ===== -->
     <div id="toolsSection" class="section-page">
         <div class="section-content p-5 max-w-6xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1>
             <p class="text-center text-gray-600 text-sm mb-6">实用工具 · 高效便捷</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <!-- 米遇安计算器 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-calculator demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安计算器</h3>
                     <p class="text-xs text-gray-500 mb-3">便捷计算，快速完成数学运算。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calculator', '_blank')">打开计算器</button>
                 </div>
+                <!-- 米遇安天气 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-cloud-sun demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安天气</h3>
                     <p class="text-xs text-gray-500 mb-3">实时天气，出行必备。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/weather', '_blank')">查看天气</button>
                 </div>
+                <!-- 米遇安时钟 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-clock demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安时钟</h3>
                     <p class="text-xs text-gray-500 mb-3">精准时间，世界时钟。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/clock', '_blank')">查看时钟</button>
                 </div>
+                <!-- 米遇安日历 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-calendar-alt demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安日历</h3>
                     <p class="text-xs text-gray-500 mb-3">日期管理，日程提醒。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/calendar', '_blank')">打开日历</button>
                 </div>
-                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
-                    <i class="las la-code demo-icon"></i>
-                    <h3 class="text-lg font-bold mb-1">HTML 编辑器</h3>
-                    <p class="text-xs text-gray-500 mb-3">在线编写与预览 HTML 代码。</p>
-                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/html_editor', '_blank')">打开编辑器</button>
-                </div>
+                <!-- 米遇安硕普 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-puzzle-piece demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">米遇安硕普</h3>
                     <p class="text-xs text-gray-500 mb-3">实用小部件，丰富您的页面。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/super', '_blank')">打开小部件</button>
                 </div>
+                <!-- LinguaFlow -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-language demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">LinguaFlow</h3>
                     <p class="text-xs text-gray-500 mb-3">智能翻译，打破语言壁垒。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/linguaflow', '_blank')">打开翻译</button>
+                </div>
+                <!-- HTML 编辑器（已移至 Markdown 前） -->
+                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
+                    <i class="las la-code demo-icon"></i>
+                    <h3 class="text-lg font-bold mb-1">HTML 编辑器</h3>
+                    <p class="text-xs text-gray-500 mb-3">在线编写与预览 HTML 代码。</p>
+                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/html_editor', '_blank')">打开编辑器</button>
+                </div>
+                <!-- Markdown 编辑器 -->
+                <div class="demo-card hover-tint" onmousemove="updateMask(event)">
+                    <i class="las la-edit demo-icon"></i>
+                    <h3 class="text-lg font-bold mb-1">Markdown 编辑器</h3>
+                    <p class="text-xs text-gray-500 mb-3">轻量级 Markdown 编辑，实时预览，高效写作。</p>
+                    <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/markdown_editor', '_blank')">打开编辑器</button>
                 </div>
             </div>
         </div>
@@ -1716,34 +1724,13 @@
 
     <!-- 娱乐分区 -->
     <div id="gamesSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">娱乐分区</h1><p class="text-center text-gray-600 text-sm mb-4">探索精彩娱乐世界</p><div class="series-card hover-tint" onmousemove="updateMask(event)" onclick="toggleGameList('warfareList')"><i class="las la-folder-open series-icon"></i><h2 class="text-lg font-bold">现代战争推演系列</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="las la-chevron-down mt-1 text-primary transition-transform" id="warfareArrow"></i></div><div id="warfareList" class="game-list"><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-gamepad text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演1</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-crosshairs text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演2</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/2', '_blank')">点击试玩</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-rocket text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演3</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-bolt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代冲突</div><button class="btn-disabled text-xs mt-1">请在线下参与</button></div><div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-tachometer-alt text-xl text-primary mb-1"></i><div class="game-name text-sm">现代战争推演4</div><p class="text-xs text-gray-500">最新续作，全新战场</p><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warefare/4', '_blank')">点击试玩</button></div></div>
-        <!-- 棋类游戏合集 -->
         <div class="series-card hover-tint mt-5" onmousemove="updateMask(event)" onclick="toggleGameList('chessList')"><i class="las la-chess-board series-icon"></i><h2 class="text-lg font-bold">棋类游戏合集</h2><p class="text-gray-500 text-xs">点击展开/收起</p><i class="las la-chevron-down mt-1 text-primary transition-transform" id="chessArrow"></i></div>
         <div id="chessList" class="game-list">
-            <div class="game-item hover-tint" onmousemove="updateMask(event)">
-                <i class="las la-chess-board text-xl text-primary mb-1"></i>
-                <div class="game-name text-sm">五子棋游戏</div>
-                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/gomoku', '_blank')">开始对弈</button>
-            </div>
-            <div class="game-item hover-tint" onmousemove="updateMask(event)">
-                <i class="las la-chess text-xl text-primary mb-1"></i>
-                <div class="game-name text-sm">象棋游戏</div>
-                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/chinese', '_blank')">开始对弈</button>
-            </div>
-            <div class="game-item hover-tint" onmousemove="updateMask(event)">
-                <i class="las la-chess text-xl text-primary mb-1"></i>
-                <div class="game-name text-sm">围棋游戏</div>
-                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/go', '_blank')">开始对弈</button>
-            </div>
-            <div class="game-item hover-tint" onmousemove="updateMask(event)">
-                <i class="las la-chess-queen text-xl text-primary mb-1"></i>
-                <div class="game-name text-sm">国际象棋游戏</div>
-                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/usual', '_blank')">开始对弈</button>
-            </div>
-            <div class="game-item hover-tint" onmousemove="updateMask(event)">
-                <i class="las la-flag text-xl text-primary mb-1"></i>
-                <div class="game-name text-sm">陆战棋</div>
-                <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/battleship_game', '_blank')">开始对弈</button>
-            </div>
+            <div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-chess-board text-xl text-primary mb-1"></i><div class="game-name text-sm">五子棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/gomoku', '_blank')">开始对弈</button></div>
+            <div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-chess text-xl text-primary mb-1"></i><div class="game-name text-sm">象棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/chinese', '_blank')">开始对弈</button></div>
+            <div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-chess text-xl text-primary mb-1"></i><div class="game-name text-sm">围棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/go', '_blank')">开始对弈</button></div>
+            <div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-chess-queen text-xl text-primary mb-1"></i><div class="game-name text-sm">国际象棋游戏</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/usual', '_blank')">开始对弈</button></div>
+            <div class="game-item hover-tint" onmousemove="updateMask(event)"><i class="las la-flag text-xl text-primary mb-1"></i><div class="game-name text-sm">陆战棋</div><button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/chess/battleship_game', '_blank')">开始对弈</button></div>
         </div>
         <div class="standalone-game-card hover-tint mt-5" onmousemove="updateMask(event)">
             <div class="flex items-center gap-3 mb-2 w-full justify-center"><i class="las la-umbrella-beach text-3xl text-primary"></i><h2 class="text-lg font-bold">小岛奇兵</h2></div>
@@ -1880,7 +1867,7 @@
         updateCarousel();
         startAutoPlay();
 
-        // ===== 广告轮播（花哨版） =====
+        // ===== 广告轮播 =====
         let adCurrentSlide = 0;
         const adTotalSlides = 2;
         const adTrack = document.getElementById('adCarouselTrack');
