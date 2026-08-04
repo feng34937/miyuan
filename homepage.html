@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>米遇安 · 创新与教育</title>
-    <!-- Tailwind + Line Awesome -->
+    <!-- Tailwind + Line Awesome (备用) -->
     <script src="https://cdn.tailwindcss.com">
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
@@ -70,10 +70,10 @@
         }
     </script>
     <style>
+        /* ===== 基础重置与直角强制 ===== */
         * {
             scroll-behavior: smooth;
         }
-
         .rounded-md,
         .rounded-lg,
         .rounded-xl,
@@ -93,6 +93,7 @@
             border-radius: 9999px !important;
         }
 
+        /* ===== 导航栏 ===== */
         #navbar {
             position: fixed !important;
             top: 0 !important;
@@ -140,6 +141,7 @@
             background-color: #121212;
         }
 
+        /* ===== 移动端侧边栏 ===== */
         .mobile-menu-overlay {
             position: fixed;
             top: 0;
@@ -157,7 +159,6 @@
             opacity: 1;
             visibility: visible;
         }
-
         .mobile-sidebar {
             position: fixed;
             top: 0;
@@ -256,6 +257,7 @@
             display: none !important;
         }
 
+        /* ===== 暗色模式通用 ===== */
         .dark .bg-secondary {
             background-color: #1a1c1e;
         }
@@ -276,6 +278,7 @@
             border-color: #2a2a2a;
         }
 
+        /* ===== 动态渐变文字 ===== */
         .dynamic-gradient-text {
             background: linear-gradient(90deg, #0078D7, #2b88d9, #0078D7, #005a9e, #0078D7);
             background-size: 300% 300%;
@@ -291,6 +294,7 @@
             background-size: 300% 300%;
         }
 
+        /* ===== Hero 标题 ===== */
         .hero-title {
             font-size: 3rem;
             line-height: 1.2;
@@ -315,6 +319,7 @@
             opacity: 0;
         }
 
+        /* ===== 卡片悬停效果 ===== */
         .card-hover {
             transition: all 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             will-change: transform, box-shadow;
@@ -365,6 +370,7 @@
             z-index: 2;
         }
 
+        /* ===== Hero 区域 ===== */
         .hero-section {
             position: relative;
             isolation: isolate;
@@ -390,6 +396,7 @@
             z-index: 2;
         }
 
+        /* ===== 团队动态轮播 ===== */
         .carousel-container {
             position: relative;
             max-width: 760px;
@@ -489,6 +496,7 @@
             background-color: #5aa9e6 !important;
         }
 
+        /* ===== 时间线 ===== */
         .timeline-item {
             position: relative;
             padding-left: 1.6rem;
@@ -512,6 +520,7 @@
             box-shadow: 0 0 8px #0078D7;
         }
 
+        /* ===== 团队成员头像 ===== */
         .team-avatar-wrapper {
             width: 100px;
             height: 100px;
@@ -543,6 +552,7 @@
             transform: scale(1.03) rotate(1deg);
         }
 
+        /* ===== 按钮 ===== */
         .btn-primary {
             background: #0078D7;
             color: white;
@@ -672,6 +682,7 @@
             gap: 12px;
         }
 
+        /* ===== 分区页面（全屏滑入） ===== */
         .section-page {
             position: fixed;
             top: 0;
@@ -738,6 +749,7 @@
             color: #121212;
         }
 
+        /* ===== 游戏系列卡片 ===== */
         .series-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
@@ -848,14 +860,8 @@
         .dark .standalone-game-card .game-badge {
             background: #e67e22;
         }
-        .standalone-game-card .game-badge.premium {
-            background: #f1c40f;
-            color: #2c3e50;
-        }
-        .standalone-game-card .game-badge.cooperation {
-            background: #2ecc71;
-        }
 
+        /* ===== 工具卡片 ===== */
         .demo-card {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(12px);
@@ -888,6 +894,7 @@
             border-color: #5aa9e6;
         }
 
+        /* ===== 搜索 ===== */
         .search-container {
             max-width: 100%;
             margin-top: 1rem;
@@ -934,6 +941,7 @@
             transform: translateY(-1px);
         }
 
+        /* ===== 感谢区域 ===== */
         .thanks-section {
             max-width: 800px;
             margin: 2.5rem auto 0;
@@ -995,6 +1003,7 @@
             color: #9ca3af;
         }
 
+        /* ===== 底部链接 ===== */
         .footer-link,
         .legal-link {
             cursor: pointer;
@@ -1011,6 +1020,7 @@
             color: #5aa9e6 !important;
         }
 
+        /* ===== 模态框 ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -1140,7 +1150,7 @@
             transform: translateY(0);
         }
 
-        /* ===== 花哨广告轮播样式 ===== */
+        /* ===== 广告轮播（花哨版） ===== */
         .ad-carousel-wrapper {
             position: relative;
             overflow: hidden;
@@ -1161,7 +1171,6 @@
             box-shadow: 0 16px 48px rgba(90, 169, 230, 0.2);
         }
 
-        /* 背景光晕 */
         .ad-carousel-wrapper::before {
             content: '';
             position: absolute;
@@ -1208,7 +1217,7 @@
             z-index: 1;
         }
 
-        /* 图标容器带发光效果 */
+        /* 图标容器（适配 Emoji） */
         .ad-icon-wrapper {
             flex-shrink: 0;
             width: 52px;
@@ -1220,6 +1229,8 @@
             border: 1px solid rgba(90, 169, 230, 0.2);
             position: relative;
             transition: all 0.4s ease;
+            font-size: 2rem;
+            line-height: 1;
         }
         .ad-icon-wrapper::after {
             content: '';
@@ -1232,15 +1243,7 @@
         .ad-slide:hover .ad-icon-wrapper::after {
             opacity: 1;
         }
-        .ad-icon-wrapper .ad-icon {
-            font-size: 2rem;
-            color: #5aa9e6;
-        }
-        .dark .ad-icon-wrapper .ad-icon {
-            color: #7bb3e0;
-        }
 
-        /* 文字区域 */
         .ad-text h4 {
             font-size: 1.1rem;
             font-weight: 700;
@@ -1283,7 +1286,7 @@
             color: #0f172a;
         }
 
-        /* 广告按钮 - 更炫 */
+        /* 广告按钮 */
         .ad-action-btn {
             background: linear-gradient(135deg, #0078D7, #005a9e);
             color: white;
@@ -1343,7 +1346,7 @@
             background: linear-gradient(135deg, #fcd34d, #fbbf24);
         }
 
-        /* 广告导航箭头 — 更精致 */
+        /* 广告箭头 */
         .ad-arrow-btn {
             position: absolute;
             top: 50%;
@@ -1383,7 +1386,7 @@
             }
         }
 
-        /* 广告指示点 — 更亮 */
+        /* 广告指示点 */
         .ad-dot {
             width: 10px;
             height: 10px;
@@ -1422,7 +1425,7 @@
             z-index: 15;
         }
 
-        /* 星星装饰（花哨） */
+        /* 星星装饰 */
         .ad-stars {
             position: absolute;
             top: 0;
@@ -1561,23 +1564,20 @@
                         <h3 class="text-2xl font-bold mt-1">团队动态 · 时刻更新</h3>
                     </div>
 
-                    <!-- ===== 花哨广告轮播 ===== -->
+                    <!-- ===== 花哨广告轮播（图标已替换为 Emoji） ===== -->
                     <div class="ad-carousel-wrapper mb-6">
-                        <!-- 星星装饰 -->
                         <div class="ad-stars">
                             <span></span><span></span><span></span><span></span><span></span><span></span>
                         </div>
-
-                        <!-- 左右箭头 -->
                         <button class="ad-arrow-btn left" id="adPrevBtn" aria-label="上一则广告"><i class="las la-chevron-left"></i></button>
                         <button class="ad-arrow-btn right" id="adNextBtn" aria-label="下一则广告"><i class="las la-chevron-right"></i></button>
 
                         <div class="ad-carousel-track" id="adCarouselTrack">
-                            <!-- 幻灯片 1：联合日报 -->
+                            <!-- 广告 1：联合日报 -->
                             <div class="ad-slide">
                                 <div class="ad-slide-content">
                                     <div class="ad-icon-wrapper">
-                                        <i class="las la-newspaper ad-icon"></i>
+                                        <span style="font-size: 2rem; line-height: 1;">📰</span>
                                     </div>
                                     <div class="ad-text">
                                         <h4>联合日报</h4>
@@ -1589,11 +1589,11 @@
                                 </button>
                             </div>
 
-                            <!-- 幻灯片 2：无尽星域（合作组织：艾奥） -->
+                            <!-- 广告 2：无尽星域（合作组织：艾奥） -->
                             <div class="ad-slide">
                                 <div class="ad-slide-content">
                                     <div class="ad-icon-wrapper">
-                                        <i class="las la-rocket ad-icon"></i>
+                                        <span style="font-size: 2rem; line-height: 1;">🚀</span>
                                     </div>
                                     <div class="ad-text">
                                         <h4 class="flex items-center gap-2 flex-wrap">
@@ -1609,14 +1609,13 @@
                             </div>
                         </div>
 
-                        <!-- 指示点 -->
                         <div class="ad-carousel-dots" id="adCarouselDots">
                             <span class="ad-dot active" data-index="0"></span>
                             <span class="ad-dot" data-index="1"></span>
                         </div>
                     </div>
 
-                    <!-- 团队动态轮播 -->
+                    <!-- 团队动态轮播（不变） -->
                     <div class="carousel-container">
                         <button class="carousel-arrow left" id="carouselPrev"><i class="las la-chevron-left"></i></button>
                         <button class="carousel-arrow right" id="carouselNext"><i class="las la-chevron-right"></i></button>
@@ -1631,6 +1630,7 @@
                     <div class="flex justify-center gap-2 mt-5" id="carouselDotsContainer"></div>
                 </div>
 
+                <!-- 里程碑（不变） -->
                 <div class="max-w-5xl mx-auto">
                     <h3 class="text-2xl font-bold text-center mb-6">📆 里程碑 · 我们的故事</h3>
                     <div class="grid md:grid-cols-2 gap-6 bg-secondary p-6">
@@ -1925,13 +1925,11 @@
             }
         }
 
-        // 箭头事件
         document.getElementById('adPrevBtn')?.addEventListener('click', () => { prevAdSlide();
             resetAdAutoPlay(); });
         document.getElementById('adNextBtn')?.addEventListener('click', () => { nextAdSlide();
             resetAdAutoPlay(); });
 
-        // 指示点点击
         adDots.forEach((dot) => {
             dot.addEventListener('click', function() {
                 const index = parseInt(this.dataset.index);
@@ -1939,7 +1937,6 @@
             });
         });
 
-        // 悬停暂停
         const adContainer = document.querySelector('.ad-carousel-wrapper');
         if (adContainer) {
             adContainer.addEventListener('mouseenter', () => {
@@ -2017,7 +2014,6 @@
         }, { threshold: 0.1 });
         animateElements.forEach(el => observer.observe(el));
 
-        // 关闭模态框
         function closeModal(e) {
             if (e && e.target !== document.getElementById('legalModal') && !e.target.classList?.contains('modal-close') && !e
                 .target.closest?.('.modal-footer button')) {
