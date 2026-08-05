@@ -613,6 +613,16 @@
             border-color: rgba(255, 255, 255, 0.06);
         }
 
+        /* 贪吃蛇游戏 */
+        .snake-canvas {
+            background: rgba(0, 0, 0, 0.08);
+            display: block;
+            margin: 0 auto;
+        }
+        .dark .snake-canvas {
+            background: rgba(0, 0, 0, 0.25);
+        }
+
         /* 响应式 */
         @media (max-width: 768px) {
             body {
@@ -639,6 +649,10 @@
             .brand-title {
                 font-size: 1rem;
             }
+            .snake-canvas {
+                width: 100%;
+                height: auto;
+            }
         }
     </style>
 </head>
@@ -655,7 +669,7 @@
                 <button onclick="openWidgetModal()" class="btn-primary text-xs md:text-sm py-2 px-3 md:px-4 shadow-md">
                     <i class="las la-plus"></i> <span class="hidden sm:inline">添加小部件</span>
                 </button>
-                <!-- 深色模式按钮移到最右边 -->
+                <!-- 深色模式按钮在最右边 -->
                 <button id="darkToggle" class="w-9 h-9 flex items-center justify-center border border-gray-300/60 dark:border-gray-600/60 bg-white/50 dark:bg-dark-card/50 backdrop-blur-md cursor-pointer transition-all duration-200 hover:border-primary hover:shadow-md" title="切换主题">
                     <i id="darkIcon" class="las la-moon text-primary text-lg"></i>
                 </button>
@@ -740,6 +754,9 @@
                 </div>
                 <div class="p-3 border border-gray-200/60 dark:border-gray-700/40 bg-white/40 dark:bg-dark-card/40 cursor-pointer hover:bg-primary/8 hover:border-primary/30 transition-all flex items-center gap-3 font-medium text-sm" onclick="addWidget('news')">
                     <i class="las la-newspaper text-primary text-xl"></i> <span>联合日报 · 新闻</span>
+                </div>
+                <div class="p-3 border border-gray-200/60 dark:border-gray-700/40 bg-white/40 dark:bg-dark-card/40 cursor-pointer hover:bg-primary/8 hover:border-primary/30 transition-all flex items-center gap-3 font-medium text-sm" onclick="addWidget('snake')">
+                    <i class="las la-gamepad text-primary text-xl"></i> <span>贪吃蛇 · 经典游戏</span>
                 </div>
             </div>
         </div>
@@ -864,6 +881,14 @@
 
             function removeWidget(type, card) {
                 state.activeWidgets.delete(type);
+                // 清理贪吃蛇游戏
+                if (type === 'snake') {
+                    const gameData = card._snakeGame;
+                    if (gameData) {
+                        clearInterval(gameData.interval);
+                        window.removeEventListener('keydown', gameData.keyHandler);
+                    }
+                }
                 card.style.opacity = '0';
                 card.style.transform = 'scale(0.9)';
                 card.style.transition = '0.3s ease';
@@ -972,6 +997,22 @@
                             <i class="las la-rss text-primary"></i> 多源RSS聚合 · 实时网络资讯
                         </p>
                     </div>`;
+                } else if (type === 'snake') {
+                    html = `
+                    <div class="glass-card hover-tint p-5 animate-scaleIn" id="${id}" data-widget="snake" onmousemove="updateMask(event)" style="animation-delay:0s;">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-semibold text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-primary rounded-full"></span><i class="las la-gamepad text-primary"></i> 贪吃蛇
+                            </span>
+                            <button onclick="removeWidget('snake',this.closest('.glass-card'))" class="text-gray-400 hover:text-red-500 text-lg cursor-pointer bg-transparent border-none p-0 leading-none transition-colors"><i class="las la-times"></i></button>
+                        </div>
+                        <div class="flex justify-center items-center gap-4 mb-3">
+                            <span class="text-sm font-medium">得分: <span id="snake-score-${id}">0</span></span>
+                            <button id="snake-restart-${id}" class="btn-outline text-xs py-1 px-3">重新开始</button>
+                        </div>
+                        <canvas id="snake-canvas-${id}" class="snake-canvas" width="400" height="400"></canvas>
+                        <p class="text-[0.68rem] text-gray-400 text-center mt-2">使用方向键控制移动</p>
+                    </div>`;
                 }
 
                 if (html) {
@@ -985,8 +1026,194 @@
                     if (type === 'translator') initTranslator(id);
                     if (type === 'news') { initNewsCard(id);
                         loadNewsData(id); }
+                    if (type === 'snake') initSnakeGame(id, card);
                     if (type === 'news' && window.innerWidth <= 768) card.style.gridColumn = 'span 1';
                 }
+            }
+
+            // ========== 贪吃蛇游戏 ==========
+            function initSnakeGame(cardId, cardElement) {
+                const canvas = document.getElementById(`snake-canvas-${cardId}`);
+                const ctx = canvas.getContext('2d');
+                const scoreSpan = document.getElementById(`snake-score-${cardId}`);
+                const restartBtn = document.getElementById(`snake-restart-${cardId}`);
+
+                // 游戏配置
+                const gridSize = 20;
+                const tileCount = canvas.width / gridSize; // 20
+
+                let snake = [
+                    { x: 10, y: 10 }
+                ];
+                let food = {};
+                let direction = { x: 1, y: 0 };
+                let nextDirection = { x: 1, y: 0 };
+                let score = 0;
+                let gameOver = false;
+                let gameInterval = null;
+
+                function randomFood() {
+                    const max = tileCount - 1;
+                    let fx, fy;
+                    do {
+                        fx = Math.floor(Math.random() * max);
+                        fy = Math.floor(Math.random() * max);
+                    } while (snake.some(seg => seg.x === fx && seg.y === fy));
+                    return { x: fx, y: fy };
+                }
+
+                function drawGame() {
+                    // 清空画布
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // 绘制网格线
+                    ctx.strokeStyle = document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+                    for (let i = 0; i < tileCount; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(i * gridSize, 0);
+                        ctx.lineTo(i * gridSize, canvas.height);
+                        ctx.stroke();
+                        ctx.moveTo(0, i * gridSize);
+                        ctx.lineTo(canvas.width, i * gridSize);
+                        ctx.stroke();
+                    }
+
+                    // 绘制食物
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.fillRect(food.x * gridSize + 2, food.y * gridSize + 2, gridSize - 4, gridSize - 4);
+
+                    // 绘制蛇
+                    for (let i = 0; i < snake.length; i++) {
+                        const segment = snake[i];
+                        const isHead = i === 0;
+                        ctx.fillStyle = isHead ? '#0078D7' : '#5aa9e6';
+                        ctx.fillRect(segment.x * gridSize + 1, segment.y * gridSize + 1, gridSize - 2, gridSize - 2);
+                    }
+
+                    // 游戏结束显示
+                    if (gameOver) {
+                        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.font = 'bold 28px Inter, sans-serif';
+                        ctx.fillStyle = '#fff';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('游戏结束', canvas.width / 2, canvas.height / 2);
+                        ctx.font = '16px Inter, sans-serif';
+                        ctx.fillText('点击"重新开始"继续', canvas.width / 2, canvas.height / 2 + 40);
+                    }
+                }
+
+                function moveSnake() {
+                    if (gameOver) return;
+
+                    // 应用方向
+                    direction = { ...nextDirection };
+
+                    // 计算新头部
+                    const head = snake[0];
+                    const newHead = {
+                        x: head.x + direction.x,
+                        y: head.y + direction.y
+                    };
+
+                    // 撞墙检测
+                    if (newHead.x < 0 || newHead.x >= tileCount || newHead.y < 0 || newHead.y >= tileCount) {
+                        gameOver = true;
+                        clearInterval(gameInterval);
+                        drawGame();
+                        return;
+                    }
+
+                    // 撞自己检测
+                    if (snake.some(seg => seg.x === newHead.x && seg.y === newHead.y)) {
+                        gameOver = true;
+                        clearInterval(gameInterval);
+                        drawGame();
+                        return;
+                    }
+
+                    // 添加新头部
+                    snake.unshift(newHead);
+
+                    // 判断是否吃到食物
+                    if (newHead.x === food.x && newHead.y === food.y) {
+                        score++;
+                        scoreSpan.textContent = score;
+                        food = randomFood();
+                    } else {
+                        snake.pop();
+                    }
+
+                    drawGame();
+                }
+
+                function startGame() {
+                    // 清除旧的循环
+                    if (gameInterval) clearInterval(gameInterval);
+                    // 重置状态
+                    snake = [{ x: 10, y: 10 }];
+                    direction = { x: 1, y: 0 };
+                    nextDirection = { x: 1, y: 0 };
+                    score = 0;
+                    gameOver = false;
+                    scoreSpan.textContent = '0';
+                    food = randomFood();
+                    drawGame();
+                    // 开始循环
+                    gameInterval = setInterval(moveSnake, 130);
+                }
+
+                function handleKey(e) {
+                    const key = e.key;
+                    // 阻止箭头键默认滚动行为
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(key)) {
+                        e.preventDefault();
+                    }
+                    // 根据当前方向设置新方向，禁止反向
+                    if (gameOver) return;
+                    switch (key) {
+                        case 'ArrowUp':
+                        case 'w':
+                        case 'W':
+                            if (direction.y === 0) nextDirection = { x: 0, y: -1 };
+                            break;
+                        case 'ArrowDown':
+                        case 's':
+                        case 'S':
+                            if (direction.y === 0) nextDirection = { x: 0, y: 1 };
+                            break;
+                        case 'ArrowLeft':
+                        case 'a':
+                        case 'A':
+                            if (direction.x === 0) nextDirection = { x: -1, y: 0 };
+                            break;
+                        case 'ArrowRight':
+                        case 'd':
+                        case 'D':
+                            if (direction.x === 0) nextDirection = { x: 1, y: 0 };
+                            break;
+                    }
+                }
+
+                // 绑定事件
+                window.addEventListener('keydown', handleKey);
+                restartBtn.addEventListener('click', startGame);
+
+                // 存储游戏数据到卡片，以便移除时清理
+                cardElement._snakeGame = {
+                    interval: gameInterval,
+                    keyHandler: handleKey
+                };
+
+                // 初始启动
+                startGame();
+
+                // 更新 interval 引用
+                const origStart = startGame;
+                startGame = function() {
+                    origStart();
+                    cardElement._snakeGame.interval = gameInterval;
+                };
             }
 
             // ========== 计算器 ==========
@@ -1319,11 +1546,12 @@
             getUserLocation();
             window.refreshWeather = refreshWeather;
 
-            // ========== 深色模式 ==========
-            function setThemeFromSystem() {
+            // ========== 深色模式 - 自动跟随系统 ==========
+            function setThemeFromSystem(e) {
                 const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 document.documentElement.classList.toggle('dark', isDark);
                 updateDarkIcon(isDark);
+                localStorage.setItem('darkMode', isDark ? 'dark' : 'light');
             }
 
             function updateDarkIcon(dark) {
@@ -1331,17 +1559,26 @@
                 if (icon) icon.className = dark ? 'las la-sun text-primary text-lg' :
                     'las la-moon text-primary text-lg';
             }
+
+            const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            darkModeMediaQuery.addEventListener('change', (e) => {
+                setThemeFromSystem(e);
+            });
+
             const savedDark = localStorage.getItem('darkMode');
-            if (savedDark !== null) {
-                const isDark = savedDark === 'true';
+            if (savedDark === 'dark' || savedDark === 'light') {
+                const isDark = savedDark === 'dark';
                 document.documentElement.classList.toggle('dark', isDark);
                 updateDarkIcon(isDark);
-            } else setThemeFromSystem();
+            } else {
+                setThemeFromSystem();
+            }
+
             document.getElementById('darkToggle').addEventListener('click', () => {
                 const isDark = !document.documentElement.classList.contains('dark');
                 document.documentElement.classList.toggle('dark', isDark);
                 updateDarkIcon(isDark);
-                localStorage.setItem('darkMode', isDark);
+                localStorage.setItem('darkMode', isDark ? 'dark' : 'light');
             });
 
             // ========== 导航滚动 ==========
@@ -1363,7 +1600,7 @@
             // 暴露全局
             window.addWidget = addWidget;
             window.removeWidget = removeWidget;
-            console.log('🚀 米遇安硕普 · 个人仪表板已就绪 | 新闻数据来自联合日报RSS聚合');
+            console.log('🚀 米遇安硕普 · 个人仪表板已就绪 | 新增贪吃蛇游戏');
         })();
     </script>
 </body>
