@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.0, viewport-fit=cover">
+    <title>米遇安硕普 · 个人仪表板</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0078D7',
+                        'primary-dark': '#005a9e',
+                        'primary-light': '#5aa9e6',
+                        'primary-glow': 'rgba(0,120,215,0.35)',
+                        dark: '#212529',
+                        'dark-bg': '#121212',
+                        'dark-card': '#1e1f22',
+                        'surface': '#f8fafc',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        DEFAULT: '0px',
+                        none: '0px',
+                        sm: '0px',
+                        md: '0px',
+                        lg: '0px',
+                        xl: '0px',
+                        '2xl': '0px',
+                        full: '9999px',
+                    },
+                    animation: {
+                        'float': 'float 5s ease-in-out infinite',
+                        'float-slow': 'float 7s ease-in-out infinite',
+                        'fadeInUp': 'fadeInUp 0.55s cubic-bezier(0.2,0.9,0.3,1) forwards',
+                        'scaleIn': 'scaleIn 0.4s cubic-bezier(0.2,0.9,0.3,1) forwards',
+                        'slideInRight': 'slideInRight 0.35s cubic-bezier(0.2,0.9,0.4,1) forwards',
+                        'gentleBounce': 'gentleBounce 0.3s cubic-bezier(0.2,0.9,0.4,1)',
+                        'gradientShift': 'gradientShift 10s ease infinite',
+                        'spin': 'spin 0.8s linear infinite',
+                        'pulse-glow': 'pulseGlow 2.5s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%,100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(24px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.94)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
+                        gentleBounce: {
+                            '0%,100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-4px)' },
+                        },
+                        gradientShift: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        spin: { to: { transform: 'rotate(360deg)' } },
+                        pulseGlow: {
+                            '0%,100%': { boxShadow: '0 0 8px rgba(0,120,215,0.2)' },
+                            '50%': { boxShadow: '0 0 22px rgba(0,120,215,0.45)' },
+                        },
+                        shimmer: {
+                            '0%': { opacity: '0.5' },
+                            '50%': { opacity: '0.8' },
+                            '100%': { opacity: '0.5' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        * {
+            scroll-behavior: smooth;
+        }
+
+        /* 强制直角（保留圆形头像等） */
+        .rounded-md,
+        .rounded-lg,
+        .rounded-xl,
+        .rounded-2xl,
+        .rounded,
+        button,
+        [class*="rounded-"]:not(.rounded-full):not(.team-avatar-wrapper):not(.team-avatar):not(.carousel-dot):not(.btn-pill) {
+            border-radius: 0px !important;
+        }
+        .rounded-full,
+        .team-avatar-wrapper,
+        .team-avatar,
+        .carousel-dot,
+        .timeline-item::before,
+        .btn-pill {
+            border-radius: 9999px !important;
+        }
+
+        body {
+            margin: 0;
+            padding-top: 82px !important;
+            background-color: #f1f5f9;
+            transition: background-color 0.4s ease;
+            font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .dark body {
+            background-color: #0f1117;
+        }
+
+        /* 背景装饰光斑 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            left: -150px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 120, 215, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.5s;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -180px;
+            right: -120px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 120, 215, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.5s;
+        }
+        .dark body::before {
+            background: radial-gradient(circle, rgba(90, 169, 230, 0.08) 0%, transparent 70%);
+        }
+        .dark body::after {
+            background: radial-gradient(circle, rgba(90, 169, 230, 0.06) 0%, transparent 70%);
+        }
+
+        /* 导航栏 */
+        #top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.68);
+            backdrop-filter: blur(22px) saturate(180%);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.35);
+            z-index: 9999;
+            padding: 11px 0;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .dark #top-nav {
+            background: rgba(16, 18, 24, 0.82);
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+        }
+        #top-nav.scrolled {
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 4px 28px rgba(0, 0, 0, 0.07);
+            padding: 7px 0;
+        }
+        .dark #top-nav.scrolled {
+            background: rgba(16, 18, 24, 0.94);
+            box-shadow: 0 4px 28px rgba(0, 0, 0, 0.22);
+        }
+
+        /* 品牌标题 */
+        .brand-title {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0078D7 0%, #3b9ae1 50%, #0078D7 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 10s ease infinite;
+            font-size: 1.2rem;
+        }
+        .dark .brand-title {
+            background: linear-gradient(135deg, #5aa9e6 0%, #8cc8f8 50%, #5aa9e6 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        /* 玻璃卡片 */
+        .glass-card {
+            transition: all 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            will-change: transform, box-shadow;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 0.5px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
+        }
+        .dark .glass-card {
+            background: rgba(24, 26, 32, 0.78);
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 22px 38px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 120, 215, 0.22) !important;
+            background: rgba(255, 255, 255, 0.84);
+        }
+        .dark .glass-card:hover {
+            background: rgba(32, 35, 42, 0.9);
+            box-shadow: 0 22px 38px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(90, 169, 230, 0.28) !important;
+        }
+
+        /* 鼠标跟随光晕 - 始终显示 */
+        .hover-tint {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+        }
+        .hover-tint::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 120, 215, 0.2) 0%, rgba(0, 120, 215, 0.05) 40%, transparent 72%);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+            border-radius: inherit;
+        }
+        .dark .hover-tint::before {
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(90, 169, 230, 0.28) 0%, rgba(90, 169, 230, 0.08) 40%, transparent 72%);
+        }
+        .hover-tint:hover::before {
+            opacity: 1;
+        }
+        .hover-tint>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 搜索按钮 */
+        .search-btn-primary {
+            background: #0078D7;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0, 120, 215, 0.3);
+        }
+        .search-btn-primary:hover {
+            background: #005a9e;
+            transform: scale(1.05);
+            box-shadow: 0 6px 22px rgba(0, 120, 215, 0.45);
+        }
+        .dark .search-btn-primary {
+            background: #5aa9e6;
+            color: #121212;
+            box-shadow: 0 4px 14px rgba(90, 169, 230, 0.3);
+        }
+        .dark .search-btn-primary:hover {
+            background: #7bb3e0;
+            box-shadow: 0 6px 22px rgba(90, 169, 230, 0.45);
+        }
+
+        /* 搜索引擎按钮 */
+        .se-btn {
+            padding: 7px 15px;
+            border: 1.5px solid rgba(0, 0, 0, 0.07);
+            background: rgba(255, 255, 255, 0.45);
+            color: #374151;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.22s ease;
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+        }
+        .dark .se-btn {
+            border-color: rgba(255, 255, 255, 0.08);
+            background: rgba(30, 31, 34, 0.45);
+            color: #cbd5e1;
+        }
+        .se-btn:hover {
+            background: rgba(0, 120, 215, 0.1);
+            border-color: rgba(0, 120, 215, 0.35);
+            color: #0078D7;
+        }
+        .se-btn.active {
+            background: #0078D7;
+            border-color: #0078D7;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 3px 14px rgba(0, 120, 215, 0.35);
+        }
+        .dark .se-btn.active {
+            background: #5aa9e6;
+            border-color: #5aa9e6;
+            color: #121212;
+            box-shadow: 0 3px 14px rgba(90, 169, 230, 0.4);
+        }
+
+        /* 输入框 */
+        .input-glass {
+            padding: 12px 18px;
+            border: 1.5px solid rgba(0, 0, 0, 0.07);
+            background: rgba(255, 255, 255, 0.45);
+            color: #1f2937;
+            font-size: 0.93rem;
+            outline: none;
+            transition: all 0.25s ease;
+            letter-spacing: 0.01em;
+            width: 100%;
+        }
+        .dark .input-glass {
+            border-color: rgba(255, 255, 255, 0.08);
+            background: rgba(20, 22, 27, 0.45);
+            color: #f1f5f9;
+        }
+        .input-glass:focus {
+            border-color: #0078D7;
+            box-shadow: 0 0 0 4px rgba(0, 120, 215, 0.1);
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .dark .input-glass:focus {
+            border-color: #5aa9e6;
+            box-shadow: 0 0 0 4px rgba(90, 169, 230, 0.14);
+            background: rgba(30, 31, 34, 0.65);
+        }
+
+        /* 主按钮 */
+        .btn-primary {
+            background: #0078D7;
+            color: white;
+            padding: 0.55rem 1.3rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0, 120, 215, 0.25);
+            letter-spacing: 0.01em;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.45s, height 0.45s;
+        }
+        .btn-primary:active::after {
+            width: 220px;
+            height: 220px;
+        }
+        .btn-primary:hover {
+            background: #005a9e;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0, 120, 215, 0.4);
+        }
+        .dark .btn-primary {
+            background: #5aa9e6;
+            color: #121212;
+            box-shadow: 0 4px 14px rgba(90, 169, 230, 0.25);
+        }
+        .dark .btn-primary:hover {
+            background: #7bb3e0;
+            box-shadow: 0 8px 22px rgba(90, 169, 230, 0.4);
+        }
+
+        /* 次级按钮 */
+        .btn-outline {
+            border: 1.5px solid #0078D7;
+            color: #0078D7;
+            padding: 0.5rem 1.2rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            background: transparent;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.01em;
+        }
+        .btn-outline:hover {
+            background: rgba(0, 120, 215, 0.08);
+            transform: translateY(-2px);
+        }
+        .dark .btn-outline {
+            border-color: #5aa9e6;
+            color: #5aa9e6;
+        }
+        .dark .btn-outline:hover {
+            background: rgba(90, 169, 230, 0.14);
+        }
+
+        /* 计算器按钮 */
+        .calc-btn-custom {
+            padding: 10px 4px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.4);
+            color: #1f2937;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.18s ease;
+            user-select: none;
+            letter-spacing: 0.02em;
+        }
+        .dark .calc-btn-custom {
+            border-color: rgba(255, 255, 255, 0.05);
+            background: rgba(30, 31, 34, 0.5);
+            color: #e2e8f0;
+        }
+        .calc-btn-custom:hover {
+            background: rgba(0, 120, 215, 0.12);
+            border-color: rgba(0, 120, 215, 0.25);
+            transform: scale(1.03);
+        }
+        .calc-btn-custom:active {
+            transform: scale(0.93);
+            background: rgba(0, 120, 215, 0.2);
+        }
+        .calc-btn-custom.text-primary {
+            color: #0078D7;
+            font-weight: 600;
+        }
+        .dark .calc-btn-custom.text-primary {
+            color: #5aa9e6;
+        }
+
+        /* 新闻分类按钮 */
+        .news-cat-btn {
+            padding: 6px 13px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.35);
+            color: #4b5563;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+        }
+        .dark .news-cat-btn {
+            border-color: rgba(255, 255, 255, 0.06);
+            background: rgba(30, 31, 34, 0.4);
+            color: #9ca3af;
+        }
+        .news-cat-btn:hover {
+            background: rgba(0, 120, 215, 0.08);
+            border-color: rgba(0, 120, 215, 0.2);
+            color: #0078D7;
+        }
+        .news-cat-btn.active-cat {
+            background: #0078D7;
+            border-color: #0078D7;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0, 120, 215, 0.3);
+        }
+        .dark .news-cat-btn.active-cat {
+            background: #5aa9e6;
+            border-color: #5aa9e6;
+            color: #121212;
+        }
+
+        /* 新闻列表项 */
+        .news-item-card {
+            transition: all 0.22s ease;
+            background: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+        }
+        .dark .news-item-card {
+            background: rgba(20, 22, 27, 0.4);
+            border-color: rgba(255, 255, 255, 0.04);
+        }
+        .news-item-card:hover {
+            background: rgba(0, 120, 215, 0.07);
+            border-color: rgba(0, 120, 215, 0.2);
+            transform: translateX(3px);
+        }
+        .dark .news-item-card:hover {
+            background: rgba(90, 169, 230, 0.1);
+            border-color: rgba(90, 169, 230, 0.25);
+        }
+
+        /* 天气图标 */
+        .weather-icon-large {
+            font-size: 3rem;
+            color: #0078D7;
+            animation: float 5s ease-in-out infinite;
+            filter: drop-shadow(0 4px 12px rgba(0, 120, 215, 0.2));
+        }
+        .dark .weather-icon-large {
+            color: #5aa9e6;
+            filter: drop-shadow(0 4px 12px rgba(90, 169, 230, 0.3));
+        }
+
+        /* 滚动条 */
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .dark .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Toast */
+        .toast-msg {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(24, 26, 32, 0.92);
+            color: #fff;
+            padding: 10px 24px;
+            z-index: 99999;
+            font-size: 0.84rem;
+            letter-spacing: 0.01em;
+            animation: toastIn 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), toastOut 0.4s ease 1.7s forwards;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+        }
+        @keyframes toastIn {
+            from {
+                transform: translateX(-50%) translateY(28px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes toastOut {
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-12px);
+            }
+        }
+
+        /* 模态 */
+        .modal-overlay-custom {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInOverlay 0.25s ease;
+            backdrop-filter: blur(2px);
+        }
+        @keyframes fadeInOverlay {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .modal-custom {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            max-width: 440px;
+            width: 90%;
+            padding: 24px;
+            box-shadow: 0 24px 56px rgba(0, 0, 0, 0.2);
+            animation: scaleIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+        }
+        .dark .modal-custom {
+            background: rgba(30, 32, 38, 0.9);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        /* 贪吃蛇游戏 */
+        .snake-canvas {
+            background: rgba(0, 0, 0, 0.08);
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+            touch-action: none;
+            /* 禁止默认触摸行为 */;
+        }
+        .dark .snake-canvas {
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 68px !important;
+            }
+            .weather-icon-large {
+                font-size: 2.2rem;
+            }
+            .input-glass {
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+            .se-btn {
+                padding: 5px 10px;
+                font-size: 0.7rem;
+            }
+            .calc-btn-custom {
+                padding: 8px 3px;
+                font-size: 0.78rem;
+            }
+            #top-nav {
+                padding: 8px 0;
+            }
+            .brand-title {
+                font-size: 1rem;
+            }
+        }
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6b7280;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            letter-spacing: 0.03em;
+        }
+        .dark footer {
+            color: #9ca3af;
+            border-top-color: rgba(255,255,255,0.06);
+        }
+    </style>
+</head>
+<body class="font-inter text-dark antialiased relative z-10">
+
+    <!-- 顶部导航 -->
+    <nav id="top-nav" class="transition-all">
+        <div class="max-w-[1400px] mx-auto px-5 md:px-7 flex justify-between items-center">
+            <span class="brand-title text-lg md:text-xl cursor-default select-none">米遇安硕普</span>
+            <div class="flex items-center gap-2 md:gap-3">
+                <button onclick="refreshWeather()" class="btn-outline text-xs md:text-sm py-1.5 px-3 md:px-4" title="刷新天气">
+                    <i class="las la-sync-alt"></i> <span class="hidden sm:inline">刷新天气</span>
+                </button>
+                <button onclick="openWidgetModal()" class="btn-primary text-xs md:text-sm py-2 px-3 md:px-4 shadow-md">
+                    <i class="las la-plus"></i> <span class="hidden sm:inline">添加小部件</span>
+                </button>
+                <!-- 深色模式按钮在最右边 -->
+                <button id="darkToggle" class="w-9 h-9 flex items-center justify-center border border-gray-300/60 dark:border-gray-600/60 bg-white/50 dark:bg-dark-card/50 backdrop-blur-md cursor-pointer transition-all duration-200 hover:border-primary hover:shadow-md" title="切换主题">
+                    <i id="darkIcon" class="las la-moon text-primary text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主仪表板 -->
+    <main class="max-w-[1400px] mx-auto px-4 md:px-6 pt-4 pb-12 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="dashboard">
+            <!-- 搜索卡片 (跨2列) -->
+            <div class="glass-card hover-tint p-5 md:p-6 md:col-span-2 lg:col-span-2 animate-fadeInUp" id="card-search" data-widget="search" onmousemove="updateMask(event)" style="animation-delay: 0s;">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="w-2.5 h-2.5 bg-primary rounded-full animate-pulse-glow"></span>
+                    <span class="font-semibold text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                        <i class="las la-search text-primary"></i> 搜索
+                    </span>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-3" id="engine-selector">
+                    <button class="se-btn active" data-engine="google"><i class="lab la-google mr-1"></i>Google</button>
+                    <button class="se-btn" data-engine="bing"><i class="las la-search mr-1"></i>Bing</button>
+                    <button class="se-btn" data-engine="baidu">百度</button>
+                    <button class="se-btn" data-engine="360">360</button>
+                    <button class="se-btn" data-engine="sogou">搜狗</button>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <input type="text" class="input-glass flex-1" id="search-input" placeholder="输入搜索内容..." autocomplete="off">
+                    <button class="search-btn-primary w-11 h-11 text-lg flex-shrink-0" id="search-btn" title="搜索">
+                        <i class="las la-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 天气卡片 -->
+            <div class="glass-card hover-tint p-5 md:p-6 animate-fadeInUp" id="card-weather" data-widget="weather" onmousemove="updateMask(event)" style="animation-delay: 0.1s;">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="w-2.5 h-2.5 bg-primary rounded-full animate-pulse-glow"></span>
+                    <span class="font-semibold text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                        <i class="las la-calendar-alt text-primary"></i> 时间与天气
+                    </span>
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1" id="datetime-display">
+                    <span class="text-2xl font-bold text-gray-800 dark:text-gray-100" id="live-time">--:--:--</span><br>
+                    <span id="live-date">----年--月--日 星期-</span>
+                </div>
+                <div class="text-xs text-gray-400 dark:text-gray-500 mb-2 flex items-center gap-1" id="city-name">
+                    <i class="las la-map-marker-alt text-primary"></i> 定位中...
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="weather-icon-large las la-cloud-sun" id="weather-icon"></i>
+                    <div>
+                        <div class="text-3xl font-bold text-gray-800 dark:text-gray-100" id="weather-temp">--°C</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400" id="weather-desc">加载中...</div>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-3 text-xs text-gray-500 dark:text-gray-400">
+                    <span><i class="las la-wind text-primary mr-1"></i>风速: <strong id="weather-wind">-- km/h</strong></span>
+                    <span><i class="las la-tint text-primary mr-1"></i>湿度: <strong id="weather-humidity">--%</strong></span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 版权信息 -->
+    <footer>
+        <span>&copy; 2026 米遇安</span>
+    </footer>
+
+    <!-- 添加小部件弹窗 -->
+    <div id="widget-modal" class="modal-overlay-custom hidden" onclick="if(event.target===this)closeWidgetModal()">
+        <div class="modal-custom">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-primary flex items-center gap-2">
+                    <i class="las la-puzzle-piece"></i> 添加小部件
+                </h3>
+                <button onclick="closeWidgetModal()" class="text-gray-400 hover:text-primary text-xl leading-none cursor-pointer transition-colors">
+                    <i class="las la-times"></i>
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 mb-3">选择要添加到仪表板的小部件：</p>
+            <div class="space-y-2">
+                <div class="p-3 border border-gray-200/60 dark:border-gray-700/40 bg-white/40 dark:bg-dark-card/40 cursor-pointer hover:bg-primary/8 hover:border-primary/30 transition-all flex items-center gap-3 font-medium text-sm" onclick="addWidget('calculator')">
+                    <i class="las la-calculator text-primary text-xl"></i> <span>计算器</span>
+                </div>
+                <div class="p-3 border border-gray-200/60 dark:border-gray-700/40 bg-white/40 dark:bg-dark-card/40 cursor-pointer hover:bg-primary/8 hover:border-primary/30 transition-all flex items-center gap-3 font-medium text-sm" onclick="addWidget('translator')">
+                    <i class="las la-language text-primary text-xl"></i> <span>翻译器</span>
+                </div>
+                <div class="p-3 border border-gray-200/60 dark:border-gray-700/40 bg-white/40 dark:bg-dark-card/40 cursor-pointer hover:bg-primary/8 hover:border-primary/30 transition-all flex items-center gap-3 font-medium text-sm" onclick="addWidget('news')">
+                    <i class="las la-newspaper text-primary text-xl"></i> <span>联合日报 · 新闻</span>
+                </div>
+                <div class="p-3 border border-gray-200/60 dark:border-gray-700/40 bg-white/40 dark:bg-dark-card/40 cursor-pointer hover:bg-primary/8 hover:border-primary/30 transition-all flex items-center gap-3 font-medium text-sm" onclick="addWidget('snake')">
+                    <i class="las la-gamepad text-primary text-xl"></i> <span>贪吃蛇 · 经典游戏</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ========== 状态管理 ==========
+            const state = {
+                currentEngine: 'google',
+                activeWidgets: new Set(['search', 'weather']),
+                newsApiKey: localStorage.getItem('newsApiKey') || '',
+                lat: null,
+                lon: null,
+                cityName: '未知城市',
+                allNewsItems: [],
+                newsCategory: 'all',
+            };
+
+            const engines = {
+                google: { url: 'https://www.google.com/search?q=' },
+                bing: { url: 'https://www.bing.com/search?q=' },
+                baidu: { url: 'https://www.baidu.com/s?wd=' },
+                '360': { url: 'https://www.so.com/s?q=' },
+                sogou: { url: 'https://www.sogou.com/web?query=' },
+            };
+
+            // WMO天气代码 → las图标映射
+            const wmoIconMap = {
+                0: 'las la-sun',
+                1: 'las la-sun',
+                2: 'las la-cloud-sun',
+                3: 'las la-cloud',
+                45: 'las la-smog',
+                48: 'las la-smog',
+                51: 'las la-cloud-rain',
+                53: 'las la-cloud-rain',
+                55: 'las la-cloud-showers-heavy',
+                61: 'las la-cloud-rain',
+                63: 'las la-cloud-showers-heavy',
+                65: 'las la-cloud-showers-heavy',
+                71: 'las la-snowflake',
+                73: 'las la-snowflake',
+                75: 'las la-snowflake',
+                77: 'las la-snowflake',
+                80: 'las la-cloud-sun-rain',
+                81: 'las la-cloud-showers-heavy',
+                82: 'las la-cloud-showers-heavy',
+                85: 'las la-snowflake',
+                86: 'las la-snowflake',
+                95: 'las la-bolt',
+                96: 'las la-bolt',
+                99: 'las la-bolt',
+            };
+            const wmoDescMap = {
+                0: '晴天',
+                1: '大部晴朗',
+                2: '部分多云',
+                3: '多云',
+                45: '雾',
+                48: '冻雾',
+                51: '小毛毛雨',
+                53: '毛毛雨',
+                55: '大毛毛雨',
+                61: '小雨',
+                63: '中雨',
+                65: '大雨',
+                71: '小雪',
+                73: '中雪',
+                75: '大雪',
+                77: '雪粒',
+                80: '阵雨',
+                81: '中阵雨',
+                82: '大阵雨',
+                85: '小阵雪',
+                86: '大阵雪',
+                95: '雷暴',
+                96: '雷暴+小冰雹',
+                99: '雷暴+大冰雹',
+            };
+
+            const dashboard = document.getElementById('dashboard');
+
+            // ========== Toast ==========
+            function showToast(msg) {
+                const old = document.querySelector('.toast-msg');
+                if (old) old.remove();
+                const t = document.createElement('div');
+                t.className = 'toast-msg';
+                t.textContent = msg;
+                document.body.appendChild(t);
+                setTimeout(() => t.remove(), 2200);
+            }
+
+            // ========== 光晕跟随鼠标 ==========
+            function updateMask(ev) {
+                const el = ev.currentTarget;
+                const rect = el.getBoundingClientRect();
+                const x = (ev.clientX - rect.left) / rect.width;
+                const y = (ev.clientY - rect.top) / rect.height;
+                el.style.setProperty('--x', Math.min(1, Math.max(0, x)) * 100 + '%');
+                el.style.setProperty('--y', Math.min(1, Math.max(0, y)) * 100 + '%');
+            }
+            window.updateMask = updateMask;
+
+            // ========== 弹窗 ==========
+            function openWidgetModal() { document.getElementById('widget-modal').classList.remove('hidden'); }
+
+            function closeWidgetModal() { document.getElementById('widget-modal').classList.add('hidden'); }
+            window.openWidgetModal = openWidgetModal;
+            window.closeWidgetModal = closeWidgetModal;
+
+            // ========== 小部件管理 ==========
+            function addWidget(type) {
+                if (state.activeWidgets.has(type)) { showToast('该小部件已存在'); return; }
+                state.activeWidgets.add(type);
+                renderWidget(type);
+                closeWidgetModal();
+                saveWidgetState();
+                showToast('小部件已添加！');
+            }
+
+            function removeWidget(type, card) {
+                state.activeWidgets.delete(type);
+                // 清理贪吃蛇游戏
+                if (type === 'snake') {
+                    const gameData = card._snakeGame;
+                    if (gameData) {
+                        clearInterval(gameData.interval);
+                        window.removeEventListener('keydown', gameData.keyHandler);
+                        if (gameData.touchHandler) {
+                            const canvas = card.querySelector('canvas');
+                            if (canvas) {
+                                canvas.removeEventListener('touchstart', gameData.touchHandler.start);
+                                canvas.removeEventListener('touchend', gameData.touchHandler.end);
+                            }
+                        }
+                    }
+                }
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.9)';
+                card.style.transition = '0.3s ease';
+                setTimeout(() => { card.remove();
+                    saveWidgetState(); }, 300);
+            }
+
+            function saveWidgetState() {
+                const w = Array.from(state.activeWidgets).filter(x => !['search', 'weather'].includes(x));
+                localStorage.setItem('activeWidgets', JSON.stringify(w));
+            }
+
+            function loadWidgetState() {
+                try {
+                    const saved = JSON.parse(localStorage.getItem('activeWidgets') || '[]');
+                    saved.forEach(w => { if (!['search', 'weather'].includes(w)) state.activeWidgets.add(w); });
+                } catch (e) {}
+            }
+
+            // ========== 渲染小部件 ==========
+            function renderWidget(type) {
+                if (document.querySelector(`[data-widget="${type}"]`)) return;
+                const id = `card-${type}-dyn`;
+                let html = '';
+
+                if (type === 'calculator') {
+                    html = `
+                    <div class="glass-card hover-tint p-5 animate-scaleIn" id="${id}" data-widget="calculator" onmousemove="updateMask(event)" style="animation-delay:0s;">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-semibold text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-primary rounded-full"></span><i class="las la-calculator text-primary"></i> 计算器
+                            </span>
+                            <button onclick="removeWidget('calculator',this.closest('.glass-card'))" class="text-gray-400 hover:text-red-500 text-lg cursor-pointer bg-transparent border-none p-0 leading-none transition-colors"><i class="las la-times"></i></button>
+                        </div>
+                        <div class="bg-black/8 dark:bg-black/25 p-3 text-right text-xl font-mono font-medium min-h-[50px] mb-3 border border-gray-200/40 dark:border-gray-700/30" id="calc-disp-${id}">0</div>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button class="calc-btn-custom text-red-500 font-semibold" data-act="clear">C</button>
+                            <button class="calc-btn-custom" data-act="paren">( )</button>
+                            <button class="calc-btn-custom" data-act="percent">%</button>
+                            <button class="calc-btn-custom text-primary font-semibold" data-act="divide">÷</button>
+                            <button class="calc-btn-custom" data-act="7">7</button><button class="calc-btn-custom" data-act="8">8</button>
+                            <button class="calc-btn-custom" data-act="9">9</button><button class="calc-btn-custom text-primary font-semibold" data-act="multiply">×</button>
+                            <button class="calc-btn-custom" data-act="4">4</button><button class="calc-btn-custom" data-act="5">5</button>
+                            <button class="calc-btn-custom" data-act="6">6</button><button class="calc-btn-custom text-primary font-semibold" data-act="subtract">−</button>
+                            <button class="calc-btn-custom" data-act="1">1</button><button class="calc-btn-custom" data-act="2">2</button>
+                            <button class="calc-btn-custom" data-act="3">3</button><button class="calc-btn-custom text-primary font-semibold" data-act="add">+</button>
+                            <button class="calc-btn-custom" data-act="0">0</button><button class="calc-btn-custom" data-act="decimal">.</button>
+                            <button class="calc-btn-custom" data-act="backspace"><i class="las la-backspace"></i></button>
+                            <button class="calc-btn-custom bg-primary text-white font-bold col-span-2 hover:bg-primary-dark" data-act="calculate">=</button>
+                        </div>
+                    </div>`;
+                } else if (type === 'translator') {
+                    html = `
+                    <div class="glass-card hover-tint p-5 animate-scaleIn" id="${id}" data-widget="translator" onmousemove="updateMask(event)" style="animation-delay:0s;">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-semibold text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-primary rounded-full"></span><i class="las la-language text-primary"></i> 翻译器
+                            </span>
+                            <button onclick="removeWidget('translator',this.closest('.glass-card'))" class="text-gray-400 hover:text-red-500 text-lg cursor-pointer bg-transparent border-none p-0 leading-none transition-colors"><i class="las la-times"></i></button>
+                        </div>
+                        <div class="flex gap-2 items-center mb-3 flex-wrap">
+                            <select id="trans-from-${id}" class="input-glass py-2 px-3 text-sm w-auto min-w-[85px]">
+                                <option value="auto">自动检测</option><option value="zh">中文</option><option value="en">英语</option><option value="ja">日语</option><option value="ko">韩语</option><option value="fr">法语</option><option value="de">德语</option><option value="es">西班牙语</option>
+                            </select>
+                            <button id="trans-swap-${id}" class="w-8 h-8 flex items-center justify-center border border-gray-300/60 dark:border-gray-600/60 bg-white/40 dark:bg-dark-card/40 cursor-pointer hover:bg-primary/10 transition-all" title="交换语言"><i class="las la-exchange-alt"></i></button>
+                            <select id="trans-to-${id}" class="input-glass py-2 px-3 text-sm w-auto min-w-[85px]">
+                                <option value="zh" selected>中文</option><option value="en">英语</option><option value="ja">日语</option><option value="ko">韩语</option><option value="fr">法语</option><option value="de">德语</option><option value="es">西班牙语</option>
+                            </select>
+                        </div>
+                        <textarea id="trans-input-${id}" class="input-glass min-h-[70px] resize-y text-sm" placeholder="输入要翻译的文字..."></textarea>
+                        <button id="trans-btn-${id}" onclick="performTranslation('${id}')" class="mt-2 btn-primary text-sm"><i class="las la-sync-alt"></i> 翻译</button>
+                        <div id="trans-output-${id}" class="mt-2 p-3 border border-gray-200/50 dark:border-gray-700/30 bg-white/25 dark:bg-black/12 text-sm min-h-[50px]"><i class="las la-ellipsis-h text-gray-400"></i> 翻译结果将显示在这里...</div>
+                    </div>`;
+                } else if (type === 'news') {
+                    html = `
+                    <div class="glass-card hover-tint p-5 md:col-span-2 animate-scaleIn" id="${id}" data-widget="news" style="grid-column:span 2; animation-delay:0s;" onmousemove="updateMask(event)">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-semibold text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-primary rounded-full"></span><i class="las la-newspaper text-primary"></i> 联合日报 · 实时资讯
+                            </span>
+                            <button onclick="removeWidget('news',this.closest('.glass-card'))" class="text-gray-400 hover:text-red-500 text-lg cursor-pointer bg-transparent border-none p-0 leading-none transition-colors"><i class="las la-times"></i></button>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 mb-3" id="news-cat-${id}">
+                            <button class="news-cat-btn active-cat" data-cat="all"><i class="las la-globe mr-1"></i>全部</button>
+                            <button class="news-cat-btn" data-cat="technology"><i class="las la-microchip mr-1"></i>科技</button>
+                            <button class="news-cat-btn" data-cat="culture"><i class="las la-palette mr-1"></i>文化</button>
+                            <button class="news-cat-btn" data-cat="education"><i class="las la-graduation-cap mr-1"></i>教育</button>
+                            <button class="news-cat-btn" data-cat="health"><i class="las la-heartbeat mr-1"></i>养生</button>
+                            <button class="news-cat-btn" data-cat="sports"><i class="las la-futbol mr-1"></i>体育</button>
+                            <button class="news-cat-btn" data-cat="international"><i class="las la-globe-americas mr-1"></i>国际</button>
+                            <button class="news-cat-btn" data-cat="domestic"><i class="las la-landmark mr-1"></i>国内</button>
+                        </div>
+                        <div class="flex gap-2 mb-3">
+                            <input type="text" id="news-search-${id}" class="input-glass flex-1 text-sm" placeholder="搜索新闻标题...">
+                            <button onclick="searchNewsLocal('${id}')" class="btn-primary text-sm"><i class="las la-search"></i></button>
+                            <button onclick="refreshNews('${id}')" class="btn-outline text-sm"><i class="las la-sync-alt"></i> 刷新</button>
+                        </div>
+                        <div id="news-list-${id}" class="custom-scroll max-h-[480px] overflow-y-auto space-y-1.5">
+                            <div class="text-center py-10 text-gray-400">
+                                <div class="w-7 h-7 border-2 border-gray-300 border-t-primary animate-spin mx-auto mb-3" style="border-radius:50%;"></div>
+                                <i class="las la-cloud-download-alt text-2xl animate-shimmer"></i>
+                                <p class="text-xs mt-2">正在聚合新闻…</p>
+                            </div>
+                        </div>
+                        <p class="text-[0.68rem] text-gray-400 text-center mt-2 flex items-center justify-center gap-1">
+                            <i class="las la-rss text-primary"></i> 多源RSS聚合 · 实时网络资讯
+                        </p>
+                    </div>`;
+                } else if (type === 'snake') {
+                    html = `
+                    <div class="glass-card hover-tint p-5 animate-scaleIn" id="${id}" data-widget="snake" onmousemove="updateMask(event)" style="animation-delay:0s;">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-semibold text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-primary rounded-full"></span><i class="las la-gamepad text-primary"></i> 贪吃蛇
+                            </span>
+                            <button onclick="removeWidget('snake',this.closest('.glass-card'))" class="text-gray-400 hover:text-red-500 text-lg cursor-pointer bg-transparent border-none p-0 leading-none transition-colors"><i class="las la-times"></i></button>
+                        </div>
+                        <div class="flex justify-center items-center gap-4 mb-3">
+                            <span class="text-sm font-medium">得分: <span id="snake-score-${id}">0</span></span>
+                            <button id="snake-restart-${id}" class="btn-outline text-xs py-1 px-3">重新开始</button>
+                        </div>
+                        <canvas id="snake-canvas-${id}" class="snake-canvas" width="400" height="400"></canvas>
+                        <p class="text-[0.68rem] text-gray-400 text-center mt-2">键盘方向键 / 滑动屏幕控制移动</p>
+                    </div>`;
+                }
+
+                if (html) {
+                    const temp = document.createElement('div');
+                    temp.innerHTML = html.trim();
+                    const card = temp.firstChild;
+                    dashboard.appendChild(card);
+                    requestAnimationFrame(() => card.classList.add('animate-scaleIn'));
+
+                    if (type === 'calculator') initCalculator(id);
+                    if (type === 'translator') initTranslator(id);
+                    if (type === 'news') { initNewsCard(id);
+                        loadNewsData(id); }
+                    if (type === 'snake') initSnakeGame(id, card);
+                    if (type === 'news' && window.innerWidth <= 768) card.style.gridColumn = 'span 1';
+                }
+            }
+
+            // ========== 贪吃蛇游戏 ==========
+            function initSnakeGame(cardId, cardElement) {
+                const canvas = document.getElementById(`snake-canvas-${cardId}`);
+                const ctx = canvas.getContext('2d');
+                const scoreSpan = document.getElementById(`snake-score-${cardId}`);
+                const restartBtn = document.getElementById(`snake-restart-${cardId}`);
+
+                const gridSize = 20;
+                const tileCount = canvas.width / gridSize;
+
+                let snake = [{ x: 10, y: 10 }];
+                let food = {};
+                let direction = { x: 1, y: 0 };
+                let nextDirection = { x: 1, y: 0 };
+                let score = 0;
+                let gameOver = false;
+                let gameInterval = null;
+
+                function randomFood() {
+                    const max = tileCount - 1;
+                    let fx, fy;
+                    do {
+                        fx = Math.floor(Math.random() * max);
+                        fy = Math.floor(Math.random() * max);
+                    } while (snake.some(seg => seg.x === fx && seg.y === fy));
+                    return { x: fx, y: fy };
+                }
+
+                function drawGame() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    // 网格线
+                    ctx.strokeStyle = document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+                    for (let i = 0; i < tileCount; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(i * gridSize, 0);
+                        ctx.lineTo(i * gridSize, canvas.height);
+                        ctx.stroke();
+                        ctx.moveTo(0, i * gridSize);
+                        ctx.lineTo(canvas.width, i * gridSize);
+                        ctx.stroke();
+                    }
+                    // 食物
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.fillRect(food.x * gridSize + 2, food.y * gridSize + 2, gridSize - 4, gridSize - 4);
+                    // 蛇
+                    for (let i = 0; i < snake.length; i++) {
+                        const seg = snake[i];
+                        ctx.fillStyle = i === 0 ? '#0078D7' : '#5aa9e6';
+                        ctx.fillRect(seg.x * gridSize + 1, seg.y * gridSize + 1, gridSize - 2, gridSize - 2);
+                    }
+                    if (gameOver) {
+                        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.font = 'bold 28px Inter, sans-serif';
+                        ctx.fillStyle = '#fff';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('游戏结束', canvas.width / 2, canvas.height / 2);
+                        ctx.font = '16px Inter, sans-serif';
+                        ctx.fillText('点击"重新开始"继续', canvas.width / 2, canvas.height / 2 + 40);
+                    }
+                }
+
+                function moveSnake() {
+                    if (gameOver) return;
+                    direction = { ...nextDirection };
+                    const head = snake[0];
+                    const newHead = { x: head.x + direction.x, y: head.y + direction.y };
+                    if (newHead.x < 0 || newHead.x >= tileCount || newHead.y < 0 || newHead.y >= tileCount) {
+                        gameOver = true;
+                        clearInterval(gameInterval);
+                        drawGame();
+                        return;
+                    }
+                    if (snake.some(seg => seg.x === newHead.x && seg.y === newHead.y)) {
+                        gameOver = true;
+                        clearInterval(gameInterval);
+                        drawGame();
+                        return;
+                    }
+                    snake.unshift(newHead);
+                    if (newHead.x === food.x && newHead.y === food.y) {
+                        score++;
+                        scoreSpan.textContent = score;
+                        food = randomFood();
+                    } else {
+                        snake.pop();
+                    }
+                    drawGame();
+                }
+
+                function startGame() {
+                    if (gameInterval) clearInterval(gameInterval);
+                    snake = [{ x: 10, y: 10 }];
+                    direction = { x: 1, y: 0 };
+                    nextDirection = { x: 1, y: 0 };
+                    score = 0;
+                    gameOver = false;
+                    scoreSpan.textContent = '0';
+                    food = randomFood();
+                    drawGame();
+                    gameInterval = setInterval(moveSnake, 130);
+                }
+
+                function handleKey(e) {
+                    const key = e.key;
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(key)) {
+                        e.preventDefault();
+                    }
+                    if (gameOver) return;
+                    switch (key) {
+                        case 'ArrowUp': case 'w': case 'W': if (direction.y === 0) nextDirection = { x: 0, y: -1 }; break;
+                        case 'ArrowDown': case 's': case 'S': if (direction.y === 0) nextDirection = { x: 0, y: 1 }; break;
+                        case 'ArrowLeft': case 'a': case 'A': if (direction.x === 0) nextDirection = { x: -1, y: 0 }; break;
+                        case 'ArrowRight': case 'd': case 'D': if (direction.x === 0) nextDirection = { x: 1, y: 0 }; break;
+                    }
+                }
+
+                // 移动端滑动控制
+                let touchStartX = 0, touchStartY = 0;
+                function handleTouchStart(e) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                }
+                function handleTouchEnd(e) {
+                    e.preventDefault();
+                    if (gameOver) return;
+                    const touch = e.changedTouches[0];
+                    const dx = touch.clientX - touchStartX;
+                    const dy = touch.clientY - touchStartY;
+                    const absDx = Math.abs(dx);
+                    const absDy = Math.abs(dy);
+                    if (Math.max(absDx, absDy) < 20) return; // 最小滑动距离
+                    if (absDx > absDy) {
+                        // 水平滑动
+                        if (dx > 0 && direction.x === 0) nextDirection = { x: 1, y: 0 };
+                        else if (dx < 0 && direction.x === 0) nextDirection = { x: -1, y: 0 };
+                    } else {
+                        // 垂直滑动
+                        if (dy > 0 && direction.y === 0) nextDirection = { x: 0, y: 1 };
+                        else if (dy < 0 && direction.y === 0) nextDirection = { x: 0, y: -1 };
+                    }
+                }
+
+                canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+                canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+                canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
+                window.addEventListener('keydown', handleKey);
+                restartBtn.addEventListener('click', startGame);
+
+                // 保存游戏数据以便移除
+                cardElement._snakeGame = {
+                    interval: gameInterval,
+                    keyHandler: handleKey,
+                    touchHandler: { start: handleTouchStart, end: handleTouchEnd }
+                };
+
+                startGame();
+
+                const origStart = startGame;
+                startGame = function() {
+                    origStart();
+                    cardElement._snakeGame.interval = gameInterval;
+                };
+            }
+
+            // ========== 计算器 ==========
+            function initCalculator(id) {
+                const disp = document.getElementById(`calc-disp-${id}`);
+                let expr = '';
+                const update = v => disp.textContent = v || '0';
+                document.getElementById(id).querySelector('.grid').addEventListener('click', e => {
+                    const btn = e.target.closest('button');
+                    if (!btn) return;
+                    const act = btn.dataset.act;
+                    if (act === 'clear') { expr = '';
+                        update('0'); } else if (act === 'backspace') { expr = expr.slice(0, -1);
+                        update(expr || '0'); } else if (act === 'paren') {
+                        expr += (expr.match(/\(/g) || []).length > (expr.match(/\)/g) || []).length ? ')' : '(';
+                        update(expr);
+                    } else if (act === 'percent') { expr += '%';
+                        update(expr); } else if (act === 'divide') { expr += '/';
+                        update(expr); } else if (act === 'multiply') { expr += '*';
+                        update(expr); } else if (act === 'subtract') { expr += '-';
+                        update(expr); } else if (act === 'add') { expr += '+';
+                        update(expr); } else if (act === 'decimal') { expr += '.';
+                        update(expr); } else if (act === 'calculate') {
+                        try {
+                            let ev = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/(\d+)%/g, '($1/100)');
+                            const res = eval(ev);
+                            if (!isFinite(res) || isNaN(res)) { update('错误');
+                                expr = ''; } else { const fmt = parseFloat(res.toPrecision(12)).toString();
+                                update(fmt);
+                                expr = fmt; }
+                        } catch (e2) { update('错误');
+                            expr = ''; }
+                    } else if (/^\d$/.test(act)) { expr += act;
+                        update(expr); }
+                });
+            }
+
+            // ========== 翻译器 ==========
+            function initTranslator(id) {
+                document.getElementById(`trans-swap-${id}`).addEventListener('click', () => {
+                    const from = document.getElementById(`trans-from-${id}`);
+                    const to = document.getElementById(`trans-to-${id}`);
+                    if (from.value === 'auto') return;
+                    [from.value, to.value] = [to.value, from.value];
+                });
+                document.getElementById(`trans-input-${id}`).addEventListener('keydown', e => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
+                        performTranslation(id); }
+                });
+            }
+
+            async function performTranslation(id) {
+                const input = document.getElementById(`trans-input-${id}`).value.trim();
+                if (!input) return showToast('请输入要翻译的文字');
+                const from = document.getElementById(`trans-from-${id}`).value;
+                const to = document.getElementById(`trans-to-${id}`).value;
+                const btn = document.getElementById(`trans-btn-${id}`);
+                const out = document.getElementById(`trans-output-${id}`);
+                btn.disabled = true;
+                btn.innerHTML = '<i class="las la-spinner animate-spin"></i> 翻译中...';
+                out.textContent = '翻译中...';
+                try {
+                    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(input)}&langpair=${from}|${to}`);
+                    const data = await res.json();
+                    out.textContent = data.responseData?.translatedText || '翻译失败，请稍后重试';
+                } catch (e) { out.textContent = '翻译服务暂不可用，请检查网络'; } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="las la-sync-alt"></i> 翻译';
+                }
+            }
+            window.performTranslation = performTranslation;
+
+            // ========== 新闻 ==========
+            function initNewsCard(id) {
+                const catContainer = document.getElementById(`news-cat-${id}`);
+                catContainer.addEventListener('click', e => {
+                    const btn = e.target.closest('button');
+                    if (!btn) return;
+                    catContainer.querySelectorAll('button').forEach(b => b.classList.remove('active-cat'));
+                    btn.classList.add('active-cat');
+                    state.newsCategory = btn.dataset.cat;
+                    renderNewsList(id);
+                });
+                document.getElementById(`news-search-${id}`).addEventListener('keydown', e => {
+                    if (e.key === 'Enter') searchNewsLocal(id);
+                });
+            }
+
+            async function loadNewsData(cardId) {
+                const listEl = document.getElementById(`news-list-${cardId}`);
+                listEl.innerHTML = '<div class="text-center py-10 text-gray-400"><div class="w-7 h-7 border-2 border-gray-300 border-t-primary animate-spin mx-auto mb-3" style="border-radius:50%;"></div><i class="las la-cloud-download-alt text-2xl animate-shimmer"></i><p class="text-xs mt-2">正在聚合新闻…</p></div>';
+                const sources = [
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml", category: "technology", limit: 8 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.wired.com/feed/rss", category: "technology", limit: 6 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.artnews.com/feed/", category: "culture", limit: 6 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.smithsonianmag.com/feed/", category: "culture", limit: 6 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.chronicle.com/rss/news", category: "education", limit: 8 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.edweek.org/rss/feed.xml", category: "education", limit: 6 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.health.harvard.edu/feed", category: "health", limit: 8 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.medicalnewstoday.com/featured/feed", category: "health", limit: 6 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.espn.com/espn/rss/news", category: "sports", limit: 8 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.bbc.com/sport/rss", category: "sports", limit: 6 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml", category: "international", limit: 10 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.reuters.com/rssFeed/topNews", category: "international", limit: 8 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://news.sina.com.cn/roll/rollnews_sudoku_0_1.xml", category: "domestic", limit: 10 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=http://www.people.com.cn/rss/politics.xml", category: "domestic", limit: 8 },
+                    { url: "https://api.rss2json.com/v1/api.json?rss_url=https://cn.reuters.com/rssNews/CNTopNews", category: "domestic", limit: 8 },
+                ];
+                let articles = [];
+                try {
+                    const results = await Promise.allSettled(sources.map(async src => {
+                        const controller = new AbortController();
+                        const timeout = setTimeout(() => controller.abort(), 7000);
+                        const res = await fetch(src.url, { signal: controller.signal });
+                        clearTimeout(timeout);
+                        if (!res.ok) return [];
+                        const data = await res.json();
+                        if (!data?.items) return [];
+                        return data.items.slice(0, src.limit).map(item => ({
+                            title: item.title || '无标题',
+                            summary: (item.description || '').replace(/<[^>]*>/g, '').substring(0, 180),
+                            pubDate: item.pubDate || new Date().toISOString(),
+                            link: item.link || '#',
+                            category: src.category,
+                        }));
+                    }));
+                    for (const r of results) { if (r.status === 'fulfilled') articles.push(...r.value); }
+                } catch (e) { console.error('新闻加载错误:', e); }
+                const seen = new Set();
+                articles = articles.filter(a => { const key = a.title.substring(0, 70); if (seen.has(key)) return false;
+                    seen.add(key); return true; });
+                articles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                state.allNewsItems = articles;
+                renderNewsList(cardId);
+            }
+
+            function renderNewsList(cardId) {
+                const listEl = document.getElementById(`news-list-${cardId}`);
+                let items = [...state.allNewsItems];
+                if (state.newsCategory !== 'all') items = items.filter(a => a.category === state.newsCategory);
+                const searchVal = document.getElementById(`news-search-${cardId}`)?.value.trim().toLowerCase() || '';
+                if (searchVal) items = items.filter(a => a.title.toLowerCase().includes(searchVal) || (a.summary && a.summary.toLowerCase().includes(searchVal)));
+                if (items.length === 0) {
+                    listEl.innerHTML = '<div class="text-center py-10 text-gray-400"><i class="las la-inbox text-3xl mb-2 opacity-50"></i><p class="text-sm">暂无相关新闻</p></div>';
+                    return;
+                }
+                listEl.innerHTML = items.map(a => `
+                    <div class="news-item-card p-3 flex flex-col gap-1">
+                        <a href="${a.link}" target="_blank" rel="noopener" class="text-sm font-semibold text-gray-800 dark:text-gray-200 hover:text-primary no-underline line-clamp-2 transition-colors">${a.title}</a>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">${a.summary || '点击阅读全文'}</p>
+                        <div class="flex justify-between items-center text-[0.68rem] text-gray-400 mt-1">
+                            <span class="bg-primary/10 text-primary px-2 py-0.5 font-medium">${getCatLabel(a.category)}</span>
+                            <span><i class="las la-clock mr-1"></i>${formatDate(a.pubDate)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function getCatLabel(cat) { const map = { technology:'科技', culture:'文化', education:'教育', health:'养生', sports:'体育', international:'国际', domestic:'国内' }; return map[cat]||'资讯'; }
+            function formatDate(dateStr) { try { const d=new Date(dateStr); if(isNaN(d.getTime())) return ''; const now=new Date(); const diff=Math.floor((now-d)/86400000); if(diff===0) return '今日'; if(diff===1) return '昨日'; return `${d.getMonth()+1}月${d.getDate()}日`; } catch(e) { return ''; } }
+            function searchNewsLocal(cardId) { state.newsCategory='all'; const catContainer=document.getElementById(`news-cat-${cardId}`); catContainer.querySelectorAll('button').forEach(b=>b.classList.remove('active-cat')); catContainer.querySelector('[data-cat="all"]')?.classList.add('active-cat'); renderNewsList(cardId); }
+            function refreshNews(cardId) { loadNewsData(cardId); }
+            window.searchNewsLocal = searchNewsLocal;
+            window.refreshNews = refreshNews;
+
+            // ========== 搜索 ==========
+            function performSearch() { const q=document.getElementById('search-input').value.trim(); if(!q) return showToast('请输入搜索内容'); window.open(engines[state.currentEngine].url+encodeURIComponent(q),'_blank'); }
+            document.getElementById('engine-selector').addEventListener('click', e=>{ const btn=e.target.closest('.se-btn'); if(!btn) return; document.querySelectorAll('#engine-selector .se-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); state.currentEngine=btn.dataset.engine; localStorage.setItem('searchEngine',state.currentEngine); });
+            const savedEng=localStorage.getItem('searchEngine'); if(savedEng&&engines[savedEng]){ state.currentEngine=savedEng; document.querySelectorAll('#engine-selector .se-btn').forEach(b=>b.classList.toggle('active',b.dataset.engine===savedEng)); }
+            document.getElementById('search-btn').addEventListener('click',performSearch);
+            document.getElementById('search-input').addEventListener('keydown',e=>{ if(e.key==='Enter') performSearch(); });
+
+            // ========== 时间日期 ==========
+            function updateDateTime(){ const now=new Date(); document.getElementById('live-time').textContent=now.toLocaleTimeString('zh-CN',{hour12:false}); const wd=['日','一','二','三','四','五','六']; document.getElementById('live-date').textContent=`${now.getFullYear()}年${(now.getMonth()+1).toString().padStart(2,'0')}月${now.getDate().toString().padStart(2,'0')}日 星期${wd[now.getDay()]}`; }
+            updateDateTime(); setInterval(updateDateTime,1000);
+
+            // ========== 天气 ==========
+            async function fetchWeather(lat,lon){ try{ const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m&timezone=auto`); const data=await res.json(); const cur=data.current_weather; const iconClass=wmoIconMap[cur.weathercode]||'las la-cloud-sun'; const desc=wmoDescMap[cur.weathercode]||'未知'; const now=new Date(); let hum='--'; if(data.hourly?.relativehumidity_2m){ const idx=data.hourly.time.findIndex(t=>t===now.toISOString().slice(0,13)+':00'); hum=idx>=0?data.hourly.relativehumidity_2m[idx]:data.hourly.relativehumidity_2m[Math.min(now.getHours(),data.hourly.relativehumidity_2m.length-1)]; } document.getElementById('weather-icon').className='weather-icon-large '+iconClass; document.getElementById('weather-temp').textContent=`${Math.round(cur.temperature)}°C`; document.getElementById('weather-desc').textContent=desc; document.getElementById('weather-wind').textContent=`${cur.windspeed} km/h`; document.getElementById('weather-humidity').textContent=`${hum}%`; } catch(e){ document.getElementById('weather-icon').className='weather-icon-large las la-exclamation-triangle'; document.getElementById('weather-temp').textContent='--°C'; } }
+            async function fetchCityName(lat,lon){ try{ const res=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=zh`); const data=await res.json(); state.cityName=data.address?.city||data.address?.town||data.address?.county||'未知城市'; document.getElementById('city-name').innerHTML=`<i class="las la-map-marker-alt text-primary"></i> ${state.cityName}`; } catch(e){ document.getElementById('city-name').innerHTML='<i class="las la-map-marker-alt text-primary"></i> 定位成功'; } }
+            function refreshWeather(){ if(state.lat&&state.lon){ fetchWeather(state.lat,state.lon); fetchCityName(state.lat,state.lon); showToast('天气已刷新'); } else getUserLocation(); }
+            function getUserLocation(){ if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(pos=>{ state.lat=pos.coords.latitude; state.lon=pos.coords.longitude; fetchWeather(state.lat,state.lon); fetchCityName(state.lat,state.lon); }, ()=>{ state.lat=39.9042; state.lon=116.4074; state.cityName='北京（默认）'; document.getElementById('city-name').innerHTML='<i class="las la-map-marker-alt text-primary"></i> 北京（默认）'; fetchWeather(state.lat,state.lon); }, {timeout:8000}); } else { state.lat=39.9042; state.lon=116.4074; state.cityName='北京（默认）'; document.getElementById('city-name').innerHTML='<i class="las la-map-marker-alt text-primary"></i> 北京（默认）'; fetchWeather(state.lat,state.lon); } }
+            getUserLocation();
+            window.refreshWeather = refreshWeather;
+
+            // ========== 深色模式 ==========
+            function setThemeFromSystem(e){ const isDark=window.matchMedia('(prefers-color-scheme: dark)').matches; document.documentElement.classList.toggle('dark',isDark); updateDarkIcon(isDark); localStorage.setItem('darkMode',isDark?'dark':'light'); }
+            function updateDarkIcon(dark){ const icon=document.getElementById('darkIcon'); if(icon) icon.className=dark?'las la-sun text-primary text-lg':'las la-moon text-primary text-lg'; }
+            const darkModeMediaQuery=window.matchMedia('(prefers-color-scheme: dark)'); darkModeMediaQuery.addEventListener('change',(e)=>{ setThemeFromSystem(e); });
+            const savedDark=localStorage.getItem('darkMode'); if(savedDark==='dark'||savedDark==='light'){ const isDark=savedDark==='dark'; document.documentElement.classList.toggle('dark',isDark); updateDarkIcon(isDark); } else { setThemeFromSystem(); }
+            document.getElementById('darkToggle').addEventListener('click',()=>{ const isDark=!document.documentElement.classList.contains('dark'); document.documentElement.classList.toggle('dark',isDark); updateDarkIcon(isDark); localStorage.setItem('darkMode',isDark?'dark':'light'); });
+
+            window.addEventListener('scroll',()=>{ document.getElementById('top-nav').classList.toggle('scrolled',window.scrollY>20); });
+            window.addEventListener('resize',()=>{ document.querySelectorAll('[data-widget="news"]').forEach(card=>{ card.style.gridColumn=window.innerWidth<=768?'span 1':'span 2'; }); });
+
+            loadWidgetState();
+            state.activeWidgets.forEach(w=>{ if(!['search','weather'].includes(w)) renderWidget(w); });
+            window.addWidget = addWidget;
+            window.removeWidget = removeWidget;
+            console.log('🚀 米遇安硕普 · 个人仪表板已就绪 | 贪吃蛇支持滑动 | © 2026 米遇安');
+        })();
+    </script>
+</body>
+</html>
