@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>米遇安文化 · 文明溯源</title>
+    <title>米遇安文化 · 筹备中</title>
     <!-- Tailwind + Line Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
@@ -307,33 +307,33 @@
         .hero-section:hover::before { opacity: 1; }
         .hero-section > * { position: relative; z-index: 2; }
         
-        /* 文章卡片网格 */
-        .article-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        .article-card {
+        /* 筹备中占位卡片 */
+        .placeholder-card {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(12px);
             border: 0.5px solid rgba(255, 255, 255, 0.3);
             border-left: 4px solid #0078D7;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
         }
-        .article-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 15px 30px -12px rgba(0,0,0,0.1);
-        }
-        .dark .article-card {
+        .dark .placeholder-card {
             background: rgba(30, 31, 34, 0.8);
             border-color: rgba(255, 255, 255, 0.06);
             border-left-color: #5aa9e6;
         }
-        .dark .article-card:hover {
-            background: rgba(40, 42, 48, 0.92);
-            box-shadow: 0 15px 30px -12px rgba(90,169,230,0.2);
+        .placeholder-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -12px rgba(0,0,0,0.08);
         }
+        .placeholder-icon {
+            font-size: 3.5rem;
+            color: #0078D7;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: float 4s ease-in-out infinite;
+        }
+        .dark .placeholder-icon { color: #5aa9e6; }
         
         .btn-primary {
             background: #0078D7; color: white; padding: 0.6rem 1.4rem;
@@ -351,15 +351,6 @@
         .btn-primary:hover { background: #005a9e; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,120,215,0.3); }
         .dark .btn-primary { background: #5aa9e6; color: #121212; }
         .dark .btn-primary:hover { background: #7bb3e0; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(90,169,230,0.3); }
-        
-        .btn-outline {
-            border: 1.5px solid #0078D7; color: #0078D7; padding: 0.6rem 1.4rem;
-            transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1);
-            background: transparent; font-weight: 500;
-        }
-        .btn-outline:hover { background: rgba(0,120,215,0.08); transform: translateY(-2px); }
-        .dark .btn-outline { border-color: #5aa9e6; color: #5aa9e6; }
-        .dark .btn-outline:hover { background: rgba(90,169,230,0.15); transform: translateY(-2px); }
         
         .footer-link, .legal-link { cursor: pointer; transition: all 0.25s ease; color: #9ca3af; }
         .footer-link:hover, .legal-link:hover { color: #0078D7 !important; transform: translateX(3px); }
@@ -416,53 +407,21 @@
             </div>
         </section>
 
-        <!-- 文章列表 -->
+        <!-- 文章占位区域：正在筹备中 -->
         <section id="articles" class="py-16 md:py-20">
-            <div class="container">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">文化探索</h2>
-                <p class="text-center text-gray-600 text-sm mb-12">点击卡片，阅读完整文章</p>
-                <div class="article-grid">
-                    <!-- 1 -->
-                    <div class="article-card p-5 hover-tint transition-all cursor-pointer group" onclick="window.open('https://www.kdocs.cn/l/chDv3Qx85Xeb', '_blank')" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-3 mb-3"><i class="la la-circle text-2xl text-primary"></i><h3 class="text-lg font-bold text-primary">“0”为什么是个圆形</h3></div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">探索数字的起源，从古印度到阿拉伯，揭秘“0”为何是一个完美的圆。</p>
-                        <div class="mt-4 text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">阅读全文 <i class="la la-arrow-right text-xs"></i></div>
-                    </div>
-                    <!-- 2 -->
-                    <div class="article-card p-5 hover-tint transition-all cursor-pointer group" onclick="window.open('https://www.kdocs.cn/l/ccsgdmLIqpPU', '_blank')" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-3 mb-3"><i class="la la-female text-2xl text-primary"></i><h3 class="text-lg font-bold text-primary">为什么说女娲“造”出了春节</h3></div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">走进上古神话，解读女娲与春节起源之间鲜为人知的文化联结。</p>
-                        <div class="mt-4 text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">阅读全文 <i class="la la-arrow-right text-xs"></i></div>
-                    </div>
-                    <!-- 3 -->
-                    <div class="article-card p-5 hover-tint transition-all cursor-pointer group" onclick="window.open('https://www.kdocs.cn/l/cjx4aJCq9HDj', '_blank')" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-3 mb-3"><i class="la la-language text-2xl text-primary"></i><h3 class="text-lg font-bold text-primary">中文和英文的区别</h3></div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">从语系、思维到文化，对比中英两种语言的深层差异与魅力。</p>
-                        <div class="mt-4 text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">阅读全文 <i class="la la-arrow-right text-xs"></i></div>
-                    </div>
-                    <!-- 4 -->
-                    <div class="article-card p-5 hover-tint transition-all cursor-pointer group" onclick="window.open('https://www.kdocs.cn/l/cprjB6iEaFPh', '_blank')" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-3 mb-3"><i class="la la-dragon text-2xl text-primary"></i><h3 class="text-lg font-bold text-primary">“dragon”改“loong”之谜</h3></div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">从文化翻译视角，解析中国龙与西方龙的形象差异及正名之路。</p>
-                        <div class="mt-4 text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">阅读全文 <i class="la la-arrow-right text-xs"></i></div>
-                    </div>
-                    <!-- 5 -->
-                    <div class="article-card p-5 hover-tint transition-all cursor-pointer group" onclick="window.open('https://www.kdocs.cn/l/coAmPgF8CCFV', '_blank')" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-3 mb-3"><i class="la la-hand-peace text-2xl text-primary"></i><h3 class="text-lg font-bold text-primary">“无名指”的由来</h3></div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">考据手指命名的文化传统，探究无名指背后被忽略的掌故。</p>
-                        <div class="mt-4 text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">阅读全文 <i class="la la-arrow-right text-xs"></i></div>
-                    </div>
-                    <!-- 6 -->
-                    <div class="article-card p-5 hover-tint transition-all cursor-pointer group" onclick="window.open('https://www.kdocs.cn/l/csCzUOh08obQ', '_blank')" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-3 mb-3"><i class="la la-flag-china text-2xl text-primary"></i><h3 class="text-lg font-bold text-primary">中国为什么被叫做“震旦”</h3></div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">从波斯帝国到复旦大学，追溯“震旦”一词背后的文明交流史。</p>
-                        <div class="mt-4 text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">阅读全文 <i class="la la-arrow-right text-xs"></i></div>
-                    </div>
-                    <!-- 7 -->
-                    <div class="article-card p-5 hover-tint transition-all cursor-pointer group" onclick="window.open('https://www.kdocs.cn/l/ctiTtNqDphai', '_blank')" onmousemove="updateMask(event)">
-                        <div class="flex items-center gap-3 mb-3"><i class="la la-font text-2xl text-primary"></i><h3 class="text-lg font-bold text-primary">注音</h3></div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">了解注音符号的源流、对应关系以及键盘输入方法，传承中文音韵。</p>
-                        <div class="mt-4 text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">阅读全文 <i class="la la-arrow-right text-xs"></i></div>
+            <div class="container max-w-3xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">文化文章</h2>
+                <div class="placeholder-card hover-tint" onmousemove="updateMask(event)">
+                    <i class="la la-cog placeholder-icon"></i>
+                    <h3 class="text-2xl font-bold text-primary mb-3">正在筹备中</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-base leading-relaxed max-w-md mx-auto">
+                        米遇安文化正在精心打磨一系列深度文章，涵盖历史、语言、民俗与哲思。<br>
+                        敬请期待，我们很快与你见面。
+                    </p>
+                    <div class="mt-6">
+                        <span class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                            <i class="la la-clock"></i> 预计上线：2026年秋季
+                        </span>
                     </div>
                 </div>
             </div>
