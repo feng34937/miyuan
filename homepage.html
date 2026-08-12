@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>米遇安 · 创新与教育</title>
+    <!-- 网站标签页图标 -->
+    <link rel="icon" href="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND">
     <!-- Tailwind + Line Awesome -->
     <script src="https://cdn.tailwindcss.com">
     </script>
@@ -520,7 +522,7 @@
             box-shadow: 0 0 8px #0078D7;
         }
 
-        /* ===== 团队成员头像 ===== */
+        /* ===== 团队成员头像（适配图片） ===== */
         .team-avatar-wrapper {
             width: 100px;
             height: 100px;
@@ -529,24 +531,29 @@
             padding: 3px;
             box-shadow: 0 6px 12px -6px rgba(0, 120, 215, 0.25);
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+            border-radius: 50% !important;
         }
         .team-avatar {
             width: 100%;
             height: 100%;
+            border-radius: 50% !important;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0078D7;
             background: white;
+        }
+        .team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
         .dark .team-avatar-wrapper {
             background: linear-gradient(135deg, #5aa9e6, #7bb3e0);
         }
         .dark .team-avatar {
             background: #2a2a2a;
-            color: #5aa9e6;
         }
         .card-hover:hover .team-avatar-wrapper {
             transform: scale(1.03) rotate(1deg);
@@ -1514,7 +1521,11 @@
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center gap-6">
                 <div id="navBackButtonContainer" style="display: none;"><div class="nav-back-button" onclick="closeCurrentSection()"><i class="las la-chevron-left"></i> 返回</div></div>
-                <a href="#" class="text-xl font-black text-primary tracking-tight hover:opacity-80 transition">米遇安</a>
+                <!-- 在“米遇安”文字前添加 LOGO 图片 -->
+                <a href="#" class="flex items-center gap-2 text-xl font-black text-primary tracking-tight hover:opacity-80 transition">
+                    <img src="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND" alt="米遇安" class="h-8 w-auto">
+                    米遇安
+                </a>
             </div>
             <div class="hidden md:flex items-center space-x-7 text-sm font-medium">
                 <a href="#home" class="hover:text-primary transition">首页</a>
@@ -1609,12 +1620,11 @@
                         </div>
                     </div>
 
-                    <!-- 团队动态轮播（新增“学海”和“米遇安硕普”，共5项） -->
+                    <!-- 团队动态轮播（5项） -->
                     <div class="carousel-container">
                         <button class="carousel-arrow left" id="carouselPrev"><i class="las la-chevron-left"></i></button>
                         <button class="carousel-arrow right" id="carouselNext"><i class="las la-chevron-right"></i></button>
                         <div class="carousel-track" id="carouselTrack">
-                            <!-- 1. 米遇安第八次集体会议 -->
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)">
                                 <div class="card-content">
                                     <div class="icon-wrapper"><i class="las la-handshake text-primary text-4xl"></i></div>
@@ -1623,7 +1633,6 @@
                                     <button class="btn-primary text-sm" onclick="alert('米遇安第八次集体会议于2026年7月成功召开，团队未来可期！')">了解详情</button>
                                 </div>
                             </div>
-                            <!-- 2. 广告位免费招租 -->
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)">
                                 <div class="card-content">
                                     <div class="icon-wrapper"><i class="las la-ad text-primary text-4xl"></i></div>
@@ -1632,7 +1641,6 @@
                                     <button class="btn-primary text-sm" onclick="alert('广告位招租请联系邮箱：3493792731@qq.com')">立即咨询</button>
                                 </div>
                             </div>
-                            <!-- 3. 现代战争推演4 -->
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)">
                                 <div class="card-content">
                                     <div class="icon-wrapper"><i class="las la-gamepad text-primary text-4xl"></i></div>
@@ -1641,7 +1649,6 @@
                                     <button class="btn-primary text-sm" onclick="window.open('https://feng34937.github.io/miyuan/games/modern_warfare/4', '_blank')">点击试玩</button>
                                 </div>
                             </div>
-                            <!-- 4. 学海（新增） -->
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)">
                                 <div class="card-content">
                                     <div class="icon-wrapper"><i class="las la-book-open text-primary text-4xl"></i></div>
@@ -1650,7 +1657,6 @@
                                     <button class="btn-primary text-sm" onclick="window.open('https://feng34937.github.io/miyuan/games/xuehai', '_blank')">开始挑战</button>
                                 </div>
                             </div>
-                            <!-- 5. 米遇安硕普（新增） -->
                             <div class="carousel-card hover-tint" onmousemove="updateMask(event)">
                                 <div class="card-content">
                                     <div class="icon-wrapper"><i class="las la-puzzle-piece text-primary text-4xl"></i></div>
@@ -1688,15 +1694,94 @@
             </div>
         </section>
 
-        <section id="team" class="py-16 md:py-20 bg-secondary"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">核心成员</h2><p class="text-center text-gray-600 text-sm mb-8">五位核心成员，各司其职，共同驱动团队创新</p><div class="grid grid-cols-2 md:grid-cols-5 gap-5"><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">诗</div></div><h3 class="font-bold">诗福</h3><p class="text-primary text-xs">团长 / 产品架构师</p><p class="text-xs text-gray-500 mt-1">团队创始人，核心设计</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">星</div></div><h3 class="font-bold">星斗</h3><p class="text-primary text-xs">技术总监 / 架构师</p><p class="text-xs text-gray-500 mt-1">技术架构与服务器</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">汐</div></div><h3 class="font-bold">千汐</h3><p class="text-primary text-xs">运营总监 / 用户洞察</p><p class="text-xs text-gray-500 mt-1">用户体验与反馈分析</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">五</div></div><h3 class="font-bold">五谷砸麦</h3><p class="text-primary text-xs">内容策划 / 创意设计</p><p class="text-xs text-gray-500 mt-1">内容创作与视觉设计</p></div><div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)"><div class="team-avatar-wrapper"><div class="team-avatar">辅</div></div><h3 class="font-bold">辅助线</h3><p class="text-primary text-xs">测试 / 质量保障</p><p class="text-xs text-gray-500 mt-1">全流程测试与稳定性</p></div></div></div></section>
+        <!-- ===== 核心成员（头像已替换为图片） ===== -->
+        <section id="team" class="py-16 md:py-20 bg-secondary">
+            <div class="container">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">核心成员</h2>
+                <p class="text-center text-gray-600 text-sm mb-8">五位核心成员，各司其职，共同驱动团队创新</p>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
+                    <!-- 诗福 -->
+                    <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
+                        <div class="team-avatar-wrapper">
+                            <div class="team-avatar">
+                                <img src="https://feng34937.github.io/miyuan/SHIFU" alt="诗福">
+                            </div>
+                        </div>
+                        <h3 class="font-bold">诗福</h3>
+                        <p class="text-primary text-xs">团长 / 产品架构师</p>
+                        <p class="text-xs text-gray-500 mt-1">团队创始人，核心设计</p>
+                    </div>
+                    <!-- 星斗 -->
+                    <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
+                        <div class="team-avatar-wrapper">
+                            <div class="team-avatar">
+                                <img src="https://feng34937.github.io/miyuan/XINGDOU" alt="星斗">
+                            </div>
+                        </div>
+                        <h3 class="font-bold">星斗</h3>
+                        <p class="text-primary text-xs">技术总监 / 架构师</p>
+                        <p class="text-xs text-gray-500 mt-1">技术架构与服务器</p>
+                    </div>
+                    <!-- 千汐 -->
+                    <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
+                        <div class="team-avatar-wrapper">
+                            <div class="team-avatar">
+                                <img src="https://feng34937.github.io/miyuan/QIANXI" alt="千汐">
+                            </div>
+                        </div>
+                        <h3 class="font-bold">千汐</h3>
+                        <p class="text-primary text-xs">运营总监 / 用户洞察</p>
+                        <p class="text-xs text-gray-500 mt-1">用户体验与反馈分析</p>
+                    </div>
+                    <!-- 五谷砸麦 -->
+                    <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
+                        <div class="team-avatar-wrapper">
+                            <div class="team-avatar">
+                                <img src="https://feng34937.github.io/miyuan/WUGUZAMAI" alt="五谷砸麦">
+                            </div>
+                        </div>
+                        <h3 class="font-bold">五谷砸麦</h3>
+                        <p class="text-primary text-xs">内容策划 / 创意设计</p>
+                        <p class="text-xs text-gray-500 mt-1">内容创作与视觉设计</p>
+                    </div>
+                    <!-- 辅助线 -->
+                    <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
+                        <div class="team-avatar-wrapper">
+                            <div class="team-avatar">
+                                <img src="https://feng34937.github.io/miyuan/FUZHUXIAN" alt="辅助线">
+                            </div>
+                        </div>
+                        <h3 class="font-bold">辅助线</h3>
+                        <p class="text-primary text-xs">测试 / 质量保障</p>
+                        <p class="text-xs text-gray-500 mt-1">全流程测试与稳定性</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <section id="contact" class="py-16 md:py-20"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">保持联系</h2><p class="text-center text-gray-600 text-sm mb-8">任何想法、合作或疑问，欢迎找到我们</p><div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-4 bg-secondary p-5"><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-map-marker-alt text-primary"></i></div><div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-phone text-primary"></i></div><div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-envelope text-primary"></i></div><div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div></div></div>
-                <div class="thanks-section hover-tint" onmousemove="updateMask(event)"><h3 class="thanks-title">特别鸣谢</h3><p class="text-gray-500 text-xs mb-3">感谢以下平台与个人的支持</p><div class="flex flex-wrap justify-center gap-2"><div class="thanks-item" onclick="window.open('https://github.com','_blank')"><i class="lab la-github thanks-icon"></i><span class="text-xs">GitHub</span></div><div class="thanks-item" onclick="window.open('https://www.microsoft.com','_blank')"><i class="lab la-microsoft thanks-icon"></i><span class="text-xs">Microsoft</span></div><div class="thanks-item" onclick="window.open('https://chat.openai.com','_blank')"><i class="las la-comment-dots thanks-icon"></i><span class="text-xs">ChatGPT</span></div><div class="thanks-item" onclick="window.open('https://www.deepseek.com','_blank')"><i class="las la-brain thanks-icon"></i><span class="text-xs">DeepSeek</span></div><div class="thanks-item" onclick="window.open('https://www.wps.cn','_blank')"><i class="las la-file-alt thanks-icon"></i><span class="text-xs">金山办公</span></div><div class="thanks-item"><i class="las la-user-graduate thanks-icon"></i><span class="text-xs">钟平</span></div><div class="thanks-item"><i class="las la-user-circle thanks-icon"></i><span class="text-xs">李志顺</span></div></div></div></div></section>
+                <!-- 特别鸣谢：删除“钟平”和“李志顺” -->
+                <div class="thanks-section hover-tint" onmousemove="updateMask(event)">
+                    <h3 class="thanks-title">特别鸣谢</h3>
+                    <p class="text-gray-500 text-xs mb-3">感谢以下平台与个人的支持</p>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <div class="thanks-item" onclick="window.open('https://github.com','_blank')"><i class="lab la-github thanks-icon"></i><span class="text-xs">GitHub</span></div>
+                        <div class="thanks-item" onclick="window.open('https://www.microsoft.com','_blank')"><i class="lab la-microsoft thanks-icon"></i><span class="text-xs">Microsoft</span></div>
+                        <div class="thanks-item" onclick="window.open('https://chat.openai.com','_blank')"><i class="las la-comment-dots thanks-icon"></i><span class="text-xs">ChatGPT</span></div>
+                        <div class="thanks-item" onclick="window.open('https://www.deepseek.com','_blank')"><i class="las la-brain thanks-icon"></i><span class="text-xs">DeepSeek</span></div>
+                        <div class="thanks-item" onclick="window.open('https://www.wps.cn','_blank')"><i class="las la-file-alt thanks-icon"></i><span class="text-xs">金山办公</span></div>
+                        <!-- 以下两项已删除 -->
+                        <!-- <div class="thanks-item"><i class="las la-user-graduate thanks-icon"></i><span class="text-xs">钟平</span></div> -->
+                        <!-- <div class="thanks-item"><i class="las la-user-circle thanks-icon"></i><span class="text-xs">李志顺</span></div> -->
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <footer class="bg-dark text-white py-8"><div class="container"><div class="grid md:grid-cols-4 gap-5 mb-5"><div><h3 class="text-base font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-xs">实用工具 · 有趣游戏 · 教育文化</p></div><div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link">首页</a></li><li><a href="#about" class="footer-link">关于米遇安</a></li><li><a href="#team" class="footer-link">核心成员</a></li><li><a href="#" onclick="openSection('tools'); return false;" class="footer-link">工具分区</a></li><li><a href="#" onclick="openSection('games'); return false;" class="footer-link">娱乐分区</a></li><li><a href="#" onclick="openSection('education'); return false;" class="footer-link">教育分区</a></li><li><a href="#contact" class="footer-link">联系我们</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">产品系列</h3><ul class="space-y-1 text-xs"><li><a class="footer-link cursor-pointer" onclick="openSection('tools')">工具分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('games')">娱乐分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('education')">教育分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('others')">其他分区</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">联系方式</h3><ul class="space-y-1 text-xs"><li><i class="las la-map-marker-alt w-4"></i> 桂林市第一中学</li><li><i class="las la-phone w-4"></i> +86 152 0773 8425</li><li><i class="las la-envelope w-4"></i> 3493792731@qq.com</li></ul></div></div><div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p>&copy; 2026 米遇安 · 保留所有权利</p><div class="flex justify-center gap-4 mt-1"><a href="#" class="legal-link" onclick="window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); return false;">用户协议</a><a href="#" class="legal-link" onclick="window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); return false;">隐私政策</a></div></div></div></footer>
     </main>
 
-    <!-- ===== 工具分区（无变化） ===== -->
+    <!-- ===== 工具分区 ===== -->
     <div id="toolsSection" class="section-page">
         <div class="section-content p-5 max-w-6xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1>
@@ -1748,7 +1833,7 @@
         </div>
     </div>
 
-    <!-- ===== 娱乐分区（新增“学海”独立游戏卡片） ===== -->
+    <!-- ===== 娱乐分区 ===== -->
     <div id="gamesSection" class="section-page">
         <div class="section-content p-5 max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center">娱乐分区</h1>
@@ -1790,7 +1875,7 @@
                 <button class="btn-primary text-xs mt-1" onclick="window.open('https://feng34937.github.io/miyuan/games/isleguard', '_blank')">开始游玩</button>
             </div>
 
-            <!-- ===== 新增：学海（肉鸽类游戏） ===== -->
+            <!-- 学海 · 肉鸽游戏 -->
             <div class="standalone-game-card hover-tint mt-5" onmousemove="updateMask(event)">
                 <div class="flex items-center gap-3 mb-2 w-full justify-center"><i class="las la-book-open text-3xl text-primary"></i><h2 class="text-lg font-bold">学海 · 肉鸽游戏</h2></div>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">学海无涯，随机冒险，在知识的海洋中挑战自我，每一局都是全新体验。</p>
@@ -1802,7 +1887,7 @@
     <!-- 教育分区 -->
     <div id="educationSection" class="section-page"><div class="section-content p-5 max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-primary text-center">教育分区</h1><p class="text-center text-gray-600 text-sm mb-4">启迪智慧 · 传承文化</p><div class="demo-card hover-tint" onmousemove="updateMask(event)"><i class="las la-landmark demo-icon"></i><h3 class="text-xl font-bold mb-2">米遇安文化</h3><p class="text-gray-600 text-sm leading-relaxed mb-3">米遇安文化致力于传播优秀的教育理念，融合传统智慧与现代科技，为学习者提供有深度、有温度的文化内容。</p><button class="btn-primary text-sm mt-4" onclick="window.open('https://feng34937.github.io/miyuan/education/culture', '_blank')">了解更多 →</button></div></div></div>
 
-    <!-- 其他分区（已包含“米遇安硕普”，链接已更新） -->
+    <!-- 其他分区 -->
     <div id="othersSection" class="section-page">
         <div class="section-content p-5 max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center">其他分区</h1>
@@ -1908,7 +1993,7 @@
         if (overlay) overlay.addEventListener('click', closeSidebar);
         sidebarLinks.forEach(link => link.addEventListener('click', closeSidebar));
 
-        // ===== 团队动态轮播（更新 totalSlides = 5） =====
+        // ===== 团队动态轮播（5项） =====
         let currentSlide = 0,
             totalSlides = 5,
             track = document.getElementById('carouselTrack'),
