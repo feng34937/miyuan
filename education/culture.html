@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>米遇安文化 · 筹备中</title>
+    <!-- 网站标签页图标 -->
+    <link rel="icon" href="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png">
     <!-- Tailwind + Line Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -29,31 +31,32 @@
                         full: '9999px',
                     },
                     keyframes: {
-                        float: { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-6px)'} },
-                        gradientShift: { '0%':{backgroundPosition:'0% 50%'}, '50%':{backgroundPosition:'100% 50%'}, '100%':{backgroundPosition:'0% 50%'} },
-                        fadeInUp: { '0%':{opacity:'0',transform:'translateY(20px)'}, '100%':{opacity:'1',transform:'translateY(0)'} }
+                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
+                        gradientShift: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } },
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        modalSlideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
                     },
                     animation: {
                         float: 'float 5s ease-in-out infinite',
                         gradientShift: 'gradientShift 8s ease infinite',
                         fadeInUp: 'fadeInUp 0.6s cubic-bezier(0.2,0.9,0.3,1) forwards',
+                        modalSlideUp: 'modalSlideUp 0.25s cubic-bezier(0.2,0.9,0.4,1) forwards'
                     }
                 }
             }
         }
     </script>
     <style>
+        /* ===== 基础重置与直角强制 ===== */
         * { scroll-behavior: smooth; }
-        
-        /* 强制直角，保留圆形头像 */
         .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded, button, [class*="rounded-"]:not(.rounded-full):not(.carousel-dot) {
             border-radius: 0px !important;
         }
         .rounded-full, .carousel-dot {
             border-radius: 9999px !important;
         }
-        
-        /* 导航栏玻璃效果 */
+
+        /* ===== 导航栏玻璃效果 ===== */
         #navbar {
             position: fixed !important;
             top: 0 !important;
@@ -74,23 +77,21 @@
         }
         .navbar-scrolled {
             background: rgba(255, 255, 255, 0.85) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
             padding: 8px 0;
         }
         .dark .navbar-scrolled {
             background: rgba(20, 22, 27, 0.92) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
         }
         #navbar .container {
             max-width: 1400px;
             padding: 0 2rem;
         }
         @media (max-width: 768px) {
-            #navbar .container {
-                padding: 0 1.25rem;
-            }
+            #navbar .container { padding: 0 1.25rem; }
         }
-        
+
         body {
             margin: 0;
             padding-top: 74px !important;
@@ -98,8 +99,8 @@
             transition: background-color 0.3s ease;
         }
         .dark body { background-color: #121212; }
-        
-        /* 移动端侧边栏遮罩 */
+
+        /* ===== 移动端侧边栏 ===== */
         .mobile-menu-overlay {
             position: fixed;
             top: 0;
@@ -117,8 +118,6 @@
             opacity: 1;
             visibility: visible;
         }
-        
-        /* 侧边栏样式 - iOS 26玻璃效果 */
         .mobile-sidebar {
             position: fixed;
             top: 0;
@@ -213,19 +212,32 @@
             border-top-color: rgba(255, 255, 255, 0.1);
             color: #9ca3af;
         }
-        
-        /* 隐藏原有的移动端菜单 */
         #mobileMenu {
             display: none !important;
         }
-        
-        .dark .bg-secondary { background-color: #1a1c1e; }
-        .dark .bg-white { background-color: #1e1f22; }
-        .dark .text-dark { color: #f0f0f0; }
-        .dark .text-gray-600, .dark .text-gray-700 { color: #a0a0a0 !important; }
-        .dark .text-primary { color: #5aa9e6 !important; }
-        .dark .border-gray-100 { border-color: #2a2a2a; }
-        
+
+        /* ===== 暗色模式通用 ===== */
+        .dark .bg-secondary {
+            background-color: #1a1c1e;
+        }
+        .dark .bg-white {
+            background-color: #1e1f22;
+        }
+        .dark .text-dark {
+            color: #f0f0f0;
+        }
+        .dark .text-gray-600,
+        .dark .text-gray-700 {
+            color: #a0a0a0 !important;
+        }
+        .dark .text-primary {
+            color: #5aa9e6 !important;
+        }
+        .dark .border-gray-100 {
+            border-color: #2a2a2a;
+        }
+
+        /* ===== 动态渐变文字 ===== */
         .dynamic-gradient-text {
             background: linear-gradient(90deg, #0078D7, #2b88d9, #0078D7, #005a9e, #0078D7);
             background-size: 300% 300%;
@@ -240,11 +252,19 @@
             background: linear-gradient(90deg, #5aa9e6, #7bb3e0, #5aa9e6, #3a7ca5, #5aa9e6);
             background-size: 300% 300%;
         }
-        
-        .hero-title { font-size: 3rem; line-height: 1.2; }
-        @media (min-width: 768px) { .hero-title { font-size: 4rem; } }
-        @media (min-width: 1024px) { .hero-title { font-size: 5rem; } }
-        
+
+        .hero-title {
+            font-size: 3rem;
+            line-height: 1.2;
+        }
+        @media (min-width: 768px) {
+            .hero-title { font-size: 4rem; }
+        }
+        @media (min-width: 1024px) {
+            .hero-title { font-size: 5rem; }
+        }
+
+        /* ===== 卡片悬停效果 ===== */
         .card-hover {
             transition: all 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             will-change: transform, box-shadow;
@@ -258,14 +278,14 @@
         }
         .card-hover:hover {
             transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 25px 35px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,120,215,0.2) !important;
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 120, 215, 0.2) !important;
             background: rgba(255, 255, 255, 0.94);
         }
         .dark .card-hover:hover {
             background: rgba(40, 42, 48, 0.94);
-            box-shadow: 0 25px 35px -12px rgba(0,0,0,0.3), 0 0 0 1px rgba(90,169,230,0.3) !important;
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(90, 169, 230, 0.3) !important;
         }
-        
+
         .hover-tint {
             position: relative;
             isolation: isolate;
@@ -275,19 +295,25 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0,120,215,0.25) 0%, rgba(0,120,215,0.08) 40%, transparent 75%);
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 120, 215, 0.25) 0%, rgba(0, 120, 215, 0.08) 40%, transparent 75%);
             opacity: 0;
-            transition: opacity 0.5s cubic-bezier(0.2,0.9,0.4,1);
+            transition: opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
             pointer-events: none;
             z-index: 1;
             border-radius: inherit;
         }
         .dark .hover-tint::before {
-            background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(90,169,230,0.32) 0%, rgba(90,169,230,0.1) 40%, transparent 75%);
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(90, 169, 230, 0.32) 0%, rgba(90, 169, 230, 0.1) 40%, transparent 75%);
         }
-        .hover-tint:hover::before { opacity: 1; }
-        .hover-tint > * { position: relative; z-index: 2; }
-        
+        .hover-tint:hover::before {
+            opacity: 1;
+        }
+        .hover-tint>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== Hero 区域 ===== */
         .hero-section {
             position: relative;
             isolation: isolate;
@@ -298,16 +324,21 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at var(--hero-x,50%) var(--hero-y,50%), rgba(0,120,215,0.15) 0%, rgba(0,120,215,0.04) 45%, transparent 80%);
+            background: radial-gradient(circle at var(--hero-x, 50%) var(--hero-y, 50%), rgba(0, 120, 215, 0.15) 0%, rgba(0, 120, 215, 0.04) 45%, transparent 80%);
             opacity: 0;
             transition: opacity 0.6s ease;
             pointer-events: none;
             z-index: 1;
         }
-        .hero-section:hover::before { opacity: 1; }
-        .hero-section > * { position: relative; z-index: 2; }
-        
-        /* 筹备中占位卡片 */
+        .hero-section:hover::before {
+            opacity: 1;
+        }
+        .hero-section>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== 占位卡片 ===== */
         .placeholder-card {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(12px);
@@ -334,29 +365,94 @@
             animation: float 4s ease-in-out infinite;
         }
         .dark .placeholder-icon { color: #5aa9e6; }
-        
+
+        /* ===== 按钮 ===== */
         .btn-primary {
-            background: #0078D7; color: white; padding: 0.6rem 1.4rem;
-            transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1);
-            display: inline-block; font-size: 0.875rem; font-weight: 500;
-            border: none; cursor: pointer; position: relative; overflow: hidden;
+            background: #0078D7;
+            color: white;
+            padding: 0.6rem 1.4rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: inline-block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
         .btn-primary::after {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 0; height: 0; background: rgba(255,255,255,0.3);
-            border-radius: 50%; transform: translate(-50%,-50%);
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
             transition: width 0.4s, height 0.4s;
         }
-        .btn-primary:active::after { width: 200px; height: 200px; }
-        .btn-primary:hover { background: #005a9e; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,120,215,0.3); }
-        .dark .btn-primary { background: #5aa9e6; color: #121212; }
-        .dark .btn-primary:hover { background: #7bb3e0; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(90,169,230,0.3); }
-        
-        .footer-link, .legal-link { cursor: pointer; transition: all 0.25s ease; color: #9ca3af; }
-        .footer-link:hover, .legal-link:hover { color: #0078D7 !important; transform: translateX(3px); }
-        
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-        @media (max-width: 768px) { .container { padding: 0 1rem; } }
+        .btn-primary:active::after {
+            width: 200px;
+            height: 200px;
+        }
+        .btn-primary:hover {
+            background: #005a9e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 120, 215, 0.3);
+        }
+        .dark .btn-primary {
+            background: #5aa9e6;
+            color: #121212;
+        }
+        .dark .btn-primary:hover {
+            background: #7bb3e0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(90, 169, 230, 0.3);
+        }
+
+        .btn-outline {
+            border: 1.5px solid #0078D7;
+            color: #0078D7;
+            padding: 0.6rem 1.4rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            background: transparent;
+            font-weight: 500;
+        }
+        .btn-outline:hover {
+            background: rgba(0, 120, 215, 0.08);
+            transform: translateY(-2px);
+        }
+        .dark .btn-outline {
+            border-color: #5aa9e6;
+            color: #5aa9e6;
+        }
+        .dark .btn-outline:hover {
+            background: rgba(90, 169, 230, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .footer-link, .legal-link {
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: #9ca3af;
+        }
+        .footer-link:hover, .legal-link:hover {
+            color: #0078D7 !important;
+            transform: translateX(3px);
+        }
+        .dark .footer-link:hover, .dark .legal-link:hover {
+            color: #5aa9e6 !important;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .container { padding: 0 1rem; }
+        }
     </style>
 </head>
 <body class="font-inter text-dark antialiased">
@@ -365,12 +461,12 @@
     <div class="mobile-sidebar" id="mobileSidebar">
         <div class="mobile-sidebar-header">
             <h3>米遇安文化</h3>
-            <button class="mobile-sidebar-close" id="closeSidebarBtn"><i class="la la-times"></i></button>
+            <button class="mobile-sidebar-close" id="closeSidebarBtn"><i class="las la-times"></i></button>
         </div>
         <div class="mobile-sidebar-nav">
-            <a href="#home"><i class="la la-home mr-2"></i>首页</a>
-            <a href="#articles"><i class="la la-book-open mr-2"></i>文化文章</a>
-            <a href="#contact"><i class="la la-envelope mr-2"></i>联系我们</a>
+            <a href="#home"><i class="las la-home mr-2"></i>首页</a>
+            <a href="#articles"><i class="las la-book-open mr-2"></i>文化文章</a>
+            <a href="#contact"><i class="las la-envelope mr-2"></i>联系我们</a>
         </div>
         <div class="mobile-sidebar-footer">
             <p>© 2026 米遇安文化</p>
@@ -380,17 +476,20 @@
     <nav id="navbar">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center gap-6">
-                <a href="#" class="text-xl font-black text-primary tracking-tight hover:opacity-80 transition">米遇安文化</a>
+                <a href="#" class="flex items-center gap-2 text-xl text-primary tracking-tight hover:opacity-80 transition" style="font-family: 'Microsoft JhengHei', '微软正黑', sans-serif; font-weight: normal;">
+                    <img src="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png" alt="米遇安" class="h-8 w-auto">
+                    米遇安文化
+                </a>
             </div>
             <div class="hidden md:flex items-center space-x-7 text-sm font-medium">
-                <a href="#home" class="hover:text-primary transition"><i class="la la-home mr-1"></i>首页</a>
-                <a href="#articles" class="hover:text-primary transition"><i class="la la-book-open mr-1"></i>文化文章</a>
-                <a href="#contact" class="hover:text-primary transition"><i class="la la-envelope mr-1"></i>联系我们</a>
-                <button id="darkModeToggle" class="p-1.5 ml-2"><i id="darkModeIcon" class="la la-moon text-primary text-sm"></i></button>
+                <a href="#home" class="hover:text-primary transition"><i class="las la-home mr-1"></i>首页</a>
+                <a href="#articles" class="hover:text-primary transition"><i class="las la-book-open mr-1"></i>文化文章</a>
+                <a href="#contact" class="hover:text-primary transition"><i class="las la-envelope mr-1"></i>联系我们</a>
+                <button id="darkModeToggle" class="p-1.5 ml-2"><i id="darkModeIcon" class="las la-moon text-primary text-sm"></i></button>
             </div>
             <div class="flex items-center gap-4 md:hidden">
-                <button id="darkModeToggleMobile"><i id="darkModeIconMobile" class="la la-moon text-primary"></i></button>
-                <button id="menuBtn" class="text-lg"><i class="la la-bars"></i></button>
+                <button id="darkModeToggleMobile"><i id="darkModeIconMobile" class="las la-moon text-primary"></i></button>
+                <button id="menuBtn" class="text-lg"><i class="las la-bars"></i></button>
             </div>
         </div>
         <div id="mobileMenu" class="hidden"></div>
@@ -412,7 +511,7 @@
             <div class="container max-w-3xl mx-auto">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">文化文章</h2>
                 <div class="placeholder-card hover-tint" onmousemove="updateMask(event)">
-                    <i class="la la-cog placeholder-icon"></i>
+                    <i class="las la-cog placeholder-icon"></i>
                     <h3 class="text-2xl font-bold text-primary mb-3">正在筹备中</h3>
                     <p class="text-gray-600 dark:text-gray-400 text-base leading-relaxed max-w-md mx-auto">
                         米遇安文化正在精心打磨一系列深度文章，涵盖历史、语言、民俗与哲思。<br>
@@ -420,7 +519,7 @@
                     </p>
                     <div class="mt-6">
                         <span class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                            <i class="la la-clock"></i> 预计上线：2026年秋季
+                            <i class="las la-clock"></i> 预计上线：2026年秋季
                         </span>
                     </div>
                 </div>
@@ -433,9 +532,9 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">保持联系</h2>
                 <p class="text-center text-gray-600 text-sm mb-8">任何想法、合作或疑问，欢迎找到我们</p>
                 <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-4 bg-secondary p-5">
-                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="la la-map-marker-alt text-primary"></i></div><div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div></div>
-                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="la la-phone text-primary"></i></div><div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div></div>
-                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="la la-envelope text-primary"></i></div><div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div></div>
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-map-marker-alt text-primary"></i></div><div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div></div>
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-phone text-primary"></i></div><div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div></div>
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-envelope text-primary"></i></div><div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div></div>
                 </div>
             </div>
         </section>
@@ -444,10 +543,10 @@
             <div class="container">
                 <div class="grid md:grid-cols-3 gap-5 mb-5">
                     <div><h3 class="text-base font-bold mb-2 text-primary">米遇安文化</h3><p class="text-gray-400 text-xs">深入文化内涵，探究文明本质。</p></div>
-                    <div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link"><i class="la la-home mr-1"></i>首页</a></li><li><a href="#articles" class="footer-link"><i class="la la-book-open mr-1"></i>文化文章</a></li><li><a href="#contact" class="footer-link"><i class="la la-envelope mr-1"></i>联系我们</a></li></ul></div>
-                    <div><h3 class="font-bold mb-2 text-xs">关于我们</h3><p class="text-xs text-gray-400">校园文化品牌，专注历史与跨学科知识传播。</p><div class="flex gap-4 mt-2"><a href="#" class="legal-link text-xs" onclick="alert('隐私政策：我们尊重您的隐私，仅用于优化体验。'); return false;"><i class="la la-lock mr-1"></i>隐私政策</a><a href="#" class="legal-link text-xs" onclick="alert('用户协议：访问本网站即表示同意遵守相关法律法规。'); return false;"><i class="la la-file-contract mr-1"></i>用户协议</a></div></div>
+                    <div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link"><i class="las la-home mr-1"></i>首页</a></li><li><a href="#articles" class="footer-link"><i class="las la-book-open mr-1"></i>文化文章</a></li><li><a href="#contact" class="footer-link"><i class="las la-envelope mr-1"></i>联系我们</a></li></ul></div>
+                    <div><h3 class="font-bold mb-2 text-xs">关于我们</h3><p class="text-xs text-gray-400">校园文化品牌，专注历史与跨学科知识传播。</p><div class="flex gap-4 mt-2"><a href="#" class="legal-link text-xs" onclick="alert('隐私政策：我们尊重您的隐私，仅用于优化体验。'); return false;"><i class="las la-lock mr-1"></i>隐私政策</a><a href="#" class="legal-link text-xs" onclick="alert('用户协议：访问本网站即表示同意遵守相关法律法规。'); return false;"><i class="las la-file-contract mr-1"></i>用户协议</a></div></div>
                 </div>
-                <div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p><i class="la la-copyright mr-1"></i> 2026 米遇安文化 · 探寻文明脉络</p></div>
+                <div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p><i class="las la-copyright mr-1"></i> 2026 米遇安文化 · 探寻文明脉络</p></div>
             </div>
         </footer>
     </main>
@@ -457,9 +556,9 @@
         function setThemeFromSystem() {
             const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.classList.toggle('dark', isDark);
-            ['darkModeIcon','darkModeIconMobile'].forEach(id => {
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.className = isDark ? 'la la-sun text-primary text-sm' : 'la la-moon text-primary text-sm';
+                if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
             });
             localStorage.setItem('darkMode', isDark);
         }
@@ -469,26 +568,26 @@
         if (savedDark !== null) {
             const isDark = savedDark === 'true';
             document.documentElement.classList.toggle('dark', isDark);
-            ['darkModeIcon','darkModeIconMobile'].forEach(id => {
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.className = isDark ? 'la la-sun text-primary text-sm' : 'la la-moon text-primary text-sm';
+                if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
             });
         } else { setThemeFromSystem(); }
         const toggleDark = () => {
             const isDark = !document.documentElement.classList.contains('dark');
             document.documentElement.classList.toggle('dark', isDark);
-            ['darkModeIcon','darkModeIconMobile'].forEach(id => {
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.className = isDark ? 'la la-sun text-primary text-sm' : 'la la-moon text-primary text-sm';
+                if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
             });
             localStorage.setItem('darkMode', isDark);
         };
         document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
         document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
-        
+
         // 滚动导航栏
         window.addEventListener('scroll', () => document.getElementById('navbar')?.classList.toggle('navbar-scrolled', window.scrollY > 30));
-        
+
         // 侧边栏控制
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('mobileSidebar');
@@ -500,7 +599,7 @@
         if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
         if (overlay) overlay.addEventListener('click', closeSidebar);
         document.querySelectorAll('.mobile-sidebar-nav a').forEach(link => link.addEventListener('click', closeSidebar));
-        
+
         // 鼠标光晕
         function updateMask(ev) {
             let el = ev.currentTarget, rect = el.getBoundingClientRect();
