@@ -10,6 +10,8 @@
     <script src="https://cdn.tailwindcss.com">
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
+    <!-- 引入 Font Awesome 6 用于社交媒体品牌图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -1691,6 +1693,26 @@
                         </div>
                     </div>
                     <div class="text-center mt-8"><a href="https://www.kdocs.cn/l/coqzdkzo7y8z" target="_blank" class="btn-more text-sm">更多故事 <i class="las la-arrow-right"></i></a></div>
+
+                    <!-- ===== 新增：社交媒体区域 ===== -->
+                    <div class="thanks-section hover-tint mt-8" onmousemove="updateMask(event)">
+                        <h3 class="thanks-title">关注我们</h3>
+                        <p class="text-gray-500 text-xs mb-3">在以下平台找到我们</p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="https://www.youtube.com/@feng34937" target="_blank" class="thanks-item" rel="noopener noreferrer">
+                                <i class="fab fa-youtube thanks-icon"></i>
+                                <span class="text-xs">YouTube</span>
+                            </a>
+                            <a href="https://b23.tv/AJWaQ2E" target="_blank" class="thanks-item" rel="noopener noreferrer">
+                                <i class="fab fa-bilibili thanks-icon"></i>
+                                <span class="text-xs">哔哩哔哩</span>
+                            </a>
+                            <a href="https://x.com/Fengfeng34937" target="_blank" class="thanks-item" rel="noopener noreferrer">
+                                <i class="fab fa-x-twitter thanks-icon"></i>
+                                <span class="text-xs">X</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1834,7 +1856,7 @@
                     <p class="text-xs text-gray-500 mb-3">轻量级 Markdown 编辑，实时预览，高效写作。</p>
                     <button class="btn-primary text-xs" onclick="window.open('https://feng34937.github.io/miyuan/tools/markdown_editor', '_blank')">打开编辑器</button>
                 </div>
-                <!-- ===== 新增：LaTeX 编辑器 ===== -->
+                <!-- LaTeX 编辑器 -->
                 <div class="demo-card hover-tint" onmousemove="updateMask(event)">
                     <i class="las la-sigma demo-icon"></i>
                     <h3 class="text-lg font-bold mb-1">LaTeX 编辑器</h3>
