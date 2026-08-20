@@ -6,8 +6,9 @@
     <title>米遇安文化 · 筹备中</title>
     <!-- 网站标签页图标 -->
     <link rel="icon" href="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png">
-    <!-- Tailwind + Line Awesome -->
+    <!-- Tailwind + Font Awesome + Line Awesome (Line Awesome 保留其他图标) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
     <script>
         tailwind.config = {
@@ -338,33 +339,102 @@
             z-index: 2;
         }
 
-        /* ===== 占位卡片 ===== */
-        .placeholder-card {
+        /* ===== 选项卡样式 ===== */
+        .tab-btn {
+            padding: 0.5rem 1.2rem;
+            background: transparent;
+            border: 1.5px solid transparent;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            border-radius: 0px !important;
+        }
+        .tab-btn:hover {
+            color: #0078D7;
+            background: rgba(0, 120, 215, 0.06);
+            border-color: rgba(0, 120, 215, 0.15);
+        }
+        .tab-btn.active {
+            color: #0078D7;
+            background: rgba(0, 120, 215, 0.08);
+            border-color: #0078D7;
+            box-shadow: inset 0 -2px 0 #0078D7;
+        }
+        .dark .tab-btn {
+            color: #9ca3af;
+        }
+        .dark .tab-btn:hover {
+            color: #5aa9e6;
+            background: rgba(90, 169, 230, 0.1);
+            border-color: rgba(90, 169, 230, 0.2);
+        }
+        .dark .tab-btn.active {
+            color: #5aa9e6;
+            background: rgba(90, 169, 230, 0.15);
+            border-color: #5aa9e6;
+            box-shadow: inset 0 -2px 0 #5aa9e6;
+        }
+
+        /* ===== 文章卡片网格 ===== */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .article-card {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(12px);
             border: 0.5px solid rgba(255, 255, 255, 0.3);
             border-left: 4px solid #0078D7;
-            padding: 3rem 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            padding: 1.25rem;
         }
-        .dark .placeholder-card {
+        .article-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 15px 30px -12px rgba(0,0,0,0.1);
+        }
+        .dark .article-card {
             background: rgba(30, 31, 34, 0.8);
             border-color: rgba(255, 255, 255, 0.06);
             border-left-color: #5aa9e6;
         }
-        .placeholder-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px -12px rgba(0,0,0,0.08);
+        .dark .article-card:hover {
+            background: rgba(40, 42, 48, 0.92);
+            box-shadow: 0 15px 30px -12px rgba(90,169,230,0.2);
         }
-        .placeholder-icon {
-            font-size: 3.5rem;
+
+        .article-card .article-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .dark .article-card .article-title {
+            color: #f0f0f0;
+        }
+        .article-card .article-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             color: #0078D7;
-            margin-bottom: 1rem;
-            display: inline-block;
-            animation: float 4s ease-in-out infinite;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: gap 0.2s ease;
         }
-        .dark .placeholder-icon { color: #5aa9e6; }
+        .article-card .article-link:hover {
+            gap: 12px;
+            color: #005a9e;
+        }
+        .dark .article-card .article-link {
+            color: #5aa9e6;
+        }
+        .dark .article-card .article-link:hover {
+            color: #7bb3e0;
+        }
 
         /* ===== 按钮 ===== */
         .btn-primary {
@@ -506,21 +576,136 @@
             </div>
         </section>
 
-        <!-- 文章占位区域：正在筹备中 -->
+        <!-- 文化文章区域（含选项卡） -->
         <section id="articles" class="py-16 md:py-20">
-            <div class="container max-w-3xl mx-auto">
+            <div class="container">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">文化文章</h2>
-                <div class="placeholder-card hover-tint" onmousemove="updateMask(event)">
-                    <i class="las la-cog placeholder-icon"></i>
-                    <h3 class="text-2xl font-bold text-primary mb-3">正在筹备中</h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-base leading-relaxed max-w-md mx-auto">
-                        米遇安文化正在精心打磨一系列深度文章，涵盖历史、语言、民俗与哲思。<br>
-                        敬请期待，我们很快与你见面。
-                    </p>
-                    <div class="mt-6">
-                        <span class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                            <i class="las la-clock"></i> 预计上线：2026年秋季
-                        </span>
+                <p class="text-center text-gray-600 text-sm mb-8">选择平台，浏览对应内容</p>
+
+                <!-- 选项卡（使用 Font Awesome 图标） -->
+                <div class="flex flex-wrap justify-center gap-2 mb-8">
+                    <button class="tab-btn active" data-tab="youtube"><i class="fab fa-youtube mr-1"></i>YouTube</button>
+                    <button class="tab-btn" data-tab="bilibili"><i class="fab fa-bilibili mr-1"></i>哔哩哔哩</button>
+                    <button class="tab-btn" data-tab="douyin"><i class="fab fa-tiktok mr-1"></i>抖音</button>
+                    <button class="tab-btn" data-tab="x"><i class="fab fa-x-twitter mr-1"></i>X</button>
+                    <button class="tab-btn" data-tab="qq"><i class="fab fa-qq mr-1"></i>QQ频道</button>
+                </div>
+
+                <!-- 内容容器 -->
+                <div id="tabContent" class="max-w-6xl mx-auto">
+                    <!-- YouTube -->
+                    <div class="tab-pane" data-tab="youtube">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 哔哩哔哩 -->
+                    <div class="tab-pane hidden" data-tab="bilibili">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 抖音 -->
+                    <div class="tab-pane hidden" data-tab="douyin">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- X (Twitter) -->
+                    <div class="tab-pane hidden" data-tab="x">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QQ频道 -->
+                    <div class="tab-pane hidden" data-tab="qq">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -622,6 +807,27 @@
         window.updateMask = updateMask;
         window.updateHeroMask = updateHeroMask;
         window.resetHeroMask = resetHeroMask;
+
+        // ===== 选项卡切换逻辑 =====
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const panes = document.querySelectorAll('.tab-pane');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 移除所有按钮的 active 状态
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // 隐藏所有 pane，显示对应的
+                const target = this.dataset.tab;
+                panes.forEach(pane => {
+                    pane.classList.add('hidden');
+                    if (pane.dataset.tab === target) {
+                        pane.classList.remove('hidden');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
