@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>米遇安课堂 · 筹备中</title>
+    <!-- 网站标签页图标 -->
+    <link rel="icon" href="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png">
+    <!-- Tailwind + Font Awesome + Line Awesome -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0078D7',
+                        secondary: '#F8F9FA',
+                        dark: '#212529',
+                    },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] },
+                    borderRadius: {
+                        DEFAULT: '0px',
+                        none: '0px',
+                        sm: '0px',
+                        md: '0px',
+                        lg: '0px',
+                        xl: '0px',
+                        '2xl': '0px',
+                        full: '9999px',
+                    },
+                    keyframes: {
+                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
+                        gradientShift: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' } },
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1',
+                                transform: 'translateY(0)' } },
+                        modalSlideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1',
+                                transform: 'translateY(0)' } }
+                    },
+                    animation: {
+                        float: 'float 5s ease-in-out infinite',
+                        gradientShift: 'gradientShift 8s ease infinite',
+                        fadeInUp: 'fadeInUp 0.6s cubic-bezier(0.2,0.9,0.3,1) forwards',
+                        modalSlideUp: 'modalSlideUp 0.25s cubic-bezier(0.2,0.9,0.4,1) forwards'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ===== 基础重置与直角强制 ===== */
+        * {
+            scroll-behavior: smooth;
+        }
+        .rounded-md,
+        .rounded-lg,
+        .rounded-xl,
+        .rounded-2xl,
+        .rounded,
+        button,
+        [class*="rounded-"]:not(.rounded-full):not(.carousel-dot) {
+            border-radius: 0px !important;
+        }
+        .rounded-full,
+        .carousel-dot {
+            border-radius: 9999px !important;
+        }
+
+        /* ===== 导航栏玻璃效果 ===== */
+        #navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            background: rgba(255, 255, 255, 0.72) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+            z-index: 99999 !important;
+            padding: 12px 0;
+        }
+        .dark #navbar {
+            background: rgba(20, 22, 27, 0.85) !important;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+        }
+        .navbar-scrolled {
+            background: rgba(255, 255, 255, 0.85) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+            padding: 8px 0;
+        }
+        .dark .navbar-scrolled {
+            background: rgba(20, 22, 27, 0.92) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+        }
+        #navbar .container {
+            max-width: 1400px;
+            padding: 0 2rem;
+        }
+        @media (max-width: 768px) {
+            #navbar .container {
+                padding: 0 1.25rem;
+            }
+        }
+
+        body {
+            margin: 0;
+            padding-top: 74px !important;
+            background-color: #ffffff;
+            transition: background-color 0.3s ease;
+        }
+        .dark body {
+            background-color: #121212;
+        }
+
+        /* ===== 移动端侧边栏 ===== */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 100000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 75%;
+            max-width: 400px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-left: 0.5px solid rgba(255, 255, 255, 0.5);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.08);
+            z-index: 100001;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .dark .mobile-sidebar {
+            background: rgba(25, 28, 35, 0.7);
+            backdrop-filter: blur(25px) saturate(180%);
+            border-left: 0.5px solid rgba(255, 255, 255, 0.15);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.2);
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .mobile-sidebar-header {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dark .mobile-sidebar-header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+        .mobile-sidebar-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0078D7;
+        }
+        .mobile-sidebar-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0.25rem;
+            transition: all 0.2s;
+        }
+        .mobile-sidebar-close:hover {
+            color: #0078D7;
+            transform: scale(1.05);
+        }
+        .mobile-sidebar-nav {
+            flex: 1;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .mobile-sidebar-nav a {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1f2937;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .dark .mobile-sidebar-nav a {
+            color: #f3f4f6;
+        }
+        .mobile-sidebar-nav a:hover {
+            background: rgba(0, 120, 215, 0.15);
+            color: #0078D7;
+            transform: translateX(4px);
+        }
+        .dark .mobile-sidebar-nav a:hover {
+            background: rgba(90, 169, 230, 0.2);
+            color: #5aa9e6;
+        }
+        .mobile-sidebar-footer {
+            padding: 1rem 1.25rem;
+            border-top: 0.5px solid rgba(0, 0, 0, 0.08);
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: center;
+        }
+        .dark .mobile-sidebar-footer {
+            border-top-color: rgba(255, 255, 255, 0.1);
+            color: #9ca3af;
+        }
+        #mobileMenu {
+            display: none !important;
+        }
+
+        /* ===== 暗色模式通用 ===== */
+        .dark .bg-secondary {
+            background-color: #1a1c1e;
+        }
+        .dark .bg-white {
+            background-color: #1e1f22;
+        }
+        .dark .text-dark {
+            color: #f0f0f0;
+        }
+        .dark .text-gray-600,
+        .dark .text-gray-700 {
+            color: #a0a0a0 !important;
+        }
+        .dark .text-primary {
+            color: #5aa9e6 !important;
+        }
+        .dark .border-gray-100 {
+            border-color: #2a2a2a;
+        }
+
+        /* ===== 动态渐变文字 ===== */
+        .dynamic-gradient-text {
+            background: linear-gradient(90deg, #0078D7, #2b88d9, #0078D7, #005a9e, #0078D7);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 8s ease infinite;
+            font-weight: 900;
+            display: inline-block;
+        }
+        .dark .dynamic-gradient-text {
+            background: linear-gradient(90deg, #5aa9e6, #7bb3e0, #5aa9e6, #3a7ca5, #5aa9e6);
+            background-size: 300% 300%;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            line-height: 1.2;
+        }
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: 5rem;
+            }
+        }
+
+        /* ===== 卡片悬停效果 ===== */
+        .card-hover {
+            transition: all 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            will-change: transform, box-shadow;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .card-hover {
+            background: rgba(30, 31, 34, 0.85);
+            border: 0.5px solid rgba(255, 255, 255, 0.06);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 120, 215, 0.2) !important;
+            background: rgba(255, 255, 255, 0.94);
+        }
+        .dark .card-hover:hover {
+            background: rgba(40, 42, 48, 0.94);
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(90, 169, 230, 0.3) !important;
+        }
+
+        .hover-tint {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+        }
+        .hover-tint::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 120, 215, 0.25) 0%, rgba(0, 120,
+                        215, 0.08) 40%, transparent 75%);
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
+            pointer-events: none;
+            z-index: 1;
+            border-radius: inherit;
+        }
+        .dark .hover-tint::before {
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(90, 169, 230, 0.32) 0%, rgba(90, 169,
+                        230, 0.1) 40%, transparent 75%);
+        }
+        .hover-tint:hover::before {
+            opacity: 1;
+        }
+        .hover-tint>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== Hero 区域 ===== */
+        .hero-section {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            padding: 48px 0 64px 0;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--hero-x, 50%) var(--hero-y, 50%), rgba(0, 120, 215, 0.15) 0%, rgba(0,
+                        120, 215, 0.04) 45%, transparent 80%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .hero-section:hover::before {
+            opacity: 1;
+        }
+        .hero-section>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== 选项卡样式 ===== */
+        .tab-btn {
+            padding: 0.5rem 1.2rem;
+            background: transparent;
+            border: 1.5px solid transparent;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            border-radius: 0px !important;
+        }
+        .tab-btn:hover {
+            color: #0078D7;
+            background: rgba(0, 120, 215, 0.06);
+            border-color: rgba(0, 120, 215, 0.15);
+        }
+        .tab-btn.active {
+            color: #0078D7;
+            background: rgba(0, 120, 215, 0.08);
+            border-color: #0078D7;
+            box-shadow: inset 0 -2px 0 #0078D7;
+        }
+        .dark .tab-btn {
+            color: #9ca3af;
+        }
+        .dark .tab-btn:hover {
+            color: #5aa9e6;
+            background: rgba(90, 169, 230, 0.1);
+            border-color: rgba(90, 169, 230, 0.2);
+        }
+        .dark .tab-btn.active {
+            color: #5aa9e6;
+            background: rgba(90, 169, 230, 0.15);
+            border-color: #5aa9e6;
+            box-shadow: inset 0 -2px 0 #5aa9e6;
+        }
+
+        /* ===== 文章卡片网格 ===== */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .article-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            border-left: 4px solid #0078D7;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            padding: 1.25rem;
+        }
+        .article-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 15px 30px -12px rgba(0, 0, 0, 0.1);
+        }
+        .dark .article-card {
+            background: rgba(30, 31, 34, 0.8);
+            border-color: rgba(255, 255, 255, 0.06);
+            border-left-color: #5aa9e6;
+        }
+        .dark .article-card:hover {
+            background: rgba(40, 42, 48, 0.92);
+            box-shadow: 0 15px 30px -12px rgba(90, 169, 230, 0.2);
+        }
+
+        .article-card .article-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .dark .article-card .article-title {
+            color: #f0f0f0;
+        }
+        .article-card .article-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #0078D7;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: gap 0.2s ease;
+        }
+        .article-card .article-link:hover {
+            gap: 12px;
+            color: #005a9e;
+        }
+        .dark .article-card .article-link {
+            color: #5aa9e6;
+        }
+        .dark .article-card .article-link:hover {
+            color: #7bb3e0;
+        }
+
+        /* ===== 按钮 ===== */
+        .btn-primary {
+            background: #0078D7;
+            color: white;
+            padding: 0.6rem 1.4rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: inline-block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+        .btn-primary:active::after {
+            width: 200px;
+            height: 200px;
+        }
+        .btn-primary:hover {
+            background: #005a9e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 120, 215, 0.3);
+        }
+        .dark .btn-primary {
+            background: #5aa9e6;
+            color: #121212;
+        }
+        .dark .btn-primary:hover {
+            background: #7bb3e0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(90, 169, 230, 0.3);
+        }
+
+        .btn-outline {
+            border: 1.5px solid #0078D7;
+            color: #0078D7;
+            padding: 0.6rem 1.4rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            background: transparent;
+            font-weight: 500;
+        }
+        .btn-outline:hover {
+            background: rgba(0, 120, 215, 0.08);
+            transform: translateY(-2px);
+        }
+        .dark .btn-outline {
+            border-color: #5aa9e6;
+            color: #5aa9e6;
+        }
+        .dark .btn-outline:hover {
+            background: rgba(90, 169, 230, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .footer-link,
+        .legal-link {
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: #9ca3af;
+        }
+        .footer-link:hover,
+        .legal-link:hover {
+            color: #0078D7 !important;
+            transform: translateX(3px);
+        }
+        .dark .footer-link:hover,
+        .dark .legal-link:hover {
+            color: #5aa9e6 !important;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter text-dark antialiased">
+    <!-- 侧边栏 -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <h3>米遇安课堂</h3>
+            <button class="mobile-sidebar-close" id="closeSidebarBtn"><i class="las la-times"></i></button>
+        </div>
+        <div class="mobile-sidebar-nav">
+            <a href="#home"><i class="las la-home mr-2"></i>首页</a>
+            <a href="#articles"><i class="las la-book-open mr-2"></i>课堂文章</a>
+            <a href="#contact"><i class="las la-envelope mr-2"></i>联系我们</a>
+        </div>
+        <div class="mobile-sidebar-footer">
+            <p>© 2026 米遇安课堂</p>
+        </div>
+    </div>
+
+    <nav id="navbar">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-6">
+                <a href="#" class="flex items-center gap-2 text-xl text-primary tracking-tight hover:opacity-80 transition" style="font-family: 'Microsoft JhengHei', '微软正黑', sans-serif; font-weight: normal;">
+                    <img src="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png" alt="米遇安" class="h-8 w-auto">
+                    米遇安课堂
+                </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-7 text-sm font-medium">
+                <a href="#home" class="hover:text-primary transition"><i class="las la-home mr-1"></i>首页</a>
+                <a href="#articles" class="hover:text-primary transition"><i class="las la-book-open mr-1"></i>课堂文章</a>
+                <a href="#contact" class="hover:text-primary transition"><i class="las la-envelope mr-1"></i>联系我们</a>
+                <button id="darkModeToggle" class="p-1.5 ml-2"><i id="darkModeIcon" class="las la-moon text-primary text-sm"></i></button>
+            </div>
+            <div class="flex items-center gap-4 md:hidden">
+                <button id="darkModeToggleMobile"><i id="darkModeIconMobile" class="las la-moon text-primary"></i></button>
+                <button id="menuBtn" class="text-lg"><i class="las la-bars"></i></button>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden"></div>
+    </nav>
+
+    <main>
+        <!-- 英雄区 -->
+        <section id="home" class="bg-secondary">
+            <div class="hero-section" onmousemove="updateHeroMask(event)" onmouseleave="resetHeroMask(event)">
+                <div class="container text-center relative z-10 py-12 md:py-16">
+                    <h1 class="hero-title font-black">
+                        <span class="dynamic-gradient-text">探索 · 思考 · 成长</span><br>
+                        <span class="text-primary block mt-2 animate-float">在课堂中遇见文明</span>
+                    </h1>
+                    <p class="text-base md:text-lg max-w-2xl mx-auto mt-4 text-gray-600 dark:text-gray-300">
+                        米遇安课堂 · 以知识为舟，以思考为桨，在知识的海洋中启航。每一课，都是一次新的发现。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 课堂文章区域（含选项卡） -->
+        <section id="articles" class="py-16 md:py-20">
+            <div class="container">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">课堂文章</h2>
+                <p class="text-center text-gray-600 text-sm mb-8">选择平台，浏览对应内容</p>
+
+                <!-- 选项卡（Font Awesome 图标） -->
+                <div class="flex flex-wrap justify-center gap-2 mb-8">
+                    <button class="tab-btn active" data-tab="youtube"><i class="fab fa-youtube mr-1"></i>YouTube</button>
+                    <button class="tab-btn" data-tab="bilibili"><i class="fab fa-bilibili mr-1"></i>哔哩哔哩</button>
+                    <button class="tab-btn" data-tab="douyin"><i class="fab fa-tiktok mr-1"></i>抖音</button>
+                    <button class="tab-btn" data-tab="x"><i class="fab fa-x-twitter mr-1"></i>X</button>
+                    <button class="tab-btn" data-tab="qq"><i class="fab fa-qq mr-1"></i>QQ频道</button>
+                    <!-- 新增三个 -->
+                    <button class="tab-btn" data-tab="facebook"><i class="fab fa-facebook mr-1"></i>Facebook</button>
+                    <button class="tab-btn" data-tab="instagram"><i class="fab fa-instagram mr-1"></i>Instagram</button>
+                    <button class="tab-btn" data-tab="threads"><i class="fab fa-threads mr-1"></i>Threads</button>
+                </div>
+
+                <!-- 内容容器 -->
+                <div id="tabContent" class="max-w-6xl mx-auto">
+                    <!-- YouTube -->
+                    <div class="tab-pane" data-tab="youtube">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 哔哩哔哩 -->
+                    <div class="tab-pane hidden" data-tab="bilibili">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 抖音 -->
+                    <div class="tab-pane hidden" data-tab="douyin">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- X -->
+                    <div class="tab-pane hidden" data-tab="x">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QQ频道 -->
+                    <div class="tab-pane hidden" data-tab="qq">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div class="tab-pane hidden" data-tab="facebook">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instagram -->
+                    <div class="tab-pane hidden" data-tab="instagram">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Threads -->
+                    <div class="tab-pane hidden" data-tab="threads">
+                        <div class="article-grid">
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
+                                <div class="article-title">正在筹备中</div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">内容正在精心打磨，敬请期待</p>
+                                <a href="#" class="article-link" onclick="alert('即将上线，敬请期待'); return false;">即将上线 <i class="las la-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系区域 -->
+        <section id="contact" class="py-16 md:py-20 bg-secondary">
+            <div class="container">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">保持联系</h2>
+                <p class="text-center text-gray-600 text-sm mb-8">任何想法、合作或疑问，欢迎找到我们</p>
+                <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-4 bg-secondary p-5">
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-map-marker-alt text-primary"></i></div><div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div></div>
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-phone text-primary"></i></div><div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div></div>
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-envelope text-primary"></i></div><div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-dark text-white py-8">
+            <div class="container">
+                <div class="grid md:grid-cols-3 gap-5 mb-5">
+                    <div><h3 class="text-base font-bold mb-2 text-primary">米遇安课堂</h3><p class="text-gray-400 text-xs">专注知识分享，启迪课堂思考。</p></div>
+                    <div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link"><i class="las la-home mr-1"></i>首页</a></li><li><a href="#articles" class="footer-link"><i class="las la-book-open mr-1"></i>课堂文章</a></li><li><a href="#contact" class="footer-link"><i class="las la-envelope mr-1"></i>联系我们</a></li></ul></div>
+                    <div><h3 class="font-bold mb-2 text-xs">关于我们</h3><p class="text-xs text-gray-400">校园文化品牌，专注历史与跨学科知识传播。</p><div class="flex gap-4 mt-2"><a href="#" class="legal-link text-xs" onclick="alert('隐私政策：我们尊重您的隐私，仅用于优化体验。'); return false;"><i class="las la-lock mr-1"></i>隐私政策</a><a href="#" class="legal-link text-xs" onclick="alert('用户协议：访问本网站即表示同意遵守相关法律法规。'); return false;"><i class="las la-file-contract mr-1"></i>用户协议</a></div></div>
+                </div>
+                <div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p><i class="las la-copyright mr-1"></i> 2026 米遇安课堂 · 探寻知识脉络</p></div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // 深色模式与系统同步
+        function setThemeFromSystem() {
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.classList.toggle('dark', isDark);
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
+            });
+            localStorage.setItem('darkMode', isDark);
+        }
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        darkModeMediaQuery.addEventListener('change', setThemeFromSystem);
+        const savedDark = localStorage.getItem('darkMode');
+        if (savedDark !== null) {
+            const isDark = savedDark === 'true';
+            document.documentElement.classList.toggle('dark', isDark);
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
+            });
+        } else { setThemeFromSystem(); }
+        const toggleDark = () => {
+            const isDark = !document.documentElement.classList.contains('dark');
+            document.documentElement.classList.toggle('dark', isDark);
+            ['darkModeIcon', 'darkModeIconMobile'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.className = isDark ? 'las la-sun text-primary text-sm' : 'las la-moon text-primary text-sm';
+            });
+            localStorage.setItem('darkMode', isDark);
+        };
+        document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
+        document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
+
+        // 滚动导航栏
+        window.addEventListener('scroll', () => document.getElementById('navbar')?.classList.toggle('navbar-scrolled', window
+            .scrollY > 30));
+
+        // 侧边栏控制
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('mobileSidebar');
+        const overlay = document.getElementById('mobileMenuOverlay');
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+        function openSidebar() { sidebar.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; }
+
+        function closeSidebar() { sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = ''; }
+        if (menuBtn) menuBtn.addEventListener('click', openSidebar);
+        if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+        if (overlay) overlay.addEventListener('click', closeSidebar);
+        document.querySelectorAll('.mobile-sidebar-nav a').forEach(link => link.addEventListener('click', closeSidebar));
+
+        // 鼠标光晕
+        function updateMask(ev) {
+            let el = ev.currentTarget,
+                rect = el.getBoundingClientRect();
+            let x = (ev.clientX - rect.left) / rect.width,
+                y = (ev.clientY - rect.top) / rect.height;
+            x = Math.min(1, Math.max(0, x));
+            y = Math.min(1, Math.max(0, y));
+            el.style.setProperty('--x', x * 100 + '%');
+            el.style.setProperty('--y', y * 100 + '%');
+        }
+
+        function updateHeroMask(ev) {
+            let hero = ev.currentTarget,
+                rect = hero.getBoundingClientRect();
+            let x = (ev.clientX - rect.left) / rect.width,
+                y = (ev.clientY - rect.top) / rect.height;
+            hero.style.setProperty('--hero-x', Math.min(1, Math.max(0, x)) * 100 + '%');
+            hero.style.setProperty('--hero-y', Math.min(1, Math.max(0, y)) * 100 + '%');
+        }
+
+        function resetHeroMask(ev) {
+            let hero = ev.currentTarget;
+            hero.style.setProperty('--hero-x', '50%');
+            hero.style.setProperty('--hero-y', '50%');
+        }
+        window.updateMask = updateMask;
+        window.updateHeroMask = updateHeroMask;
+        window.resetHeroMask = resetHeroMask;
+
+        // ===== 选项卡切换逻辑 =====
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const panes = document.querySelectorAll('.tab-pane');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const target = this.dataset.tab;
+                panes.forEach(pane => {
+                    pane.classList.add('hidden');
+                    if (pane.dataset.tab === target) {
+                        pane.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
