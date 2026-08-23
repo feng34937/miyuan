@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>米遇安索引 - 文件索引 & 书本目录</title>
+    <!-- Line Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
+    <style>
+        /* 全局直角 */
+        * {
+            border-radius: 0 !important;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --primary-light: #16213e;
+            --accent: #4a90d9;
+            --accent-hover: #357abd;
+            --accent-light: #e8f0fe;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --text-secondary: #6b7a8d;
+            --text-light: #95a5a6;
+            --border: #e1e8ed;
+            --highlight: #fff3cd;
+            --highlight-text: #856404;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.12);
+            --radius: 0px;
+            --radius-sm: 0px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', monospace;
+            --font-sans: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            /* 为固定状态栏预留空间 */
+            padding-bottom: 36px;
+        }
+
+        /* ========== 顶部导航栏 ========== */
+        .top-bar {
+            background: var(--primary);
+            color: #fff;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .top-bar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .top-bar .logo .logo-icon {
+            font-size: 26px;
+            animation: float 3s ease-in-out infinite;
+            color: var(--accent);
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+        .top-bar .logo span {
+            background: linear-gradient(135deg, #fff 60%, #a8d8ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .top-bar .search-wrapper {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+            margin-left: auto;
+        }
+        .top-bar .search-wrapper .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 18px;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+        .top-bar .search-wrapper input {
+            width: 100%;
+            height: 40px;
+            border: 2px solid transparent;
+            border-radius: 0;
+            padding: 0 40px 0 40px;
+            font-size: 14px;
+            font-family: var(--font-sans);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s;
+            letter-spacing: 0.3px;
+        }
+        .top-bar .search-wrapper input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .top-bar .search-wrapper input:focus {
+            background: #fff;
+            color: var(--text);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(74, 144, 217, 0.2);
+        }
+        .top-bar .search-wrapper input:focus~.search-icon {
+            color: var(--accent);
+        }
+        .top-bar .search-wrapper .clear-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 0;
+            display: none;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+        .top-bar .search-wrapper .clear-btn:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: #333;
+        }
+        .top-bar .search-wrapper .clear-btn.visible {
+            display: block;
+        }
+        .top-bar .search-wrapper input:focus~.clear-btn.visible {
+            color: #666;
+        }
+
+        .top-bar .top-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .top-bar .top-actions button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .top-bar .top-actions button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+        }
+        .top-bar .top-actions button:active {
+            transform: translateY(0);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ========== 标签页 ========== */
+        .tabs-bar {
+            background: var(--card-bg);
+            display: flex;
+            gap: 4px;
+            padding: 0 24px;
+            border-bottom: 2px solid var(--border);
+            flex-shrink: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .tabs-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .tabs-bar .tab {
+            padding: 14px 22px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.25s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-sans);
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            position: relative;
+        }
+        .tabs-bar .tab:hover {
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+        .tabs-bar .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            font-weight: 600;
+        }
+        .tabs-bar .tab .tab-badge {
+            background: var(--accent);
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 0;
+            font-weight: 600;
+            min-width: 22px;
+            text-align: center;
+        }
+
+        /* ========== 面包屑（横向单行滚动） ========== */
+        .breadcrumb-bar {
+            background: var(--card-bg);
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            min-height: 42px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            scrollbar-color: #c0c8d4 transparent;
+        }
+        .breadcrumb-bar::-webkit-scrollbar {
+            height: 4px;
+        }
+        .breadcrumb-bar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .breadcrumb-bar::-webkit-scrollbar-thumb {
+            background: #c0c8d4;
+            border-radius: 0;
+        }
+        .breadcrumb-bar .crumb {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 0;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            white-space: nowrap;
+        }
+        .breadcrumb-bar .crumb:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+        .breadcrumb-bar .crumb.current {
+            color: var(--accent);
+            font-weight: 600;
+            cursor: default;
+            background: none;
+        }
+        .breadcrumb-bar .crumb-sep {
+            color: var(--text-light);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        /* ========== 工具栏 ========== */
+        .toolbar {
+            background: var(--card-bg);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .toolbar .tool-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .toolbar .tool-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+            margin: 0 4px;
+        }
+        .toolbar button {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 7px 14px;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .toolbar button:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+        .toolbar button:active {
+            transform: scale(0.96);
+        }
+        .toolbar button .icon {
+            font-size: 15px;
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+        .tree-view-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 24px;
+            background: var(--bg);
+            scroll-behavior: smooth;
+        }
+        .tree-view-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .tree-view-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .tree-view-container::-webkit-scrollbar-thumb {
+            background: #c0c8d4;
+            border-radius: 0;
+        }
+        .tree-view-container::-webkit-scrollbar-thumb:hover {
+            background: #a0a8b4;
+        }
+
+        /* ========== 树形节点样式 ========== */
+        .tree-node {
+            position: relative;
+        }
+        .tree-node .node-row {
+            display: flex;
+            align-items: center;
+            padding: 7px 10px;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.18s;
+            gap: 6px;
+            position: relative;
+            line-height: 1.4;
+            min-height: 36px;
+        }
+        .tree-node .node-row:hover {
+            background: var(--accent-light);
+        }
+        .tree-node .node-row.selected {
+            background: #d4e4f7;
+            box-shadow: inset 0 0 0 2px var(--accent);
+            font-weight: 500;
+        }
+        .tree-node .node-row.match-highlight {
+            background: var(--highlight);
+            box-shadow: inset 0 0 0 1px #f0d060;
+        }
+        .tree-node .node-row.match-highlight:hover {
+            background: #f5e6b8;
+        }
+        .tree-node .toggle-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--text-light);
+            transition: transform 0.25s, color 0.2s;
+            flex-shrink: 0;
+            cursor: pointer;
+            border-radius: 0;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .tree-node .toggle-icon:hover {
+            color: var(--accent);
+            background: rgba(74, 144, 217, 0.1);
+        }
+        .tree-node .toggle-icon.expanded {
+            transform: rotate(90deg);
+        }
+        .tree-node .toggle-icon.no-children {
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .tree-node .node-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+        .tree-node .node-label {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text);
+            word-break: break-word;
+            letter-spacing: 0.2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .tree-node .node-label mark {
+            background: #ffe066;
+            color: #5a4400;
+            padding: 1px 3px;
+            border-radius: 0;
+            font-weight: 600;
+        }
+        .tree-node .node-badge {
+            font-size: 11px;
+            color: var(--text-light);
+            background: var(--bg);
+            padding: 3px 8px;
+            border-radius: 0;
+            flex-shrink: 0;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .tree-node .node-children {
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+            max-height: 0;
+            opacity: 0;
+        }
+        .tree-node .node-children.open {
+            max-height: 5000px;
+            opacity: 1;
+        }
+
+        /* 操作按钮始终显示 */
+        .node-actions {
+            display: flex;
+            gap: 2px;
+            flex-shrink: 0;
+            margin-left: 8px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .node-row:hover .node-actions {
+            opacity: 1;
+        }
+        .node-actions button {
+            background: none;
+            border: 1px solid transparent;
+            cursor: pointer;
+            padding: 3px 5px;
+            border-radius: 0;
+            font-size: 14px;
+            color: var(--text-light);
+            transition: all 0.2s;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .node-actions button:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+        .node-actions button.delete-btn:hover {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* 文件类型特殊颜色 */
+        .file-icon-html {
+            color: #e44d26;
+        }
+        .file-icon-js {
+            color: #f7df1e;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+        }
+        .file-icon-css {
+            color: #264de4;
+        }
+        .file-icon-py {
+            color: #3776ab;
+        }
+        .file-icon-img {
+            color: #e91e63;
+        }
+        .file-icon-txt {
+            color: #607d8b;
+        }
+        .file-icon-json {
+            color: #f39c12;
+        }
+        .file-icon-zip {
+            color: #795548;
+        }
+        .file-icon-font {
+            color: #9c27b0;
+        }
+        .file-icon-video {
+            color: #ff5722;
+        }
+        .file-icon-audio {
+            color: #00bcd4;
+        }
+
+        /* ========== 详情面板 ========== */
+        .detail-panel {
+            width: 320px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.3s;
+        }
+        .detail-panel.collapsed {
+            width: 0;
+            padding: 0;
+            border-left: none;
+            overflow: hidden;
+        }
+        .detail-panel .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .detail-panel .panel-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .detail-panel .panel-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 4px 8px;
+            border-radius: 0;
+            transition: all 0.2s;
+        }
+        .detail-panel .panel-close:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+        .detail-panel .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .detail-panel .detail-item:last-child {
+            border-bottom: none;
+        }
+        .detail-panel .detail-item .detail-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        .detail-panel .detail-item .detail-value {
+            font-size: 14px;
+            color: var(--text);
+            word-break: break-all;
+            line-height: 1.5;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ========== 状态栏（固定底部） ========== */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            color: rgba(255, 255, 255, 0.85);
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            letter-spacing: 0.3px;
+            min-height: 36px;
+            z-index: 200;
+        }
+        .status-bar .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .status-bar .status-item .status-icon {
+            font-size: 14px;
+        }
+        .status-bar .status-spacer {
+            flex: 1;
+        }
+        .status-bar .search-indicator {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 10px;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* ========== 模态框 ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 0;
+            box-shadow: var(--shadow-lg);
+            padding: 24px;
+            width: 360px;
+            max-width: 90vw;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .modal-box h3 {
+            margin-bottom: 16px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 0;
+            font-size: 14px;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 16px;
+        }
+        .modal-box input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+        }
+        .modal-box .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .modal-box .modal-actions button {
+            padding: 8px 16px;
+            border-radius: 0;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .modal-box .modal-actions .btn-cancel:hover {
+            background: var(--bg);
+        }
+        .modal-box .modal-actions .btn-confirm {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .modal-box .modal-actions .btn-confirm:hover {
+            background: var(--accent-hover);
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0 12px;
+                gap: 10px;
+                height: 52px;
+            }
+            .top-bar .logo {
+                font-size: 16px;
+                gap: 6px;
+            }
+            .top-bar .logo .logo-icon {
+                font-size: 20px;
+            }
+            .top-bar .search-wrapper {
+                max-width: none;
+            }
+            .top-bar .top-actions button span {
+                display: none;
+            }
+            .top-bar .top-actions button {
+                padding: 8px 10px;
+            }
+            .tabs-bar {
+                padding: 0 12px;
+            }
+            .tabs-bar .tab {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+            .breadcrumb-bar {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            .toolbar {
+                padding: 8px 12px;
+                gap: 6px;
+            }
+            .toolbar button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .tree-view-container {
+                padding: 10px 8px 16px;
+            }
+            .detail-panel {
+                width: 280px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 50;
+                box-shadow: var(--shadow-lg);
+                transform: translateX(0);
+                transition: transform 0.3s;
+            }
+            .detail-panel.collapsed {
+                transform: translateX(100%);
+                width: 280px;
+                padding: 20px;
+                border-left: 1px solid var(--border);
+            }
+            .status-bar {
+                padding: 6px 12px;
+                gap: 10px;
+                font-size: 11px;
+            }
+            .status-bar .status-spacer {
+                display: none;
+            }
+            .node-row .node-label {
+                font-size: 13px;
+            }
+            .node-actions {
+                margin-left: 4px;
+            }
+            .node-actions button {
+                padding: 2px 4px;
+                font-size: 12px;
+            }
+        }
+        @media (max-width: 480px) {
+            .top-bar .logo span {
+                display: none;
+            }
+            .toolbar .tool-divider {
+                display: none;
+            }
+            .toolbar .tool-group {
+                flex-wrap: wrap;
+            }
+            .tabs-bar .tab .tab-badge {
+                display: none;
+            }
+            .detail-panel {
+                width: 100%;
+            }
+            .detail-panel.collapsed {
+                width: 100%;
+            }
+        }
+
+        /* ========== 动画 ========== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* 隐藏的文件输入 */
+        .hidden-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== 顶部导航栏 ========== -->
+    <header class="top-bar">
+        <div class="logo">
+            <i class="las la-folder-open logo-icon"></i>
+            <span>米遇安索引</span>
+        </div>
+        <div class="search-wrapper" id="searchWrapper">
+            <i class="las la-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="搜索目录、文件..." autocomplete="off" aria-label="搜索">
+            <button class="clear-btn" id="clearSearchBtn" title="清除搜索"><i class="las la-times"></i></button>
+        </div>
+        <div class="top-actions">
+            <button id="btnExpandAll" title="展开全部">
+                <i class="las la-expand"></i><span>展开全部</span>
+            </button>
+            <button id="btnCollapseAll" title="折叠全部">
+                <i class="las la-compress"></i><span>折叠全部</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ========== 标签页（文件索引在左） ========== -->
+    <nav class="tabs-bar" id="tabsBar">
+        <button class="tab active" data-tab="files" id="tabFiles">
+            <i class="las la-folder"></i> 文件索引
+            <span class="tab-badge" id="fileNodeCount">0</span>
+        </button>
+        <button class="tab" data-tab="book" id="tabBook">
+            <i class="las la-book"></i> 书本目录
+            <span class="tab-badge" id="bookNodeCount">0</span>
+        </button>
+    </nav>
+
+    <!-- ========== 面包屑 ========== -->
+    <div class="breadcrumb-bar" id="breadcrumbBar">
+        <i class="las la-map-marker-alt"></i>
+        <span id="breadcrumbContent">请选择一个节点</span>
+    </div>
+
+    <!-- ========== 工具栏 ========== -->
+    <div class="toolbar" id="toolbar">
+        <div class="tool-group">
+            <button id="btnRefresh" title="刷新视图">
+                <i class="las la-sync-alt"></i> 刷新
+            </button>
+            <button id="btnToggleDetail" title="切换详情面板">
+                <i class="las la-info-circle"></i> 详情
+            </button>
+        </div>
+        <div class="tool-divider"></div>
+        <div class="tool-group">
+            <button id="btnSortAsc" title="按名称排序（升序）">
+                <i class="las la-sort-alpha-up"></i> 升序
+            </button>
+            <button id="btnSortDesc" title="按名称排序（降序）">
+                <i class="las la-sort-alpha-down"></i> 降序
+            </button>
+        </div>
+        <div class="tool-divider"></div>
+        <span id="toolbarInfo" style="font-size:12px;color:var(--text-light);"></span>
+    </div>
+
+    <!-- ========== 主内容区 ========== -->
+    <main class="main-content">
+        <div class="tree-view-container" id="treeContainer">
+            <!-- 树形结构由JS渲染 -->
+        </div>
+        <aside class="detail-panel collapsed" id="detailPanel">
+            <div class="panel-header">
+                <h3><i class="las la-file-alt"></i> 节点详情</h3>
+                <button class="panel-close" id="panelCloseBtn" title="关闭详情面板"><i class="las la-times"></i></button>
+            </div>
+            <div id="detailContent">
+                <div class="detail-empty">
+                    <div class="empty-icon"><i class="las la-hand-pointer"></i></div>
+                    <p>点击一个节点查看详情</p>
+                    <p style="font-size:12px;color:var(--text-light);">支持书本章节和文件节点</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- ========== 状态栏（固定底部） ========== -->
+    <footer class="status-bar" id="statusBar">
+        <span class="status-item"><i class="las la-chart-bar status-icon"></i> <span id="statTotal">总节点: 0</span></span>
+        <span class="status-item"><i class="las la-folder status-icon"></i> <span id="statFolders">文件夹: 0</span></span>
+        <span class="status-item"><i class="las la-file status-icon"></i> <span id="statFiles">文件: 0</span></span>
+        <span class="status-item"><i class="las la-book status-icon"></i> <span id="statChapters">章节: 0</span></span>
+        <span class="status-item"><i class="las la-eye status-icon"></i> <span id="statVisible">可见: 0</span></span>
+        <span class="status-spacer"></span>
+        <span class="search-indicator" id="searchIndicator" style="display:none;">
+            <i class="las la-search"></i> 搜索: <span id="searchTermDisplay"></span> (<span id="searchMatchCount">0</span> 个匹配)
+        </span>
+    </footer>
+
+    <!-- 新建模态框 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <h3 id="modalTitle"><i class="las la-plus-circle"></i> 新建</h3>
+            <input type="text" id="modalInput" placeholder="请输入名称..." autofocus>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="modalCancel"><i class="las la-times"></i> 取消</button>
+                <button class="btn-confirm" id="modalConfirm"><i class="las la-check"></i> 确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 隐藏的文件输入 -->
+    <input type="file" id="fileInput" multiple class="hidden-input">
+    <input type="file" id="dirInput" webkitdirectory multiple class="hidden-input">
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ================================================
+            // 数据定义
+            // ================================================
+
+            // ---- 书本目录数据 ----
+            const bookData = {
+                title: '计算机科学导论',
+                rootLabel: '📚 计算机科学导论',
+                nodes: [
+                    { id: 'ch1', title: '第1章 计算机基础', type: 'chapter', children: [
+                            { id: 'ch1-1', title: '1.1 计算机发展史', type: 'section', children: [
+                                    { id: 'ch1-1-1', title: '1.1.1 早期计算工具', type: 'subsection',
+                                    children: [] },
+                                    { id: 'ch1-1-2', title: '1.1.2 电子计算机的诞生', type: 'subsection',
+                                        children: [] },
+                                    { id: 'ch1-1-3', title: '1.1.3 微型计算机时代', type: 'subsection',
+                                    children: [] },
+                                ] },
+                            { id: 'ch1-2', title: '1.2 计算机组成', type: 'section', children: [
+                                    { id: 'ch1-2-1', title: '1.2.1 中央处理器（CPU）', type: 'subsection',
+                                        children: [] },
+                                    { id: 'ch1-2-2', title: '1.2.2 存储器层次结构', type: 'subsection',
+                                        children: [] },
+                                    { id: 'ch1-2-3', title: '1.2.3 输入输出设备', type: 'subsection',
+                                    children: [] },
+                                ] },
+                            { id: 'ch1-3', title: '1.3 操作系统概述', type: 'section', children: [
+                                    { id: 'ch1-3-1', title: '1.3.1 操作系统的功能', type: 'subsection',
+                                        children: [] },
+                                    { id: 'ch1-3-2', title: '1.3.2 主流操作系统', type: 'subsection',
+                                    children: [] },
+                                ] },
+                        ] },
+                    { id: 'ch2', title: '第2章 数据结构', type: 'chapter', children: [
+                            { id: 'ch2-1', title: '2.1 线性结构', type: 'section', children: [
+                                    { id: 'ch2-1-1', title: '2.1.1 数组（Array）', type: 'subsection',
+                                        children: [] },
+                                    { id: 'ch2-1-2', title: '2.1.2 链表（Linked List）', type: 'subsection',
+                                        children: [] },
+                                    { id: 'ch2-1-3', title: '2.1.3 栈（Stack）', type: 'subsection',
+                                    children: [] },
+                                    { id: 'ch2-1-4', title: '2.1.4 队列（Queue）', type: 'subsection',
+                                    children: [] },
+                                ] },
+                            { id: 'ch2-2', title: '2.2 树形结构', type: 'section', children: [
+                                    { id: 'ch2-2-1', title: '2.2.1 二叉树', type: 'subsection', children: [] },
+                                    { id: 'ch2-2-2', title: '2.2.2 二叉搜索树', type: 'subsection', children: [] },
+                                    { id: 'ch2-2-3', title: '2.2.3 平衡树（AVL）', type: 'subsection',
+                                    children: [] },
+                                ] },
+                            { id: 'ch2-3', title: '2.3 图结构', type: 'section', children: [
+                                    { id: 'ch2-3-1', title: '2.3.1 图的表示', type: 'subsection', children: [] },
+                                    { id: 'ch2-3-2', title: '2.3.2 图的遍历', type: 'subsection', children: [] },
+                                ] },
+                        ] },
+                    { id: 'ch3', title: '第3章 算法设计', type: 'chapter', children: [
+                            { id: 'ch3-1', title: '3.1 排序算法', type: 'section', children: [
+                                    { id: 'ch3-1-1', title: '3.1.1 冒泡排序', type: 'subsection', children: [] },
+                                    { id: 'ch3-1-2', title: '3.1.2 快速排序', type: 'subsection', children: [] },
+                                    { id: 'ch3-1-3', title: '3.1.3 归并排序', type: 'subsection', children: [] },
+                                ] },
+                            { id: 'ch3-2', title: '3.2 搜索算法', type: 'section', children: [
+                                    { id: 'ch3-2-1', title: '3.2.1 线性搜索', type: 'subsection', children: [] },
+                                    { id: 'ch3-2-2', title: '3.2.2 二分搜索', type: 'subsection', children: [] },
+                                ] },
+                            { id: 'ch3-3', title: '3.3 动态规划', type: 'section', children: [
+                                    { id: 'ch3-3-1', title: '3.3.1 斐波那契数列', type: 'subsection',
+                                    children: [] },
+                                    { id: 'ch3-3-2', title: '3.3.2 背包问题', type: 'subsection', children: [] },
+                                ] },
+                        ] },
+                    { id: 'ch4', title: '第4章 计算机网络', type: 'chapter', children: [
+                            { id: 'ch4-1', title: '4.1 网络基础', type: 'section', children: [
+                                    { id: 'ch4-1-1', title: '4.1.1 OSI七层模型', type: 'subsection',
+                                    children: [] },
+                                    { id: 'ch4-1-2', title: '4.1.2 TCP/IP协议栈', type: 'subsection',
+                                        children: [] },
+                                ] },
+                            { id: 'ch4-2', title: '4.2 HTTP协议', type: 'section', children: [
+                                    { id: 'ch4-2-1', title: '4.2.1 HTTP请求方法', type: 'subsection',
+                                        children: [] },
+                                    { id: 'ch4-2-2', title: '4.2.2 HTTPS与加密', type: 'subsection',
+                                    children: [] },
+                                ] },
+                        ] },
+                ]
+            };
+
+            // ---- 文件索引数据 ----
+            const fileData = {
+                rootLabel: '📁 项目根目录',
+                nodes: [
+                    { id: 'f-src', name: '源代码', type: 'folder', children: [
+                            { id: 'f-src-frontend', name: '前端', type: 'folder', children: [
+                                    { id: 'f-src-fe-html', name: 'index.html', type: 'file', fileType: 'html',
+                                        size: '12.4 KB' },
+                                    { id: 'f-src-fe-js', name: 'app.js', type: 'file', fileType: 'js',
+                                        size: '35.2 KB' },
+                                    { id: 'f-src-fe-css', name: 'style.css', type: 'file', fileType: 'css',
+                                        size: '18.7 KB' },
+                                    { id: 'f-src-fe-components', name: '组件', type: 'folder', children: [
+                                            { id: 'f-src-fe-comp-nav', name: 'Navbar.jsx', type: 'file',
+                                                fileType: 'js', size: '8.3 KB' },
+                                            { id: 'f-src-fe-comp-modal', name: 'Modal.jsx', type: 'file',
+                                                fileType: 'js', size: '12.9 KB' },
+                                            { id: 'f-src-fe-comp-table', name: 'DataTable.jsx', type: 'file',
+                                                fileType: 'js', size: '22.1 KB' },
+                                        ] },
+                                ] },
+                            { id: 'f-src-backend', name: '后端', type: 'folder', children: [
+                                    { id: 'f-src-be-server', name: 'server.py', type: 'file', fileType: 'py',
+                                        size: '28.6 KB' },
+                                    { id: 'f-src-be-db', name: 'database.py', type: 'file', fileType: 'py',
+                                        size: '19.3 KB' },
+                                    { id: 'f-src-be-api', name: 'API路由', type: 'folder', children: [
+                                            { id: 'f-src-be-api-user', name: 'user_api.py', type: 'file',
+                                                fileType: 'py', size: '15.2 KB' },
+                                            { id: 'f-src-be-api-order', name: 'order_api.py', type: 'file',
+                                                fileType: 'py', size: '21.8 KB' },
+                                            { id: 'f-src-be-api-config', name: 'config.json', type: 'file',
+                                                fileType: 'json', size: '2.1 KB' },
+                                        ] },
+                                ] },
+                        ] },
+                    { id: 'f-docs', name: '文档资料', type: 'folder', children: [
+                            { id: 'f-docs-readme', name: 'README.md', type: 'file', fileType: 'txt', size: '4.5 KB' },
+                            { id: 'f-docs-guide', name: '开发指南.pdf', type: 'file', fileType: 'txt',
+                            size: '1.8 MB' },
+                            { id: 'f-docs-api', name: 'API文档', type: 'folder', children: [
+                                    { id: 'f-docs-api-v1', name: 'v1.0.md', type: 'file', fileType: 'txt',
+                                        size: '25.4 KB' },
+                                    { id: 'f-docs-api-v2', name: 'v2.0.md', type: 'file', fileType: 'txt',
+                                        size: '32.7 KB' },
+                                    { id: 'f-docs-api-changelog', name: 'CHANGELOG.md', type: 'file',
+                                        fileType: 'txt', size: '8.9 KB' },
+                                ] },
+                        ] },
+                    { id: 'f-assets', name: '资源文件', type: 'folder', children: [
+                            { id: 'f-assets-img', name: '图片', type: 'folder', children: [
+                                    { id: 'f-assets-img-logo', name: 'logo.png', type: 'file', fileType: 'img',
+                                        size: '45.2 KB' },
+                                    { id: 'f-assets-img-banner', name: 'banner.jpg', type: 'file',
+                                        fileType: 'img', size: '320 KB' },
+                                    { id: 'f-assets-img-icon', name: 'favicon.ico', type: 'file', fileType: 'img',
+                                        size: '1.2 KB' },
+                                ] },
+                            { id: 'f-assets-fonts', name: '字体', type: 'folder', children: [
+                                    { id: 'f-assets-font-main', name: 'Inter-Regular.ttf', type: 'file',
+                                        fileType: 'font', size: '340 KB' },
+                                    { id: 'f-assets-font-bold', name: 'Inter-Bold.ttf', type: 'file',
+                                        fileType: 'font', size: '356 KB' },
+                                ] },
+                            { id: 'f-assets-video', name: '视频素材', type: 'folder', children: [
+                                    { id: 'f-assets-video-demo', name: 'demo.mp4', type: 'file', fileType: 'video',
+                                        size: '45.2 MB' },
+                                    { id: 'f-assets-video-intro', name: 'intro.mp4', type: 'file',
+                                        fileType: 'video', size: '28.7 MB' },
+                                ] },
+                        ] },
+                    { id: 'f-config', name: '配置', type: 'folder', children: [
+                            { id: 'f-config-env', name: '.env', type: 'file', fileType: 'txt', size: '0.8 KB' },
+                            { id: 'f-config-webpack', name: 'webpack.config.js', type: 'file', fileType: 'js',
+                                size: '6.4 KB' },
+                            { id: 'f-config-package', name: 'package.json', type: 'file', fileType: 'json',
+                                size: '3.2 KB' },
+                            { id: 'f-config-tsconfig', name: 'tsconfig.json', type: 'file', fileType: 'json',
+                                size: '1.5 KB' },
+                        ] },
+                    { id: 'f-license', name: 'LICENSE', type: 'file', fileType: 'txt', size: '1.1 KB' },
+                    { id: 'f-gitignore', name: '.gitignore', type: 'file', fileType: 'txt', size: '0.5 KB' },
+                ]
+            };
+
+            // ================================================
+            // 状态管理
+            // ================================================
+            const state = {
+                currentTab: 'files', // 默认文件索引
+                expandedNodes: new Set(),
+                selectedNodeId: null,
+                searchQuery: '',
+                sortDirection: null,
+                detailPanelVisible: false, // 默认关闭详情面板
+                preSearchExpanded: null,
+                flatNodeMap: new Map(),
+                modalAction: null,
+                modalParentId: null,
+            };
+
+            // ================================================
+            // DOM引用
+            // ================================================
+            const $ = (sel) => document.querySelector(sel);
+            const $$ = (sel) => document.querySelectorAll(sel);
+
+            const treeContainer = $('#treeContainer');
+            const searchInput = $('#searchInput');
+            const clearSearchBtn = $('#clearSearchBtn');
+            const breadcrumbContent = $('#breadcrumbContent');
+            const detailPanel = $('#detailPanel');
+            const detailContent = $('#detailContent');
+            const toolbarInfo = $('#toolbarInfo');
+            const searchIndicator = $('#searchIndicator');
+            const searchTermDisplay = $('#searchTermDisplay');
+            const searchMatchCount = $('#searchMatchCount');
+            const modalOverlay = $('#modalOverlay');
+            const modalTitle = $('#modalTitle');
+            const modalInput = $('#modalInput');
+            const modalCancel = $('#modalCancel');
+            const modalConfirm = $('#modalConfirm');
+            const fileInput = $('#fileInput');
+            const dirInput = $('#dirInput');
+
+            // ================================================
+            // 工具函数
+            // ================================================
+            function getCurrentData() {
+                return state.currentTab === 'book' ? bookData : fileData;
+            }
+
+            function getNodeIconClass(node, isExpanded) {
+                if (state.currentTab === 'book') {
+                    const type = node.type;
+                    if (type === 'chapter') return isExpanded ? 'las la-book-open' : 'las la-book';
+                    if (type === 'section') return isExpanded ? 'las la-file-alt' : 'las la-file';
+                    return 'las la-file';
+                } else {
+                    if (node.type === 'folder') {
+                        return isExpanded ? 'las la-folder-open' : 'las la-folder';
+                    }
+                    const ft = node.fileType || 'default';
+                    const iconMap = {
+                        html: 'las la-code',
+                        js: 'las la-file-code',
+                        css: 'las la-file-code',
+                        py: 'las la-file-code',
+                        img: 'las la-file-image',
+                        txt: 'las la-file-alt',
+                        json: 'las la-file-code',
+                        zip: 'las la-file-archive',
+                        font: 'las la-file-alt',
+                        video: 'las la-file-video',
+                        audio: 'las la-file-audio',
+                    };
+                    return iconMap[ft] || 'las la-file';
+                }
+            }
+
+            function getFileTypeClass(fileType) {
+                const classMap = {
+                    html: 'file-icon-html',
+                    js: 'file-icon-js',
+                    css: 'file-icon-css',
+                    py: 'file-icon-py',
+                    img: 'file-icon-img',
+                    txt: 'file-icon-txt',
+                    json: 'file-icon-json',
+                    zip: 'file-icon-zip',
+                    font: 'file-icon-font',
+                    video: 'file-icon-video',
+                    audio: 'file-icon-audio',
+                };
+                return classMap[fileType] || '';
+            }
+
+            function getAllNodes(data) {
+                const result = [];
+                const traverse = (nodes, parentPath) => {
+                    if (!nodes) return;
+                    for (const node of nodes) {
+                        const path = parentPath ? `${parentPath} / ${node.title || node.name}` : (node.title || node
+                            .name);
+                        result.push({ ...node, _path: path, _parent: parentPath || '' });
+                        if (node.children && node.children.length > 0) {
+                            traverse(node.children, path);
+                        }
+                    }
+                };
+                traverse(data.nodes, data.rootLabel || data.title || '根目录');
+                return result;
+            }
+
+            function buildFlatMap(data) {
+                state.flatNodeMap.clear();
+                const traverse = (nodes) => {
+                    if (!nodes) return;
+                    for (const node of nodes) {
+                        state.flatNodeMap.set(node.id, node);
+                        if (node.children && node.children.length > 0) {
+                            traverse(node.children);
+                        }
+                    }
+                };
+                traverse(data.nodes);
+            }
+
+            function countNodes(data) {
+                let total = 0,
+                    folders = 0,
+                    files = 0,
+                    chapters = 0;
+                const traverse = (nodes) => {
+                    if (!nodes) return;
+                    for (const node of nodes) {
+                        total++;
+                        if (node.type === 'folder') folders++;
+                        if (node.type === 'file') files++;
+                        if (node.type === 'chapter') chapters++;
+                        if (node.children && node.children.length > 0) traverse(node.children);
+                    }
+                };
+                traverse(data.nodes);
+                return { total, folders, files, chapters };
+            }
+
+            function getNodeById(data, id) {
+                if (!id || id === 'root') return { id: 'root', children: data.nodes, type: 'root', title: data.rootLabel || data.title || '根目录' };
+                const traverse = (nodes) => {
+                    if (!nodes) return null;
+                    for (const node of nodes) {
+                        if (node.id === id) return node;
+                        if (node.children) {
+                            const found = traverse(node.children);
+                            if (found) return found;
+                        }
+                    }
+                    return null;
+                };
+                return traverse(data.nodes);
+            }
+
+            function getParentId(data, id) {
+                const traverse = (nodes, parentId) => {
+                    if (!nodes) return null;
+                    for (const node of nodes) {
+                        if (node.id === id) return parentId || 'root';
+                        if (node.children) {
+                            const found = traverse(node.children, node.id);
+                            if (found) return found;
+                        }
+                    }
+                    return null;
+                };
+                const result = traverse(data.nodes, null);
+                return result === null ? null : result;
+            }
+
+            function getPathToNode(data, id) {
+                if (id === 'root') return [{ id: 'root', label: data.rootLabel || data.title || '根目录', type: 'root' }];
+                const path = [];
+                const traverse = (nodes, trail) => {
+                    if (!nodes) return false;
+                    for (const node of nodes) {
+                        const newTrail = [...trail, { id: node.id, label: node.title || node.name, type: node
+                                .type }];
+                        if (node.id === id) {
+                            path.push(...newTrail);
+                            return true;
+                        }
+                        if (node.children && traverse(node.children, newTrail)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                traverse(data.nodes, [{ id: 'root', label: data.rootLabel || data.title || '根目录', type: 'root' }]);
+                return path.length ? path : [];
+            }
+
+            function matchesSearch(node, query) {
+                if (!query) return true;
+                const q = query.toLowerCase();
+                const label = (node.title || node.name || '').toLowerCase();
+                const path = (node._path || '').toLowerCase();
+                const fileType = (node.fileType || '').toLowerCase();
+                const typeLabel = (node.type || '').toLowerCase();
+                return label.includes(q) || path.includes(q) || fileType.includes(q) || typeLabel.includes(q);
+            }
+
+            function getSearchResults(data, query) {
+                if (!query) return { matchedIds: new Set(), visibleIds: new Set(), matchCount: 0 };
+                const matchedIds = new Set();
+                const visibleIds = new Set();
+                const allNodes = getAllNodes(data);
+                const q = query.toLowerCase();
+
+                const matchSet = new Set();
+                for (const node of allNodes) {
+                    if (matchesSearch(node, query)) {
+                        matchSet.add(node.id);
+                        matchedIds.add(node.id);
+                    }
+                }
+
+                const idToNode = new Map();
+                for (const node of allNodes) idToNode.set(node.id, node);
+                const idToChildren = new Map();
+                const traverseChildren = (nodes, parentId) => {
+                    if (!nodes) return;
+                    for (const node of nodes) {
+                        if (parentId) {
+                            if (!idToChildren.has(parentId)) idToChildren.set(parentId, []);
+                            idToChildren.get(parentId).push(node.id);
+                        }
+                        if (node.children) traverseChildren(node.children, node.id);
+                    }
+                };
+                traverseChildren(data.nodes, null);
+
+                for (const matchId of matchSet) {
+                    let currentId = matchId;
+                    while (currentId) {
+                        visibleIds.add(currentId);
+                        const parentId = getParentId(data, currentId);
+                        if (parentId && parentId !== 'root') {
+                            currentId = parentId;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                const addDescendants = (nodeId) => {
+                    const children = idToChildren.get(nodeId);
+                    if (children) {
+                        for (const childId of children) {
+                            visibleIds.add(childId);
+                            addDescendants(childId);
+                        }
+                    }
+                };
+                for (const mid of Array.from(matchSet)) {
+                    addDescendants(mid);
+                }
+
+                return { matchedIds, visibleIds, matchCount: matchedIds.size };
+            }
+
+            // ================================================
+            // 渲染函数
+            // ================================================
+            function renderTree() {
+                const data = getCurrentData();
+                buildFlatMap(data);
+
+                const searchResult = state.searchQuery ?
+                    getSearchResults(data, state.searchQuery) :
+                    { matchedIds: new Set(), visibleIds: new Set(), matchCount: 0 };
+
+                const isSearchMode = !!state.searchQuery;
+                const visibleIds = searchResult.visibleIds;
+                const matchedIds = searchResult.matchedIds;
+
+                const allNodes = getAllNodes(data);
+                const visibleCount = isSearchMode ? visibleIds.size : allNodes.length;
+
+                updateStats(data, visibleCount);
+                updateSearchIndicator(searchResult.matchCount);
+
+                let html = '';
+                if (isSearchMode && searchResult.matchCount === 0) {
+                    html = `
+                        <div class="empty-state fade-in">
+                            <div class="empty-icon"><i class="las la-search" style="font-size:64px;opacity:0.6;"></i></div>
+                            <p>未找到匹配 "<strong>${escapeHtml(state.searchQuery)}</strong>" 的结果</p>
+                            <p class="empty-sub">尝试使用不同的关键词或清除搜索</p>
+                        </div>
+                    `;
+                } else {
+                    const rootNode = { id: 'root', children: data.nodes, type: 'root', title: data.rootLabel || data.title || '根目录' };
+                    html = renderNodeRow(rootNode, 0, isSearchMode, visibleIds, matchedIds, true);
+                    if (isSearchMode && html === '') {
+                        html = renderNodes(data.nodes, 0, isSearchMode, visibleIds, matchedIds);
+                    } else if (!isSearchMode) {
+                        html = renderNodeRow(rootNode, 0, false, new Set(), new Set(), true) +
+                            renderNodes(data.nodes, 0, false, new Set(), new Set());
+                    } else {
+                        html = renderNodeRow(rootNode, 0, true, visibleIds, matchedIds, true) +
+                            renderNodes(data.nodes, 0, true, visibleIds, matchedIds);
+                    }
+                }
+                treeContainer.innerHTML = html;
+
+                const sortInfo = state.sortDirection ? ` | 排序: ${state.sortDirection === 'asc' ? '升序' : '降序'}` : '';
+                toolbarInfo.textContent = `共 ${allNodes.length} 个节点 | 显示 ${visibleCount} 个${sortInfo}`;
+
+                const bookCount = countNodes(bookData).total;
+                const fileCount = countNodes(fileData).total;
+                $('#bookNodeCount').textContent = bookCount;
+                $('#fileNodeCount').textContent = fileCount;
+
+                updateBreadcrumb();
+                updateDetailPanel();
+            }
+
+            function renderNodes(nodes, depth, isSearchMode, visibleIds, matchedIds) {
+                if (!nodes || nodes.length === 0) return '';
+                let html = '';
+                for (const node of nodes) {
+                    const isVisible = !isSearchMode || visibleIds.has(node.id);
+                    if (!isVisible) continue;
+                    html += renderNodeRow(node, depth, isSearchMode, visibleIds, matchedIds, false);
+                }
+                return html;
+            }
+
+            function renderNodeRow(node, depth, isSearchMode, visibleIds, matchedIds, isRoot = false) {
+                const isVisible = !isSearchMode || isRoot || visibleIds.has(node.id);
+                if (!isVisible) return '';
+                const isMatch = isSearchMode && !isRoot && matchedIds.has(node.id);
+                const hasChildren = node.children && node.children.length > 0;
+                const isExpanded = state.expandedNodes.has(node.id) || (isSearchMode && isVisible && hasChildren && !isRoot);
+
+                const iconClass = isRoot ? 'las la-folder-open' : getNodeIconClass(node, isExpanded);
+                const fileTypeClass = node.type === 'file' ? getFileTypeClass(node.fileType) : '';
+                const label = isRoot ? (node.title || '根目录') : (node.title || node.name);
+                const badge = hasChildren ? `${node.children.length}` : '';
+                const isSelected = state.selectedNodeId === node.id;
+                const sizeText = node.size ? ` · ${node.size}` : '';
+
+                const toggleClass = hasChildren ? (isExpanded ? 'expanded' : '') : 'no-children';
+                const selectedClass = isSelected ? 'selected' : '';
+                const matchClass = isMatch ? 'match-highlight' : '';
+
+                let displayLabel = label;
+                if (isMatch && state.searchQuery) {
+                    displayLabel = highlightText(label, state.searchQuery);
+                }
+
+                // 操作按钮：使用加号图标
+                let actionsHtml = '';
+                if (state.currentTab === 'files' && !isRoot) {
+                    actionsHtml = `
+                        <div class="node-actions">
+                            ${node.type === 'folder' ? `
+                                <button class="new-file-btn" data-action="new-file" data-parent-id="${node.id}" title="新建文件"><i class="las la-plus"></i></button>
+                                <button class="new-folder-btn" data-action="new-folder" data-parent-id="${node.id}" title="新建目录"><i class="las la-folder-plus"></i></button>
+                                <button class="upload-file-btn" data-action="upload-file" data-parent-id="${node.id}" title="上传文件"><i class="las la-upload"></i></button>
+                                <button class="upload-dir-btn" data-action="upload-dir" data-parent-id="${node.id}" title="上传目录"><i class="las la-folder-open"></i></button>
+                            ` : ''}
+                            <button class="delete-btn" data-action="delete" data-node-id="${node.id}" title="删除"><i class="las la-trash-alt"></i></button>
+                        </div>
+                    `;
+                } else if (state.currentTab === 'files' && isRoot) {
+                    actionsHtml = `
+                        <div class="node-actions">
+                            <button class="new-file-btn" data-action="new-file" data-parent-id="root" title="新建文件"><i class="las la-plus"></i></button>
+                            <button class="new-folder-btn" data-action="new-folder" data-parent-id="root" title="新建目录"><i class="las la-folder-plus"></i></button>
+                            <button class="upload-file-btn" data-action="upload-file" data-parent-id="root" title="上传文件"><i class="las la-upload"></i></button>
+                            <button class="upload-dir-btn" data-action="upload-dir" data-parent-id="root" title="上传目录"><i class="las la-folder-open"></i></button>
+                        </div>
+                    `;
+                } else if (state.currentTab === 'book' && !isRoot) {
+                    actionsHtml = `
+                        <div class="node-actions">
+                            ${node.type !== 'subsection' ? `<button class="new-chapter-btn" data-action="new-chapter" data-parent-id="${node.id}" title="新建子节点"><i class="las la-plus"></i></button>` : ''}
+                            <button class="delete-btn" data-action="delete" data-node-id="${node.id}" title="删除"><i class="las la-trash-alt"></i></button>
+                        </div>
+                    `;
+                }
+
+                const childrenHtml = hasChildren && (isExpanded || isSearchMode) ? 
+                    `<div class="node-children ${isExpanded ? 'open' : ''}">
+                        ${renderNodes(node.children || [], depth + 1, isSearchMode, visibleIds, matchedIds)}
+                    </div>` : '';
+
+                return `
+                    <div class="tree-node" data-node-id="${isRoot ? 'root' : node.id}" data-depth="${depth}">
+                        <div class="node-row ${selectedClass} ${matchClass}" style="padding-left: ${8 + depth * 22}px;" data-id="${isRoot ? 'root' : node.id}">
+                            <button class="toggle-icon ${toggleClass}" data-toggle="${isRoot ? 'root' : node.id}" aria-label="切换">${hasChildren ? '<i class="las la-angle-right"></i>' : ''}</button>
+                            <span class="node-icon ${fileTypeClass}"><i class="${iconClass}"></i></span>
+                            <span class="node-label">${displayLabel}${sizeText}</span>
+                            ${badge ? `<span class="node-badge">${badge} 项</span>` : ''}
+                            ${actionsHtml}
+                        </div>
+                        ${childrenHtml}
+                    </div>
+                `;
+            }
+
+            function highlightText(text, query) {
+                if (!query) return escapeHtml(text);
+                const escapedText = escapeHtml(text);
+                const escapedQuery = escapeHtml(query);
+                const regex = new RegExp(`(${escapedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return escapedText.replace(regex, '<mark>$1</mark>');
+            }
+
+            function escapeHtml(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function updateStats(data, visibleCount) {
+                const stats = countNodes(data);
+                $('#statTotal').textContent = `总节点: ${stats.total}`;
+                $('#statFolders').textContent = `文件夹: ${stats.folders}`;
+                $('#statFiles').textContent = `文件: ${stats.files}`;
+                $('#statChapters').textContent = `章节: ${stats.chapters}`;
+                $('#statVisible').textContent = `可见: ${visibleCount}`;
+            }
+
+            function updateSearchIndicator(matchCount) {
+                if (state.searchQuery) {
+                    searchIndicator.style.display = 'flex';
+                    searchTermDisplay.textContent = `"${state.searchQuery}"`;
+                    searchMatchCount.textContent = matchCount;
+                } else {
+                    searchIndicator.style.display = 'none';
+                }
+            }
+
+            function updateBreadcrumb() {
+                if (!state.selectedNodeId) {
+                    breadcrumbContent.textContent = '请选择一个节点';
+                    return;
+                }
+                const data = getCurrentData();
+                const path = getPathToNode(data, state.selectedNodeId);
+                if (path.length === 0) {
+                    breadcrumbContent.textContent = '未找到路径';
+                    return;
+                }
+                let html = '';
+                path.forEach((item, index) => {
+                    if (index > 0) html += `<span class="crumb-sep"><i class="las la-angle-right"></i></span>`;
+                    const isLast = index === path.length - 1;
+                    html += `<button class="crumb ${isLast ? 'current' : ''}" data-crumb-id="${item.id}">${escapeHtml(item.label)}</button>`;
+                });
+                breadcrumbContent.innerHTML = html;
+            }
+
+            function updateDetailPanel() {
+                if (!state.selectedNodeId) {
+                    detailContent.innerHTML = `
+                        <div class="detail-empty">
+                            <div class="empty-icon"><i class="las la-hand-pointer" style="font-size:48px;"></i></div>
+                            <p>点击一个节点查看详情</p>
+                            <p style="font-size:12px;color:var(--text-light);">支持书本章节和文件节点</p>
+                        </div>
+                    `;
+                    return;
+                }
+                const data = getCurrentData();
+                const node = getNodeById(data, state.selectedNodeId);
+                if (!node) {
+                    detailContent.innerHTML = `<div class="detail-empty">节点未找到</div>`;
+                    return;
+                }
+
+                const path = getPathToNode(data, node.id);
+                const pathStr = path.map(p => p.label).join(' / ');
+                const childrenCount = node.children ? node.children.length : 0;
+                const isFolder = node.type === 'folder' || node.type === 'chapter' || node.type === 'section' || node
+                    .type === 'subsection' || node.type === 'root';
+
+                let html = `
+                    <div class="detail-item"><span class="detail-label"><i class="las la-tag"></i> 名称</span><span class="detail-value">${escapeHtml(node.title || node.name)}</span></div>
+                    <div class="detail-item"><span class="detail-label"><i class="las la-list"></i> 类型</span><span class="detail-value">${getTypeLabel(node)}</span></div>
+                    <div class="detail-item"><span class="detail-label"><i class="las la-key"></i> ID</span><span class="detail-value" style="font-family:var(--font-mono);font-size:12px;">${escapeHtml(node.id)}</span></div>
+                    <div class="detail-item"><span class="detail-label"><i class="las la-map-marker"></i> 完整路径</span><span class="detail-value" style="font-size:12px;">${escapeHtml(pathStr)}</span></div>
+                `;
+                if (childrenCount > 0) {
+                    html += `<div class="detail-item"><span class="detail-label"><i class="las la-folder"></i> 子节点数</span><span class="detail-value">${childrenCount} 项</span></div>`;
+                }
+                if (node.size) {
+                    html += `<div class="detail-item"><span class="detail-label"><i class="las la-weight"></i> 文件大小</span><span class="detail-value">${escapeHtml(node.size)}</span></div>`;
+                }
+                if (node.fileType) {
+                    html += `<div class="detail-item"><span class="detail-label"><i class="las la-file"></i> 文件类型</span><span class="detail-value">${escapeHtml(node.fileType.toUpperCase())}</span></div>`;
+                }
+                if (isFolder) {
+                    html += `<div class="detail-item"><span class="detail-label"><i class="las la-expand"></i> 状态</span><span class="detail-value">${state.expandedNodes.has(node.id) ? '已展开' : '已折叠'}</span></div>`;
+                }
+                detailContent.innerHTML = html;
+            }
+
+            function getTypeLabel(node) {
+                if (state.currentTab === 'book') {
+                    const typeMap = { chapter: '章节', section: '节', subsection: '小节', root: '根' };
+                    return typeMap[node.type] || node.type;
+                } else {
+                    const typeMap = { folder: '文件夹', file: '文件', root: '根目录' };
+                    return typeMap[node.type] || node.type;
+                }
+            }
+
+            // ================================================
+            // 排序
+            // ================================================
+            function sortNodes(nodes, direction) {
+                if (!direction) return nodes;
+                const sorted = [...nodes].sort((a, b) => {
+                    const aName = a.title || a.name || '';
+                    const bName = b.title || b.name || '';
+                    return direction === 'asc' ? aName.localeCompare(bName, 'zh-CN') : bName.localeCompare(aName, 'zh-CN');
+                });
+                for (const node of sorted) {
+                    if (node.children && node.children.length > 0) node.children = sortNodes(node.children, direction);
+                }
+                return sorted;
+            }
+
+            function applySort() {
+                const data = getCurrentData();
+                const dataClone = JSON.parse(JSON.stringify(data));
+                if (state.sortDirection) dataClone.nodes = sortNodes(dataClone.nodes, state.sortDirection);
+                if (state.currentTab === 'book') bookData.nodes = dataClone.nodes;
+                else fileData.nodes = dataClone.nodes;
+                renderTree();
+            }
+
+            // ================================================
+            // 展开/折叠
+            // ================================================
+            function toggleNode(nodeId, forceState) {
+                if (nodeId === 'root') {
+                    if (forceState !== undefined) {
+                        if (forceState) state.expandedNodes.add('root');
+                        else state.expandedNodes.delete('root');
+                    } else {
+                        if (state.expandedNodes.has('root')) state.expandedNodes.delete('root');
+                        else state.expandedNodes.add('root');
+                    }
+                    renderTree();
+                    return;
+                }
+                const data = getCurrentData();
+                const node = getNodeById(data, nodeId);
+                if (!node || !node.children || node.children.length === 0) return;
+                if (forceState !== undefined) {
+                    if (forceState) state.expandedNodes.add(nodeId);
+                    else state.expandedNodes.delete(nodeId);
+                } else {
+                    if (state.expandedNodes.has(nodeId)) state.expandedNodes.delete(nodeId);
+                    else state.expandedNodes.add(nodeId);
+                }
+                renderTree();
+            }
+
+            function expandAll() {
+                const data = getCurrentData();
+                const allNodes = getAllNodes(data);
+                state.expandedNodes.add('root');
+                for (const node of allNodes) {
+                    if (node.children && node.children.length > 0) state.expandedNodes.add(node.id);
+                }
+                renderTree();
+            }
+
+            function collapseAll() {
+                state.expandedNodes.clear();
+                renderTree();
+            }
+
+            function expandToNode(nodeId) {
+                if (nodeId === 'root') return;
+                const data = getCurrentData();
+                const path = getPathToNode(data, nodeId);
+                for (const item of path) {
+                    if (item.id !== 'root' && item.id !== nodeId) {
+                        const node = getNodeById(data, item.id);
+                        if (node && node.children && node.children.length > 0) state.expandedNodes.add(item.id);
+                    }
+                }
+                state.expandedNodes.add('root');
+            }
+
+            // ================================================
+            // 选择节点
+            // ================================================
+            function selectNode(nodeId) {
+                state.selectedNodeId = nodeId;
+                expandToNode(nodeId);
+                renderTree();
+                setTimeout(() => {
+                    const selectedEl = treeContainer.querySelector(`[data-node-id="${nodeId}"] .node-row`);
+                    if (selectedEl) selectedEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 50);
+            }
+
+            // ================================================
+            // 搜索处理
+            // ================================================
+            function handleSearch(query) {
+                state.searchQuery = query.trim();
+                if (state.searchQuery) {
+                    if (state.preSearchExpanded === null) state.preSearchExpanded = new Set(state.expandedNodes);
+                    const data = getCurrentData();
+                    const searchResult = getSearchResults(data, state.searchQuery);
+                    state.expandedNodes.add('root');
+                    for (const id of searchResult.visibleIds) {
+                        const node = getNodeById(data, id);
+                        if (node && node.children && node.children.length > 0) state.expandedNodes.add(id);
+                    }
+                } else {
+                    if (state.preSearchExpanded) {
+                        state.expandedNodes = new Set(state.preSearchExpanded);
+                        state.preSearchExpanded = null;
+                    }
+                }
+                clearSearchBtn.classList.toggle('visible', !!state.searchQuery);
+                renderTree();
+            }
+
+            // ================================================
+            // 文件操作
+            // ================================================
+            function generateId(prefix) {
+                return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+            }
+
+            function addNode(parentId, nodeData) {
+                const data = getCurrentData();
+                if (parentId === 'root') {
+                    data.nodes.push(nodeData);
+                } else {
+                    const parent = getNodeById(data, parentId);
+                    if (parent && parent.children) {
+                        parent.children.push(nodeData);
+                        if (!state.expandedNodes.has(parentId)) state.expandedNodes.add(parentId);
+                    } else {
+                        alert('父节点不存在或不是文件夹');
+                        return false;
+                    }
+                }
+                renderTree();
+                return true;
+            }
+
+            function deleteNode(nodeId) {
+                if (!nodeId || nodeId === 'root') {
+                    alert('不能删除根节点');
+                    return;
+                }
+                const data = getCurrentData();
+                const parentId = getParentId(data, nodeId);
+                if (!parentId) return;
+                const parent = getNodeById(data, parentId);
+                if (!parent || !parent.children) return;
+                const index = parent.children.findIndex(c => c.id === nodeId);
+                if (index !== -1) {
+                    parent.children.splice(index, 1);
+                    if (state.selectedNodeId === nodeId) state.selectedNodeId = null;
+                    state.expandedNodes.delete(nodeId);
+                    renderTree();
+                }
+            }
+
+            function triggerFileUpload(parentId) {
+                fileInput.dataset.parentId = parentId;
+                fileInput.value = '';
+                fileInput.click();
+            }
+
+            function triggerDirUpload(parentId) {
+                dirInput.dataset.parentId = parentId;
+                dirInput.value = '';
+                dirInput.click();
+            }
+
+            function handleFileUpload(e) {
+                const files = e.target.files;
+                if (!files.length) return;
+                const parentId = fileInput.dataset.parentId || 'root';
+                const parentNode = getNodeById(getCurrentData(), parentId);
+                if (!parentNode) return;
+
+                for (const file of files) {
+                    const fileName = file.name;
+                    const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : 'txt';
+                    const fileTypeMap = {
+                        html: 'html',
+                        js: 'js',
+                        css: 'css',
+                        py: 'py',
+                        png: 'img',
+                        jpg: 'img',
+                        jpeg: 'img',
+                        gif: 'img',
+                        svg: 'img',
+                        ico: 'img',
+                        txt: 'txt',
+                        md: 'txt',
+                        json: 'json',
+                        zip: 'zip',
+                        rar: 'zip',
+                        ttf: 'font',
+                        woff: 'font',
+                        woff2: 'font',
+                        mp4: 'video',
+                        mov: 'video',
+                        mp3: 'audio',
+                        wav: 'audio',
+                    };
+                    const fileType = fileTypeMap[ext] || 'txt';
+                    const size = file.size > 1024 * 1024 ? (file.size / (1024 * 1024)).toFixed(1) + ' MB' : (file.size / 1024).toFixed(1) + ' KB';
+                    const newNode = {
+                        id: generateId('f'),
+                        name: fileName,
+                        type: 'file',
+                        fileType: fileType,
+                        size: size,
+                        children: []
+                    };
+                    addNode(parentId, newNode);
+                }
+            }
+
+            function handleDirUpload(e) {
+                const files = e.target.files;
+                if (!files.length) return;
+                const parentId = dirInput.dataset.parentId || 'root';
+                const parentNode = getNodeById(getCurrentData(), parentId);
+                if (!parentNode) return;
+
+                const firstFile = files[0];
+                const dirName = firstFile.webkitRelativePath.split('/')[0] || '新文件夹';
+                const dirId = generateId('fdir');
+                const newDir = {
+                    id: dirId,
+                    name: dirName,
+                    type: 'folder',
+                    children: []
+                };
+                if (!addNode(parentId, newDir)) return;
+
+                for (const file of files) {
+                    const pathParts = file.webkitRelativePath.split('/');
+                    const fileName = pathParts[pathParts.length - 1];
+                    const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : 'txt';
+                    const fileTypeMap = {
+                        html: 'html',
+                        js: 'js',
+                        css: 'css',
+                        py: 'py',
+                        png: 'img',
+                        jpg: 'img',
+                        jpeg: 'img',
+                        gif: 'img',
+                        svg: 'img',
+                        txt: 'txt',
+                        md: 'txt',
+                        json: 'json',
+                        zip: 'zip',
+                        ttf: 'font',
+                        mp4: 'video',
+                        mp3: 'audio',
+                    };
+                    const fileType = fileTypeMap[ext] || 'txt';
+                    const size = file.size > 1024 * 1024 ? (file.size / (1024 * 1024)).toFixed(1) + ' MB' : (file.size / 1024).toFixed(1) + ' KB';
+                    const newFile = {
+                        id: generateId('f'),
+                        name: fileName,
+                        type: 'file',
+                        fileType: fileType,
+                        size: size,
+                        children: []
+                    };
+                    getNodeById(getCurrentData(), dirId).children.push(newFile);
+                }
+                renderTree();
+            }
+
+            // 模态框
+            function openModal(title, placeholder, action, parentId) {
+                modalTitle.innerHTML = `<i class="las la-plus-circle"></i> ${title}`;
+                modalInput.value = '';
+                modalInput.placeholder = placeholder;
+                state.modalAction = action;
+                state.modalParentId = parentId;
+                modalOverlay.classList.add('active');
+                modalInput.focus();
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                state.modalAction = null;
+                state.modalParentId = null;
+            }
+
+            function confirmModal() {
+                const name = modalInput.value.trim();
+                if (!name) {
+                    alert('名称不能为空');
+                    return;
+                }
+                const parentId = state.modalParentId;
+                const action = state.modalAction;
+                if (action === 'new-file') {
+                    const ext = name.includes('.') ? name.split('.').pop().toLowerCase() : 'txt';
+                    const fileTypeMap = { html: 'html', js: 'js', css: 'css', py: 'py', txt: 'txt', json: 'json', zip: 'zip', png: 'img', jpg: 'img', svg: 'img' };
+                    const fileType = fileTypeMap[ext] || 'txt';
+                    const newNode = { id: generateId('f'), name: name, type: 'file', fileType: fileType, size: '0 KB', children: [] };
+                    addNode(parentId, newNode);
+                } else if (action === 'new-folder') {
+                    const newNode = { id: generateId('fdir'), name: name, type: 'folder', children: [] };
+                    addNode(parentId, newNode);
+                } else if (action === 'new-chapter') {
+                    const newNode = { id: generateId('ch'), title: name, type: 'section', children: [] };
+                    addNode(parentId, newNode);
+                }
+                closeModal();
+            }
+
+            // ================================================
+            // 事件绑定
+            // ================================================
+            function initEventListeners() {
+                $$('.tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const tabName = tab.dataset.tab;
+                        if (state.currentTab === tabName) return;
+                        state.currentTab = tabName;
+                        state.selectedNodeId = null;
+                        state.expandedNodes.clear();
+                        state.expandedNodes.add('root');
+                        state.preSearchExpanded = null;
+                        $$('.tab').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        if (state.searchQuery) handleSearch(state.searchQuery);
+                        else renderTree();
+                    });
+                });
+
+                searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') { searchInput.value = ''; handleSearch(''); searchInput.blur(); }
+                    if (e.key === 'Enter') {
+                        const data = getCurrentData();
+                        const searchResult = getSearchResults(data, state.searchQuery);
+                        if (searchResult.matchedIds.size > 0) selectNode(Array.from(searchResult.matchedIds)[0]);
+                    }
+                });
+                clearSearchBtn.addEventListener('click', () => { searchInput.value = ''; handleSearch(''); searchInput.focus(); });
+                document.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); searchInput.focus(); searchInput.select(); }
+                    if (e.key === '/' && document.activeElement !== searchInput && !e.ctrlKey && !e.metaKey) { e.preventDefault(); searchInput.focus(); }
+                });
+
+                // 树节点点击事件（事件委托）
+                treeContainer.addEventListener('click', (e) => {
+                    const actionBtn = e.target.closest('[data-action]');
+                    if (actionBtn) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        const action = actionBtn.dataset.action;
+                        const parentId = actionBtn.dataset.parentId || actionBtn.dataset.nodeId || 'root';
+                        if (action === 'new-file') openModal('新建文件', '输入文件名称...', 'new-file', parentId);
+                        else if (action === 'new-folder') openModal('新建目录', '输入目录名称...', 'new-folder', parentId);
+                        else if (action === 'upload-file') triggerFileUpload(parentId);
+                        else if (action === 'upload-dir') triggerDirUpload(parentId);
+                        else if (action === 'delete') {
+                            const nodeId = actionBtn.dataset.nodeId;
+                            if (nodeId && nodeId !== 'root') {
+                                if (confirm('确定要删除该节点及其所有子节点吗？')) deleteNode(nodeId);
+                            }
+                        } else if (action === 'new-chapter') openModal('新建子节点', '输入名称...', 'new-chapter', parentId);
+                        return;
+                    }
+
+                    const row = e.target.closest('.node-row');
+                    const toggleBtn = e.target.closest('.toggle-icon');
+                    if (toggleBtn) {
+                        const nodeId = toggleBtn.dataset.toggle;
+                        if (nodeId) { e.stopPropagation(); toggleNode(nodeId); }
+                        return;
+                    }
+                    if (row) {
+                        const nodeId = row.dataset.id;
+                        if (nodeId) selectNode(nodeId);
+                    }
+                });
+
+                treeContainer.addEventListener('dblclick', (e) => {
+                    const row = e.target.closest('.node-row');
+                    if (row) {
+                        const nodeId = row.dataset.id;
+                        const data = getCurrentData();
+                        const node = getNodeById(data, nodeId);
+                        if (node && node.children && node.children.length > 0) toggleNode(nodeId);
+                    }
+                });
+
+                breadcrumbContent.addEventListener('click', (e) => {
+                    const crumb = e.target.closest('.crumb');
+                    if (crumb && !crumb.classList.contains('current')) {
+                        const id = crumb.dataset.crumbId;
+                        if (id && id !== 'root') selectNode(id);
+                        else if (id === 'root') { state.selectedNodeId = 'root'; renderTree(); }
+                    }
+                });
+
+                $('#btnExpandAll').addEventListener('click', expandAll);
+                $('#btnCollapseAll').addEventListener('click', collapseAll);
+                $('#btnRefresh').addEventListener('click', () => renderTree());
+                $('#btnToggleDetail').addEventListener('click', () => {
+                    state.detailPanelVisible = !state.detailPanelVisible;
+                    detailPanel.classList.toggle('collapsed', !state.detailPanelVisible);
+                    if (state.detailPanelVisible) updateDetailPanel();
+                });
+                $('#btnSortAsc').addEventListener('click', () => { state.sortDirection = state.sortDirection === 'asc' ? null : 'asc'; applySort(); });
+                $('#btnSortDesc').addEventListener('click', () => { state.sortDirection = state.sortDirection === 'desc' ? null : 'desc'; applySort(); });
+                $('#panelCloseBtn').addEventListener('click', () => { state.detailPanelVisible = false; detailPanel.classList.add('collapsed'); });
+
+                modalCancel.addEventListener('click', closeModal);
+                modalConfirm.addEventListener('click', confirmModal);
+                modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+                modalInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmModal(); if (e.key === 'Escape') closeModal(); });
+
+                fileInput.addEventListener('change', handleFileUpload);
+                dirInput.addEventListener('change', handleDirUpload);
+            }
+
+            // ================================================
+            // 初始化
+            // ================================================
+            function init() {
+                state.expandedNodes.add('root');
+                const data = getCurrentData();
+                for (const node of data.nodes) {
+                    if (node.children && node.children.length > 0) state.expandedNodes.add(node.id);
+                }
+                // 详情面板默认关闭
+                detailPanel.classList.add('collapsed');
+                initEventListeners();
+                renderTree();
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
