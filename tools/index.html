@@ -687,6 +687,13 @@
             font-weight: 500;
             white-space: nowrap;
         }
+        .status-bar .copyright {
+            white-space: nowrap;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            margin-left: 8px;
+            letter-spacing: 0.5px;
+        }
 
         /* ========== 模态框 ========== */
         .modal-overlay {
@@ -838,6 +845,9 @@
             .status-bar .status-spacer {
                 display: none;
             }
+            .status-bar .copyright {
+                margin-left: auto; /* 在移动端也靠右 */
+            }
             .node-row .node-label {
                 font-size: 13px;
             }
@@ -867,6 +877,9 @@
             }
             .detail-panel.collapsed {
                 width: 100%;
+            }
+            .status-bar .copyright {
+                font-size: 10px;
             }
         }
 
@@ -986,6 +999,7 @@
         <span class="search-indicator" id="searchIndicator" style="display:none;">
             <i class="las la-search"></i> 搜索: <span id="searchTermDisplay"></span> (<span id="searchMatchCount">0</span> 个匹配)
         </span>
+        <span class="copyright">©米遇安</span>
     </footer>
 
     <!-- 新建模态框 -->
