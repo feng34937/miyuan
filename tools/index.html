@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>米遇安索引 - 文件索引 & 书本目录</title>
+    <title>米遇安索引</title>
+    <!-- 网站标签页图标（png） -->
+    <link rel="icon" href="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png">
     <!-- Line Awesome 图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
     <style>
@@ -44,17 +46,19 @@
             box-sizing: border-box;
         }
 
+        /* 锁定页面滚动，避免整体滚动，只允许内部容器滚动 */
         body {
             font-family: var(--font-sans);
             background: var(--bg);
             color: var(--text);
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            /* 为固定状态栏预留空间 */
+            /* 状态栏固定，预留底部间距由 main-content 自动处理 */
             padding-bottom: 36px;
         }
 
@@ -202,7 +206,7 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* ========== 标签页 ========== */
+        /* ========== 标签页（文件索引在左） ========== */
         .tabs-bar {
             background: var(--card-bg);
             display: flex;
@@ -369,6 +373,7 @@
             display: flex;
             overflow: hidden;
             position: relative;
+            min-height: 0; /* 防止flex子项溢出 */
         }
         .tree-view-container {
             flex: 1;
