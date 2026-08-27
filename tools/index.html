@@ -115,20 +115,29 @@
             display:flex; align-items:center; justify-content:center;
             font-size:24px; color:var(--accent); z-index:999;
             pointer-events:none; backdrop-filter:blur(8px);
-            margin:16px 20px 24px;
-            box-sizing:border-box;
+            margin:16px 20px 24px; box-sizing:border-box;
         }
         .tree-view-container::-webkit-scrollbar { width:8px; }
         .tree-view-container::-webkit-scrollbar-thumb { background:rgba(160,160,180,0.4); }
+        /* 节点样式：列表模式与树形模式通用 */
         .tree-node .node-row { display:flex; align-items:center; padding:7px 10px; cursor:pointer; transition:all 0.18s; gap:6px; min-height:36px; background:transparent; border:1px solid transparent; margin:1px 0; }
         .tree-node .node-row:hover { background:var(--accent-light); border-color:rgba(74,144,217,0.15); }
         .tree-node .node-row.selected { background:var(--accent-light); box-shadow:inset 0 0 0 2px var(--accent),0 0 8px rgba(74,144,217,0.2); border-color:rgba(74,144,217,0.3); }
+        /* 列表模式下隐藏展开按钮 */
         .tree-node .toggle-icon { display:none; }
+        /* 树形模式（书本目录）显示展开按钮 */
+        .tree-mode .toggle-icon { display:flex; align-items:center; justify-content:center; width:20px; height:20px; font-size:10px; color:var(--text-light); cursor:pointer; background:none; border:none; padding:0; flex-shrink:0; transition:transform 0.25s; }
+        .tree-mode .toggle-icon.expanded { transform:rotate(90deg); }
+        .tree-mode .toggle-icon.no-children { visibility:hidden; pointer-events:none; }
         .tree-node .node-icon { font-size:18px; flex-shrink:0; width:24px; text-align:center; }
         .tree-node .node-label { flex:1; font-size:14px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .tree-node .node-badge { font-size:11px; color:var(--text-light); background:rgba(255,255,255,0.3); padding:3px 8px; flex-shrink:0; backdrop-filter:blur(4px); }
         body.dark .tree-node .node-badge { background:rgba(255,255,255,0.08); }
+        /* 列表模式隐藏子节点容器 */
         .tree-node .node-children { display:none; }
+        /* 树形模式显示子节点容器 */
+        .tree-mode .node-children { display:block; max-height:none; opacity:1; overflow:visible; }
+        .tree-mode .node-children:not(.open) { display:none; }
         .node-actions { display:flex; gap:2px; flex-shrink:0; margin-left:8px; opacity:0.7; flex-wrap:wrap; align-items:center; }
         .node-row:hover .node-actions { opacity:1; }
         .node-actions button { background:rgba(255,255,255,0.3); border:1px solid var(--glass-border); cursor:pointer; padding:3px 5px; font-size:14px; color:var(--text-light); transition:all 0.2s; display:flex; align-items:center; backdrop-filter:blur(4px); }
@@ -219,7 +228,7 @@
         <button id="searchExitBtn" class="search-exit-btn" title="退出搜索"><i class="las la-times"></i></button>
         <div class="top-actions">
             <button id="btnDarkMode" title="切换主题模式"><i class="las la-adjust"></i></button>
-            <button id="btnUp" title="返回上一级"><i class="las la-arrow-up"></i><span>向上</span></button>
+            <button id="btnUp" title="返回上一级" style="display:none;"><i class="las la-arrow-up"></i><span>向上</span></button>
         </div>
     </header>
     <nav class="tabs-bar" id="tabsBar">
@@ -299,6 +308,7 @@
         (function() {
             'use strict';
 
+            // ---------- 本地存储 ----------
             const STORAGE_KEY_FILES = 'miyuan_fileData';
             const STORAGE_KEY_BOOK = 'miyuan_bookData';
             const THEME_STORAGE_KEY = 'miyuan_theme_mode';
@@ -321,6 +331,7 @@
             }
             saveData();
 
+            // ---------- 主题 ----------
             function getThemeMode() { return localStorage.getItem(THEME_STORAGE_KEY) || 'auto'; }
             function setThemeMode(mode) { localStorage.setItem(THEME_STORAGE_KEY, mode); applyTheme(); }
             function applyTheme() {
@@ -338,6 +349,7 @@
             }
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (getThemeMode() === 'auto') applyTheme(); });
 
+            // ---------- 状态 ----------
             const state = {
                 currentTab: 'files',
                 currentFolderId: 'root',
@@ -396,13 +408,10 @@
             const btnToggleHidden = $('#btnToggleHidden');
             const btnUp = $('#btnUp');
 
-            // 移动端检测
-            function isMobile() {
-                return window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window;
-            }
-
             function setMobileSearchActive(active) { state.mobileSearchActive = active; topBar.classList.toggle('search-active', active); if (active) searchInput.focus(); }
+            function isMobile() { return window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window; }
 
+            // ---------- 工具函数 ----------
             function getCurrentData() { return state.currentTab === 'book' ? bookData : fileData; }
             function getNodeIconClass(node, isExpanded) {
                 if (node.type === 'shortcut') return 'las la-link';
@@ -451,7 +460,21 @@
                     treeContainer.innerHTML = html;
                     const sortInfo = state.sortDirection ? ` | 排序: ${state.sortDirection==='asc'?'升序':'降序'}` : '';
                     toolbarInfo.textContent = `搜索结果: ${searchResult.matchCount} 个匹配项`;
+                } else if (state.currentTab === 'book') {
+                    // 书本目录：树形层级显示
+                    const allNodes = getAllNodes(data);
+                    const visibleCount = allNodes.length;
+                    updateStats(data, visibleCount);
+                    const rootNode = { id:'root', children:data.nodes, type:'root', title:data.rootLabel||data.title||'根目录' };
+                    let html = renderNodeRow(rootNode, 0, false, new Set(), new Set(), true);
+                    html += renderNodes(data.nodes, 0, false, new Set(), new Set());
+                    treeContainer.innerHTML = html;
+                    treeContainer.classList.add('tree-mode');
+                    const sortInfo = state.sortDirection ? ` | 排序: ${state.sortDirection==='asc'?'升序':'降序'}` : '';
+                    toolbarInfo.textContent = `书本目录 | 共 ${allNodes.length} 个节点${sortInfo}`;
                 } else {
+                    // 文件索引：资源管理器列表显示
+                    treeContainer.classList.remove('tree-mode');
                     const currentFolder = getNodeById(data, state.currentFolderId);
                     const children = currentFolder ? (currentFolder.children || []) : data.nodes;
                     const filteredChildren = children.filter(n => state.showHidden || !n.hidden);
@@ -555,13 +578,13 @@
 
                 let actionsHtml = '';
                 if (!isRoot) {
-                    actionsHtml = `<div class="node-actions">${node.type==='folder' ? `<button class="new-file-btn" data-action="new-file" data-parent-id="${node.id}" title="新建文件"><i class="las la-plus"></i></button><button class="new-folder-btn" data-action="new-folder" data-parent-id="${node.id}" title="新建目录"><i class="las la-folder-plus"></i></button>` : ''}<button class="rename-btn" data-action="rename" data-node-id="${node.id}"><i class="las la-pen"></i></button><button class="copy-path-btn" data-action="copy-path" data-node-id="${node.id}"><i class="las la-copy"></i></button><button class="hide-btn" data-action="toggle-hidden" data-node-id="${node.id}"><i class="las ${node.hidden ? 'la-eye' : 'la-eye-slash'}"></i></button><button class="delete-btn" data-action="delete" data-node-id="${node.id}"><i class="las la-trash-alt"></i></button></div>`;
+                    actionsHtml = `<div class="node-actions">${node.type==='folder' || node.type==='chapter' || node.type==='section' ? `<button class="new-file-btn" data-action="new-file" data-parent-id="${node.id}" title="新建文件"><i class="las la-plus"></i></button>` : ''}<button class="rename-btn" data-action="rename" data-node-id="${node.id}"><i class="las la-pen"></i></button><button class="copy-path-btn" data-action="copy-path" data-node-id="${node.id}"><i class="las la-copy"></i></button><button class="hide-btn" data-action="toggle-hidden" data-node-id="${node.id}"><i class="las ${node.hidden ? 'la-eye' : 'la-eye-slash'}"></i></button><button class="delete-btn" data-action="delete" data-node-id="${node.id}"><i class="las la-trash-alt"></i></button></div>`;
                 } else {
-                    actionsHtml = `<div class="node-actions"><button class="new-file-btn" data-action="new-file" data-parent-id="root"><i class="las la-plus"></i></button><button class="new-folder-btn" data-action="new-folder" data-parent-id="root"><i class="las la-folder-plus"></i></button></div>`;
+                    actionsHtml = `<div class="node-actions"><button class="new-chapter-btn" data-action="new-chapter" data-parent-id="root"><i class="las la-plus"></i></button></div>`;
                 }
                 const checkboxHtml = `<input type="checkbox" class="node-checkbox" data-id="${node.id}" ${isSelected?'checked':''} ${isRoot?'disabled':''}>`;
-                const childrenHtml = hasChildren && (isExpanded || isSearchMode) ? `<div class="node-children ${isExpanded ? 'open' : ''}" style="max-height:none;opacity:1;display:block;">${renderNodes(node.children || [], depth + 1, isSearchMode, visibleIds, matchedIds)}</div>` : '';
-                return `<div class="tree-node" data-node-id="${isRoot ? 'root' : node.id}" data-depth="${depth}"><div class="node-row ${selectedClass} ${matchClass}" style="padding-left:${8 + depth * 22}px;" data-id="${isRoot ? 'root' : node.id}"><button class="toggle-icon ${toggleClass}" data-toggle="${isRoot ? 'root' : node.id}" style="display:inline-flex;">${hasChildren ? '<i class="las la-angle-right"></i>' : ''}</button>${checkboxHtml}<span class="node-icon ${fileTypeClass}"><i class="${iconClass}"></i></span><span class="node-label">${displayLabel}${sizeText}</span>${badge ? `<span class="node-badge">${badge} 项</span>` : ''}${actionsHtml}</div>${childrenHtml}</div>`;
+                const childrenHtml = hasChildren && (isExpanded || isSearchMode) ? `<div class="node-children ${isExpanded ? 'open' : ''}">${renderNodes(node.children || [], depth + 1, isSearchMode, visibleIds, matchedIds)}</div>` : '';
+                return `<div class="tree-node" data-node-id="${isRoot ? 'root' : node.id}" data-depth="${depth}"><div class="node-row ${selectedClass} ${matchClass}" style="padding-left:${8 + depth * 22}px;" data-id="${isRoot ? 'root' : node.id}"><button class="toggle-icon ${toggleClass}" data-toggle="${isRoot ? 'root' : node.id}">${hasChildren ? '<i class="las la-angle-right"></i>' : ''}</button>${checkboxHtml}<span class="node-icon ${fileTypeClass}"><i class="${iconClass}"></i></span><span class="node-label">${displayLabel}${sizeText}</span>${badge ? `<span class="node-badge">${badge} 项</span>` : ''}${actionsHtml}</div>${childrenHtml}</div>`;
             }
 
             function highlightText(text, query) { if (!query) return escapeHtml(text); const esc = escapeHtml(text); const escQ = escapeHtml(query); const regex = new RegExp(`(${escQ.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'); return esc.replace(regex, '<mark>$1</mark>'); }
@@ -571,6 +594,7 @@
 
             function updateBreadcrumb() {
                 if (state.searchQuery) { breadcrumbContent.innerHTML = `<span class="crumb current">搜索: ${escapeHtml(state.searchQuery)}</span>`; return; }
+                if (state.currentTab === 'book') { breadcrumbContent.innerHTML = `<span class="crumb current">书本目录</span>`; return; }
                 const data = getCurrentData();
                 const path = getPathToNode(data, state.currentFolderId);
                 let html = '';
@@ -679,6 +703,7 @@
             function confirmModal(){ const name=modalInput.value.trim(); if(!name){alert('名称不能为空');return;} if(state.modalAction==='rename'){ performRename(); return; } const parentId=state.modalParentId; const action=state.modalAction; if(action==='new-file'){ const ext=name.includes('.')?name.split('.').pop().toLowerCase():'txt'; const fileTypeMap={html:'html',js:'js',css:'css',py:'py',txt:'txt',json:'json',zip:'zip',png:'img',jpg:'img',svg:'img'}; const fileType=fileTypeMap[ext]||'txt'; addNode(parentId,{id:generateId('f'),name,type:'file',fileType,size:'0 KB',children:[]}); } else if(action==='new-folder'){ addNode(parentId,{id:generateId('fdir'),name,type:'folder',children:[]}); } else if(action==='new-chapter'){ addNode(parentId,{id:generateId('ch'),title:name,type:'section',children:[]}); } closeModal(); }
 
             function handleDoubleClick(nodeId) {
+                if (state.currentTab === 'book') return; // 书本目录不处理双击进入
                 if (state.searchQuery) return;
                 const data = getCurrentData();
                 const node = getNodeById(data, nodeId);
@@ -700,6 +725,13 @@
                 document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='f'){e.preventDefault(); if(window.innerWidth<=768) setMobileSearchActive(true); else searchInput.focus(); searchInput.select();} });
 
                 treeContainer.addEventListener('click', e => {
+                    const toggleBtn = e.target.closest('.toggle-icon');
+                    if (toggleBtn) {
+                        e.stopPropagation();
+                        const nodeId = toggleBtn.dataset.toggle;
+                        if (nodeId) toggleNode(nodeId);
+                        return;
+                    }
                     const moreBtn = e.target.closest('.more-btn');
                     if (moreBtn) { e.stopPropagation(); e.preventDefault(); const actionsContainer = moreBtn.closest('.node-actions'); if (actionsContainer) actionsContainer.classList.toggle('more-open'); return; }
                     const checkbox = e.target.closest('.node-checkbox');
@@ -710,12 +742,16 @@
                     if (row) {
                         const nodeId = row.dataset.id;
                         if (nodeId) {
-                            // 移动端单击文件夹直接进入
-                            const node = getNodeById(getCurrentData(), nodeId);
-                            const isFolderNode = node && (node.type === 'folder' || node.type === 'chapter' || node.type === 'section');
-                            if (isMobile() && isFolderNode && !state.searchQuery) {
-                                handleDoubleClick(nodeId);
+                            if (state.currentTab === 'files') {
+                                const node = getNodeById(getCurrentData(), nodeId);
+                                const isFolderNode = node && (node.type === 'folder' || node.type === 'chapter' || node.type === 'section');
+                                if (isMobile() && isFolderNode && !state.searchQuery) {
+                                    handleDoubleClick(nodeId);
+                                } else {
+                                    selectNode(nodeId, { ctrlKey: e.ctrlKey || e.metaKey, shiftKey: e.shiftKey });
+                                }
                             } else {
+                                // 书本目录：单击选中，展开/折叠通过箭头按钮
                                 selectNode(nodeId, { ctrlKey: e.ctrlKey || e.metaKey, shiftKey: e.shiftKey });
                             }
                         }
@@ -723,7 +759,8 @@
                 });
 
                 treeContainer.addEventListener('dblclick', e => {
-                    if (isMobile()) return; // 移动端不处理双击
+                    if (state.currentTab === 'book') return;
+                    if (isMobile()) return;
                     const row = e.target.closest('.node-row');
                     if (row) { const nodeId = row.dataset.id; if (nodeId) handleDoubleClick(nodeId); }
                 });
