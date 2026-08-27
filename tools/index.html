@@ -3,168 +3,892 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>米遇安索引</title>
+    <title>米遇安索引 - 文件索引 & 书本目录</title>
     <!-- 网站标签页图标（png） -->
     <link rel="icon" href="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
     <style>
-        /* 全局直角 */
-        * { border-radius: 0 !important; }
+        * {
+            border-radius: 0 !important;
+        }
         :root {
-            --primary: #1a1a2e;
+            --primary: rgba(26, 26, 46, 0.85);
             --accent: #4a90d9;
-            --accent-light: #e8f0fe;
-            --bg: #f0f2f5;
-            --card-bg: #ffffff;
+            --accent-light: rgba(74, 144, 217, 0.12);
+            --glass-bg: rgba(255, 255, 255, 0.62);
+            --glass-border: rgba(255, 255, 255, 0.55);
+            --glass-highlight: rgba(255, 255, 255, 0.35);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --glass-blur: blur(24px) saturate(180%);
+            --bg: #f0f2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
             --text: #2c3e50;
             --text-secondary: #6b7a8d;
             --text-light: #95a5a6;
-            --border: #e1e8ed;
+            --border: rgba(255, 255, 255, 0.5);
             --danger: #e74c3c;
-            --shadow-lg: 0 4px 24px rgba(0,0,0,0.12);
-            --font-sans: 'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.15);
+            --font-sans: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
         }
         body.dark {
-            --primary: #0f0f1e;
+            --primary: rgba(15, 15, 30, 0.82);
             --accent: #4a90d9;
-            --accent-light: #2a2a3e;
-            --bg: #121212;
-            --card-bg: #1e1e2e;
-            --text: #e0e0e0;
+            --accent-light: rgba(74, 144, 217, 0.15);
+            --glass-bg: rgba(30, 30, 46, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-highlight: rgba(255, 255, 255, 0.06);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --glass-blur: blur(24px) saturate(160%);
+            --bg: #12121a;
+            --card-bg: rgba(30, 30, 46, 0.68);
+            --text: #e0e0e8;
             --text-secondary: #a0a0b8;
             --text-light: #7a7a92;
-            --border: #33334d;
+            --border: rgba(255, 255, 255, 0.08);
             --danger: #e74c3c;
-            --shadow-lg: 0 4px 24px rgba(0,0,0,0.6);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family:var(--font-sans); background:var(--bg); color:var(--text);
-            height:100vh; overflow:hidden; display:flex; flex-direction:column;
-            user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent;
-            padding-bottom:36px; transition: background 0.3s, color 0.3s;
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 36px;
+            transition: background 0.3s, color 0.3s;
+            position: relative;
         }
-        .top-bar { background:var(--primary); color:#fff; padding:0 24px; height:60px; display:flex; align-items:center; gap:20px; flex-shrink:0; box-shadow:0 2px 10px rgba(0,0,0,0.2); position:sticky; top:0; z-index:100; }
-        .top-bar .logo { display:flex; align-items:center; gap:10px; font-size:20px; font-weight:700; white-space:nowrap; }
-        .top-bar .logo .logo-icon { font-size:26px; color:var(--accent); }
-        .top-bar .logo span { background:linear-gradient(135deg,#fff 60%,#a8d8ea); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .top-bar .search-wrapper { flex:1; max-width:500px; position:relative; margin-left:auto; }
-        .top-bar .search-wrapper .search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#888; font-size:18px; pointer-events:none; }
-        .top-bar .search-wrapper input { width:100%; height:40px; border:2px solid transparent; padding:0 40px; font-size:14px; font-family:var(--font-sans); background:rgba(255,255,255,0.1); color:#fff; outline:none; transition:all 0.3s; }
-        .top-bar .search-wrapper input::placeholder { color:rgba(255,255,255,0.5); }
-        .top-bar .search-wrapper input:focus { background:#fff; color:var(--text); border-color:var(--accent); }
-        .top-bar .search-wrapper .clear-btn { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:#888; font-size:18px; cursor:pointer; display:none; }
-        .top-bar .search-wrapper .clear-btn.visible { display:block; }
-        .top-bar .top-actions { display:flex; gap:8px; flex-shrink:0; }
-        .top-bar .top-actions button { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:8px 14px; cursor:pointer; font-size:13px; font-family:var(--font-sans); transition:all 0.25s; display:flex; align-items:center; gap:5px; white-space:nowrap; }
-        .top-bar .top-actions button:hover { background:rgba(255,255,255,0.2); }
-        .tabs-bar { background:var(--card-bg); display:flex; gap:4px; padding:0 24px; border-bottom:2px solid var(--border); flex-shrink:0; overflow-x:auto; }
-        .tabs-bar .tab { padding:14px 22px; font-size:15px; font-weight:500; cursor:pointer; color:var(--text-secondary); border-bottom:3px solid transparent; transition:all 0.25s; white-space:nowrap; display:flex; align-items:center; gap:8px; background:none; border:none; font-family:var(--font-sans); }
-        .tabs-bar .tab:hover { color:var(--accent); background:var(--accent-light); }
-        .tabs-bar .tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
-        .tabs-bar .tab .tab-badge { background:var(--accent); color:#fff; font-size:11px; padding:2px 8px; font-weight:600; }
-        .breadcrumb-bar { background:var(--card-bg); padding:10px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-secondary); flex-shrink:0; min-height:42px; overflow-x:auto; white-space:nowrap; }
-        .breadcrumb-bar .crumb { display:inline-flex; align-items:center; gap:6px; cursor:pointer; padding:4px 8px; color:var(--text-secondary); background:none; border:none; font-size:13px; white-space:nowrap; }
-        .breadcrumb-bar .crumb:hover { background:var(--accent-light); color:var(--accent); }
-        .breadcrumb-bar .crumb.current { color:var(--accent); font-weight:600; cursor:default; }
-        .breadcrumb-bar .crumb-sep { color:var(--text-light); font-size:12px; }
-        .toolbar { background:var(--card-bg); padding:10px 24px; border-bottom:1px solid var(--border); flex-shrink:0; display:flex; flex-direction:column; gap:8px; }
-        .toolbar .tool-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-        .toolbar .tool-divider { width:1px; height:24px; background:var(--border); margin:0 4px; }
-        .toolbar button { background:var(--card-bg); border:1px solid var(--border); color:var(--text-secondary); padding:7px 14px; cursor:pointer; font-size:13px; font-family:var(--font-sans); transition:all 0.2s; display:flex; align-items:center; gap:5px; white-space:nowrap; }
-        .toolbar button:hover:not(:disabled) { background:var(--accent-light); color:var(--accent); border-color:var(--accent); }
-        .toolbar button:disabled { opacity:0.5; cursor:not-allowed; }
-        .toolbar .tool-info { font-size:12px; color:var(--text-light); }
-        .main-content { flex:1; display:flex; overflow:hidden; position:relative; min-height:0; }
-        .tree-view-container { flex:1; overflow-y:auto; padding:16px 20px 24px; background:var(--bg); scroll-behavior:smooth; transition: background 0.3s; position: relative; }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 20%, rgba(74, 144, 217, 0.08), transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(155, 89, 182, 0.06), transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.03), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body.dark::before {
+            background: radial-gradient(ellipse at 20% 20%, rgba(74, 144, 217, 0.1), transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(155, 89, 182, 0.08), transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.02), transparent 70%);
+        }
+        .top-bar,
+        .tabs-bar,
+        .breadcrumb-bar,
+        .toolbar,
+        .detail-panel,
+        .status-bar,
+        .modal-box {
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            border-color: var(--glass-border);
+        }
+        .top-bar {
+            background: var(--primary);
+            color: #fff;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 var(--glass-highlight);
+        }
+        .top-bar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .top-bar .logo .logo-icon {
+            font-size: 26px;
+            color: var(--accent);
+        }
+        .top-bar .logo span {
+            background: linear-gradient(135deg, #fff 60%, #a8d8ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .top-bar .search-wrapper {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+            margin-left: auto;
+        }
+        .top-bar .search-wrapper .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 18px;
+            pointer-events: none;
+        }
+        .top-bar .search-wrapper input {
+            width: 100%;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0 40px;
+            font-size: 14px;
+            font-family: var(--font-sans);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+        }
+        .top-bar .search-wrapper input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .top-bar .search-wrapper input:focus {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.25);
+        }
+        .top-bar .search-wrapper .clear-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+        }
+        .top-bar .search-wrapper .clear-btn.visible {
+            display: block;
+        }
+        .top-bar .top-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .top-bar .top-actions button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            backdrop-filter: blur(8px);
+        }
+        .top-bar .top-actions button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+        }
+        .mobile-search-btn,
+        .search-exit-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-size: 16px;
+            backdrop-filter: blur(8px);
+        }
+        .tabs-bar {
+            background: var(--card-bg);
+            display: flex;
+            gap: 4px;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--glass-border);
+            flex-shrink: 0;
+            overflow-x: auto;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 var(--glass-highlight);
+        }
+        .tabs-bar .tab {
+            padding: 14px 22px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.25s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            font-family: var(--font-sans);
+        }
+        .tabs-bar .tab:hover {
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+        .tabs-bar .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            font-weight: 600;
+        }
+        .tabs-bar .tab .tab-badge {
+            background: var(--accent);
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            font-weight: 600;
+        }
+        .breadcrumb-bar {
+            background: var(--card-bg);
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            min-height: 42px;
+            overflow-x: auto;
+            white-space: nowrap;
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+        }
+        .breadcrumb-bar .crumb {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 4px 8px;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .breadcrumb-bar .crumb:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+        .breadcrumb-bar .crumb.current {
+            color: var(--accent);
+            font-weight: 600;
+            cursor: default;
+        }
+        .breadcrumb-bar .crumb-sep {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        .toolbar {
+            background: var(--card-bg);
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--glass-border);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+        }
+        .toolbar .tool-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .toolbar .tool-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+            margin: 0 4px;
+        }
+        .toolbar button {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 7px 14px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            backdrop-filter: blur(8px);
+        }
+        body.dark .toolbar button {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .toolbar button:hover:not(:disabled) {
+            background: var(--accent-light);
+            color: var(--accent);
+            border-color: rgba(74, 144, 217, 0.3);
+        }
+        .toolbar button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .toolbar .tool-info {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            min-height: 0;
+            z-index: 1;
+        }
+        .tree-view-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 24px;
+            background: transparent;
+            scroll-behavior: smooth;
+            position: relative;
+            z-index: 1;
+        }
         .tree-view-container.drag-over::after {
             content: '释放鼠标以上传文件/文件夹';
-            position: absolute; inset: 0; background: rgba(74,144,217,0.2); border: 3px dashed var(--accent);
-            display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--accent); z-index: 10; pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(74, 144, 217, 0.2);
+            border: 3px dashed var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--accent);
+            z-index: 999;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            margin: 16px 20px 24px;
+            box-sizing: border-box;
         }
-        .tree-view-container::-webkit-scrollbar { width:8px; }
-        .tree-view-container::-webkit-scrollbar-thumb { background:#c0c8d4; }
-        .tree-node .node-row { display:flex; align-items:center; padding:7px 10px; cursor:pointer; transition:all 0.18s; gap:6px; min-height:36px; }
-        .tree-node .node-row:hover { background:var(--accent-light); }
-        .tree-node .node-row.selected { background:var(--accent-light); box-shadow:inset 0 0 0 2px var(--accent); }
-        .tree-node .toggle-icon { width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--text-light); transition:transform 0.25s; flex-shrink:0; cursor:pointer; background:none; border:none; }
-        .tree-node .toggle-icon.expanded { transform:rotate(90deg); }
-        .tree-node .toggle-icon.no-children { visibility:hidden; pointer-events:none; }
-        .tree-node .node-icon { font-size:18px; flex-shrink:0; width:24px; text-align:center; }
-        .tree-node .node-label { flex:1; font-size:14px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .tree-node .node-badge { font-size:11px; color:var(--text-light); background:var(--bg); padding:3px 8px; flex-shrink:0; }
-        .tree-node .node-children { overflow:hidden; transition:max-height 0.35s, opacity 0.3s; max-height:0; opacity:0; }
-        .tree-node .node-children.open { max-height:5000px; opacity:1; }
-        .node-actions { display:flex; gap:2px; flex-shrink:0; margin-left:8px; opacity:0.8; flex-wrap:wrap; }
-        .node-row:hover .node-actions { opacity:1; }
-        .node-actions button { background:none; border:1px solid transparent; cursor:pointer; padding:3px 5px; font-size:14px; color:var(--text-light); transition:all 0.2s; display:flex; align-items:center; }
-        .node-actions button:hover { background:rgba(0,0,0,0.08); color:var(--accent); border-color:var(--accent); }
-        .node-actions button.delete-btn:hover { background:rgba(231,76,60,0.15); color:var(--danger); border-color:var(--danger); }
-        .file-icon-html { color:#e44d26; } .file-icon-js { color:#f7df1e; } .file-icon-css { color:#264de4; } .file-icon-py { color:#3776ab; } .file-icon-img { color:#e91e63; } .file-icon-txt { color:#607d8b; } .file-icon-json { color:#f39c12; } .file-icon-zip { color:#795548; } .file-icon-font { color:#9c27b0; } .file-icon-video { color:#ff5722; } .file-icon-audio { color:#00bcd4; }
-        .detail-panel { width:320px; background:var(--card-bg); border-left:1px solid var(--border); padding:20px; overflow-y:auto; flex-shrink:0; display:flex; flex-direction:column; gap:16px; transition:all 0.3s; }
-        .detail-panel.collapsed { width:0; padding:0; border-left:none; overflow:hidden; }
-        .detail-panel .panel-header { display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--border); padding-bottom:12px; }
-        .detail-panel .panel-header h3 { font-size:16px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px; }
-        .detail-panel .panel-close { background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-light); }
-        .detail-panel .detail-item { display:flex; flex-direction:column; gap:4px; padding:10px 0; border-bottom:1px solid var(--border); }
-        .detail-panel .detail-item .detail-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--text-light); font-weight:600; }
-        .detail-panel .detail-item .detail-value { font-size:14px; color:var(--text); word-break:break-all; line-height:1.5; }
-        .status-bar { position:fixed; bottom:0; left:0; right:0; background:var(--primary); color:rgba(255,255,255,0.85); padding:8px 24px; display:flex; align-items:center; gap:20px; font-size:12px; flex-wrap:wrap; min-height:36px; z-index:200; }
-        .status-bar .status-item { display:flex; align-items:center; gap:5px; white-space:nowrap; }
-        .status-bar .status-spacer { flex:1; }
-        .status-bar .search-indicator { background:rgba(255,255,255,0.15); padding:3px 10px; display:flex; align-items:center; gap:6px; }
-        .status-bar .copyright { white-space:nowrap; color:rgba(255,255,255,0.6); font-size:11px; margin-left:8px; }
-        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.2s; }
-        .modal-overlay.active { opacity:1; pointer-events:auto; }
-        .modal-box { background:var(--card-bg); box-shadow:var(--shadow-lg); padding:24px; width:360px; max-width:90vw; }
-        .modal-box h3 { margin-bottom:16px; font-size:18px; display:flex; align-items:center; gap:8px; color:var(--text); }
-        .modal-box input, .modal-box select { width:100%; padding:10px 12px; border:1px solid var(--border); font-size:14px; font-family:var(--font-sans); outline:none; margin-bottom:16px; background:var(--bg); color:var(--text); }
-        .modal-box .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
-        .modal-box .modal-actions button { padding:8px 16px; border:1px solid var(--border); cursor:pointer; font-size:13px; font-family:var(--font-sans); display:flex; align-items:center; gap:5px; background:var(--card-bg); color:var(--text-secondary); }
-        .modal-box .modal-actions .btn-confirm { background:var(--accent); color:#fff; border-color:var(--accent); }
-        @media (max-width:768px) {
-            .top-bar { padding:0 12px; height:52px; }
-            .top-bar .logo { font-size:16px; }
-            .top-bar .top-actions button span { display:none; }
-            .tabs-bar { padding:0 12px; }
-            .tabs-bar .tab { padding:12px 14px; font-size:14px; }
-            .breadcrumb-bar { padding:8px 12px; font-size:12px; }
-            .toolbar { padding:8px 12px; gap:6px; }
-            .toolbar button { padding:6px 10px; font-size:12px; }
-            .tree-view-container { padding:10px 8px 16px; }
-            .detail-panel { width:280px; position:absolute; right:0; top:0; bottom:0; z-index:50; }
-            .detail-panel.collapsed { width:0; padding:0; }
-            .status-bar { padding:6px 12px; gap:10px; font-size:11px; }
-            .status-bar .status-spacer { display:none; }
+        .tree-view-container::-webkit-scrollbar {
+            width: 8px;
         }
-        .hidden-input { display:none; }
-        .node-checkbox { margin-right: 6px; cursor: pointer; width: 16px; height: 16px; accent-color: var(--accent); }
-        .multi-delete-btn { background:var(--danger); color:#fff !important; border-color:var(--danger) !important; }
+        .tree-view-container::-webkit-scrollbar-thumb {
+            background: rgba(160, 160, 180, 0.4);
+        }
+        .tree-node .node-row {
+            display: flex;
+            align-items: center;
+            padding: 7px 10px;
+            cursor: pointer;
+            transition: all 0.18s;
+            gap: 6px;
+            min-height: 36px;
+            background: transparent;
+            border: 1px solid transparent;
+            margin: 1px 0;
+        }
+        .tree-node .node-row:hover {
+            background: var(--accent-light);
+            border-color: rgba(74, 144, 217, 0.15);
+        }
+        .tree-node .node-row.selected {
+            background: var(--accent-light);
+            box-shadow: inset 0 0 0 2px var(--accent), 0 0 8px rgba(74, 144, 217, 0.2);
+            border-color: rgba(74, 144, 217, 0.3);
+        }
+        .tree-node .toggle-icon {
+            display: none;
+        }
+        .tree-node .node-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+        .tree-node .node-label {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .tree-node .node-badge {
+            font-size: 11px;
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.3);
+            padding: 3px 8px;
+            flex-shrink: 0;
+            backdrop-filter: blur(4px);
+        }
+        body.dark .tree-node .node-badge {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .tree-node .node-children {
+            display: none;
+        }
+        .node-actions {
+            display: flex;
+            gap: 2px;
+            flex-shrink: 0;
+            margin-left: 8px;
+            opacity: 0.7;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .node-row:hover .node-actions {
+            opacity: 1;
+        }
+        .node-actions button {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            padding: 3px 5px;
+            font-size: 14px;
+            color: var(--text-light);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        body.dark .node-actions button {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .node-actions button:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+            border-color: rgba(74, 144, 217, 0.3);
+        }
+        .node-actions button.delete-btn:hover {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border-color: rgba(231, 76, 60, 0.3);
+        }
+        .file-icon-html {
+            color: #e44d26;
+        }
+        .file-icon-js {
+            color: #f7df1e;
+        }
+        .file-icon-css {
+            color: #264de4;
+        }
+        .file-icon-py {
+            color: #3776ab;
+        }
+        .file-icon-img {
+            color: #e91e63;
+        }
+        .file-icon-txt {
+            color: #607d8b;
+        }
+        .file-icon-json {
+            color: #f39c12;
+        }
+        .file-icon-zip {
+            color: #795548;
+        }
+        .file-icon-font {
+            color: #9c27b0;
+        }
+        .file-icon-video {
+            color: #ff5722;
+        }
+        .file-icon-audio {
+            color: #00bcd4;
+        }
+        .detail-panel {
+            width: 320px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--glass-border);
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.3s;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+        }
+        .detail-panel.collapsed {
+            width: 0;
+            padding: 0;
+            border-left: none;
+            overflow: hidden;
+        }
+        .detail-panel .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 12px;
+        }
+        .detail-panel .panel-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .detail-panel .panel-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        .detail-panel .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .detail-panel .detail-item .detail-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        .detail-panel .detail-item .detail-value {
+            font-size: 14px;
+            color: var(--text);
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            color: rgba(255, 255, 255, 0.85);
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            min-height: 36px;
+            z-index: 200;
+            border-top: 1px solid var(--glass-border);
+            box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 var(--glass-highlight);
+        }
+        .status-bar .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .status-bar .status-spacer {
+            flex: 1;
+        }
+        .status-bar .search-indicator {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(8px);
+        }
+        .status-bar .copyright {
+            white-space: nowrap;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            margin-left: 8px;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: var(--card-bg);
+            box-shadow: var(--shadow-lg);
+            padding: 24px;
+            width: 360px;
+            max-width: 90vw;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2), inset 0 1px 0 var(--glass-highlight);
+        }
+        .modal-box h3 {
+            margin-bottom: 16px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+        }
+        .modal-box input,
+        .modal-box select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--glass-border);
+            font-size: 14px;
+            font-family: var(--font-sans);
+            outline: none;
+            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--text);
+            backdrop-filter: blur(8px);
+        }
+        body.dark .modal-box input,
+        body.dark .modal-box select {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .modal-box .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .modal-box .modal-actions button {
+            padding: 8px 16px;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--text-secondary);
+            backdrop-filter: blur(8px);
+        }
+        body.dark .modal-box .modal-actions button {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .modal-box .modal-actions .btn-confirm {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .hidden-input {
+            display: none;
+        }
+        .node-checkbox {
+            margin-right: 6px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+        }
+        .multi-delete-btn {
+            background: var(--danger);
+            color: #fff !important;
+            border-color: var(--danger) !important;
+        }
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0 12px;
+                height: 52px;
+                gap: 10px;
+            }
+            .top-bar .logo {
+                font-size: 16px;
+            }
+            .top-bar .logo .logo-icon {
+                font-size: 20px;
+            }
+            .top-bar .search-wrapper {
+                display: none;
+                max-width: none;
+                flex: 1;
+                margin-left: 0;
+            }
+            .top-bar.search-active .search-wrapper {
+                display: block;
+                flex: 1;
+                margin: 0;
+            }
+            .top-bar.search-active .logo,
+            .top-bar.search-active .top-actions {
+                display: none;
+            }
+            .top-bar.search-active .mobile-search-btn {
+                display: none;
+            }
+            .top-bar.search-active .search-exit-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 8px;
+                flex-shrink: 0;
+            }
+            .mobile-search-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: auto;
+            }
+            .top-bar .top-actions button span {
+                display: none;
+            }
+            .top-bar .top-actions button {
+                padding: 8px 10px;
+            }
+            .tabs-bar {
+                padding: 0 12px;
+            }
+            .tabs-bar .tab {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+            .breadcrumb-bar {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            .toolbar {
+                padding: 8px 12px;
+                gap: 6px;
+            }
+            .toolbar button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .tree-view-container {
+                padding: 10px 8px 16px;
+            }
+            .detail-panel {
+                width: 280px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 50;
+                box-shadow: var(--shadow-lg);
+                transform: translateX(0);
+                transition: transform 0.3s;
+            }
+            .detail-panel.collapsed {
+                transform: translateX(100%);
+                width: 280px;
+                padding: 20px;
+                border-left: 1px solid var(--glass-border);
+            }
+            .status-bar {
+                padding: 6px 12px;
+                gap: 10px;
+                font-size: 11px;
+            }
+            .status-bar .status-spacer {
+                display: none;
+            }
+            .node-row .node-label {
+                font-size: 13px;
+            }
+            .node-actions .action-btn-extra {
+                display: none;
+            }
+            .node-actions.more-open .action-btn-extra {
+                display: flex;
+            }
+            .node-actions .more-btn {
+                display: flex;
+            }
+            .node-actions .rename-btn,
+            .node-actions .delete-btn,
+            .node-actions .hide-btn {
+                display: flex;
+            }
+            .node-actions.more-open .rename-btn,
+            .node-actions.more-open .delete-btn,
+            .node-actions.more-open .hide-btn {
+                display: flex;
+            }
+            .node-actions.more-open {
+                flex-wrap: wrap;
+            }
+            .node-actions .more-btn {
+                order: 100;
+            }
+            .node-actions.more-open .more-btn {
+                order: initial;
+            }
+            .node-actions {
+                flex-wrap: nowrap;
+            }
+        }
+        @media (min-width: 769px) {
+            .node-actions .more-btn {
+                display: none;
+            }
+            .node-actions .action-btn-extra {
+                display: flex;
+            }
+        }
+        @media (max-width: 480px) {
+            .top-bar .logo span {
+                display: none;
+            }
+            .toolbar .tool-divider {
+                display: none;
+            }
+            .detail-panel {
+                width: 100%;
+            }
+            .detail-panel.collapsed {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- 顶部栏 -->
-    <header class="top-bar">
+    <header class="top-bar" id="topBar">
         <div class="logo"><i class="las la-sitemap logo-icon"></i><span>米遇安索引</span></div>
+        <button id="mobileSearchBtn" class="mobile-search-btn" title="搜索"><i class="las la-search"></i></button>
         <div class="search-wrapper" id="searchWrapper">
             <i class="las la-search search-icon"></i>
             <input type="text" id="searchInput" placeholder="搜索名称、路径或类型..." autocomplete="off">
             <button class="clear-btn" id="clearSearchBtn"><i class="las la-times"></i></button>
         </div>
+        <button id="searchExitBtn" class="search-exit-btn" title="退出搜索"><i class="las la-times"></i></button>
         <div class="top-actions">
-            <button id="btnDarkMode" title="切换主题模式 (自动/浅色/深色)"><i class="las la-adjust"></i></button>
-            <button id="btnExpandAll" title="展开全部"><i class="las la-expand"></i><span>展开全部</span></button>
-            <button id="btnCollapseAll" title="折叠全部"><i class="las la-compress"></i><span>折叠全部</span></button>
+            <button id="btnDarkMode" title="切换主题模式"><i class="las la-adjust"></i></button>
+            <button id="btnUp" title="返回上一级"><i class="las la-arrow-up"></i><span>向上</span></button>
         </div>
     </header>
-    <!-- 标签页 -->
     <nav class="tabs-bar" id="tabsBar">
         <button class="tab active" data-tab="files"><i class="las la-folder"></i> 文件索引 <span class="tab-badge" id="fileNodeCount">0</span></button>
         <button class="tab" data-tab="book"><i class="las la-book"></i> 书本目录 <span class="tab-badge" id="bookNodeCount">0</span></button>
     </nav>
-    <!-- 面包屑 -->
-    <div class="breadcrumb-bar" id="breadcrumbBar"><i class="las la-map-marker-alt"></i><span id="breadcrumbContent">请选择一个节点</span></div>
-    <!-- 工具栏 -->
+    <div class="breadcrumb-bar" id="breadcrumbBar">
+        <i class="las la-map-marker-alt"></i>
+        <span id="breadcrumbContent"></span>
+    </div>
     <div class="toolbar" id="toolbar">
         <div class="tool-row">
             <button id="btnRefresh"><i class="las la-sync-alt"></i> 刷新</button>
@@ -174,17 +898,19 @@
             <button id="btnSortDesc"><i class="las la-sort-alpha-down"></i> 降序</button>
             <button id="btnDeleteSelected"><i class="las la-trash-alt"></i> 删除</button>
             <div class="tool-divider"></div>
+            <button id="btnToggleHidden" title="显示/隐藏已隐藏的文件"><i class="las la-eye-slash"></i> 显示隐藏</button>
             <span class="tool-info" id="toolbarInfo"></span>
         </div>
         <div class="tool-row">
             <button id="btnCopy" title="复制选中节点"><i class="las la-copy"></i> 复制</button>
             <button id="btnCut" title="剪切选中节点"><i class="las la-cut"></i> 剪切</button>
-            <button id="btnPaste" title="粘贴到选中文件夹或根目录"><i class="las la-paste"></i> 粘贴</button>
+            <button id="btnPaste" title="粘贴到当前文件夹"><i class="las la-paste"></i> 粘贴</button>
+            <button id="btnNewFile" title="新建文件"><i class="las la-file-plus"></i> 新建文件</button>
+            <button id="btnNewFolder" title="新建文件夹"><i class="las la-folder-plus"></i> 新建文件夹</button>
             <button id="btnCreateShortcut" title="为选中节点创建快捷方式"><i class="las la-link"></i> 创建快捷方式</button>
             <span class="tool-info" id="clipboardInfo"></span>
         </div>
     </div>
-    <!-- 主内容区 -->
     <main class="main-content">
         <div class="tree-view-container" id="treeContainer"></div>
         <aside class="detail-panel collapsed" id="detailPanel">
@@ -195,7 +921,6 @@
             <div id="detailContent"></div>
         </aside>
     </main>
-    <!-- 状态栏 -->
     <footer class="status-bar" id="statusBar">
         <span class="status-item"><i class="las la-chart-bar"></i> <span id="statTotal">总节点: 0</span></span>
         <span class="status-item"><i class="las la-folder"></i> <span id="statFolders">文件夹: 0</span></span>
@@ -206,7 +931,6 @@
         <span class="search-indicator" id="searchIndicator" style="display:none;"></span>
         <span class="copyright">©米遇安</span>
     </footer>
-    <!-- 通用模态框 -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
             <h3 id="modalTitle"></h3>
@@ -217,7 +941,6 @@
             </div>
         </div>
     </div>
-    <!-- 快捷方式目标选择模态框 -->
     <div class="modal-overlay" id="shortcutModalOverlay">
         <div class="modal-box">
             <h3><i class="las la-link"></i> 选择快捷方式存放位置</h3>
@@ -235,7 +958,7 @@
         (function() {
             'use strict';
 
-            // ============ 本地存储 ============
+            // ---------- 本地存储 ----------
             const STORAGE_KEY_FILES = 'miyuan_fileData';
             const STORAGE_KEY_BOOK = 'miyuan_bookData';
             const THEME_STORAGE_KEY = 'miyuan_theme_mode';
@@ -249,7 +972,6 @@
                 } catch (e) { console.warn('加载数据失败', e); }
                 return JSON.parse(JSON.stringify(defaultData));
             }
-
             let bookData = loadData(STORAGE_KEY_BOOK, defaultBookData);
             let fileData = loadData(STORAGE_KEY_FILES, defaultFileData);
 
@@ -259,9 +981,14 @@
             }
             saveData();
 
-            // ============ 主题 ============
+            // ---------- 主题 ----------
             function getThemeMode() { return localStorage.getItem(THEME_STORAGE_KEY) || 'auto'; }
-            function setThemeMode(mode) { localStorage.setItem(THEME_STORAGE_KEY, mode); applyTheme(); }
+
+            function setThemeMode(mode) {
+                localStorage.setItem(THEME_STORAGE_KEY, mode);
+                applyTheme();
+            }
+
             function applyTheme() {
                 const mode = getThemeMode();
                 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -269,19 +996,20 @@
                 document.body.classList.toggle('dark', shouldDark);
                 updateThemeButtonIcon(mode);
             }
+
             function updateThemeButtonIcon(mode) {
                 const icon = document.querySelector('#btnDarkMode i');
                 if (mode === 'auto') icon.className = 'las la-adjust';
                 else if (mode === 'dark') icon.className = 'las la-moon';
                 else icon.className = 'las la-sun';
             }
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                if (getThemeMode() === 'auto') applyTheme();
-            });
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (getThemeMode() ===
+                    'auto') applyTheme(); });
 
-            // ============ 状态 ============
+            // ---------- 状态 ----------
             const state = {
                 currentTab: 'files',
+                currentFolderId: 'root',
                 expandedNodes: new Set(),
                 selectedNodeIds: new Set(),
                 lastSelectedId: null,
@@ -294,16 +1022,21 @@
                 modalParentId: null,
                 modalTargetId: null,
                 clipboard: { mode: null, nodeIds: [] },
-                shortcutSourceId: null
+                shortcutSourceId: null,
+                mobileSearchActive: false,
+                showHidden: false
             };
-
             applyTheme();
 
             const $ = sel => document.querySelector(sel);
             const $$ = sel => document.querySelectorAll(sel);
-            const treeContainer = $('#treeContainer');
+            const topBar = $('#topBar');
+            const mobileSearchBtn = $('#mobileSearchBtn');
+            const searchExitBtn = $('#searchExitBtn');
+            const searchWrapper = $('#searchWrapper');
             const searchInput = $('#searchInput');
             const clearSearchBtn = $('#clearSearchBtn');
+            const treeContainer = $('#treeContainer');
             const breadcrumbContent = $('#breadcrumbContent');
             const detailPanel = $('#detailPanel');
             const detailContent = $('#detailContent');
@@ -326,10 +1059,21 @@
             const btnCopy = $('#btnCopy');
             const btnCut = $('#btnCut');
             const btnPaste = $('#btnPaste');
+            const btnNewFile = $('#btnNewFile');
+            const btnNewFolder = $('#btnNewFolder');
             const btnCreateShortcut = $('#btnCreateShortcut');
+            const btnToggleHidden = $('#btnToggleHidden');
+            const btnUp = $('#btnUp');
 
-            // ============ 工具函数 ============
+            function setMobileSearchActive(active) {
+                state.mobileSearchActive = active;
+                topBar.classList.toggle('search-active', active);
+                if (active) searchInput.focus();
+            }
+
+            // ---------- 工具函数 ----------
             function getCurrentData() { return state.currentTab === 'book' ? bookData : fileData; }
+
             function getNodeIconClass(node, isExpanded) {
                 if (node.type === 'shortcut') return 'las la-link';
                 if (state.currentTab === 'book') {
@@ -339,33 +1083,110 @@
                 } else {
                     if (node.type === 'folder') return isExpanded ? 'las la-folder-open' : 'las la-folder';
                     const ft = node.fileType || 'default';
-                    const map = { html:'las la-code', js:'las la-file-code', css:'las la-file-code', py:'las la-file-code', img:'las la-file-image', txt:'las la-file-alt', json:'las la-file-code', zip:'las la-file-archive', font:'las la-file-alt', video:'las la-file-video', audio:'las la-file-audio' };
+                    const map = { html: 'las la-code', js: 'las la-file-code', css: 'las la-file-code', py: 'las la-file-code',
+                        img: 'las la-file-image', txt: 'las la-file-alt', json: 'las la-file-code', zip: 'las la-file-archive',
+                        font: 'las la-file-alt', video: 'las la-file-video', audio: 'las la-file-audio' };
                     return map[ft] || 'las la-file';
                 }
             }
-            function getFileTypeClass(fileType) { const map={html:'file-icon-html',js:'file-icon-js',css:'file-icon-css',py:'file-icon-py',img:'file-icon-img',txt:'file-icon-txt',json:'file-icon-json',zip:'file-icon-zip',font:'file-icon-font',video:'file-icon-video',audio:'file-icon-audio'}; return map[fileType]||''; }
+
+            function getFileTypeClass(fileType) {
+                const map = { html: 'file-icon-html', js: 'file-icon-js', css: 'file-icon-css', py: 'file-icon-py', img: 'file-icon-img',
+                    txt: 'file-icon-txt', json: 'file-icon-json', zip: 'file-icon-zip', font: 'file-icon-font', video: 'file-icon-video',
+                    audio: 'file-icon-audio' };
+                return map[fileType] || '';
+            }
+
             function getAllNodes(data) {
                 const result = [];
-                // 清理根路径中的图标字符，提高地址搜索匹配率
-                const cleanRootLabel = (data.rootLabel || data.title || '根目录').replace(/[^\w\u4e00-\u9fa5\s]/g, '').trim() || '根目录';
+                const cleanRootLabel = (data.rootLabel || data.title || '根目录').replace(/[^\w\u4e00-\u9fa5\s]/g, '')
+                    .trim() || '根目录';
                 const traverse = (nodes, parentPath) => {
                     if (!nodes) return;
                     for (const node of nodes) {
-                        const path = parentPath ? `${parentPath} / ${node.title || node.name}` : (node.title || node.name);
+                        const path = parentPath ? `${parentPath} / ${node.title||node.name}` : (node.title || node.name);
                         result.push({ ...node, _path: path, _parent: parentPath || '' });
-                        if (node.children && node.children.length > 0) {
-                            traverse(node.children, path);
-                        }
+                        if (node.children && node.children.length > 0) traverse(node.children, path);
                     }
                 };
                 traverse(data.nodes, cleanRootLabel);
                 return result;
             }
-            function buildFlatMap(data) { state.flatNodeMap.clear(); const traverse=(nodes)=>{ if(!nodes)return; for(const node of nodes){ state.flatNodeMap.set(node.id,node); if(node.children&&node.children.length>0) traverse(node.children); } }; traverse(data.nodes); }
-            function countNodes(data) { let total=0,folders=0,files=0,chapters=0; const traverse=(nodes)=>{ if(!nodes)return; for(const node of nodes){ total++; if(node.type==='folder')folders++; if(node.type==='file')files++; if(node.type==='chapter')chapters++; if(node.children&&node.children.length>0)traverse(node.children); } }; traverse(data.nodes); return {total,folders,files,chapters}; }
-            function getNodeById(data,id){ if(!id||id==='root') return {id:'root',children:data.nodes,type:'root',title:data.rootLabel||data.title||'根目录'}; const traverse=(nodes)=>{ if(!nodes)return null; for(const node of nodes){ if(node.id===id)return node; if(node.children){const found=traverse(node.children); if(found)return found;} } return null; }; return traverse(data.nodes); }
-            function getParentId(data,id){ const traverse=(nodes,parentId)=>{ if(!nodes)return null; for(const node of nodes){ if(node.id===id)return parentId||'root'; if(node.children){const found=traverse(node.children,node.id); if(found)return found;} } return null; }; const result=traverse(data.nodes,null); return result===null?null:result; }
-            function getPathToNode(data,id){ if(id==='root')return [{id:'root',label:data.rootLabel||data.title||'根目录',type:'root'}]; const path=[]; const traverse=(nodes,trail)=>{ if(!nodes)return false; for(const node of nodes){ const newTrail=[...trail,{id:node.id,label:node.title||node.name,type:node.type}]; if(node.id===id){ path.push(...newTrail); return true; } if(node.children&&traverse(node.children,newTrail))return true; } return false; }; traverse(data.nodes,[{id:'root',label:data.rootLabel||data.title||'根目录',type:'root'}]); return path.length?path:[]; }
+
+            function buildFlatMap(data) {
+                state.flatNodeMap.clear();
+                const traverse = (nodes) => {
+                    if (!nodes) return;
+                    for (const node of nodes) {
+                        state.flatNodeMap.set(node.id, node);
+                        if (node.children && node.children.length > 0) traverse(node.children);
+                    }
+                };
+                traverse(data.nodes);
+            }
+
+            function countNodes(data) {
+                let total = 0,
+                    folders = 0,
+                    files = 0,
+                    chapters = 0;
+                const traverse = (nodes) => {
+                    if (!nodes) return;
+                    for (const node of nodes) {
+                        total++;
+                        if (node.type === 'folder') folders++;
+                        if (node.type === 'file') files++;
+                        if (node.type === 'chapter') chapters++;
+                        if (node.children && node.children.length > 0) traverse(node.children);
+                    }
+                };
+                traverse(data.nodes);
+                return { total, folders, files, chapters };
+            }
+
+            function getNodeById(data, id) {
+                if (!id || id === 'root') return { id: 'root', children: data.nodes, type: 'root', title: data.rootLabel || data
+                        .title || '根目录' };
+                const traverse = (nodes) => {
+                    if (!nodes) return null;
+                    for (const node of nodes) {
+                        if (node.id === id) return node;
+                        if (node.children) { const found = traverse(node.children); if (found) return found; }
+                    }
+                    return null;
+                };
+                return traverse(data.nodes);
+            }
+
+            function getParentId(data, id) {
+                const traverse = (nodes, parentId) => {
+                    if (!nodes) return null;
+                    for (const node of nodes) {
+                        if (node.id === id) return parentId || 'root';
+                        if (node.children) { const found = traverse(node.children, node.id); if (found) return found; }
+                    }
+                    return null;
+                };
+                const result = traverse(data.nodes, null);
+                return result === null ? null : result;
+            }
+
+            function getPathToNode(data, id) {
+                if (id === 'root') return [{ id: 'root', label: data.rootLabel || data.title || '根目录', type: 'root' }];
+                const path = [];
+                const traverse = (nodes, trail) => {
+                    if (!nodes) return false;
+                    for (const node of nodes) {
+                        const newTrail = [...trail, { id: node.id, label: node.title || node.name, type: node.type }];
+                        if (node.id === id) { path.push(...newTrail); return true; }
+                        if (node.children && traverse(node.children, newTrail)) return true;
+                    }
+                    return false;
+                };
+                traverse(data.nodes, [{ id: 'root', label: data.rootLabel || data.title || '根目录', type: 'root' }]);
+                return path.length ? path : [];
+            }
+
             function matchesSearch(node, query) {
                 if (!query) return true;
                 const q = query.toLowerCase();
@@ -373,134 +1194,270 @@
                 const path = (node._path || '').toLowerCase();
                 const fileType = (node.fileType || '').toLowerCase();
                 const typeLabel = (node.type || '').toLowerCase();
-                // 如果查询以 "/" 或 "\" 开头，则仅匹配路径，否则匹配所有字段
-                if (query.startsWith('/') || query.startsWith('\\')) {
-                    return path.includes(q.replace(/^[\\/]+/, ''));
-                }
+                if (query.startsWith('/') || query.startsWith('\\')) return path.includes(q.replace(/^[\\/]+/, ''));
                 return label.includes(q) || path.includes(q) || fileType.includes(q) || typeLabel.includes(q);
             }
-            function getSearchResults(data,query){
-                if(!query)return {matchedIds:new Set(),visibleIds:new Set(),matchCount:0};
-                const matchedIds=new Set(),visibleIds=new Set();
-                const allNodes=getAllNodes(data);
-                const matchSet=new Set();
-                for(const node of allNodes){
-                    if(matchesSearch(node,query)){
-                        matchSet.add(node.id);
-                        matchedIds.add(node.id);
-                    }
-                }
-                const idToChildren=new Map();
-                const traverseChildren=(nodes,parentId)=>{
-                    if(!nodes)return;
-                    for(const node of nodes){
-                        if(parentId){
-                            if(!idToChildren.has(parentId))idToChildren.set(parentId,[]);
-                            idToChildren.get(parentId).push(node.id);
-                        }
-                        if(node.children)traverseChildren(node.children,node.id);
+
+            function getSearchResults(data, query) {
+                if (!query) return { matchedIds: new Set(), visibleIds: new Set(), matchCount: 0 };
+                const matchedIds = new Set(),
+                    visibleIds = new Set();
+                const allNodes = getAllNodes(data);
+                const matchSet = new Set();
+                for (const node of allNodes) { if (matchesSearch(node, query)) { matchSet.add(node.id);
+                        matchedIds.add(node.id); } }
+                const idToChildren = new Map();
+                const traverseChildren = (nodes, parentId) => {
+                    if (!nodes) return;
+                    for (const node of nodes) {
+                        if (parentId) { if (!idToChildren.has(parentId)) idToChildren.set(parentId, []);
+                            idToChildren.get(parentId).push(node.id); }
+                        if (node.children) traverseChildren(node.children, node.id);
                     }
                 };
-                traverseChildren(data.nodes,null);
-                for(const matchId of matchSet){
-                    let currentId=matchId;
-                    while(currentId){
-                        visibleIds.add(currentId);
-                        const parentId=getParentId(data,currentId);
-                        if(parentId&&parentId!=='root') currentId=parentId;
-                        else break;
-                    }
+                traverseChildren(data.nodes, null);
+                for (const matchId of matchSet) {
+                    let currentId = matchId;
+                    while (currentId) { visibleIds.add(currentId);
+                        const parentId = getParentId(data, currentId); if (parentId && parentId !== 'root')
+                            currentId = parentId;
+                        else break; }
                 }
-                const addDescendants=(nodeId)=>{
-                    const children=idToChildren.get(nodeId);
-                    if(children){
-                        for(const childId of children){
-                            visibleIds.add(childId);
-                            addDescendants(childId);
-                        }
-                    }
+                const addDescendants = (nodeId) => {
+                    const children = idToChildren.get(nodeId);
+                    if (children) { for (const childId of children) { visibleIds.add(childId);
+                            addDescendants(childId); } }
                 };
-                for(const mid of Array.from(matchSet)) addDescendants(mid);
-                return {matchedIds,visibleIds,matchCount:matchedIds.size};
+                for (const mid of Array.from(matchSet)) addDescendants(mid);
+                return { matchedIds, visibleIds, matchCount: matchedIds.size };
             }
 
-            // ============ 渲染 ============
+            // ---------- 渲染 ----------
             function renderTree() {
-                const data=getCurrentData(); buildFlatMap(data);
-                const searchResult=state.searchQuery?getSearchResults(data,state.searchQuery):{matchedIds:new Set(),visibleIds:new Set(),matchCount:0};
-                const isSearchMode=!!state.searchQuery; const visibleIds=searchResult.visibleIds; const matchedIds=searchResult.matchedIds;
-                const allNodes=getAllNodes(data); const visibleCount=isSearchMode?visibleIds.size:allNodes.length;
-                updateStats(data,visibleCount);
-                let html='';
-                if(isSearchMode&&searchResult.matchCount===0){ html=`<div class="empty-state fade-in"><div class="empty-icon"><i class="las la-search" style="font-size:64px;opacity:0.6;"></i></div><p>未找到匹配 "<strong>${escapeHtml(state.searchQuery)}</strong>"</p></div>`; }
-                else {
-                    const rootNode={id:'root',children:data.nodes,type:'root',title:data.rootLabel||data.title||'根目录'};
-                    html=renderNodeRow(rootNode,0,isSearchMode,visibleIds,matchedIds,true);
-                    if(isSearchMode&&html==='') html=renderNodes(data.nodes,0,isSearchMode,visibleIds,matchedIds);
-                    else if(!isSearchMode) html=renderNodeRow(rootNode,0,false,new Set(),new Set(),true)+renderNodes(data.nodes,0,false,new Set(),new Set());
-                    else html=renderNodeRow(rootNode,0,true,visibleIds,matchedIds,true)+renderNodes(data.nodes,0,true,visibleIds,matchedIds);
-                }
-                treeContainer.innerHTML=html;
-                const sortInfo=state.sortDirection?` | 排序: ${state.sortDirection==='asc'?'升序':'降序'}`:'';
-                toolbarInfo.textContent=`共 ${allNodes.length} 个节点 | 显示 ${visibleCount} 个${sortInfo}`;
-                $('#fileNodeCount').textContent=countNodes(fileData).total;
-                $('#bookNodeCount').textContent=countNodes(bookData).total;
-                updateBreadcrumb(); updateDetailPanel(); updateClipboardButtons();
-            }
-            function renderNodes(nodes,depth,isSearchMode,visibleIds,matchedIds){ if(!nodes||nodes.length===0)return ''; let html=''; for(const node of nodes){ const isVisible=!isSearchMode||visibleIds.has(node.id); if(!isVisible)continue; html+=renderNodeRow(node,depth,isSearchMode,visibleIds,matchedIds,false); } return html; }
-            function renderNodeRow(node,depth,isSearchMode,visibleIds,matchedIds,isRoot=false){
-                const isVisible=!isSearchMode||isRoot||visibleIds.has(node.id); if(!isVisible)return '';
-                const isMatch=isSearchMode&&!isRoot&&matchedIds.has(node.id);
-                const hasChildren=node.children&&node.children.length>0;
-                const isExpanded=state.expandedNodes.has(node.id)||(isSearchMode&&isVisible&&hasChildren&&!isRoot);
-                const iconClass=isRoot?'las la-folder-open':getNodeIconClass(node,isExpanded);
-                const fileTypeClass=node.type==='file'?getFileTypeClass(node.fileType):'';
-                const label=isRoot?(node.title||'根目录'):(node.title||node.name);
-                const badge=hasChildren?`${node.children.length}`:'';
-                const isSelected=state.selectedNodeIds.has(node.id);
-                const sizeText=node.size?` · ${node.size}`:'';
-                const toggleClass=hasChildren?(isExpanded?'expanded':''):'no-children';
-                const selectedClass=isSelected?'selected':'';
-                const matchClass=isMatch?'match-highlight':'';
-                let displayLabel=label; if(isMatch&&state.searchQuery) displayLabel=highlightText(label,state.searchQuery);
+                const data = getCurrentData();
+                buildFlatMap(data);
 
-                let actionsHtml='';
-                if(!isRoot){
-                    if(state.currentTab==='files'){
-                        actionsHtml=`<div class="node-actions">${node.type==='folder'?`<button class="new-file-btn" data-action="new-file" data-parent-id="${node.id}" title="新建文件"><i class="las la-plus"></i></button><button class="new-folder-btn" data-action="new-folder" data-parent-id="${node.id}" title="新建目录"><i class="las la-folder-plus"></i></button><button class="upload-file-btn" data-action="upload-file" data-parent-id="${node.id}" title="上传文件"><i class="las la-upload"></i></button><button class="upload-dir-btn" data-action="upload-dir" data-parent-id="${node.id}" title="上传目录"><i class="las la-folder-open"></i></button>`:''}<button class="rename-btn" data-action="rename" data-node-id="${node.id}" title="重命名"><i class="las la-pen"></i></button><button class="copy-path-btn" data-action="copy-path" data-node-id="${node.id}" title="复制路径"><i class="las la-copy"></i></button><button class="delete-btn" data-action="delete" data-node-id="${node.id}" title="删除"><i class="las la-trash-alt"></i></button></div>`;
+                if (state.searchQuery) {
+                    const searchResult = getSearchResults(data, state.searchQuery);
+                    const isSearchMode = true;
+                    const visibleIds = searchResult.visibleIds;
+                    const matchedIds = searchResult.matchedIds;
+                    const allNodes = getAllNodes(data);
+                    const visibleCount = visibleIds.size;
+                    updateStats(data, visibleCount);
+                    let html = '';
+                    if (searchResult.matchCount === 0) {
+                        html = `<div class="empty-state fade-in"><div class="empty-icon"><i class="las la-search" style="font-size:64px;opacity:0.6;"></i></div><p>未找到匹配 "<strong>${escapeHtml(state.searchQuery)}</strong>"</p></div>`;
                     } else {
-                        actionsHtml=`<div class="node-actions">${node.type!=='subsection'?`<button class="new-chapter-btn" data-action="new-chapter" data-parent-id="${node.id}" title="新建子节点"><i class="las la-plus"></i></button>`:''}<button class="rename-btn" data-action="rename" data-node-id="${node.id}" title="重命名"><i class="las la-pen"></i></button><button class="copy-path-btn" data-action="copy-path" data-node-id="${node.id}" title="复制路径"><i class="las la-copy"></i></button><button class="delete-btn" data-action="delete" data-node-id="${node.id}" title="删除"><i class="las la-trash-alt"></i></button></div>`;
+                        const rootNode = { id: 'root', children: data.nodes, type: 'root', title: data.rootLabel || data
+                                .title || '根目录' };
+                        html = renderNodeRow(rootNode, 0, true, visibleIds, matchedIds, true);
+                        html += renderNodes(data.nodes, 0, true, visibleIds, matchedIds);
                     }
+                    treeContainer.innerHTML = html;
+                    const sortInfo = state.sortDirection ?
+                        ` | 排序: ${state.sortDirection==='asc'?'升序':'降序'}` : '';
+                    toolbarInfo.textContent = `搜索结果: ${searchResult.matchCount} 个匹配项`;
                 } else {
-                    if(state.currentTab==='files'){
-                        actionsHtml=`<div class="node-actions"><button class="new-file-btn" data-action="new-file" data-parent-id="root" title="新建文件"><i class="las la-plus"></i></button><button class="new-folder-btn" data-action="new-folder" data-parent-id="root" title="新建目录"><i class="las la-folder-plus"></i></button><button class="upload-file-btn" data-action="upload-file" data-parent-id="root" title="上传文件"><i class="las la-upload"></i></button><button class="upload-dir-btn" data-action="upload-dir" data-parent-id="root" title="上传目录"><i class="las la-folder-open"></i></button><button class="copy-path-btn" data-action="copy-path" data-node-id="root" title="复制路径"><i class="las la-copy"></i></button></div>`;
+                    const currentFolder = getNodeById(data, state.currentFolderId);
+                    const children = currentFolder ? (currentFolder.children || []) : data.nodes;
+                    const filteredChildren = children.filter(n => state.showHidden || !n.hidden);
+                    const visibleCount = filteredChildren.length;
+                    updateStats(data, visibleCount);
+                    let html = '';
+                    if (filteredChildren.length === 0) {
+                        html = `<div class="empty-state fade-in"><div class="empty-icon"><i class="las la-folder-open" style="font-size:64px;opacity:0.6;"></i></div><p>此文件夹为空</p></div>`;
                     } else {
-                        actionsHtml=`<div class="node-actions"><button class="new-chapter-btn" data-action="new-chapter" data-parent-id="root" title="新建章节"><i class="las la-plus"></i></button><button class="copy-path-btn" data-action="copy-path" data-node-id="root" title="复制路径"><i class="las la-copy"></i></button></div>`;
+                        html = renderListNodes(filteredChildren);
                     }
+                    treeContainer.innerHTML = html;
+                    const sortInfo = state.sortDirection ?
+                        ` | 排序: ${state.sortDirection==='asc'?'升序':'降序'}` : '';
+                    toolbarInfo.textContent =
+                        `当前目录: ${currentFolder.title || currentFolder.name || '根目录'} | 子项: ${filteredChildren.length}${sortInfo}`;
+                }
+
+                $('#fileNodeCount').textContent = countNodes(fileData).total;
+                $('#bookNodeCount').textContent = countNodes(bookData).total;
+                updateBreadcrumb();
+                updateDetailPanel();
+                updateClipboardButtons();
+                btnToggleHidden.innerHTML = state.showHidden ? '<i class="las la-eye"></i> 隐藏已隐藏' :
+                    '<i class="las la-eye-slash"></i> 显示隐藏';
+            }
+
+            function renderListNodes(nodes) {
+                let html = '';
+                for (const node of nodes) { html += renderListRow(node); }
+                return html;
+            }
+
+            function renderListRow(node) {
+                const hasChildren = node.children && node.children.length > 0;
+                const iconClass = getNodeIconClass(node, false);
+                const fileTypeClass = node.type === 'file' ? getFileTypeClass(node.fileType) : '';
+                const label = node.title || node.name;
+                const badge = hasChildren ? `${node.children.length}` : '';
+                const isSelected = state.selectedNodeIds.has(node.id);
+                const sizeText = node.size ? ` · ${node.size}` : '';
+                const selectedClass = isSelected ? 'selected' : '';
+                const isFolder = node.type === 'folder' || node.type === 'chapter' || node.type === 'section' || node.type ===
+                    'root';
+
+                let actionsHtml = '';
+                if (state.currentTab === 'files') {
+                    const folderActions = isFolder ? `
+                        <button class="new-file-btn action-btn-extra" data-action="new-file" data-parent-id="${node.id}" title="新建文件"><i class="las la-plus"></i></button>
+                        <button class="new-folder-btn action-btn-extra" data-action="new-folder" data-parent-id="${node.id}" title="新建目录"><i class="las la-folder-plus"></i></button>
+                        <button class="upload-file-btn action-btn-extra" data-action="upload-file" data-parent-id="${node.id}" title="上传文件"><i class="las la-upload"></i></button>
+                        <button class="upload-dir-btn action-btn-extra" data-action="upload-dir" data-parent-id="${node.id}" title="上传目录"><i class="las la-folder-open"></i></button>
+                    ` : '';
+                    actionsHtml = `<div class="node-actions">${folderActions}
+                        <button class="rename-btn" data-action="rename" data-node-id="${node.id}" title="重命名"><i class="las la-pen"></i></button>
+                        <button class="copy-path-btn action-btn-extra" data-action="copy-path" data-node-id="${node.id}" title="复制路径"><i class="las la-copy"></i></button>
+                        <button class="hide-btn" data-action="toggle-hidden" data-node-id="${node.id}" title="${node.hidden ? '取消隐藏' : '隐藏'}"><i class="las ${node.hidden ? 'la-eye' : 'la-eye-slash'}"></i></button>
+                        <button class="delete-btn" data-action="delete" data-node-id="${node.id}" title="删除"><i class="las la-trash-alt"></i></button>
+                        <button class="more-btn" data-action="toggle-more" title="更多操作"><i class="las la-ellipsis-h"></i></button>
+                    </div>`;
+                } else {
+                    actionsHtml = `<div class="node-actions">${isFolder ? `<button class="new-chapter-btn action-btn-extra" data-action="new-chapter" data-parent-id="${node.id}" title="新建子节点"><i class="las la-plus"></i></button>` : ''}
+                        <button class="rename-btn" data-action="rename" data-node-id="${node.id}" title="重命名"><i class="las la-pen"></i></button>
+                        <button class="copy-path-btn action-btn-extra" data-action="copy-path" data-node-id="${node.id}" title="复制路径"><i class="las la-copy"></i></button>
+                        <button class="hide-btn" data-action="toggle-hidden" data-node-id="${node.id}" title="${node.hidden ? '取消隐藏' : '隐藏'}"><i class="las ${node.hidden ? 'la-eye' : 'la-eye-slash'}"></i></button>
+                        <button class="delete-btn" data-action="delete" data-node-id="${node.id}" title="删除"><i class="las la-trash-alt"></i></button>
+                        <button class="more-btn" data-action="toggle-more" title="更多操作"><i class="las la-ellipsis-h"></i></button>
+                    </div>`;
+                }
+
+                const checkboxHtml = `<input type="checkbox" class="node-checkbox" data-id="${node.id}" ${isSelected?'checked':''}>`;
+                return `<div class="tree-node" data-node-id="${node.id}">
+                    <div class="node-row ${selectedClass}" data-id="${node.id}">
+                        ${checkboxHtml}
+                        <span class="node-icon ${fileTypeClass}"><i class="${iconClass}"></i></span>
+                        <span class="node-label">${label}${sizeText}</span>
+                        ${badge ? `<span class="node-badge">${badge} 项</span>` : ''}
+                        ${actionsHtml}
+                    </div>
+                </div>`;
+            }
+
+            function renderNodes(nodes, depth, isSearchMode, visibleIds, matchedIds) {
+                if (!nodes || nodes.length === 0) return '';
+                let html = '';
+                for (const node of nodes) {
+                    const isVisible = !isSearchMode || visibleIds.has(node.id);
+                    if (!isVisible) continue;
+                    html += renderNodeRow(node, depth, isSearchMode, visibleIds, matchedIds, false);
+                }
+                return html;
+            }
+
+            function renderNodeRow(node, depth, isSearchMode, visibleIds, matchedIds, isRoot = false) {
+                const isVisible = !isSearchMode || isRoot || visibleIds.has(node.id);
+                if (!isVisible) return '';
+                const isMatch = isSearchMode && !isRoot && matchedIds.has(node.id);
+                const hasChildren = node.children && node.children.length > 0;
+                const isExpanded = state.expandedNodes.has(node.id) || (isSearchMode && isVisible && hasChildren && !isRoot);
+                const iconClass = isRoot ? 'las la-folder-open' : getNodeIconClass(node, isExpanded);
+                const fileTypeClass = node.type === 'file' ? getFileTypeClass(node.fileType) : '';
+                const label = isRoot ? (node.title || '根目录') : (node.title || node.name);
+                const badge = hasChildren ? `${node.children.length}` : '';
+                const isSelected = state.selectedNodeIds.has(node.id);
+                const sizeText = node.size ? ` · ${node.size}` : '';
+                const toggleClass = hasChildren ? (isExpanded ? 'expanded' : '') : 'no-children';
+                const selectedClass = isSelected ? 'selected' : '';
+                const matchClass = isMatch ? 'match-highlight' : '';
+                let displayLabel = label;
+                if (isMatch && state.searchQuery) displayLabel = highlightText(label, state.searchQuery);
+
+                let actionsHtml = '';
+                if (!isRoot) {
+                    actionsHtml = `<div class="node-actions">${node.type==='folder' ? `<button class="new-file-btn" data-action="new-file" data-parent-id="${node.id}" title="新建文件"><i class="las la-plus"></i></button><button class="new-folder-btn" data-action="new-folder" data-parent-id="${node.id}" title="新建目录"><i class="las la-folder-plus"></i></button>` : ''}<button class="rename-btn" data-action="rename" data-node-id="${node.id}"><i class="las la-pen"></i></button><button class="copy-path-btn" data-action="copy-path" data-node-id="${node.id}"><i class="las la-copy"></i></button><button class="hide-btn" data-action="toggle-hidden" data-node-id="${node.id}"><i class="las ${node.hidden ? 'la-eye' : 'la-eye-slash'}"></i></button><button class="delete-btn" data-action="delete" data-node-id="${node.id}"><i class="las la-trash-alt"></i></button></div>`;
+                } else {
+                    actionsHtml = `<div class="node-actions"><button class="new-file-btn" data-action="new-file" data-parent-id="root"><i class="las la-plus"></i></button><button class="new-folder-btn" data-action="new-folder" data-parent-id="root"><i class="las la-folder-plus"></i></button></div>`;
                 }
                 const checkboxHtml = `<input type="checkbox" class="node-checkbox" data-id="${node.id}" ${isSelected?'checked':''} ${isRoot?'disabled':''}>`;
-                const childrenHtml=hasChildren&&(isExpanded||isSearchMode)?`<div class="node-children ${isExpanded?'open':''}">${renderNodes(node.children||[],depth+1,isSearchMode,visibleIds,matchedIds)}</div>`:'';
-                return `<div class="tree-node" data-node-id="${isRoot?'root':node.id}" data-depth="${depth}"><div class="node-row ${selectedClass} ${matchClass}" style="padding-left:${8+depth*22}px;" data-id="${isRoot?'root':node.id}"><button class="toggle-icon ${toggleClass}" data-toggle="${isRoot?'root':node.id}">${hasChildren?'<i class="las la-angle-right"></i>':''}</button>${checkboxHtml}<span class="node-icon ${fileTypeClass}"><i class="${iconClass}"></i></span><span class="node-label">${displayLabel}${sizeText}</span>${badge?`<span class="node-badge">${badge} 项</span>`:''}${actionsHtml}</div>${childrenHtml}</div>`;
+                const childrenHtml = hasChildren && (isExpanded || isSearchMode) ?
+                    `<div class="node-children ${isExpanded ? 'open' : ''}" style="max-height:none;opacity:1;display:block;">${renderNodes(node.children || [], depth + 1, isSearchMode, visibleIds, matchedIds)}</div>` :
+                    '';
+                return `<div class="tree-node" data-node-id="${isRoot ? 'root' : node.id}" data-depth="${depth}"><div class="node-row ${selectedClass} ${matchClass}" style="padding-left:${8 + depth * 22}px;" data-id="${isRoot ? 'root' : node.id}"><button class="toggle-icon ${toggleClass}" data-toggle="${isRoot ? 'root' : node.id}" style="display:inline-flex;">${hasChildren ? '<i class="las la-angle-right"></i>' : ''}</button>${checkboxHtml}<span class="node-icon ${fileTypeClass}"><i class="${iconClass}"></i></span><span class="node-label">${displayLabel}${sizeText}</span>${badge ? `<span class="node-badge">${badge} 项</span>` : ''}${actionsHtml}</div>${childrenHtml}</div>`;
             }
-            function highlightText(text,query){ if(!query)return escapeHtml(text); const esc=escapeHtml(text); const escQ=escapeHtml(query); const regex=new RegExp(`(${escQ.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'); return esc.replace(regex,'<mark>$1</mark>'); }
-            function escapeHtml(str){ const div=document.createElement('div'); div.textContent=str; return div.innerHTML; }
-            function updateStats(data,visibleCount){ const s=countNodes(data); $('#statTotal').textContent=`总节点: ${s.total}`; $('#statFolders').textContent=`文件夹: ${s.folders}`; $('#statFiles').textContent=`文件: ${s.files}`; $('#statChapters').textContent=`章节: ${s.chapters}`; $('#statVisible').textContent=`可见: ${visibleCount}`; }
-            function updateBreadcrumb(){ if(state.selectedNodeIds.size===0){ breadcrumbContent.textContent='请选择一个节点'; return; } if(state.selectedNodeIds.size>1){ breadcrumbContent.textContent=`已选择 ${state.selectedNodeIds.size} 个节点`; return; } const id=Array.from(state.selectedNodeIds)[0]; const data=getCurrentData(); const path=getPathToNode(data,id); if(path.length===0){ breadcrumbContent.textContent='未找到路径'; return; } let html=''; path.forEach((item,index)=>{ if(index>0)html+=`<span class="crumb-sep"><i class="las la-angle-right"></i></span>`; const isLast=index===path.length-1; html+=`<button class="crumb ${isLast?'current':''}" data-crumb-id="${item.id}">${escapeHtml(item.label)}</button>`; }); breadcrumbContent.innerHTML=html; }
-            function updateDetailPanel(){
-                if(state.selectedNodeIds.size===0){ detailContent.innerHTML=`<div class="detail-empty"><p>点击一个节点查看详情</p><p style="font-size:12px;color:var(--text-light);">支持 Ctrl/Shift 多选</p></div>`; return; }
-                if(state.selectedNodeIds.size>1){ detailContent.innerHTML=`<div class="detail-item"><span class="detail-label">已选择</span><span class="detail-value">${state.selectedNodeIds.size} 个节点</span></div><button class="multi-delete-btn" id="btnBatchDelete" style="width:100%;padding:10px;cursor:pointer;"><i class="las la-trash-alt"></i> 删除选中项</button>`; document.getElementById('btnBatchDelete')?.addEventListener('click', batchDeleteSelected); return; }
-                const data=getCurrentData(); const node=getNodeById(data,Array.from(state.selectedNodeIds)[0]); if(!node){ detailContent.innerHTML='<div class="detail-empty">节点未找到</div>'; return; }
-                const path=getPathToNode(data,node.id); const pathStr=path.map(p=>p.label).join(' / '); const childrenCount=node.children?node.children.length:0;
-                let html=`<div class="detail-item"><span class="detail-label">名称</span><span class="detail-value">${escapeHtml(node.title||node.name)}</span></div><div class="detail-item"><span class="detail-label">类型</span><span class="detail-value">${getTypeLabel(node)}</span></div><div class="detail-item"><span class="detail-label">ID</span><span class="detail-value">${escapeHtml(node.id)}</span></div><div class="detail-item"><span class="detail-label">完整路径</span><span class="detail-value">${escapeHtml(pathStr)}</span></div>`;
-                if(node.type==='shortcut') html+=`<div class="detail-item"><span class="detail-label">目标 ID</span><span class="detail-value">${escapeHtml(node.targetId||'未知')}</span></div>`;
-                if(childrenCount>0)html+=`<div class="detail-item"><span class="detail-label">子节点数</span><span class="detail-value">${childrenCount} 项</span></div>`;
-                if(node.size)html+=`<div class="detail-item"><span class="detail-label">文件大小</span><span class="detail-value">${escapeHtml(node.size)}</span></div>`;
-                if(node.fileType)html+=`<div class="detail-item"><span class="detail-label">文件类型</span><span class="detail-value">${escapeHtml(node.fileType.toUpperCase())}</span></div>`;
-                detailContent.innerHTML=html;
-            }
-            function getTypeLabel(node){ if(node.type==='shortcut') return '快捷方式'; if(state.currentTab==='book'){ const map={chapter:'章节',section:'节',subsection:'小节',root:'根'}; return map[node.type]||node.type; } else { const map={folder:'文件夹',file:'文件',root:'根目录'}; return map[node.type]||node.type; } }
 
-            // ============ 剪贴板按钮状态 ============
+            function highlightText(text, query) {
+                if (!query) return escapeHtml(text);
+                const esc = escapeHtml(text);
+                const escQ = escapeHtml(query);
+                const regex = new RegExp(`(${escQ.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+                return esc.replace(regex, '<mark>$1</mark>');
+            }
+
+            function escapeHtml(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function updateStats(data, visibleCount) {
+                const s = countNodes(data);
+                $('#statTotal').textContent = `总节点: ${s.total}`;
+                $('#statFolders').textContent = `文件夹: ${s.folders}`;
+                $('#statFiles').textContent = `文件: ${s.files}`;
+                $('#statChapters').textContent = `章节: ${s.chapters}`;
+                $('#statVisible').textContent = `可见: ${visibleCount}`;
+            }
+
+            function updateBreadcrumb() {
+                if (state.searchQuery) {
+                    breadcrumbContent.innerHTML = `<span class="crumb current">搜索: ${escapeHtml(state.searchQuery)}</span>`;
+                    return;
+                }
+                const data = getCurrentData();
+                const path = getPathToNode(data, state.currentFolderId);
+                let html = '';
+                path.forEach((item, index) => {
+                    if (index > 0) html += `<span class="crumb-sep"><i class="las la-angle-right"></i></span>`;
+                    const isLast = index === path.length - 1;
+                    html += `<button class="crumb ${isLast ? 'current' : ''}" data-crumb-id="${item.id}">${escapeHtml(item.label)}</button>`;
+                });
+                breadcrumbContent.innerHTML = html;
+            }
+
+            function updateDetailPanel() {
+                if (state.selectedNodeIds.size === 0) { detailContent.innerHTML =
+                        `<div class="detail-empty"><p>点击一个节点查看详情</p><p style="font-size:12px;color:var(--text-light);">支持 Ctrl/Shift 多选</p></div>`;
+                    return; }
+                if (state.selectedNodeIds.size > 1) { detailContent.innerHTML =
+                        `<div class="detail-item"><span class="detail-label">已选择</span><span class="detail-value">${state.selectedNodeIds.size} 个节点</span></div><button class="multi-delete-btn" id="btnBatchDelete" style="width:100%;padding:10px;cursor:pointer;"><i class="las la-trash-alt"></i> 删除选中项</button>`;
+                    document.getElementById('btnBatchDelete')?.addEventListener('click', batchDeleteSelected);
+                    return; }
+                const data = getCurrentData();
+                const node = getNodeById(data, Array.from(state.selectedNodeIds)[0]);
+                if (!node) { detailContent.innerHTML = '<div class="detail-empty">节点未找到</div>'; return; }
+                const path = getPathToNode(data, node.id);
+                const pathStr = path.map(p => p.label).join(' / ');
+                const childrenCount = node.children ? node.children.length : 0;
+                let html =
+                    `<div class="detail-item"><span class="detail-label">名称</span><span class="detail-value">${escapeHtml(node.title||node.name)}</span></div><div class="detail-item"><span class="detail-label">类型</span><span class="detail-value">${getTypeLabel(node)}</span></div><div class="detail-item"><span class="detail-label">ID</span><span class="detail-value">${escapeHtml(node.id)}</span></div><div class="detail-item"><span class="detail-label">完整路径</span><span class="detail-value">${escapeHtml(pathStr)}</span></div>`;
+                if (node.type === 'shortcut') html +=
+                    `<div class="detail-item"><span class="detail-label">目标 ID</span><span class="detail-value">${escapeHtml(node.targetId||'未知')}</span></div>`;
+                if (childrenCount > 0) html +=
+                    `<div class="detail-item"><span class="detail-label">子节点数</span><span class="detail-value">${childrenCount} 项</span></div>`;
+                if (node.size) html +=
+                    `<div class="detail-item"><span class="detail-label">文件大小</span><span class="detail-value">${escapeHtml(node.size)}</span></div>`;
+                if (node.fileType) html +=
+                    `<div class="detail-item"><span class="detail-label">文件类型</span><span class="detail-value">${escapeHtml(node.fileType.toUpperCase())}</span></div>`;
+                detailContent.innerHTML = html;
+            }
+
+            function getTypeLabel(node) {
+                if (node.type === 'shortcut') return '快捷方式';
+                if (state.currentTab === 'book') { const map = { chapter: '章节', section: '节', subsection: '小节',
+                        root: '根' };
+                    return map[node.type] || node.type; } else { const map = { folder: '文件夹', file: '文件',
+                        root: '根目录' };
+                    return map[node.type] || node.type; }
+            }
+
             function updateClipboardButtons() {
                 btnCopy.disabled = state.selectedNodeIds.size === 0;
                 btnCut.disabled = state.selectedNodeIds.size === 0;
@@ -509,38 +1466,40 @@
                 if (state.clipboard.nodeIds.length > 0) {
                     const modeText = state.clipboard.mode === 'copy' ? '复制' : '剪切';
                     clipboardInfo.textContent = `剪贴板: ${state.clipboard.nodeIds.length} 个节点 (${modeText})`;
-                } else {
-                    clipboardInfo.textContent = '';
-                }
+                } else { clipboardInfo.textContent = ''; }
             }
 
-            // ============ 复制路径 ============
+            function toggleHiddenNode(nodeId) {
+                const data = getCurrentData();
+                const node = getNodeById(data, nodeId);
+                if (!node || nodeId === 'root') return;
+                node.hidden = !node.hidden;
+                saveData();
+                renderTree();
+            }
+
+            function toggleShowHidden() { state.showHidden = !state.showHidden;
+                renderTree(); }
+
             function copyNodePath(nodeId) {
                 const data = getCurrentData();
                 const path = getPathToNode(data, nodeId);
                 if (path.length === 0) return;
                 const pathStr = path.map(p => p.label).join('/');
-                navigator.clipboard.writeText(pathStr).then(() => {
-                    alert('路径已复制: ' + pathStr);
-                }).catch(err => {
-                    alert('复制失败: ' + err);
-                });
+                navigator.clipboard.writeText(pathStr).then(() => { alert('路径已复制: ' + pathStr); }).catch(err => { alert(
+                        '复制失败: ' + err); });
             }
 
-            // ============ 创建快捷方式 ============
             function openShortcutModal() {
-                if (state.selectedNodeIds.size !== 1) {
-                    alert('请先选中一个节点');
-                    return;
-                }
+                if (state.selectedNodeIds.size !== 1) { alert('请先选中一个节点'); return; }
                 state.shortcutSourceId = Array.from(state.selectedNodeIds)[0];
                 const data = getCurrentData();
                 const allNodes = getAllNodes(data);
-                const folderNodes = allNodes.filter(n => n.type === 'folder' || n.type === 'chapter' || n.type === 'section');
+                const folderNodes = allNodes.filter(n => n.type === 'folder' || n.type === 'chapter' || n.type ===
+                    'section');
                 let options = `<option value="root">根目录</option>`;
-                for (const folder of folderNodes) {
-                    options += `<option value="${folder.id}">${escapeHtml(folder._path)}</option>`;
-                }
+                for (const folder of folderNodes) { options +=
+                        `<option value="${folder.id}">${escapeHtml(folder._path)}</option>`; }
                 shortcutTargetSelect.innerHTML = options;
                 shortcutModalOverlay.classList.add('active');
             }
@@ -554,74 +1513,46 @@
                 const sourceNode = getNodeById(data, sourceId);
                 if (!sourceNode || sourceId === 'root') return;
                 const shortcutName = (sourceNode.name || sourceNode.title) + ' - 快捷方式';
-                const newNode = {
-                    id: generateId('shortcut'),
-                    name: shortcutName,
-                    type: 'shortcut',
-                    targetId: sourceId,
-                    children: []
-                };
+                const newNode = { id: generateId('shortcut'), name: shortcutName, type: 'shortcut', targetId: sourceId,
+                    children: [] };
                 addNode(targetParentId, newNode);
                 shortcutModalOverlay.classList.remove('active');
                 state.shortcutSourceId = null;
             }
 
-            // ============ 复制/剪切/粘贴 ============
             function copySelected(mode) {
-                if (state.selectedNodeIds.size === 0) {
-                    alert('请先选择要复制的节点');
-                    return;
-                }
+                if (state.selectedNodeIds.size === 0) { alert('请先选择要复制的节点'); return; }
                 state.clipboard = { mode, nodeIds: Array.from(state.selectedNodeIds) };
                 updateClipboardButtons();
                 renderTree();
             }
 
             function pasteClipboard() {
-                if (state.clipboard.nodeIds.length === 0) {
-                    alert('剪贴板为空');
-                    return;
-                }
+                if (state.clipboard.nodeIds.length === 0) { alert('剪贴板为空'); return; }
                 const data = getCurrentData();
-                let targetParentId = 'root';
+                let targetParentId = state.currentFolderId;
                 if (state.selectedNodeIds.size === 1) {
                     const selectedId = Array.from(state.selectedNodeIds)[0];
                     const selectedNode = getNodeById(data, selectedId);
-                    if (selectedNode) {
-                        if (selectedNode.type === 'folder' || selectedNode.type === 'chapter' || selectedNode.type === 'section') {
-                            targetParentId = selectedId;
-                        } else if (selectedNode.type === 'file') {
-                            const parentId = getParentId(data, selectedId);
-                            if (parentId) targetParentId = parentId;
-                        }
-                    }
+                    if (selectedNode && (selectedNode.type === 'folder' || selectedNode.type === 'chapter' || selectedNode
+                            .type === 'section')) { targetParentId = selectedId; }
                 }
-
                 const sourceIds = state.clipboard.nodeIds;
                 const isCut = state.clipboard.mode === 'cut';
-
                 for (const sourceId of sourceIds) {
                     if (sourceId === 'root') continue;
                     const sourceNode = getNodeById(data, sourceId);
                     if (!sourceNode) continue;
-                    if (targetParentId === sourceId || isDescendant(data, sourceId, targetParentId)) {
-                        alert('不能粘贴到自身或其子目录');
-                        return;
-                    }
-                    if (isCut) {
-                        const parentId = getParentId(data, sourceId);
-                        if (parentId === targetParentId) continue;
+                    if (targetParentId === sourceId || isDescendant(data, sourceId, targetParentId)) { alert(
+                            '不能粘贴到自身或其子目录'); return; }
+                    if (isCut) { const parentId = getParentId(data, sourceId); if (parentId === targetParentId)
+                            continue;
                         removeNodeFromParent(data, sourceId);
-                        addNodeToParent(targetParentId, sourceNode);
-                    } else {
-                        const clone = deepCloneNode(sourceNode);
-                        addNodeToParent(targetParentId, clone);
-                    }
+                        addNodeToParent(targetParentId, sourceNode); } else { const clone = deepCloneNode(
+                            sourceNode);
+                        addNodeToParent(targetParentId, clone); }
                 }
-
-                if (isCut) {
-                    state.clipboard = { mode: null, nodeIds: [] };
-                }
+                if (isCut) { state.clipboard = { mode: null, nodeIds: [] }; }
                 saveData();
                 state.selectedNodeIds.clear();
                 renderTree();
@@ -630,57 +1561,73 @@
             function deepCloneNode(node) {
                 const clone = JSON.parse(JSON.stringify(node));
                 clone.id = generateId(node.type === 'file' ? 'f' : (node.type === 'folder' ? 'fdir' : 'ch'));
-                if (clone.children) {
-                    clone.children = clone.children.map(child => deepCloneNode(child));
-                }
+                if (clone.children) clone.children = clone.children.map(child => deepCloneNode(child));
                 return clone;
             }
 
             function isDescendant(data, ancestorId, nodeId) {
                 let currentId = nodeId;
-                while (currentId && currentId !== 'root') {
-                    if (currentId === ancestorId) return true;
-                    currentId = getParentId(data, currentId);
-                }
+                while (currentId && currentId !== 'root') { if (currentId === ancestorId) return true;
+                    currentId = getParentId(data, currentId); }
                 return false;
             }
 
             function removeNodeFromParent(data, nodeId) {
                 const parentId = getParentId(data, nodeId);
-                if (!parentId || parentId === 'root') {
-                    const idx = data.nodes.findIndex(n => n.id === nodeId);
-                    if (idx !== -1) data.nodes.splice(idx, 1);
-                } else {
-                    const parent = getNodeById(data, parentId);
-                    if (parent && parent.children) {
-                        const idx = parent.children.findIndex(n => n.id === nodeId);
-                        if (idx !== -1) parent.children.splice(idx, 1);
-                    }
-                }
+                if (!parentId || parentId === 'root') { const idx = data.nodes.findIndex(n => n.id === nodeId); if (idx !== -
+                        1) data.nodes.splice(idx, 1); } else { const parent = getNodeById(data, parentId); if (parent &&
+                        parent.children) { const idx = parent.children.findIndex(n => n.id === nodeId); if (idx !== -1)
+                            parent.children.splice(idx, 1); } }
             }
 
             function addNodeToParent(parentId, node) {
-                if (parentId === 'root') {
-                    getCurrentData().nodes.push(node);
-                } else {
-                    const parent = getNodeById(getCurrentData(), parentId);
-                    if (parent && parent.children) parent.children.push(node);
-                }
+                if (parentId === 'root') getCurrentData().nodes.push(node);
+                else { const parent = getNodeById(getCurrentData(), parentId); if (parent && parent.children) parent
+                        .children.push(node); }
             }
 
-            // ============ 排序 / 展开 ============
-            function sortNodes(nodes,direction){ if(!direction)return nodes; const sorted=[...nodes].sort((a,b)=>{const aN=a.title||a.name||'',bN=b.title||b.name||''; return direction==='asc'?aN.localeCompare(bN,'zh-CN'):bN.localeCompare(aN,'zh-CN');}); for(const node of sorted){ if(node.children&&node.children.length>0) node.children=sortNodes(node.children,direction); } return sorted; }
-            function applySort(){ const data=getCurrentData(); const clone=JSON.parse(JSON.stringify(data)); if(state.sortDirection) clone.nodes=sortNodes(clone.nodes,state.sortDirection); if(state.currentTab==='book')bookData.nodes=clone.nodes; else fileData.nodes=clone.nodes; renderTree(); }
-            function toggleNode(nodeId,forceState){ if(nodeId==='root'){ if(forceState!==undefined){if(forceState)state.expandedNodes.add('root'); else state.expandedNodes.delete('root');} else {if(state.expandedNodes.has('root'))state.expandedNodes.delete('root'); else state.expandedNodes.add('root');} renderTree(); return; } const data=getCurrentData(); const node=getNodeById(data,nodeId); if(!node||!node.children||node.children.length===0)return; if(forceState!==undefined){if(forceState)state.expandedNodes.add(nodeId); else state.expandedNodes.delete(nodeId);} else {if(state.expandedNodes.has(nodeId))state.expandedNodes.delete(nodeId); else state.expandedNodes.add(nodeId);} renderTree(); }
-            function expandAll(){ const data=getCurrentData(); const all=getAllNodes(data); state.expandedNodes.add('root'); for(const n of all){ if(n.children&&n.children.length>0)state.expandedNodes.add(n.id); } renderTree(); }
-            function collapseAll(){ state.expandedNodes.clear(); renderTree(); }
+            function sortNodes(nodes, direction) {
+                if (!direction) return nodes;
+                const sorted = [...nodes].sort((a, b) => { const aN = a.title || a.name || '',
+                        bN = b.title || b.name || '';
+                    return direction === 'asc' ? aN.localeCompare(bN, 'zh-CN') : bN.localeCompare(aN, 'zh-CN'); });
+                for (const node of sorted) { if (node.children && node.children.length > 0) node.children = sortNodes(node
+                        .children, direction); }
+                return sorted;
+            }
 
-            // ============ 多选 ============
-            function selectNode(nodeId, {ctrlKey=false, shiftKey=false} = {}) {
+            function applySort() {
+                const data = getCurrentData();
+                const clone = JSON.parse(JSON.stringify(data));
+                if (state.sortDirection) clone.nodes = sortNodes(clone.nodes, state.sortDirection);
+                if (state.currentTab === 'book') bookData.nodes = clone.nodes;
+                else fileData.nodes = clone.nodes;
+                renderTree();
+            }
+
+            function toggleNode(nodeId, forceState) {
+                if (nodeId === 'root') { if (forceState !== undefined) { if (forceState) state.expandedNodes.add(
+                            'root');
+                        else state.expandedNodes.delete('root'); } else { if (state.expandedNodes.has('root'))
+                            state.expandedNodes.delete('root');
+                        else state.expandedNodes.add('root'); }
+                    renderTree(); return; }
+                const data = getCurrentData();
+                const node = getNodeById(data, nodeId);
+                if (!node || !node.children || node.children.length === 0) return;
+                if (forceState !== undefined) { if (forceState) state.expandedNodes.add(nodeId);
+                    else state.expandedNodes.delete(nodeId); } else { if (state.expandedNodes.has(nodeId)) state
+                        .expandedNodes.delete(nodeId);
+                    else state.expandedNodes.add(nodeId); }
+                renderTree();
+            }
+
+            function selectNode(nodeId, { ctrlKey = false, shiftKey = false } = {}) {
                 const data = getCurrentData();
                 if (shiftKey && state.lastSelectedId) {
                     const allNodes = getAllNodes(data);
-                    const visibleNodes = state.searchQuery ? allNodes.filter(n => getSearchResults(data, state.searchQuery).visibleIds.has(n.id)) : allNodes;
+                    const visibleNodes = state.searchQuery ? allNodes.filter(n => getSearchResults(data, state
+                        .searchQuery).visibleIds.has(n.id)) : allNodes;
                     const ids = visibleNodes.map(n => n.id);
                     const startIdx = ids.indexOf(state.lastSelectedId);
                     const endIdx = ids.indexOf(nodeId);
@@ -689,23 +1636,21 @@
                     state.selectedNodeIds.clear();
                     for (let i = min; i <= max; i++) state.selectedNodeIds.add(ids[i]);
                     state.lastSelectedId = nodeId;
-                } else if (ctrlKey) {
-                    if (state.selectedNodeIds.has(nodeId)) state.selectedNodeIds.delete(nodeId);
+                } else if (ctrlKey) { if (state.selectedNodeIds.has(nodeId)) state.selectedNodeIds.delete(nodeId);
                     else state.selectedNodeIds.add(nodeId);
-                    state.lastSelectedId = nodeId;
-                } else {
-                    state.selectedNodeIds.clear();
+                    state.lastSelectedId = nodeId; } else { state.selectedNodeIds.clear();
                     state.selectedNodeIds.add(nodeId);
-                    state.lastSelectedId = nodeId;
-                }
+                    state.lastSelectedId = nodeId; }
                 renderTree();
             }
+
             function toggleCheckboxSelection(nodeId, checked) {
                 if (checked) state.selectedNodeIds.add(nodeId);
                 else state.selectedNodeIds.delete(nodeId);
                 state.lastSelectedId = nodeId;
                 renderTree();
             }
+
             function batchDeleteSelected() {
                 if (state.selectedNodeIds.size === 0) return;
                 if (!confirm(`确定要删除选中的 ${state.selectedNodeIds.size} 个节点吗？`)) return;
@@ -716,10 +1661,9 @@
                 for (const id of selectedIds) {
                     let parentId = getParentId(data, id);
                     let hasSelectedAncestor = false;
-                    while (parentId && parentId !== 'root') {
-                        if (idSet.has(parentId)) { hasSelectedAncestor = true; break; }
-                        parentId = getParentId(data, parentId);
-                    }
+                    while (parentId && parentId !== 'root') { if (idSet.has(parentId)) { hasSelectedAncestor =
+                                true; break; }
+                        parentId = getParentId(data, parentId); }
                     if (!hasSelectedAncestor) topLevelIds.push(id);
                 }
                 for (const id of topLevelIds) deleteNode(id, false);
@@ -727,6 +1671,7 @@
                 saveData();
                 renderTree();
             }
+
             function deleteNode(nodeId, reRender = true) {
                 if (!nodeId || nodeId === 'root') return;
                 const data = getCurrentData();
@@ -735,15 +1680,13 @@
                 const parent = getNodeById(data, parentId);
                 if (!parent || !parent.children) return;
                 const index = parent.children.findIndex(c => c.id === nodeId);
-                if (index !== -1) {
-                    parent.children.splice(index, 1);
+                if (index !== -1) { parent.children.splice(index, 1);
                     state.selectedNodeIds.delete(nodeId);
-                    state.expandedNodes.delete(nodeId);
-                }
-                if (reRender) { saveData(); renderTree(); }
+                    state.expandedNodes.delete(nodeId); }
+                if (reRender) { saveData();
+                    renderTree(); }
             }
 
-            // ============ 搜索 ============
             function handleSearch(query) {
                 state.searchQuery = query.trim();
                 if (state.searchQuery) {
@@ -751,103 +1694,123 @@
                     const data = getCurrentData();
                     const searchResult = getSearchResults(data, state.searchQuery);
                     state.expandedNodes.add('root');
-                    for (const id of searchResult.visibleIds) {
-                        const node = getNodeById(data, id);
-                        if (node && node.children && node.children.length > 0) state.expandedNodes.add(id);
-                    }
-                } else {
-                    if (state.preSearchExpanded) { state.expandedNodes = new Set(state.preSearchExpanded); state.preSearchExpanded = null; }
-                }
+                    for (const id of searchResult.visibleIds) { const node = getNodeById(data, id); if (node && node
+                            .children && node.children.length > 0) state.expandedNodes.add(id); }
+                } else { if (state.preSearchExpanded) { state.expandedNodes = new Set(state.preSearchExpanded);
+                        state.preSearchExpanded = null; } }
                 clearSearchBtn.classList.toggle('visible', !!state.searchQuery);
                 renderTree();
             }
 
-            // ============ 文件操作 ============
             function generateId(prefix) { return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2,5)}`; }
+
             function addNode(parentId, nodeData) {
                 const data = getCurrentData();
                 if (parentId === 'root') data.nodes.push(nodeData);
-                else {
-                    const parent = getNodeById(data, parentId);
-                    if (parent && parent.children) {
-                        parent.children.push(nodeData);
-                        if (!state.expandedNodes.has(parentId)) state.expandedNodes.add(parentId);
-                    } else { alert('父节点不存在或不是文件夹'); return false; }
-                }
-                saveData(); renderTree(); return true;
+                else { const parent = getNodeById(data, parentId); if (parent && parent.children) { parent.children
+                            .push(nodeData); if (!state.expandedNodes.has(parentId)) state.expandedNodes.add(
+                            parentId); } else { alert('父节点不存在或不是文件夹'); return false; } }
+                saveData();
+                renderTree();
+                return true;
             }
-            function triggerFileUpload(parentId) { fileInput.dataset.parentId = parentId; fileInput.value=''; fileInput.click(); }
-            function triggerDirUpload(parentId) { dirInput.dataset.parentId = parentId; dirInput.value=''; dirInput.click(); }
+
+            function triggerFileUpload(parentId) {
+                fileInput.dataset.parentId = parentId;
+                fileInput.value = '';
+                fileInput.click();
+            }
+
+            function triggerDirUpload(parentId) {
+                dirInput.dataset.parentId = parentId;
+                dirInput.value = '';
+                dirInput.click();
+            }
+
             function handleFileUpload(e) {
-                const files = e.target.files; if (!files.length) return;
-                const parentId = fileInput.dataset.parentId || 'root';
-                const parentNode = getNodeById(getCurrentData(), parentId); if (!parentNode) return;
+                const files = e.target.files;
+                if (!files.length) return;
+                const parentId = fileInput.dataset.parentId || state.currentFolderId;
+                const parentNode = getNodeById(getCurrentData(), parentId);
+                if (!parentNode) return;
                 for (const file of files) {
                     const fileName = file.name;
                     const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : 'txt';
-                    const fileTypeMap = { html:'html', js:'js', css:'css', py:'py', png:'img', jpg:'img', jpeg:'img', gif:'img', svg:'img', ico:'img', txt:'txt', md:'txt', json:'json', zip:'zip', rar:'zip', ttf:'font', woff:'font', woff2:'font', mp4:'video', mov:'video', mp3:'audio', wav:'audio' };
+                    const fileTypeMap = { html: 'html', js: 'js', css: 'css', py: 'py', png: 'img', jpg: 'img', jpeg: 'img',
+                        gif: 'img', svg: 'img', ico: 'img', txt: 'txt', md: 'txt', json: 'json', zip: 'zip', rar: 'zip',
+                        ttf: 'font', woff: 'font', woff2: 'font', mp4: 'video', mov: 'video', mp3: 'audio', wav: 'audio' };
                     const fileType = fileTypeMap[ext] || 'txt';
-                    const size = file.size > 1024*1024 ? (file.size/(1024*1024)).toFixed(1)+' MB' : (file.size/1024).toFixed(1)+' KB';
-                    addNode(parentId, { id: generateId('f'), name: fileName, type: 'file', fileType, size, children: [] });
+                    const size = file.size > 1024 * 1024 ? (file.size / (1024 * 1024)).toFixed(1) + ' MB' : (file.size /
+                        1024).toFixed(1) + ' KB';
+                    addNode(parentId, { id: generateId('f'), name: fileName, type: 'file', fileType, size,
+                        children: [] });
                 }
                 saveData();
             }
+
             function handleDirUpload(e) {
-                const files = e.target.files; if (!files.length) return;
-                const parentId = dirInput.dataset.parentId || 'root';
-                const data = getCurrentData(); const parentNode = getNodeById(data, parentId); if (!parentNode) return;
-                const firstFile = files[0]; const dirName = firstFile.webkitRelativePath.split('/')[0] || '新文件夹';
-                const rootDirId = generateId('fdir'); const rootDirNode = { id: rootDirId, name: dirName, type:'folder', children: [] };
-                if (parentId === 'root') data.nodes.push(rootDirNode); else if (parentNode.children) parentNode.children.push(rootDirNode); else { alert('父节点不是文件夹'); return; }
-                const folderMap = new Map(); folderMap.set('', rootDirNode);
+                const files = e.target.files;
+                if (!files.length) return;
+                const parentId = dirInput.dataset.parentId || state.currentFolderId;
+                const data = getCurrentData();
+                const parentNode = getNodeById(data, parentId);
+                if (!parentNode) return;
+                const firstFile = files[0];
+                const dirName = firstFile.webkitRelativePath.split('/')[0] || '新文件夹';
+                const rootDirId = generateId('fdir');
+                const rootDirNode = { id: rootDirId, name: dirName, type: 'folder', children: [] };
+                if (parentId === 'root') data.nodes.push(rootDirNode);
+                else if (parentNode.children) parentNode.children.push(rootDirNode);
+                else { alert('父节点不是文件夹'); return; }
+                const folderMap = new Map();
+                folderMap.set('', rootDirNode);
                 for (const file of files) {
-                    const pathParts = file.webkitRelativePath.split('/'); const fileName = pathParts.pop();
-                    let currentFolder = rootDirNode; let currentPath = '';
+                    const pathParts = file.webkitRelativePath.split('/');
+                    const fileName = pathParts.pop();
+                    let currentFolder = rootDirNode;
+                    let currentPath = '';
                     for (const folderName of pathParts) {
                         currentPath = currentPath ? `${currentPath}/${folderName}` : folderName;
-                        if (!folderMap.has(currentPath)) {
-                            const newFolder = { id: generateId('fdir'), name: folderName, type:'folder', children: [] };
-                            currentFolder.children.push(newFolder); folderMap.set(currentPath, newFolder); currentFolder = newFolder;
-                        } else currentFolder = folderMap.get(currentPath);
+                        if (!folderMap.has(currentPath)) { const newFolder = { id: generateId('fdir'),
+                                name: folderName, type: 'folder', children: [] };
+                            currentFolder.children.push(newFolder);
+                            folderMap.set(currentPath, newFolder);
+                            currentFolder = newFolder; } else currentFolder = folderMap.get(currentPath);
                     }
                     const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : 'txt';
-                    const fileTypeMap = { html:'html', js:'js', css:'css', py:'py', png:'img', jpg:'img', jpeg:'img', gif:'img', svg:'img', txt:'txt', md:'txt', json:'json', zip:'zip', ttf:'font', mp4:'video', mp3:'audio' };
+                    const fileTypeMap = { html: 'html', js: 'js', css: 'css', py: 'py', png: 'img', jpg: 'img', jpeg: 'img',
+                        gif: 'img', svg: 'img', txt: 'txt', md: 'txt', json: 'json', zip: 'zip', ttf: 'font', mp4: 'video',
+                        mp3: 'audio' };
                     const fileType = fileTypeMap[ext] || 'txt';
-                    const size = file.size > 1024*1024 ? (file.size/(1024*1024)).toFixed(1)+' MB' : (file.size/1024).toFixed(1)+' KB';
-                    currentFolder.children.push({ id: generateId('f'), name: fileName, type:'file', fileType, size, children: [] });
+                    const size = file.size > 1024 * 1024 ? (file.size / (1024 * 1024)).toFixed(1) + ' MB' : (file.size /
+                        1024).toFixed(1) + ' KB';
+                    currentFolder.children.push({ id: generateId('f'), name: fileName, type: 'file', fileType, size,
+                        children: [] });
                 }
                 if (!state.expandedNodes.has(rootDirId)) state.expandedNodes.add(rootDirId);
-                saveData(); renderTree();
+                saveData();
+                renderTree();
             }
 
-            // ============ 拖拽上传（目标自动检测） ============
             function setupDragAndDrop() {
                 const container = treeContainer;
-                container.addEventListener('dragenter', (e) => { e.preventDefault(); container.classList.add('drag-over'); });
+                container.addEventListener('dragenter', (e) => { e.preventDefault();
+                    container.classList.add('drag-over'); });
                 container.addEventListener('dragover', (e) => { e.preventDefault(); });
-                container.addEventListener('dragleave', (e) => { if (e.target === container) container.classList.remove('drag-over'); });
+                container.addEventListener('dragleave', (e) => { if (e.target === container) container.classList.remove(
+                        'drag-over'); });
                 container.addEventListener('drop', async (e) => {
-                    e.preventDefault(); container.classList.remove('drag-over');
+                    e.preventDefault();
+                    container.classList.remove('drag-over');
                     const items = e.dataTransfer.items;
                     if (!items || items.length === 0) return;
-
-                    let targetParentId = 'root';
+                    let targetParentId = state.currentFolderId;
                     if (state.selectedNodeIds.size === 1) {
                         const selectedId = Array.from(state.selectedNodeIds)[0];
-                        const data = getCurrentData();
-                        const selectedNode = getNodeById(data, selectedId);
-                        if (selectedNode) {
-                            if (selectedNode.type === 'folder' || selectedNode.type === 'chapter' || selectedNode.type === 'section') {
-                                targetParentId = selectedId;
-                            } else if (selectedNode.type === 'file') {
-                                const parentId = getParentId(data, selectedId);
-                                if (parentId) targetParentId = parentId;
-                            }
-                        }
-                    } else if (state.selectedNodeIds.size > 1) {
-                        targetParentId = 'root';
+                        const selectedNode = getNodeById(getCurrentData(), selectedId);
+                        if (selectedNode && (selectedNode.type === 'folder' || selectedNode.type === 'chapter' || selectedNode
+                                .type === 'section')) targetParentId = selectedId;
                     }
-
                     for (const item of items) {
                         if (item.kind === 'file') {
                             const entry = item.webkitGetAsEntry ? item.webkitGetAsEntry() : null;
@@ -863,30 +1826,29 @@
                     const file = await new Promise((resolve, reject) => entry.file(resolve, reject));
                     const fileName = file.name;
                     const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : 'txt';
-                    const fileTypeMap = { html:'html', js:'js', css:'css', py:'py', png:'img', jpg:'img', jpeg:'img', gif:'img', svg:'img', ico:'img', txt:'txt', md:'txt', json:'json', zip:'zip', rar:'zip', ttf:'font', woff:'font', woff2:'font', mp4:'video', mov:'video', mp3:'audio', wav:'audio' };
+                    const fileTypeMap = { html: 'html', js: 'js', css: 'css', py: 'py', png: 'img', jpg: 'img', jpeg: 'img',
+                        gif: 'img', svg: 'img', ico: 'img', txt: 'txt', md: 'txt', json: 'json', zip: 'zip', rar: 'zip',
+                        ttf: 'font', woff: 'font', woff2: 'font', mp4: 'video', mov: 'video', mp3: 'audio', wav: 'audio' };
                     const fileType = fileTypeMap[ext] || 'txt';
-                    const size = file.size > 1024*1024 ? (file.size/(1024*1024)).toFixed(1)+' MB' : (file.size/1024).toFixed(1)+' KB';
-                    addNode(parentId, { id: generateId('f'), name: fileName, type: 'file', fileType, size, children: [] });
+                    const size = file.size > 1024 * 1024 ? (file.size / (1024 * 1024)).toFixed(1) + ' MB' : (file.size /
+                        1024).toFixed(1) + ' KB';
+                    addNode(parentId, { id: generateId('f'), name: fileName, type: 'file', fileType, size,
+                        children: [] });
                 } else if (entry.isDirectory) {
                     const dirName = entry.name;
                     const dirId = generateId('fdir');
-                    const dirNode = { id: dirId, name: dirName, type:'folder', children: [] };
+                    const dirNode = { id: dirId, name: dirName, type: 'folder', children: [] };
                     addNode(parentId, dirNode);
                     const reader = entry.createReader();
                     const readEntries = () => new Promise((resolve, reject) => {
-                        reader.readEntries(async (entries) => {
-                            if (entries.length === 0) resolve();
-                            else {
-                                for (const childEntry of entries) await processEntry(childEntry, dirId);
-                                resolve();
-                            }
-                        }, reject);
+                        reader.readEntries(async (entries) => { if (entries.length === 0) resolve();
+                            else { for (const childEntry of entries) await processEntry(childEntry, dirId);
+                                resolve(); } }, reject);
                     });
                     await readEntries();
                 }
             }
 
-            // ============ 重命名 ============
             function openRenameModal(nodeId) {
                 const data = getCurrentData();
                 const node = getNodeById(data, nodeId);
@@ -898,8 +1860,10 @@
                 state.modalTargetId = nodeId;
                 state.modalParentId = null;
                 modalOverlay.classList.add('active');
-                modalInput.focus(); modalInput.select();
+                modalInput.focus();
+                modalInput.select();
             }
+
             function performRename() {
                 const newName = modalInput.value.trim();
                 if (!newName) { alert('名称不能为空'); return; }
@@ -908,13 +1872,30 @@
                 if (!node) { closeModal(); return; }
                 if (node.title !== undefined) node.title = newName;
                 if (node.name !== undefined) node.name = newName;
-                saveData(); closeModal(); renderTree();
+                saveData();
+                closeModal();
+                renderTree();
             }
 
-            // ============ 模态框 ============
-            function openModal(title, placeholder, action, parentId) { modalTitle.innerHTML=`<i class="las la-plus-circle"></i> ${title}`; modalInput.value=''; modalInput.placeholder=placeholder; state.modalAction=action; state.modalParentId=parentId; state.modalTargetId=null; modalOverlay.classList.add('active'); modalInput.focus(); }
-            function closeModal(){ modalOverlay.classList.remove('active'); state.modalAction=null; state.modalParentId=null; state.modalTargetId=null; }
-            function confirmModal(){
+            function openModal(title, placeholder, action, parentId) {
+                modalTitle.innerHTML = `<i class="las la-plus-circle"></i> ${title}`;
+                modalInput.value = '';
+                modalInput.placeholder = placeholder;
+                state.modalAction = action;
+                state.modalParentId = parentId;
+                state.modalTargetId = null;
+                modalOverlay.classList.add('active');
+                modalInput.focus();
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                state.modalAction = null;
+                state.modalParentId = null;
+                state.modalTargetId = null;
+            }
+
+            function confirmModal() {
                 const name = modalInput.value.trim();
                 if (!name) { alert('名称不能为空'); return; }
                 if (state.modalAction === 'rename') { performRename(); return; }
@@ -922,82 +1903,159 @@
                 const action = state.modalAction;
                 if (action === 'new-file') {
                     const ext = name.includes('.') ? name.split('.').pop().toLowerCase() : 'txt';
-                    const fileTypeMap = { html:'html', js:'js', css:'css', py:'py', txt:'txt', json:'json', zip:'zip', png:'img', jpg:'img', svg:'img' };
+                    const fileTypeMap = { html: 'html', js: 'js', css: 'css', py: 'py', txt: 'txt', json: 'json', zip: 'zip',
+                        png: 'img', jpg: 'img', svg: 'img' };
                     const fileType = fileTypeMap[ext] || 'txt';
-                    addNode(parentId, { id: generateId('f'), name, type:'file', fileType, size:'0 KB', children: [] });
+                    addNode(parentId, { id: generateId('f'), name, type: 'file', fileType, size: '0 KB',
+                        children: [] });
                 } else if (action === 'new-folder') {
-                    addNode(parentId, { id: generateId('fdir'), name, type:'folder', children: [] });
+                    addNode(parentId, { id: generateId('fdir'), name, type: 'folder', children: [] });
                 } else if (action === 'new-chapter') {
-                    addNode(parentId, { id: generateId('ch'), title: name, type:'section', children: [] });
+                    addNode(parentId, { id: generateId('ch'), title: name, type: 'section', children: [] });
                 }
                 closeModal();
             }
 
-            // ============ 事件绑定 ============
+            function handleDoubleClick(nodeId) {
+                if (state.searchQuery) return;
+                const data = getCurrentData();
+                const node = getNodeById(data, nodeId);
+                if (node && (node.type === 'folder' || node.type === 'chapter' || node.type === 'section')) {
+                    state.currentFolderId = nodeId;
+                    state.selectedNodeIds.clear();
+                    renderTree();
+                }
+            }
+
             function initEventListeners() {
-                btnDarkMode.addEventListener('click', () => {
-                    const mode = getThemeMode();
+                btnDarkMode.addEventListener('click', () => { const mode = getThemeMode();
                     const nextMode = mode === 'auto' ? 'light' : (mode === 'light' ? 'dark' : 'auto');
-                    setThemeMode(nextMode);
-                });
-                $$('.tab').forEach(tab=>{ tab.addEventListener('click',()=>{ const tabName=tab.dataset.tab; if(state.currentTab===tabName)return; state.currentTab=tabName; state.selectedNodeIds.clear(); state.lastSelectedId=null; state.expandedNodes.clear(); state.expandedNodes.add('root'); $$('.tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); if(state.searchQuery)handleSearch(state.searchQuery); else renderTree(); }); });
-                searchInput.addEventListener('input',e=>handleSearch(e.target.value));
-                searchInput.addEventListener('keydown',e=>{ if(e.key==='Escape'){searchInput.value='';handleSearch('');searchInput.blur();} if(e.key==='Enter'){ const data=getCurrentData(); const sr=getSearchResults(data,state.searchQuery); if(sr.matchedIds.size>0) selectNode(Array.from(sr.matchedIds)[0]); } });
-                clearSearchBtn.addEventListener('click',()=>{ searchInput.value=''; handleSearch(''); searchInput.focus(); });
-                document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='f'){e.preventDefault(); searchInput.focus(); searchInput.select();} });
-                treeContainer.addEventListener('click',e=>{
+                    setThemeMode(nextMode); });
+                $$('.tab').forEach(tab => { tab.addEventListener('click', () => { const tabName = tab.dataset.tab; if (
+                            state.currentTab === tabName) return;
+                        state.currentTab = tabName;
+                        state.currentFolderId = 'root';
+                        state.selectedNodeIds.clear();
+                        state.lastSelectedId = null;
+                        state.expandedNodes.clear();
+                        state.expandedNodes.add('root');
+                        state.searchQuery = '';
+                        searchInput.value = '';
+                        $$('.tab').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        renderTree(); }); });
+                searchInput.addEventListener('input', e => handleSearch(e.target.value));
+                searchInput.addEventListener('keydown', e => { if (e.key === 'Escape') { searchInput.value = '';
+                        handleSearch(''); if (state.mobileSearchActive) setMobileSearchActive(false); } if (e
+                        .key === 'Enter') { const sr = getSearchResults(getCurrentData(), state.searchQuery); if (
+                            sr.matchedIds.size > 0) selectNode(Array.from(sr.matchedIds)[0]); } });
+                clearSearchBtn.addEventListener('click', () => { if (state.mobileSearchActive && !searchInput.value
+                        .trim()) { setMobileSearchActive(false);
+                        searchInput.blur(); } else { searchInput.value = '';
+                        handleSearch(''); if (state.mobileSearchActive) searchInput.focus(); } });
+                mobileSearchBtn.addEventListener('click', () => setMobileSearchActive(true));
+                searchExitBtn.addEventListener('click', () => { setMobileSearchActive(false);
+                    searchInput.blur(); });
+                document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e
+                        .preventDefault(); if (window.innerWidth <= 768) setMobileSearchActive(true);
+                        else searchInput.focus();
+                        searchInput.select(); } });
+                treeContainer.addEventListener('click', e => {
+                    const moreBtn = e.target.closest('.more-btn');
+                    if (moreBtn) { e.stopPropagation();
+                        e.preventDefault();
+                        const actionsContainer = moreBtn.closest('.node-actions'); if (actionsContainer)
+                            actionsContainer.classList.toggle('more-open'); return; }
                     const checkbox = e.target.closest('.node-checkbox');
-                    if (checkbox) { e.stopPropagation(); toggleCheckboxSelection(checkbox.dataset.id, checkbox.checked); return; }
-                    const actionBtn=e.target.closest('[data-action]');
-                    if(actionBtn){
-                        e.stopPropagation(); e.preventDefault();
-                        const action=actionBtn.dataset.action;
-                        const parentId=actionBtn.dataset.parentId||actionBtn.dataset.nodeId||'root';
-                        const nodeId=actionBtn.dataset.nodeId;
-                        if(action==='new-file') openModal('新建文件','输入文件名称...','new-file',parentId);
-                        else if(action==='new-folder') openModal('新建目录','输入目录名称...','new-folder',parentId);
-                        else if(action==='new-chapter') openModal('新建子节点','输入名称...','new-chapter',parentId);
-                        else if(action==='upload-file') triggerFileUpload(parentId);
-                        else if(action==='upload-dir') triggerDirUpload(parentId);
-                        else if(action==='rename') openRenameModal(nodeId);
-                        else if(action==='copy-path') copyNodePath(nodeId);
-                        else if(action==='delete'){ if(nodeId&&nodeId!=='root'){ if(state.selectedNodeIds.has(nodeId)&&state.selectedNodeIds.size>1) batchDeleteSelected(); else if(confirm('确定要删除该节点及其所有子节点吗？')) deleteNode(nodeId); } }
-                        return;
-                    }
-                    const row=e.target.closest('.node-row'); const toggleBtn=e.target.closest('.toggle-icon');
-                    if(toggleBtn){ const nodeId=toggleBtn.dataset.toggle; if(nodeId){ e.stopPropagation(); toggleNode(nodeId); } return; }
-                    if(row){ const nodeId=row.dataset.id; if(nodeId) selectNode(nodeId,{ctrlKey:e.ctrlKey||e.metaKey, shiftKey:e.shiftKey}); }
+                    if (checkbox) { e.stopPropagation();
+                        toggleCheckboxSelection(checkbox.dataset.id, checkbox.checked); return; }
+                    const actionBtn = e.target.closest('[data-action]');
+                    if (actionBtn) { e.stopPropagation();
+                        e.preventDefault();
+                        const action = actionBtn.dataset.action;
+                        const parentId = actionBtn.dataset.parentId || actionBtn.dataset.nodeId || state.currentFolderId;
+                        const nodeId = actionBtn.dataset.nodeId;
+                        if (action === 'new-file') openModal('新建文件', '输入文件名称...', 'new-file', parentId);
+                        else if (action === 'new-folder') openModal('新建目录', '输入目录名称...', 'new-folder',
+                            parentId);
+                        else if (action === 'new-chapter') openModal('新建子节点', '输入名称...', 'new-chapter',
+                            parentId);
+                        else if (action === 'upload-file') triggerFileUpload(parentId);
+                        else if (action === 'upload-dir') triggerDirUpload(parentId);
+                        else if (action === 'rename') openRenameModal(nodeId);
+                        else if (action === 'copy-path') copyNodePath(nodeId);
+                        else if (action === 'toggle-hidden') toggleHiddenNode(nodeId);
+                        else if (action === 'delete') { if (nodeId && nodeId !== 'root') { if (state
+                                    .selectedNodeIds.has(nodeId) && state.selectedNodeIds.size > 1)
+                                    batchDeleteSelected();
+                                else if (confirm('确定要删除该节点及其所有子节点吗？')) deleteNode(nodeId); } }
+                        return; }
+                    const row = e.target.closest('.node-row');
+                    if (row) { const nodeId = row.dataset.id; if (nodeId) selectNode(nodeId, { ctrlKey: e.ctrlKey ||
+                                e.metaKey, shiftKey: e.shiftKey }); }
                 });
-                treeContainer.addEventListener('dblclick',e=>{ const row=e.target.closest('.node-row'); if(row){ const nodeId=row.dataset.id; const data=getCurrentData(); const node=getNodeById(data,nodeId); if(node&&node.children&&node.children.length>0) toggleNode(nodeId); } });
-                breadcrumbContent.addEventListener('click',e=>{ const crumb=e.target.closest('.crumb'); if(crumb&&!crumb.classList.contains('current')){ const id=crumb.dataset.crumbId; if(id&&id!=='root')selectNode(id); else if(id==='root'){ state.selectedNodeIds.clear(); renderTree(); } } });
-                $('#btnExpandAll').addEventListener('click',expandAll);
-                $('#btnCollapseAll').addEventListener('click',collapseAll);
-                $('#btnRefresh').addEventListener('click',()=>renderTree());
-                $('#btnToggleDetail').addEventListener('click',()=>{ state.detailPanelVisible=!state.detailPanelVisible; detailPanel.classList.toggle('collapsed',!state.detailPanelVisible); if(state.detailPanelVisible)updateDetailPanel(); });
-                $('#btnSortAsc').addEventListener('click',()=>{ state.sortDirection=state.sortDirection==='asc'?null:'asc'; applySort(); });
-                $('#btnSortDesc').addEventListener('click',()=>{ state.sortDirection=state.sortDirection==='desc'?null:'desc'; applySort(); });
-                btnDeleteSelected.addEventListener('click',()=>{ if(state.selectedNodeIds.size===0){ alert('请先选择要删除的文件或文件夹'); return; } batchDeleteSelected(); });
-                btnCopy.addEventListener('click',()=>copySelected('copy'));
-                btnCut.addEventListener('click',()=>copySelected('cut'));
-                btnPaste.addEventListener('click',pasteClipboard);
-                btnCreateShortcut.addEventListener('click',openShortcutModal);
-                shortcutCancel.addEventListener('click',()=>{ shortcutModalOverlay.classList.remove('active'); state.shortcutSourceId = null; });
-                shortcutConfirm.addEventListener('click',confirmShortcutCreation);
-                shortcutModalOverlay.addEventListener('click',e=>{ if(e.target===shortcutModalOverlay){ shortcutModalOverlay.classList.remove('active'); state.shortcutSourceId = null; } });
-                $('#panelCloseBtn').addEventListener('click',()=>{ state.detailPanelVisible=false; detailPanel.classList.add('collapsed'); });
-                modalCancel.addEventListener('click',closeModal);
-                modalConfirm.addEventListener('click',confirmModal);
-                modalOverlay.addEventListener('click',e=>{ if(e.target===modalOverlay)closeModal(); });
-                modalInput.addEventListener('keydown',e=>{ if(e.key==='Enter')confirmModal(); if(e.key==='Escape')closeModal(); });
-                fileInput.addEventListener('change',handleFileUpload);
-                dirInput.addEventListener('change',handleDirUpload);
+                treeContainer.addEventListener('dblclick', e => {
+                    const row = e.target.closest('.node-row');
+                    if (row) { const nodeId = row.dataset.id; if (nodeId) handleDoubleClick(nodeId); }
+                });
+                breadcrumbContent.addEventListener('click', e => {
+                    const crumb = e.target.closest('.crumb');
+                    if (crumb && crumb.dataset.crumbId) { const id = crumb.dataset.crumbId; if (id !== state
+                            .currentFolderId) { state.currentFolderId = id;
+                            state.selectedNodeIds.clear();
+                            renderTree(); } }
+                });
+                btnUp.addEventListener('click', () => { if (state.searchQuery) { searchInput.value = '';
+                        handleSearch(''); return; } if (state.currentFolderId !== 'root') { const parentId =
+                            getParentId(getCurrentData(), state.currentFolderId);
+                        state.currentFolderId = parentId || 'root';
+                        state.selectedNodeIds.clear();
+                        renderTree(); } });
+                $('#btnRefresh').addEventListener('click', () => renderTree());
+                $('#btnToggleDetail').addEventListener('click', () => { state.detailPanelVisible = !state
+                        .detailPanelVisible;
+                    detailPanel.classList.toggle('collapsed', !state.detailPanelVisible); if (state
+                        .detailPanelVisible) updateDetailPanel(); });
+                $('#btnSortAsc').addEventListener('click', () => { state.sortDirection = state.sortDirection ===
+                        'asc' ? null : 'asc';
+                    applySort(); });
+                $('#btnSortDesc').addEventListener('click', () => { state.sortDirection = state.sortDirection ===
+                        'desc' ? null : 'desc';
+                    applySort(); });
+                btnDeleteSelected.addEventListener('click', () => { if (state.selectedNodeIds.size === 0) { alert(
+                            '请先选择要删除的文件或文件夹'); return; }
+                    batchDeleteSelected(); });
+                btnCopy.addEventListener('click', () => copySelected('copy'));
+                btnCut.addEventListener('click', () => copySelected('cut'));
+                btnPaste.addEventListener('click', pasteClipboard);
+                btnNewFile.addEventListener('click', () => openModal('新建文件', '输入文件名称...', 'new-file',
+                    state.currentFolderId));
+                btnNewFolder.addEventListener('click', () => openModal('新建文件夹', '输入文件夹名称...', 'new-folder',
+                    state.currentFolderId));
+                btnCreateShortcut.addEventListener('click', openShortcutModal);
+                btnToggleHidden.addEventListener('click', toggleShowHidden);
+                shortcutCancel.addEventListener('click', () => { shortcutModalOverlay.classList.remove('active');
+                    state.shortcutSourceId = null; });
+                shortcutConfirm.addEventListener('click', confirmShortcutCreation);
+                shortcutModalOverlay.addEventListener('click', e => { if (e.target === shortcutModalOverlay) {
+                        shortcutModalOverlay.classList.remove('active');
+                        state.shortcutSourceId = null; } });
+                $('#panelCloseBtn').addEventListener('click', () => { state.detailPanelVisible = false;
+                    detailPanel.classList.add('collapsed'); });
+                modalCancel.addEventListener('click', closeModal);
+                modalConfirm.addEventListener('click', confirmModal);
+                modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+                modalInput.addEventListener('keydown', e => { if (e.key === 'Enter') confirmModal(); if (e.key ===
+                        'Escape') closeModal(); });
+                fileInput.addEventListener('change', handleFileUpload);
+                dirInput.addEventListener('change', handleDirUpload);
                 setupDragAndDrop();
             }
 
-            function init(){
+            function init() {
+                state.currentFolderId = 'root';
                 state.expandedNodes.add('root');
-                const data=getCurrentData();
-                for(const node of data.nodes){ if(node.children&&node.children.length>0) state.expandedNodes.add(node.id); }
+                applyTheme();
                 detailPanel.classList.add('collapsed');
                 initEventListeners();
                 renderTree();
