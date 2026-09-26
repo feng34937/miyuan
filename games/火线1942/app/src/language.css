@@ -1,0 +1,6 @@
+@font-face{font-family:GameChineseSans;src:url('/fonts/zh-sans.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap;}
+@font-face{font-family:GameChineseDisplay;src:url('/fonts/zh-sans.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap;}
+:root{--chinese-ui:GameChineseSans;--chinese-display:GameChineseDisplay;}
+html[lang="zh-CN"]{line-break:strict;}
+html[lang="zh-CN"] :is(button,input,select,textarea){letter-spacing:normal;}
+html[lang="zh-CN"] :is(h1,h2,h3){word-break:normal;overflow-wrap:break-word;}
