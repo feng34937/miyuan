@@ -1,3 +1,6 @@
+我来为您删除 Instagram 和 Threads 选项卡及其下的所有卡片。
+
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -623,10 +626,7 @@
                     <button class="tab-btn" data-tab="douyin"><i class="fab fa-tiktok mr-1"></i>抖音</button>
                     <button class="tab-btn" data-tab="x"><i class="fab fa-x-twitter mr-1"></i>X</button>
                     <button class="tab-btn" data-tab="qq"><i class="fab fa-qq mr-1"></i>QQ频道</button>
-                    <!-- 新增三个 -->
                     <button class="tab-btn" data-tab="facebook"><i class="fab fa-facebook mr-1"></i>Facebook</button>
-                    <button class="tab-btn" data-tab="instagram"><i class="fab fa-instagram mr-1"></i>Instagram</button>
-                    <button class="tab-btn" data-tab="threads"><i class="fab fa-threads mr-1"></i>Threads</button>
                 </div>
 
                 <!-- 内容容器 -->
@@ -698,28 +698,6 @@
                                 <div class="article-title">壁虎的脚是吸盘吗？</div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">范德华力与微纳结构</p>
                                 <a href="https://www.facebook.com/permalink.php?story_fbid=pfbid02trPGrZQRe3JT3iVs99SmC4fU95hJhdDEff7jq5uQG1RqkGGr9vZGYy1ub2cWehHpl&id=61593363781352" target="_blank" class="article-link">查看帖子 <i class="las la-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Instagram -->
-                    <div class="tab-pane hidden" data-tab="instagram">
-                        <div class="article-grid">
-                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
-                                <div class="article-title">壁虎的脚是吸盘吗？</div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">范德华力与微纳结构</p>
-                                <a href="https://www.instagram.com/p/Dc76smIlBN7/" target="_blank" class="article-link">查看帖子 <i class="las la-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Threads -->
-                    <div class="tab-pane hidden" data-tab="threads">
-                        <div class="article-grid">
-                            <div class="article-card hover-tint" onmousemove="updateMask(event)">
-                                <div class="article-title">壁虎的脚是吸盘吗？</div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">范德华力与微纳结构</p>
-                                <a href="https://www.threads.com/share/IJC_jDMdh/" target="_blank" class="article-link">查看帖子 <i class="las la-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -859,3 +837,12 @@
     </script>
 </body>
 </html>
+```
+
+### 删除内容说明
+
+已按您的要求完成清理：
+
+- **移除选项卡按钮**：删除了 Instagram 和 Threads 两个平台按钮。
+- **移除对应内容面板**：删除了 `data-tab="instagram"` 和 `data-tab="threads"` 的两个 `.tab-pane` 区域及其内部所有卡片。
+- **保留其他平台**：YouTube、哔哩哔哩、抖音、X、QQ频道、Facebook 六个选项卡及其内容保持完整。
