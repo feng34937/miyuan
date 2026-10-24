@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>米遇安 · 创新与教育</title>
-    <!-- 网站标签页图标（png） -->
     <link rel="icon" href="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png">
-    <!-- Tailwind + Line Awesome -->
-    <script src="https://cdn.tailwindcss.com">
-    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
-    <!-- 引入 Font Awesome 6 用于社交媒体品牌图标 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
         tailwind.config = {
@@ -18,43 +14,26 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0078D7',
-                        secondary: '#F8F9FA',
-                        dark: '#212529',
-                        'primary-light': '#5aa9e6',
-                        'ad-start': '#0f172a',
-                        'ad-end': '#1e293b',
+                        primary: '#0078D7', secondary: '#F8F9FA', dark: '#212529',
+                        'primary-light': '#5aa9e6', 'ad-start': '#0f172a', 'ad-end': '#1e293b',
                     },
                     fontFamily: { inter: ['Inter', 'sans-serif'] },
                     borderRadius: {
-                        DEFAULT: '0px',
-                        none: '0px',
-                        sm: '0px',
-                        md: '0px',
-                        lg: '0px',
-                        xl: '0px',
-                        '2xl': '0px',
-                        full: '9999px',
+                        DEFAULT: '0px', none: '0px', sm: '0px', md: '0px',
+                        lg: '0px', xl: '0px', '2xl': '0px', full: '9999px',
                     },
                     keyframes: {
                         float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
-                        gradientShift: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' },
-                            '100%': { backgroundPosition: '0% 50%' } },
-                        folderExpand: { '0%': { opacity: '0', transform: 'translateY(-8px) scale(0.98)' },
-                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)' } },
-                        modalSlideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        scaleIn: { '0%': { opacity: '0', transform: 'scale(0.98)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' } },
+                        gradientShift: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } },
+                        folderExpand: { '0%': { opacity: '0', transform: 'translateY(-8px) scale(0.98)' }, '100%': { opacity: '1', transform: 'translateY(0) scale(1)' } },
+                        modalSlideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        scaleIn: { '0%': { opacity: '0', transform: 'scale(0.98)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
                         gentleBounce: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-3px)' } },
                         slideInRight: { '0%': { transform: 'translateX(100%)' }, '100%': { transform: 'translateX(0)' } },
                         shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
-                        glowPulse: { '0%,100%': { boxShadow: '0 0 20px rgba(0,120,215,0.2)' },
-                            '50%': { boxShadow: '0 0 40px rgba(0,120,215,0.5)' } },
-                        starFloat: { '0%,100%': { transform: 'translateY(0) scale(1)' },
-                            '50%': { transform: 'translateY(-10px) scale(1.05)' } },
+                        glowPulse: { '0%,100%': { boxShadow: '0 0 20px rgba(0,120,215,0.2)' }, '50%': { boxShadow: '0 0 40px rgba(0,120,215,0.5)' } },
+                        starFloat: { '0%,100%': { transform: 'translateY(0) scale(1)' }, '50%': { transform: 'translateY(-10px) scale(1.05)' } },
                     },
                     animation: {
                         float: 'float 5s ease-in-out infinite',
@@ -74,43 +53,25 @@
         }
     </script>
     <style>
-        /* ===== 基础重置与直角强制 ===== */
-        * {
-            scroll-behavior: smooth;
-        }
-        .rounded-md,
-        .rounded-lg,
-        .rounded-xl,
-        .rounded-2xl,
-        .rounded,
-        button,
+        * { scroll-behavior: smooth; }
+
+        .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded, button,
         [class*="rounded-"]:not(.rounded-full):not(.team-avatar-wrapper):not(.team-avatar):not(.carousel-dot):not(.ad-dot):not(.ad-arrow-btn) {
             border-radius: 0px !important;
         }
-        .rounded-full,
-        .team-avatar-wrapper,
-        .team-avatar,
-        .carousel-dot,
-        .ad-dot,
-        .ad-arrow-btn,
-        .timeline-item::before {
+        .rounded-full, .team-avatar-wrapper, .team-avatar, .carousel-dot, .ad-dot, .ad-arrow-btn, .timeline-item::before {
             border-radius: 9999px !important;
         }
 
-        /* ===== 导航栏 ===== */
         #navbar {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
+            position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important;
             width: 100% !important;
             background: rgba(255, 255, 255, 0.72) !important;
             backdrop-filter: blur(20px) saturate(180%) !important;
             -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
             border-bottom: 0.5px solid rgba(255, 255, 255, 0.3);
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
-            z-index: 99999 !important;
-            padding: 12px 0;
+            z-index: 99999 !important; padding: 12px 0;
         }
         .dark #navbar {
             background: rgba(20, 22, 27, 0.85) !important;
@@ -125,62 +86,29 @@
             background: rgba(20, 22, 27, 0.92) !important;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
         }
-        #navbar .container {
-            max-width: 1400px;
-            padding: 0 2rem;
-        }
-        @media (max-width: 768px) {
-            #navbar .container {
-                padding: 0 1.25rem;
-            }
-        }
+        #navbar .container { max-width: 1400px; padding: 0 2rem; }
+        @media (max-width: 768px) { #navbar .container { padding: 0 1.25rem; } }
 
-        body {
-            margin: 0;
-            padding-top: 74px !important;
-            background-color: #ffffff;
-            transition: background-color 0.3s ease;
-        }
-        .dark body {
-            background-color: #121212;
-        }
+        body { margin: 0; padding-top: 74px !important; background-color: #ffffff; transition: background-color 0.3s ease; }
+        .dark body { background-color: #121212; }
 
-        /* ===== 移动端侧边栏 ===== */
         .mobile-menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(4px);
-            z-index: 100000;
-            opacity: 0;
-            visibility: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+            z-index: 100000; opacity: 0; visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .mobile-menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        .mobile-menu-overlay.active { opacity: 1; visibility: visible; }
         .mobile-sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 75%;
-            max-width: 400px;
-            height: 100%;
+            position: fixed; top: 0; right: 0; width: 75%; max-width: 400px; height: 100%;
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             border-left: 0.5px solid rgba(255, 255, 255, 0.5);
             box-shadow: -5px 0 30px rgba(0, 0, 0, 0.08);
-            z-index: 100001;
-            transform: translateX(100%);
+            z-index: 100001; transform: translateX(100%);
             transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
         .dark .mobile-sidebar {
             background: rgba(25, 28, 35, 0.7);
@@ -188,142 +116,58 @@
             border-left: 0.5px solid rgba(255, 255, 255, 0.15);
             box-shadow: -5px 0 30px rgba(0, 0, 0, 0.2);
         }
-        .mobile-sidebar.active {
-            transform: translateX(0);
-        }
+        .mobile-sidebar.active { transform: translateX(0); }
         .mobile-sidebar-header {
-            padding: 1.5rem 1.25rem;
-            border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 1.5rem 1.25rem; border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .dark .mobile-sidebar-header {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-        .mobile-sidebar-header h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #0078D7;
-        }
+        .dark .mobile-sidebar-header { border-bottom-color: rgba(255, 255, 255, 0.1); }
+        .mobile-sidebar-header h3 { font-size: 1.25rem; font-weight: 700; color: #0078D7; }
         .mobile-sidebar-close {
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            cursor: pointer;
-            color: #6b7280;
-            padding: 0.25rem;
-            transition: all 0.2s;
+            background: none; border: none; font-size: 1.4rem; cursor: pointer;
+            color: #6b7280; padding: 0.25rem; transition: all 0.2s;
         }
-        .mobile-sidebar-close:hover {
-            color: #0078D7;
-            transform: scale(1.05);
-        }
-        .mobile-sidebar-nav {
-            flex: 1;
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
+        .mobile-sidebar-close:hover { color: #0078D7; transform: scale(1.05); }
+        .mobile-sidebar-nav { flex: 1; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
         .mobile-sidebar-nav a {
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #1f2937;
-            border-radius: 12px;
-            transition: all 0.2s ease;
+            padding: 0.75rem 1rem; font-size: 1rem; font-weight: 500;
+            color: #1f2937; border-radius: 12px; transition: all 0.2s ease;
         }
-        .dark .mobile-sidebar-nav a {
-            color: #f3f4f6;
-        }
-        .mobile-sidebar-nav a:hover {
-            background: rgba(0, 120, 215, 0.15);
-            color: #0078D7;
-            transform: translateX(4px);
-        }
-        .dark .mobile-sidebar-nav a:hover {
-            background: rgba(90, 169, 230, 0.2);
-            color: #5aa9e6;
-        }
+        .dark .mobile-sidebar-nav a { color: #f3f4f6; }
+        .mobile-sidebar-nav a:hover { background: rgba(0, 120, 215, 0.15); color: #0078D7; transform: translateX(4px); }
+        .dark .mobile-sidebar-nav a:hover { background: rgba(90, 169, 230, 0.2); color: #5aa9e6; }
         .mobile-sidebar-footer {
-            padding: 1rem 1.25rem;
-            border-top: 0.5px solid rgba(0, 0, 0, 0.08);
-            font-size: 0.75rem;
-            color: #6b7280;
-            text-align: center;
+            padding: 1rem 1.25rem; border-top: 0.5px solid rgba(0, 0, 0, 0.08);
+            font-size: 0.75rem; color: #6b7280; text-align: center;
         }
-        .dark .mobile-sidebar-footer {
-            border-top-color: rgba(255, 255, 255, 0.1);
-            color: #9ca3af;
-        }
-        #mobileMenu {
-            display: none !important;
-        }
+        .dark .mobile-sidebar-footer { border-top-color: rgba(255, 255, 255, 0.1); color: #9ca3af; }
+        #mobileMenu { display: none !important; }
 
-        /* ===== 暗色模式通用 ===== */
-        .dark .bg-secondary {
-            background-color: #1a1c1e;
-        }
-        .dark .bg-white {
-            background-color: #1e1f22;
-        }
-        .dark .text-dark {
-            color: #f0f0f0;
-        }
-        .dark .text-gray-600,
-        .dark .text-gray-700 {
-            color: #a0a0a0 !important;
-        }
-        .dark .text-primary {
-            color: #5aa9e6 !important;
-        }
-        .dark .border-gray-100 {
-            border-color: #2a2a2a;
-        }
+        .dark .bg-secondary { background-color: #1a1c1e; }
+        .dark .bg-white { background-color: #1e1f22; }
+        .dark .text-dark { color: #f0f0f0; }
+        .dark .text-gray-600, .dark .text-gray-700 { color: #a0a0a0 !important; }
+        .dark .text-primary { color: #5aa9e6 !important; }
+        .dark .border-gray-100 { border-color: #2a2a2a; }
 
-        /* ===== 动态渐变文字 ===== */
         .dynamic-gradient-text {
             background: linear-gradient(90deg, #0078D7, #2b88d9, #0078D7, #005a9e, #0078D7);
             background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: gradientShift 8s ease infinite;
-            font-weight: 900;
-            display: inline-block;
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            animation: gradientShift 8s ease infinite; font-weight: 900; display: inline-block;
         }
         .dark .dynamic-gradient-text {
             background: linear-gradient(90deg, #5aa9e6, #7bb3e0, #5aa9e6, #3a7ca5, #5aa9e6);
             background-size: 300% 300%;
         }
 
-        /* ===== Hero 标题 ===== */
-        .hero-title {
-            font-size: 3rem;
-            line-height: 1.2;
-        }
-        @media (min-width: 768px) {
-            .hero-title {
-                font-size: 4rem;
-            }
-        }
-        @media (min-width: 1024px) {
-            .hero-title {
-                font-size: 5rem;
-            }
-        }
+        .hero-title { font-size: 3rem; line-height: 1.2; }
+        @media (min-width: 768px) { .hero-title { font-size: 4rem; } }
+        @media (min-width: 1024px) { .hero-title { font-size: 5rem; } }
 
-        .slogan-main,
-        .slogan-sub {
-            transition: opacity 0.5s ease;
-        }
-        .slogan-main.fade-out,
-        .slogan-sub.fade-out {
-            opacity: 0;
-        }
+        .slogan-main, .slogan-sub { transition: opacity 0.5s ease; }
+        .slogan-main.fade-out, .slogan-sub.fade-out { opacity: 0; }
 
-        /* ===== 卡片悬停效果 ===== */
         .card-hover {
             transition: all 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             will-change: transform, box-shadow;
@@ -331,10 +175,7 @@
             backdrop-filter: blur(12px);
             border: 0.5px solid rgba(255, 255, 255, 0.3);
         }
-        .dark .card-hover {
-            background: rgba(30, 31, 34, 0.85);
-            border: 0.5px solid rgba(255, 255, 255, 0.06);
-        }
+        .dark .card-hover { background: rgba(30, 31, 34, 0.85); border: 0.5px solid rgba(255, 255, 255, 0.06); }
         .card-hover:hover {
             transform: translateY(-8px) scale(1.01);
             box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 120, 215, 0.2) !important;
@@ -345,198 +186,85 @@
             box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(90, 169, 230, 0.3) !important;
         }
 
-        .hover-tint {
-            position: relative;
-            isolation: isolate;
-            overflow: hidden;
-        }
+        .hover-tint { position: relative; isolation: isolate; overflow: hidden; }
         .hover-tint::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 120, 215, 0.25) 0%, rgba(0, 120,
-                        215, 0.08) 40%, transparent 75%);
-            opacity: 0;
-            transition: opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
-            pointer-events: none;
-            z-index: 1;
-            border-radius: inherit;
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 120, 215, 0.25) 0%, rgba(0, 120, 215, 0.08) 40%, transparent 75%);
+            opacity: 0; transition: opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
+            pointer-events: none; z-index: 1; border-radius: inherit;
         }
         .dark .hover-tint::before {
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(90, 169, 230, 0.32) 0%, rgba(90, 169,
-                        230, 0.1) 40%, transparent 75%);
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(90, 169, 230, 0.32) 0%, rgba(90, 169, 230, 0.1) 40%, transparent 75%);
         }
-        .hover-tint:hover::before {
-            opacity: 1;
-        }
-        .hover-tint>* {
-            position: relative;
-            z-index: 2;
-        }
+        .hover-tint:hover::before { opacity: 1; }
+        .hover-tint > * { position: relative; z-index: 2; }
 
-        /* ===== Hero 区域 ===== */
-        .hero-section {
-            position: relative;
-            isolation: isolate;
-            overflow: hidden;
-            padding: 48px 0 64px 0;
-        }
+        .hero-section { position: relative; isolation: isolate; overflow: hidden; padding: 48px 0 64px 0; }
         .hero-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at var(--hero-x, 50%) var(--hero-y, 50%), rgba(0, 120, 215, 0.15) 0%, rgba(0,
-                        120, 215, 0.04) 45%, transparent 80%);
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            pointer-events: none;
-            z-index: 1;
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at var(--hero-x, 50%) var(--hero-y, 50%), rgba(0, 120, 215, 0.15) 0%, rgba(0, 120, 215, 0.04) 45%, transparent 80%);
+            opacity: 0; transition: opacity 0.6s ease; pointer-events: none; z-index: 1;
         }
-        .hero-section:hover::before {
-            opacity: 1;
-        }
-        .hero-section>* {
-            position: relative;
-            z-index: 2;
-        }
+        .hero-section:hover::before { opacity: 1; }
+        .hero-section > * { position: relative; z-index: 2; }
 
-        /* ===== 团队动态轮播 ===== */
         .carousel-container {
-            position: relative;
-            max-width: 760px;
-            margin: 0 auto;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(16px);
-            border: 0.5px solid rgba(255, 255, 255, 0.3);
-            transition: box-shadow 0.3s ease;
+            position: relative; max-width: 760px; margin: 0 auto; overflow: hidden;
+            background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(16px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3); transition: box-shadow 0.3s ease;
         }
-        .dark .carousel-container {
-            background: rgba(30, 31, 34, 0.8);
-            border-color: rgba(255, 255, 255, 0.06);
-        }
-        .carousel-container:hover {
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-        }
-        .carousel-track {
-            display: flex;
-            transition: transform 0.6s cubic-bezier(0.2, 0.85, 0.4, 1);
-        }
-        .carousel-card {
-            flex: 0 0 100%;
-        }
-        .carousel-card .card-content {
-            padding: 2rem 1.8rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
+        .dark .carousel-container { background: rgba(30, 31, 34, 0.8); border-color: rgba(255, 255, 255, 0.06); }
+        .carousel-container:hover { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08); }
+        .carousel-track { display: flex; transition: transform 0.6s cubic-bezier(0.2, 0.85, 0.4, 1); }
+        .carousel-card { flex: 0 0 100%; }
+        .carousel-card .card-content { padding: 2rem 1.8rem; text-align: center; transition: all 0.3s ease; }
         .icon-wrapper {
             transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
-            display: inline-block;
-            background: rgba(0, 120, 215, 0.08);
-            padding: 1rem;
-            margin-bottom: 1.2rem;
+            display: inline-block; background: rgba(0, 120, 215, 0.08);
+            padding: 1rem; margin-bottom: 1.2rem;
         }
-        .carousel-card:hover .icon-wrapper {
-            transform: scale(1.03) translateY(-2px);
-            background: rgba(0, 120, 215, 0.12);
-        }
+        .carousel-card:hover .icon-wrapper { transform: scale(1.03) translateY(-2px); background: rgba(0, 120, 215, 0.12); }
 
         .carousel-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 38px;
-            height: 38px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            border: 0.5px solid rgba(255, 255, 255, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: #0078D7;
-            cursor: pointer;
-            z-index: 20;
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 38px; height: 38px; background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px); border: 0.5px solid rgba(255, 255, 255, 0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: #0078D7; cursor: pointer; z-index: 20;
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
-        .carousel-arrow:hover {
-            background: #0078D7;
-            color: white;
-            border-color: #0078D7;
-            transform: translateY(-50%) scale(1.08);
-        }
-        .dark .carousel-arrow {
-            background: rgba(30, 31, 34, 0.9);
-            color: #5aa9e6;
-            border-color: rgba(255, 255, 255, 0.08);
-        }
-        .dark .carousel-arrow:hover {
-            background: #5aa9e6;
-            color: #121212;
-        }
-        .carousel-arrow.left {
-            left: 12px;
-        }
-        .carousel-arrow.right {
-            right: 12px;
-        }
+        .carousel-arrow:hover { background: #0078D7; color: white; border-color: #0078D7; transform: translateY(-50%) scale(1.08); }
+        .dark .carousel-arrow { background: rgba(30, 31, 34, 0.9); color: #5aa9e6; border-color: rgba(255, 255, 255, 0.08); }
+        .dark .carousel-arrow:hover { background: #5aa9e6; color: #121212; }
+        .carousel-arrow.left { left: 12px; }
+        .carousel-arrow.right { right: 12px; }
 
         .carousel-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #cbd5e1;
+            width: 8px; height: 8px; background-color: #cbd5e1;
             transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
-            cursor: pointer;
-            border-radius: 50% !important;
+            cursor: pointer; border-radius: 50% !important;
         }
-        .carousel-dot.active {
-            width: 28px;
-            background-color: #0078D7 !important;
-            border-radius: 0px !important;
-        }
-        .dark .carousel-dot.active {
-            background-color: #5aa9e6 !important;
-        }
+        .carousel-dot.active { width: 28px; background-color: #0078D7 !important; border-radius: 0px !important; }
+        .dark .carousel-dot.active { background-color: #5aa9e6 !important; }
 
-        /* ===== 旧时间线（保留基础样式） ===== */
         .timeline-item {
-            position: relative;
-            padding-left: 1.6rem;
-            border-left: 2px solid #0078D7;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-            transition: all 0.2s ease;
+            position: relative; padding-left: 1.6rem; border-left: 2px solid #0078D7;
+            margin-bottom: 1rem; line-height: 1.5; transition: all 0.2s ease;
         }
         .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -7px;
-            top: 0.45rem;
-            width: 12px;
-            height: 12px;
-            background: #0078D7;
+            content: ''; position: absolute; left: -7px; top: 0.45rem;
+            width: 12px; height: 12px; background: #0078D7;
             transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .timeline-item:hover::before {
-            transform: scale(1.25);
-            box-shadow: 0 0 8px #0078D7;
-        }
+        .timeline-item:hover::before { transform: scale(1.25); box-shadow: 0 0 8px #0078D7; }
 
-        /* ===== 新版里程碑时间线（紧凑直角版，节点圆形） ===== */
         .milestone-header-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            background: rgba(0, 120, 215, 0.06);
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; background: rgba(0, 120, 215, 0.06);
             border: 1px solid rgba(0, 120, 215, 0.15);
-            color: #0078D7;
-            font-size: 0.62rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
+            color: #0078D7; font-size: 0.62rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
             border-radius: 0 !important;
         }
         .dark .milestone-header-badge {
@@ -544,80 +272,28 @@
             border-color: rgba(90, 169, 230, 0.2);
             color: #5aa9e6;
         }
-
-        .timeline-wrap {
-            position: relative;
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 0.5rem 0 0.25rem;
-        }
-
-        /* 中轴线 */
+        .timeline-wrap { position: relative; max-width: 720px; margin: 0 auto; padding: 0.5rem 0 0.25rem; }
         .timeline-wrap::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 1px;
-            transform: translateX(-50%);
-            background: linear-gradient(180deg,
-                    transparent 0%,
-                    rgba(0, 120, 215, 0.3) 5%,
-                    rgba(0, 120, 215, 0.3) 95%,
-                    transparent 100%);
+            content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
+            width: 1px; transform: translateX(-50%);
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 120, 215, 0.3) 5%, rgba(0, 120, 215, 0.3) 95%, transparent 100%);
         }
         .dark .timeline-wrap::before {
-            background: linear-gradient(180deg,
-                    transparent 0%,
-                    rgba(90, 169, 230, 0.3) 5%,
-                    rgba(90, 169, 230, 0.3) 95%,
-                    transparent 100%);
+            background: linear-gradient(180deg, transparent 0%, rgba(90, 169, 230, 0.3) 5%, rgba(90, 169, 230, 0.3) 95%, transparent 100%);
         }
+        .timeline-entry { position: relative; display: flex; align-items: flex-start; width: 100%; margin-bottom: 0.75rem; }
+        .timeline-entry:last-child { margin-bottom: 0; }
+        .timeline-entry:nth-child(odd) { justify-content: flex-start; padding-right: calc(50% + 1.6rem); }
+        .timeline-entry:nth-child(even) { justify-content: flex-end; padding-left: calc(50% + 1.6rem); }
 
-        .timeline-entry {
-            position: relative;
-            display: flex;
-            align-items: flex-start;
-            width: 100%;
-            margin-bottom: 0.75rem;
-        }
-        .timeline-entry:last-child {
-            margin-bottom: 0;
-        }
-
-        /* 奇数项：卡片在左 */
-        .timeline-entry:nth-child(odd) {
-            justify-content: flex-start;
-            padding-right: calc(50% + 1.6rem);
-        }
-
-        /* 偶数项：卡片在右 */
-        .timeline-entry:nth-child(even) {
-            justify-content: flex-end;
-            padding-left: calc(50% + 1.6rem);
-        }
-
-        /* 节点：圆形编号 */
         .timeline-node {
-            position: absolute;
-            left: 50%;
-            top: 0.55rem;
-            transform: translateX(-50%);
-            width: 26px;
-            height: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; left: 50%; top: 0.55rem; transform: translateX(-50%);
+            width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
             background: linear-gradient(135deg, #0078D7, #2b88d9);
-            color: #ffffff;
-            font-size: 0.58rem;
-            font-weight: 800;
-            letter-spacing: 0.02em;
+            color: #ffffff; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.02em;
             border-radius: 9999px !important;
             box-shadow: 0 0 0 2px rgba(0, 120, 215, 0.12), 0 3px 8px rgba(0, 120, 215, 0.25);
-            z-index: 3;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            z-index: 3; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
         .dark .timeline-node {
             background: linear-gradient(135deg, #5aa9e6, #7bb3e0);
@@ -632,11 +308,8 @@
             box-shadow: 0 0 0 4px rgba(90, 169, 230, 0.15), 0 4px 12px rgba(90, 169, 230, 0.35);
         }
 
-        /* 卡片：直角 + 鼠标跟随光晕 */
         .timeline-card-new {
-            position: relative;
-            isolation: isolate;
-            width: 100%;
+            position: relative; isolation: isolate; width: 100%;
             padding: 0.55rem 0.85rem;
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(8px);
@@ -644,10 +317,7 @@
             border-radius: 0 !important;
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .dark .timeline-card-new {
-            background: rgba(30, 31, 34, 0.9);
-            border-color: rgba(90, 169, 230, 0.15);
-        }
+        .dark .timeline-card-new { background: rgba(30, 31, 34, 0.9); border-color: rgba(90, 169, 230, 0.15); }
         .timeline-card-new:hover {
             transform: translateY(-2px);
             border-color: rgba(0, 120, 215, 0.35);
@@ -659,401 +329,170 @@
             box-shadow: 0 8px 18px -8px rgba(90, 169, 230, 0.3);
             background: rgba(40, 42, 48, 0.97);
         }
-
-        /* 鼠标跟随光晕 */
         .timeline-card-new::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
-                    rgba(0, 120, 215, 0.22) 0%,
-                    rgba(0, 120, 215, 0.06) 40%,
-                    transparent 75%);
-            opacity: 0;
-            transition: opacity 0.45s cubic-bezier(0.2, 0.9, 0.4, 1);
-            pointer-events: none;
-            z-index: 0;
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 120, 215, 0.22) 0%, rgba(0, 120, 215, 0.06) 40%, transparent 75%);
+            opacity: 0; transition: opacity 0.45s cubic-bezier(0.2, 0.9, 0.4, 1);
+            pointer-events: none; z-index: 0;
         }
         .dark .timeline-card-new::before {
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
-                    rgba(90, 169, 230, 0.3) 0%,
-                    rgba(90, 169, 230, 0.08) 40%,
-                    transparent 75%);
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(90, 169, 230, 0.3) 0%, rgba(90, 169, 230, 0.08) 40%, transparent 75%);
         }
-        .timeline-card-new:hover::before {
-            opacity: 1;
-        }
-        .timeline-card-new > * {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 指向中轴的小三角 */
+        .timeline-card-new:hover::before { opacity: 1; }
+        .timeline-card-new > * { position: relative; z-index: 1; }
         .timeline-card-new::after {
-            content: '';
-            position: absolute;
-            top: 0.75rem;
-            width: 7px;
-            height: 7px;
-            background: inherit;
-            border: 1px solid rgba(0, 120, 215, 0.12);
-            transform: rotate(45deg);
-            transition: border-color 0.3s ease;
-            z-index: 2;
+            content: ''; position: absolute; top: 0.75rem; width: 7px; height: 7px;
+            background: inherit; border: 1px solid rgba(0, 120, 215, 0.12);
+            transform: rotate(45deg); transition: border-color 0.3s ease; z-index: 2;
         }
-        .dark .timeline-card-new::after {
-            border-color: rgba(90, 169, 230, 0.15);
-        }
-        .timeline-card-new:hover::after {
-            border-color: rgba(0, 120, 215, 0.35);
-        }
-        .dark .timeline-card-new:hover::after {
-            border-color: rgba(90, 169, 230, 0.35);
-        }
-        .timeline-entry:nth-child(odd) .timeline-card-new::after {
-            right: -4.5px;
-            border-left: none;
-            border-bottom: none;
-        }
-        .timeline-entry:nth-child(even) .timeline-card-new::after {
-            left: -4.5px;
-            border-right: none;
-            border-top: none;
-        }
+        .dark .timeline-card-new::after { border-color: rgba(90, 169, 230, 0.15); }
+        .timeline-card-new:hover::after { border-color: rgba(0, 120, 215, 0.35); }
+        .dark .timeline-card-new:hover::after { border-color: rgba(90, 169, 230, 0.35); }
+        .timeline-entry:nth-child(odd) .timeline-card-new::after { right: -4.5px; border-left: none; border-bottom: none; }
+        .timeline-entry:nth-child(even) .timeline-card-new::after { left: -4.5px; border-right: none; border-top: none; }
 
         .timeline-date-new {
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-            font-size: 0.62rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            color: #0078D7;
-            margin-bottom: 0.1rem;
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+            color: #0078D7; margin-bottom: 0.1rem;
         }
-        .dark .timeline-date-new {
-            color: #5aa9e6;
-        }
+        .dark .timeline-date-new { color: #5aa9e6; }
+        .timeline-desc-new { font-size: 0.76rem; line-height: 1.45; color: #374151; }
+        .dark .timeline-desc-new { color: #d1d5db; }
 
-        .timeline-desc-new {
-            font-size: 0.76rem;
-            line-height: 1.45;
-            color: #374151;
-        }
-        .dark .timeline-desc-new {
-            color: #d1d5db;
-        }
-
-        /* 移动端：单侧时间线 */
         @media (max-width: 767px) {
-            .timeline-wrap::before {
-                left: 13px;
-                transform: none;
+            .timeline-wrap::before { left: 13px; transform: none; }
+            .timeline-entry, .timeline-entry:nth-child(odd), .timeline-entry:nth-child(even) {
+                justify-content: flex-start; padding-left: 2.4rem; padding-right: 0;
             }
-            .timeline-entry,
-            .timeline-entry:nth-child(odd),
-            .timeline-entry:nth-child(even) {
-                justify-content: flex-start;
-                padding-left: 2.4rem;
-                padding-right: 0;
-            }
-            .timeline-node {
-                left: 13px;
-                top: 0.5rem;
-                width: 24px;
-                height: 24px;
-                font-size: 0.55rem;
-                border-radius: 9999px !important;
-            }
-            .timeline-entry:hover .timeline-node {
-                transform: translateX(-50%) scale(1.06);
-            }
-            .timeline-card-new::after {
-                display: none !important;
-            }
+            .timeline-node { left: 13px; top: 0.5rem; width: 24px; height: 24px; font-size: 0.55rem; border-radius: 9999px !important; }
+            .timeline-entry:hover .timeline-node { transform: translateX(-50%) scale(1.06); }
+            .timeline-card-new::after { display: none !important; }
         }
 
-        /* ===== 团队成员头像（适配图片，使用 jpg） ===== */
         .team-avatar-wrapper {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 1rem;
+            width: 100px; height: 100px; margin: 0 auto 1rem;
             background: linear-gradient(135deg, #0078D7, #2b88d9);
-            padding: 3px;
-            box-shadow: 0 6px 12px -6px rgba(0, 120, 215, 0.25);
+            padding: 3px; box-shadow: 0 6px 12px -6px rgba(0, 120, 215, 0.25);
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
             border-radius: 50% !important;
         }
         .team-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50% !important;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%; height: 100%; border-radius: 50% !important;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
             background: white;
         }
-        .team-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .dark .team-avatar-wrapper {
-            background: linear-gradient(135deg, #5aa9e6, #7bb3e0);
-        }
-        .dark .team-avatar {
-            background: #2a2a2a;
-        }
-        .card-hover:hover .team-avatar-wrapper {
-            transform: scale(1.03) rotate(1deg);
-        }
+        .team-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .dark .team-avatar-wrapper { background: linear-gradient(135deg, #5aa9e6, #7bb3e0); }
+        .dark .team-avatar { background: #2a2a2a; }
+        .card-hover:hover .team-avatar-wrapper { transform: scale(1.03) rotate(1deg); }
 
-        /* ===== 按钮 ===== */
         .btn-primary {
-            background: #0078D7;
-            color: white;
-            padding: 0.6rem 1.4rem;
+            background: #0078D7; color: white; padding: 0.6rem 1.4rem;
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            display: inline-block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            display: inline-block; font-size: 0.875rem; font-weight: 500;
+            border: none; cursor: pointer; position: relative; overflow: hidden;
         }
         .btn-primary::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0; background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%; transform: translate(-50%, -50%);
             transition: width 0.4s, height 0.4s;
         }
-        .btn-primary:active::after {
-            width: 200px;
-            height: 200px;
-        }
-        .btn-primary:hover {
-            background: #005a9e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0, 120, 215, 0.3);
-        }
-        .dark .btn-primary {
-            background: #5aa9e6;
-            color: #121212;
-        }
-        .dark .btn-primary:hover {
-            background: #7bb3e0;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(90, 169, 230, 0.3);
-        }
+        .btn-primary:active::after { width: 200px; height: 200px; }
+        .btn-primary:hover { background: #005a9e; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0, 120, 215, 0.3); }
+        .dark .btn-primary { background: #5aa9e6; color: #121212; }
+        .dark .btn-primary:hover { background: #7bb3e0; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(90, 169, 230, 0.3); }
 
         .btn-disabled {
-            background: #6c757d;
-            color: white;
-            padding: 0.6rem 1.4rem;
-            display: inline-block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            border: none;
-            cursor: default;
-            opacity: 0.7;
+            background: #6c757d; color: white; padding: 0.6rem 1.4rem;
+            display: inline-block; font-size: 0.875rem; font-weight: 500;
+            border: none; cursor: default; opacity: 0.7;
         }
-        .dark .btn-disabled {
-            background: #4a4f55;
-            color: #e0e0e0;
-        }
+        .dark .btn-disabled { background: #4a4f55; color: #e0e0e0; }
 
         .btn-outline {
-            border: 1.5px solid #0078D7;
-            color: #0078D7;
-            padding: 0.6rem 1.4rem;
+            border: 1.5px solid #0078D7; color: #0078D7; padding: 0.6rem 1.4rem;
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            background: transparent;
-            font-weight: 500;
+            background: transparent; font-weight: 500;
         }
-        .btn-outline:hover {
-            background: rgba(0, 120, 215, 0.08);
-            transform: translateY(-2px);
-        }
-        .dark .btn-outline {
-            border-color: #5aa9e6;
-            color: #5aa9e6;
-        }
-        .dark .btn-outline:hover {
-            background: rgba(90, 169, 230, 0.15);
-            transform: translateY(-2px);
-        }
+        .btn-outline:hover { background: rgba(0, 120, 215, 0.08); transform: translateY(-2px); }
+        .dark .btn-outline { border-color: #5aa9e6; color: #5aa9e6; }
+        .dark .btn-outline:hover { background: rgba(90, 169, 230, 0.15); transform: translateY(-2px); }
 
         .btn-partition {
-            border: 1.5px solid #0078D7;
-            color: #0078D7;
-            padding: 0.5rem 1.2rem;
-            background: transparent;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            font-size: 0.85rem;
-            font-weight: 500;
+            border: 1.5px solid #0078D7; color: #0078D7; padding: 0.5rem 1.2rem;
+            background: transparent; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            font-size: 0.85rem; font-weight: 500;
         }
-        .btn-partition:hover {
-            background: rgba(0, 120, 215, 0.08);
-            transform: translateY(-2px);
-        }
-        .dark .btn-partition {
-            border-color: #5aa9e6;
-            color: #5aa9e6;
-        }
-        .dark .btn-partition:hover {
-            background: rgba(90, 169, 230, 0.15);
-            transform: translateY(-2px);
-        }
+        .btn-partition:hover { background: rgba(0, 120, 215, 0.08); transform: translateY(-2px); }
+        .dark .btn-partition { border-color: #5aa9e6; color: #5aa9e6; }
+        .dark .btn-partition:hover { background: rgba(90, 169, 230, 0.15); transform: translateY(-2px); }
 
         .btn-more {
-            border: 1.5px solid #0078D7;
-            color: #0078D7;
-            padding: 0.6rem 1.6rem;
-            gap: 8px;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            font-weight: 500;
-            background: transparent;
+            border: 1.5px solid #0078D7; color: #0078D7; padding: 0.6rem 1.6rem;
+            gap: 8px; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            font-weight: 500; background: transparent;
         }
-        .btn-more:hover {
-            background: #0078D7;
-            color: white;
-            transform: translateY(-2px);
-            gap: 12px;
-        }
-        .dark .btn-more {
-            border-color: #5aa9e6;
-            color: #5aa9e6;
-        }
-        .dark .btn-more:hover {
-            background: #5aa9e6;
-            color: #121212;
-            transform: translateY(-2px);
-            gap: 12px;
-        }
+        .btn-more:hover { background: #0078D7; color: white; transform: translateY(-2px); gap: 12px; }
+        .dark .btn-more { border-color: #5aa9e6; color: #5aa9e6; }
+        .dark .btn-more:hover { background: #5aa9e6; color: #121212; transform: translateY(-2px); gap: 12px; }
 
-        /* ===== 分区页面（全屏滑入） ===== */
         .section-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: white;
-            z-index: 50000;
-            overflow-y: auto;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: white; z-index: 50000; overflow-y: auto;
             transform: translateX(100%);
             transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
             padding-top: 74px;
         }
-        .dark .section-page {
-            background: #121212;
-        }
-        .section-page.active {
-            transform: translateX(0);
-        }
+        .dark .section-page { background: #121212; }
+        .section-page.active { transform: translateX(0); }
 
         .page-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 40000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0, 0, 0, 0.3); z-index: 40000; opacity: 0;
+            pointer-events: none; transition: opacity 0.25s ease;
             backdrop-filter: blur(2px);
         }
-        .page-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .page-overlay.active { opacity: 1; pointer-events: auto; }
 
         .nav-back-button {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 12px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 0.5px solid rgba(255, 255, 255, 0.3);
-            color: #0078D7;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.85rem;
+            display: flex; align-items: center; gap: 6px; padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3); color: #0078D7;
+            cursor: pointer; transition: all 0.2s ease; font-size: 0.85rem;
         }
-        .nav-back-button:hover {
-            background: #0078D7;
-            color: white;
-            transform: translateX(-3px);
-        }
-        .dark .nav-back-button {
-            background: rgba(30, 31, 34, 0.7);
-            color: #5aa9e6;
-            border-color: rgba(255, 255, 255, 0.08);
-        }
-        .dark .nav-back-button:hover {
-            background: #5aa9e6;
-            color: #121212;
-        }
+        .nav-back-button:hover { background: #0078D7; color: white; transform: translateX(-3px); }
+        .dark .nav-back-button { background: rgba(30, 31, 34, 0.7); color: #5aa9e6; border-color: rgba(255, 255, 255, 0.08); }
+        .dark .nav-back-button:hover { background: #5aa9e6; color: #121212; }
 
-        /* ===== 游戏系列卡片 ===== */
         .series-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1.5px solid #0078D7;
-            padding: 1.5rem 1.2rem;
-            cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px);
+            border: 1.5px solid #0078D7; padding: 1.5rem 1.2rem;
+            cursor: pointer; transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
         .series-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px -8px rgba(0, 120, 215, 0.2);
             background: rgba(255, 255, 255, 0.92);
         }
-        .dark .series-card {
-            background: rgba(30, 31, 34, 0.8);
-            border-color: #5aa9e6;
-        }
-        .dark .series-card:hover {
-            background: rgba(40, 42, 48, 0.92);
-        }
+        .dark .series-card { background: rgba(30, 31, 34, 0.8); border-color: #5aa9e6; }
+        .dark .series-card:hover { background: rgba(40, 42, 48, 0.92); }
         .series-icon {
-            font-size: 2.2rem;
-            color: #0078D7;
-            margin-bottom: 0.6rem;
+            font-size: 2.2rem; color: #0078D7; margin-bottom: 0.6rem;
             transition: transform 0.3s ease;
         }
-        .series-card:hover .series-icon {
-            transform: scale(1.05);
-        }
+        .series-card:hover .series-icon { transform: scale(1.05); }
 
         .game-list {
-            display: none;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.2rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
+            display: none; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem; margin-top: 1.5rem; padding-top: 1.5rem;
             border-top: 2px dashed rgba(0, 120, 215, 0.2);
         }
-        .game-list.active {
-            display: grid;
-            animation: folderExpand 0.3s ease-out forwards;
-        }
+        .game-list.active { display: grid; animation: folderExpand 0.3s ease-out forwards; }
         .game-item {
-            background: rgba(0, 120, 215, 0.04);
-            backdrop-filter: blur(8px);
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.25s ease;
+            background: rgba(0, 120, 215, 0.04); backdrop-filter: blur(8px);
+            padding: 1rem; text-align: center; transition: all 0.25s ease;
             border: 1px solid rgba(0, 120, 215, 0.1);
         }
         .game-item:hover {
@@ -1061,151 +500,48 @@
             background: rgba(0, 120, 215, 0.08);
             border-color: rgba(0, 120, 215, 0.2);
         }
-        .dark .game-item {
-            background: rgba(90, 169, 230, 0.06);
-            border-color: rgba(90, 169, 230, 0.15);
-        }
-        .dark .game-item:hover {
-            background: rgba(90, 169, 230, 0.12);
-        }
-        .game-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #0078D7;
-            margin-bottom: 0.3rem;
-        }
-        .dark .game-name {
-            color: #5aa9e6;
-        }
+        .dark .game-item { background: rgba(90, 169, 230, 0.06); border-color: rgba(90, 169, 230, 0.15); }
+        .dark .game-item:hover { background: rgba(90, 169, 230, 0.12); }
+        .game-name { font-size: 1.1rem; font-weight: 700; color: #0078D7; margin-bottom: 0.3rem; }
+        .dark .game-name { color: #5aa9e6; }
 
         .standalone-game-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1.5px solid #0078D7;
-            padding: 1.5rem 1.2rem;
-            margin-top: 1.5rem;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+            border: 1.5px solid #0078D7; padding: 1.5rem 1.2rem; margin-top: 1.5rem;
             transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
         }
         .standalone-game-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px -8px rgba(0, 120, 215, 0.25);
             background: rgba(255, 255, 255, 0.94);
         }
-        .dark .standalone-game-card {
-            background: rgba(30, 31, 34, 0.9);
-            border-color: #5aa9e6;
-        }
-        .dark .standalone-game-card:hover {
-            background: rgba(40, 42, 48, 0.95);
-        }
-        .standalone-game-card .game-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #ff9800;
-            color: white;
-            font-size: 0.7rem;
-            font-weight: bold;
-            padding: 2px 8px;
-            margin-top: 6px;
-        }
-        .dark .standalone-game-card .game-badge {
-            background: #e67e22;
-        }
+        .dark .standalone-game-card { background: rgba(30, 31, 34, 0.9); border-color: #5aa9e6; }
+        .dark .standalone-game-card:hover { background: rgba(40, 42, 48, 0.95); }
 
-        /* ===== 工具卡片 ===== */
         .demo-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(12px);
-            padding: 1.8rem 1.2rem;
-            text-align: center;
+            background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px);
+            padding: 1.8rem 1.2rem; text-align: center;
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
             border: 0.5px solid rgba(255, 255, 255, 0.3);
         }
         .demo-card:hover {
-            transform: translateY(-6px);
-            border-color: #0078D7;
+            transform: translateY(-6px); border-color: #0078D7;
             background: rgba(255, 255, 255, 0.88);
             box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.12);
         }
         .demo-icon {
-            font-size: 2.4rem;
-            color: #0078D7;
-            margin-bottom: 0.8rem;
+            font-size: 2.4rem; color: #0078D7; margin-bottom: 0.8rem;
             transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .demo-card:hover .demo-icon {
-            transform: scale(1.05) rotate(2deg);
-        }
-        .dark .demo-card {
-            background: rgba(30, 31, 34, 0.8);
-            border-color: rgba(255, 255, 255, 0.06);
-        }
-        .dark .demo-card:hover {
-            background: rgba(40, 42, 48, 0.92);
-            border-color: #5aa9e6;
-        }
+        .demo-card:hover .demo-icon { transform: scale(1.05) rotate(2deg); }
+        .dark .demo-card { background: rgba(30, 31, 34, 0.8); border-color: rgba(255, 255, 255, 0.06); }
+        .dark .demo-card:hover { background: rgba(40, 42, 48, 0.92); border-color: #5aa9e6; }
 
-        /* ===== 搜索 ===== */
-        .search-container {
-            max-width: 100%;
-            margin-top: 1rem;
-        }
-        .search-input {
-            width: 100%;
-            padding: 0.6rem 1rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            font-size: 0.875rem;
-            transition: all 0.25s ease;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(8px);
-        }
-        .dark .search-input {
-            background: rgba(30, 31, 34, 0.8);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #f0f0f0;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: #0078D7;
-            box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.15);
-            transform: scale(1.01);
-        }
-        .search-btn {
-            background: #0078D7;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.875rem;
-        }
-        .search-btn:hover {
-            background: #005a9e;
-            transform: translateY(-1px);
-        }
-        .dark .search-btn {
-            background: #5aa9e6;
-            color: #121212;
-        }
-        .dark .search-btn:hover {
-            background: #7bb3e0;
-            transform: translateY(-1px);
-        }
-
-        /* ===== 感谢区域 ===== */
         .thanks-section {
-            max-width: 800px;
-            margin: 2.5rem auto 0;
-            padding: 1.8rem 1.2rem;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(16px);
-            text-align: center;
-            transition: all 0.3s ease;
+            max-width: 800px; margin: 2.5rem auto 0; padding: 1.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(16px);
+            text-align: center; transition: all 0.3s ease;
             border: 0.5px solid rgba(255, 255, 255, 0.3);
         }
         .thanks-section:hover {
@@ -1213,203 +549,88 @@
             background: rgba(255, 255, 255, 0.8);
             border-color: #e2e8f0;
         }
-        .dark .thanks-section {
-            background: rgba(30, 31, 34, 0.7);
-            border-color: rgba(255, 255, 255, 0.06);
-        }
-        .dark .thanks-section:hover {
-            background: rgba(40, 42, 48, 0.85);
-        }
-        .thanks-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #0078D7;
-            margin-bottom: 0.5rem;
-        }
-        .dark .thanks-title {
-            color: #5aa9e6;
-        }
+        .dark .thanks-section { background: rgba(30, 31, 34, 0.7); border-color: rgba(255, 255, 255, 0.06); }
+        .dark .thanks-section:hover { background: rgba(40, 42, 48, 0.85); }
+        .thanks-title { font-size: 1.3rem; font-weight: 700; color: #0078D7; margin-bottom: 0.5rem; }
+        .dark .thanks-title { color: #5aa9e6; }
         .thanks-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 0.4rem 0.8rem;
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; transition: all 0.2s ease; padding: 0.4rem 0.8rem;
         }
-        .thanks-item:hover {
-            transform: translateY(-3px);
-        }
+        .thanks-item:hover { transform: translateY(-3px); }
         .thanks-icon {
-            font-size: 1.8rem;
-            color: #0078D7;
-            transition: transform 0.2s;
+            font-size: 1.8rem; color: #0078D7; transition: transform 0.2s;
             margin-bottom: 0.2rem;
         }
-        .thanks-item:hover .thanks-icon {
-            transform: scale(1.05);
-        }
-        .dark .thanks-icon {
-            color: #5aa9e6;
-        }
-        .thanks-item span {
-            color: #4b5563;
-        }
-        .dark .thanks-item span {
-            color: #9ca3af;
-        }
+        .thanks-item:hover .thanks-icon { transform: scale(1.05); }
+        .dark .thanks-icon { color: #5aa9e6; }
+        .thanks-item span { color: #4b5563; }
+        .dark .thanks-item span { color: #9ca3af; }
 
-        /* ===== 底部链接 ===== */
-        .footer-link,
-        .legal-link {
-            cursor: pointer;
-            transition: all 0.25s ease;
-            color: #9ca3af;
+        .footer-link, .legal-link {
+            cursor: pointer; transition: all 0.25s ease; color: #9ca3af;
         }
-        .footer-link:hover,
-        .legal-link:hover {
-            color: #0078D7 !important;
-            transform: translateX(3px);
-        }
-        .dark .footer-link:hover,
-        .dark .legal-link:hover {
-            color: #5aa9e6 !important;
-        }
+        .footer-link:hover, .legal-link:hover { color: #0078D7 !important; transform: translateX(3px); }
+        .dark .footer-link:hover, .dark .legal-link:hover { color: #5aa9e6 !important; }
 
-        /* ===== 模态框 ===== */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 200000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+            z-index: 200000; display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
         }
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-container {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(24px);
-            width: 90%;
-            max-width: 550px;
-            max-height: 70vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(24px);
+            width: 90%; max-width: 550px; max-height: 70vh; overflow: hidden;
+            display: flex; flex-direction: column;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             border: 0.5px solid rgba(255, 255, 255, 0.3);
             animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
         }
-        .dark .modal-container {
-            background: rgba(30, 31, 34, 0.9);
-            border: 0.5px solid rgba(255, 255, 255, 0.08);
-        }
+        .dark .modal-container { background: rgba(30, 31, 34, 0.9); border: 0.5px solid rgba(255, 255, 255, 0.08); }
         .modal-header {
-            padding: 0.8rem 1.2rem;
-            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 0.8rem 1.2rem; border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .dark .modal-header {
-            border-bottom-color: rgba(255, 255, 255, 0.08);
-        }
-        .modal-header h2 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #0078D7;
-            margin: 0;
-        }
-        .dark .modal-header h2 {
-            color: #5aa9e6;
-        }
+        .dark .modal-header { border-bottom-color: rgba(255, 255, 255, 0.08); }
+        .modal-header h2 { font-size: 1.1rem; font-weight: 700; color: #0078D7; margin: 0; }
+        .dark .modal-header h2 { color: #5aa9e6; }
         .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0 0.5rem;
-            color: #6b7280;
+            background: none; border: none; font-size: 1.2rem; cursor: pointer;
+            padding: 0 0.5rem; color: #6b7280;
         }
-        .modal-close:hover {
-            color: #0078D7;
-        }
-        .dark .modal-close {
-            color: #9ca3af;
-        }
-        .dark .modal-close:hover {
-            color: #5aa9e6;
-        }
+        .modal-close:hover { color: #0078D7; }
+        .dark .modal-close { color: #9ca3af; }
+        .dark .modal-close:hover { color: #5aa9e6; }
         .modal-body {
-            padding: 1.2rem;
-            overflow-y: auto;
-            line-height: 1.5;
-            font-size: 0.875rem;
-            color: #374151;
+            padding: 1.2rem; overflow-y: auto; line-height: 1.5;
+            font-size: 0.875rem; color: #374151;
         }
-        .dark .modal-body {
-            color: #d1d5db;
-        }
+        .dark .modal-body { color: #d1d5db; }
         .modal-footer {
-            padding: 0.8rem 1.2rem;
-            border-top: 0.5px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: flex-end;
+            padding: 0.8rem 1.2rem; border-top: 0.5px solid rgba(0, 0, 0, 0.05);
+            display: flex; justify-content: flex-end;
         }
-        .dark .modal-footer {
-            border-top-color: rgba(255, 255, 255, 0.08);
-        }
+        .dark .modal-footer { border-top-color: rgba(255, 255, 255, 0.08); }
         .modal-footer button {
-            background: #0078D7;
-            color: white;
-            padding: 0.4rem 1rem;
-            border: none;
-            cursor: pointer;
-            font-size: 0.8rem;
+            background: #0078D7; color: white; padding: 0.4rem 1rem;
+            border: none; cursor: pointer; font-size: 0.8rem;
         }
-        .dark .modal-footer button {
-            background: #5aa9e6;
-            color: #121212;
-        }
-        .dark .modal-footer button:hover {
-            background: #7bb3e0;
-        }
+        .dark .modal-footer button { background: #5aa9e6; color: #121212; }
+        .dark .modal-footer button:hover { background: #7bb3e0; }
 
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 1rem;
-            }
-        }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+        @media (max-width: 768px) { .container { padding: 0 1rem; } }
 
         .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(25px);
+            opacity: 0; transform: translateY(25px);
             transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.7s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .animate-on-scroll.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
 
-        /* ===== 广告轮播（花哨版） ===== */
         .ad-carousel-wrapper {
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
             background: linear-gradient(145deg, #0b1a2e, #1a2a3e);
             border: 1px solid rgba(90, 169, 230, 0.25);
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
@@ -1419,330 +640,256 @@
             background: linear-gradient(145deg, #0a1628, #16243a);
             border-color: rgba(90, 169, 230, 0.2);
         }
-        .ad-carousel-wrapper:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 16px 48px rgba(0, 120, 215, 0.25);
-        }
-        .dark .ad-carousel-wrapper:hover {
-            box-shadow: 0 16px 48px rgba(90, 169, 230, 0.2);
-        }
-
+        .ad-carousel-wrapper:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0, 120, 215, 0.25); }
+        .dark .ad-carousel-wrapper:hover { box-shadow: 0 16px 48px rgba(90, 169, 230, 0.2); }
         .ad-carousel-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: 0;
+            content: ''; position: absolute; inset: 0;
             background: radial-gradient(circle at 20% 30%, rgba(0, 120, 215, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 80% 70%, rgba(90, 169, 230, 0.08) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
+                        radial-gradient(circle at 80% 70%, rgba(90, 169, 230, 0.08) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
         }
-
-        .ad-carousel-track {
-            display: flex;
-            transition: transform 0.6s cubic-bezier(0.2, 0.85, 0.4, 1);
-            position: relative;
-            z-index: 1;
-        }
-
+        .ad-carousel-track { display: flex; transition: transform 0.6s cubic-bezier(0.2, 0.85, 0.4, 1); position: relative; z-index: 1; }
         .ad-slide {
-            flex: 0 0 100%;
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem;
-            min-height: 100px;
-            position: relative;
+            flex: 0 0 100%; padding: 1.25rem 1.5rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            gap: 0.75rem; min-height: 100px; position: relative;
         }
         @media (min-width: 768px) {
-            .ad-slide {
-                flex-direction: row;
-                padding: 1.5rem 2.5rem;
-                min-height: 110px;
-            }
+            .ad-slide { flex-direction: row; padding: 1.5rem 2.5rem; min-height: 110px; }
         }
-
         .ad-slide-content {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-            flex: 1;
-            width: 100%;
-            position: relative;
-            z-index: 1;
+            display: flex; align-items: center; gap: 1.25rem;
+            flex: 1; width: 100%; position: relative; z-index: 1;
         }
-
         .ad-icon-wrapper {
-            flex-shrink: 0;
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-shrink: 0; width: 52px; height: 52px;
+            display: flex; align-items: center; justify-content: center;
             background: rgba(0, 120, 215, 0.12);
             border: 1px solid rgba(90, 169, 230, 0.2);
-            position: relative;
-            transition: all 0.4s ease;
-            font-size: 2rem;
-            line-height: 1;
+            position: relative; transition: all 0.4s ease;
+            font-size: 2rem; line-height: 1;
         }
-        .ad-icon-wrapper::after {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border: 1px solid rgba(90, 169, 230, 0.1);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        .ad-slide:hover .ad-icon-wrapper::after {
-            opacity: 1;
-        }
-
-        .ad-text h4 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #f0f4fa;
-            letter-spacing: 0.3px;
-        }
-        .dark .ad-text h4 {
-            color: #e8edf4;
-        }
-        .ad-text p {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .dark .ad-text p {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
+        .ad-text h4 { font-size: 1.1rem; font-weight: 700; color: #f0f4fa; letter-spacing: 0.3px; }
+        .dark .ad-text h4 { color: #e8edf4; }
+        .ad-text p { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
+        .dark .ad-text p { color: rgba(255, 255, 255, 0.6); }
         .coop-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            display: inline-flex; align-items: center; gap: 6px;
             background: linear-gradient(135deg, #f59e0b, #f97316);
-            color: #0f172a;
-            font-size: 0.7rem;
-            font-weight: 800;
+            color: #0f172a; font-size: 0.7rem; font-weight: 800;
             padding: 3px 12px 3px 10px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 2px 12px rgba(245, 158, 11, 0.35);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            position: relative;
-            animation: glowPulse 2.5s ease-in-out infinite;
+            letter-spacing: 0.5px; text-transform: uppercase;
+            position: relative; animation: glowPulse 2.5s ease-in-out infinite;
         }
-        .coop-badge i {
-            font-size: 0.75rem;
-        }
-        .dark .coop-badge {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #0f172a;
-        }
-
+        .dark .coop-badge { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0f172a; }
         .ad-action-btn {
             background: linear-gradient(135deg, #0078D7, #005a9e);
-            color: white;
-            padding: 0.5rem 1.6rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
+            color: white; padding: 0.5rem 1.6rem; font-size: 0.8rem; font-weight: 600;
+            border: none; cursor: pointer;
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
+            position: relative; overflow: hidden; flex-shrink: 0;
             box-shadow: 0 4px 16px rgba(0, 120, 215, 0.3);
         }
         .ad-action-btn::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
             background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transform: rotate(45deg) translateX(-100%);
             transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .ad-action-btn:hover::before {
-            transform: rotate(45deg) translateX(100%);
-        }
+        .ad-action-btn:hover::before { transform: rotate(45deg) translateX(100%); }
         .ad-action-btn:hover {
             transform: translateY(-2px) scale(1.03);
             box-shadow: 0 8px 28px rgba(0, 120, 215, 0.5);
             background: linear-gradient(135deg, #1a8bdf, #0066b3);
         }
-        .dark .ad-action-btn {
-            background: linear-gradient(135deg, #5aa9e6, #3a8ac9);
-            color: #0f172a;
-            box-shadow: 0 4px 16px rgba(90, 169, 230, 0.3);
-        }
-        .dark .ad-action-btn:hover {
-            background: linear-gradient(135deg, #7bb3e0, #4a9ad6);
-            box-shadow: 0 8px 28px rgba(90, 169, 230, 0.5);
-        }
-
-        .ad-action-btn.ad-btn-gold {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
-        }
-        .ad-action-btn.ad-btn-gold:hover {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            box-shadow: 0 8px 32px rgba(245, 158, 11, 0.6);
-        }
-        .dark .ad-action-btn.ad-btn-gold {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #0f172a;
-        }
-        .dark .ad-action-btn.ad-btn-gold:hover {
-            background: linear-gradient(135deg, #fcd34d, #fbbf24);
-        }
+        .dark .ad-action-btn { background: linear-gradient(135deg, #5aa9e6, #3a8ac9); color: #0f172a; box-shadow: 0 4px 16px rgba(90, 169, 230, 0.3); }
+        .dark .ad-action-btn:hover { background: linear-gradient(135deg, #7bb3e0, #4a9ad6); box-shadow: 0 8px 28px rgba(90, 169, 230, 0.5); }
+        .ad-action-btn.ad-btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4); }
+        .ad-action-btn.ad-btn-gold:hover { background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 8px 32px rgba(245, 158, 11, 0.6); }
+        .dark .ad-action-btn.ad-btn-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0f172a; }
 
         .ad-arrow-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.7);
-            cursor: pointer;
-            z-index: 20;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            font-size: 1rem;
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 36px; height: 36px; background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255, 255, 255, 0.7); cursor: pointer; z-index: 20;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1); font-size: 1rem;
         }
         .ad-arrow-btn:hover {
-            background: rgba(255, 255, 255, 0.18);
-            color: white;
+            background: rgba(255, 255, 255, 0.18); color: white;
             transform: translateY(-50%) scale(1.1);
             border-color: rgba(255, 255, 255, 0.3);
         }
-        .ad-arrow-btn.left {
-            left: 8px;
-        }
-        .ad-arrow-btn.right {
-            right: 8px;
-        }
-        @media (min-width: 768px) {
-            .ad-arrow-btn.left {
-                left: 12px;
-            }
-            .ad-arrow-btn.right {
-                right: 12px;
-            }
-        }
+        .ad-arrow-btn.left { left: 8px; }
+        .ad-arrow-btn.right { right: 8px; }
+        @media (min-width: 768px) { .ad-arrow-btn.left { left: 12px; } .ad-arrow-btn.right { right: 12px; } }
 
         .ad-dot {
-            width: 10px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            border-radius: 50% !important;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            width: 10px; height: 10px; background: rgba(255, 255, 255, 0.2);
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            border-radius: 50% !important; border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .ad-dot.active {
-            width: 32px;
-            background: #5aa9e6 !important;
-            border-radius: 0px !important;
-            border-color: #5aa9e6;
-            box-shadow: 0 0 20px rgba(90, 169, 230, 0.5);
+            width: 32px; background: #5aa9e6 !important; border-radius: 0px !important;
+            border-color: #5aa9e6; box-shadow: 0 0 20px rgba(90, 169, 230, 0.5);
         }
-        .dark .ad-dot.active {
-            background: #7bb3e0 !important;
-            box-shadow: 0 0 24px rgba(90, 169, 230, 0.6);
-        }
-        .ad-dot:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.15);
-        }
-        .ad-dot.active:hover {
-            transform: scale(1.05);
-        }
-
+        .dark .ad-dot.active { background: #7bb3e0 !important; box-shadow: 0 0 24px rgba(90, 169, 230, 0.6); }
+        .ad-dot:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.15); }
+        .ad-dot.active:hover { transform: scale(1.05); }
         .ad-carousel-dots {
-            position: absolute;
-            bottom: 0.6rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 0.6rem;
-            z-index: 15;
+            position: absolute; bottom: 0.6rem; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 0.6rem; z-index: 15;
         }
-
         .ad-stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; overflow: hidden; z-index: 0;
         }
         .ad-stars span {
-            position: absolute;
-            display: block;
-            width: 2px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
+            position: absolute; display: block; width: 2px; height: 2px;
+            background: rgba(255, 255, 255, 0.3); border-radius: 50%;
             animation: starFloat 6s ease-in-out infinite alternate;
         }
-        .ad-stars span:nth-child(1) {
-            top: 15%;
-            left: 10%;
-            animation-delay: 0s;
-            width: 3px;
-            height: 3px;
+        .ad-stars span:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; width: 3px; height: 3px; }
+        .ad-stars span:nth-child(2) { top: 70%; left: 85%; animation-delay: 1.2s; }
+        .ad-stars span:nth-child(3) { top: 30%; left: 92%; animation-delay: 2.5s; width: 4px; height: 4px; background: rgba(255, 215, 0, 0.3); }
+        .ad-stars span:nth-child(4) { top: 80%; left: 5%; animation-delay: 0.8s; }
+        .ad-stars span:nth-child(5) { top: 10%; left: 55%; animation-delay: 3.2s; width: 3px; height: 3px; background: rgba(255, 215, 0, 0.2); }
+        .ad-stars span:nth-child(6) { top: 50%; left: 45%; animation-delay: 1.8s; }
+
+        /* ===== 米球组件 ===== */
+        .mi-ball{
+            position:fixed; right:24px; bottom:24px; width:64px; height:64px;
+            border-radius:50% !important; cursor:pointer; z-index:999999;
+            background:radial-gradient(circle at 32% 28%, #9bd8ff, #0078D7 55%, #005a9e 100%);
+            box-shadow:0 10px 30px rgba(0,120,215,.45), inset 0 -6px 14px rgba(0,0,0,.18), inset 0 6px 12px rgba(255,255,255,.35);
+            display:flex; align-items:center; justify-content:center;
+            transition:transform .3s cubic-bezier(.2,.9,.4,1), box-shadow .3s;
+            animation:miFloat 4.5s ease-in-out infinite;
+            user-select:none;
         }
-        .ad-stars span:nth-child(2) {
-            top: 70%;
-            left: 85%;
-            animation-delay: 1.2s;
-            width: 2px;
-            height: 2px;
+        .mi-ball:hover{transform:scale(1.08) translateY(-2px); box-shadow:0 16px 40px rgba(0,120,215,.55), inset 0 -6px 14px rgba(0,0,0,.18), inset 0 6px 12px rgba(255,255,255,.35);}
+        .dark .mi-ball{background:radial-gradient(circle at 32% 28%, #b6e5ff, #5aa9e6 55%, #3a7ca5 100%);}
+        @keyframes miFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+        .mi-ring{position:absolute; inset:-6px; border-radius:50% !important; border:1px solid rgba(0,120,215,.28); animation:miRing 3s ease-out infinite; pointer-events:none;}
+        .dark .mi-ring{border-color:rgba(90,169,230,.3);}
+        @keyframes miRing{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.35);opacity:0}}
+        .mi-face{position:relative; width:36px; height:26px;}
+        .mi-eye{position:absolute; top:4px; width:6px; height:9px; background:#0b2b45; border-radius:9999px !important; transition:height .12s ease;}
+        .dark .mi-eye{background:#0f172a;}
+        .mi-eye-l{left:4px;} .mi-eye-r{right:4px;}
+        .mi-mouth{position:absolute; left:50%; bottom:0; transform:translateX(-50%); width:12px; height:5px; border-bottom:2px solid #0b2b45; border-radius:0 0 9999px 9999px !important; transition:all .2s;}
+        .dark .mi-mouth{border-color:#0f172a;}
+        .mi-ball.blink .mi-eye{height:1.5px;}
+        .mi-ball.talk .mi-mouth{width:8px; height:8px; border:2px solid #0b2b45; border-radius:9999px !important;}
+        .dark .mi-ball.talk .mi-mouth{border-color:#0f172a;}
+
+        .mi-panel{
+            position:fixed; right:24px; bottom:100px; width:360px; max-width:calc(100vw - 32px);
+            height:480px; max-height:calc(100vh - 140px);
+            background:rgba(255,255,255,.96); backdrop-filter:blur(20px) saturate(180%);
+            -webkit-backdrop-filter:blur(20px) saturate(180%);
+            border:1px solid rgba(0,120,215,.18); box-shadow:0 24px 60px -12px rgba(0,0,0,.28);
+            z-index:999998; display:flex; flex-direction:column; overflow:hidden;
+            opacity:0; visibility:hidden; transform:translateY(12px) scale(.98); transform-origin:bottom right;
+            transition:all .28s cubic-bezier(.2,.9,.4,1);
+            border-radius:0 !important;
         }
-        .ad-stars span:nth-child(3) {
-            top: 30%;
-            left: 92%;
-            animation-delay: 2.5s;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 215, 0, 0.3);
+        .dark .mi-panel{background:rgba(24,26,30,.96); border-color:rgba(90,169,230,.22);}
+        .mi-panel.open{opacity:1; visibility:visible; transform:translateY(0) scale(1);}
+        .mi-panel-header{
+            display:flex; align-items:center; justify-content:space-between;
+            padding:10px 12px; border-bottom:1px solid rgba(0,0,0,.06);
+            background:rgba(0,120,215,.04);
         }
-        .ad-stars span:nth-child(4) {
-            top: 80%;
-            left: 5%;
-            animation-delay: 0.8s;
-            width: 2px;
-            height: 2px;
+        .dark .mi-panel-header{border-bottom-color:rgba(255,255,255,.08); background:rgba(90,169,230,.06);}
+        .mi-panel-title{display:flex; align-items:center; gap:8px; font-size:.85rem; font-weight:700; color:#0078D7;}
+        .dark .mi-panel-title{color:#5aa9e6;}
+        .mi-mini-orb{
+            width:16px; height:16px; border-radius:50% !important; flex-shrink:0;
+            background:radial-gradient(circle at 32% 28%, #9bd8ff, #0078D7 60%, #005a9e);
+            box-shadow:inset 0 -2px 4px rgba(0,0,0,.2);
+            animation:miFloat 3s ease-in-out infinite;
         }
-        .ad-stars span:nth-child(5) {
-            top: 10%;
-            left: 55%;
-            animation-delay: 3.2s;
-            width: 3px;
-            height: 3px;
-            background: rgba(255, 215, 0, 0.2);
+        .mi-panel-sub{font-size:.62rem; font-weight:400; color:#9ca3af;}
+        .mi-panel-close{
+            background:none; border:none; cursor:pointer; font-size:1.1rem; line-height:1;
+            color:#6b7280; padding:2px 6px; transition:all .2s;
         }
-        .ad-stars span:nth-child(6) {
-            top: 50%;
-            left: 45%;
-            animation-delay: 1.8s;
-            width: 2px;
-            height: 2px;
+        .mi-panel-close:hover{color:#0078D7; transform:rotate(90deg);}
+        .dark .mi-panel-close{color:#9ca3af;}
+        .dark .mi-panel-close:hover{color:#5aa9e6;}
+        .mi-messages{
+            flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px;
+            scrollbar-width:thin; scrollbar-color:rgba(0,120,215,.25) transparent;
+        }
+        .mi-messages::-webkit-scrollbar{width:5px;}
+        .mi-messages::-webkit-scrollbar-thumb{background:rgba(0,120,215,.25);}
+        .mi-msg{display:flex; flex-direction:column; gap:6px; max-width:88%;}
+        .mi-msg.user{align-self:flex-end; align-items:flex-end;}
+        .mi-msg.bot{align-self:flex-start; align-items:flex-start;}
+        .mi-bubble{
+            padding:8px 11px; font-size:.78rem; line-height:1.55;
+            background:rgba(0,120,215,.08); color:#1f2937;
+            border:1px solid rgba(0,120,215,.1);
+            border-radius:0 !important;
+            word-break:break-word;
+        }
+        .dark .mi-bubble{background:rgba(90,169,230,.1); color:#e5e7eb; border-color:rgba(90,169,230,.15);}
+        .mi-msg.user .mi-bubble{background:#0078D7; color:#fff; border-color:#0078D7;}
+        .dark .mi-msg.user .mi-bubble{background:#5aa9e6; color:#0f172a; border-color:#5aa9e6;}
+        .mi-search-btn{
+            align-self:flex-start; background:transparent; border:1px solid rgba(0,120,215,.4);
+            color:#0078D7; font-size:.7rem; padding:4px 10px; cursor:pointer;
+            transition:all .2s; border-radius:0 !important;
+        }
+        .mi-search-btn:hover{background:#0078D7; color:#fff;}
+        .dark .mi-search-btn{border-color:rgba(90,169,230,.45); color:#5aa9e6;}
+        .dark .mi-search-btn:hover{background:#5aa9e6; color:#0f172a;}
+        .mi-chips{
+            display:flex; gap:6px; overflow-x:auto; padding:8px 12px;
+            border-top:1px solid rgba(0,0,0,.05); scrollbar-width:none;
+        }
+        .mi-chips::-webkit-scrollbar{display:none;}
+        .dark .mi-chips{border-top-color:rgba(255,255,255,.07);}
+        .mi-chip{
+            flex-shrink:0; background:rgba(0,120,215,.06); border:1px solid rgba(0,120,215,.15);
+            color:#0078D7; font-size:.68rem; padding:4px 10px; cursor:pointer; white-space:nowrap;
+            transition:all .2s; border-radius:0 !important;
+        }
+        .mi-chip:hover{background:rgba(0,120,215,.14); transform:translateY(-1px);}
+        .dark .mi-chip{background:rgba(90,169,230,.08); border-color:rgba(90,169,230,.2); color:#5aa9e6;}
+        .dark .mi-chip:hover{background:rgba(90,169,230,.18);}
+        .mi-input-row{
+            display:flex; gap:6px; padding:10px 12px; border-top:1px solid rgba(0,0,0,.06);
+            background:rgba(255,255,255,.6);
+        }
+        .dark .mi-input-row{border-top-color:rgba(255,255,255,.08); background:rgba(30,31,34,.6);}
+        .mi-input{
+            flex:1; padding:7px 10px; font-size:.78rem; border:1px solid rgba(0,0,0,.12);
+            background:#fff; color:#1f2937; outline:none; transition:all .2s; border-radius:0 !important;
+        }
+        .mi-input:focus{border-color:#0078D7; box-shadow:0 0 0 3px rgba(0,120,215,.12);}
+        .dark .mi-input{background:#1e1f22; border-color:rgba(255,255,255,.12); color:#f0f0f0;}
+        .dark .mi-input:focus{border-color:#5aa9e6; box-shadow:0 0 0 3px rgba(90,169,230,.15);}
+        .mi-send{
+            background:#0078D7; color:#fff; border:none; padding:7px 14px; font-size:.75rem;
+            font-weight:600; cursor:pointer; transition:all .2s; border-radius:0 !important;
+        }
+        .mi-send:hover{background:#005a9e; transform:translateY(-1px);}
+        .dark .mi-send{background:#5aa9e6; color:#0f172a;}
+        .dark .mi-send:hover{background:#7bb3e0;}
+        @media (max-width:480px){
+            .mi-ball{width:56px; height:56px; right:16px; bottom:16px;}
+            .mi-panel{right:16px; bottom:86px; width:calc(100vw - 32px); height:70vh; max-height:none;}
+            .mi-face{width:32px; height:23px;}
         }
     </style>
 </head>
 <body class="font-inter text-dark antialiased">
-    <!-- 遮罩层和侧边栏 -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     <div class="mobile-sidebar" id="mobileSidebar">
         <div class="mobile-sidebar-header">
@@ -1758,18 +905,27 @@
             <a href="#" onclick="openSection('education'); return false;" class="sidebar-link">教育分区</a>
             <a href="#contact" class="sidebar-link">联系我们</a>
         </div>
-        <div class="mobile-sidebar-footer">
-            <p>© 2026 米遇安</p>
-        </div>
+        <div class="mobile-sidebar-footer"><p>© 2026 米遇安</p></div>
     </div>
 
     <div class="page-overlay" id="pageOverlay" onclick="closeAllSections()"></div>
-    <div id="legalModal" class="modal-overlay" onclick="closeModal(event)"><div class="modal-container" onclick="event.stopPropagation()"><div class="modal-header"><h2 id="modalTitle">隐私政策</h2><button class="modal-close" onclick="closeModal()"><i class="las la-times"></i></button></div><div class="modal-body" id="modalBody"></div><div class="modal-footer"><button onclick="closeModal()">我知道了</button></div></div></div>
+    <div id="legalModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modalTitle">隐私政策</h2>
+                <button class="modal-close" onclick="closeModal()"><i class="las la-times"></i></button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer"><button onclick="closeModal()">我知道了</button></div>
+        </div>
+    </div>
 
     <nav id="navbar" class="transition-all">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center gap-6">
-                <div id="navBackButtonContainer" style="display: none;"><div class="nav-back-button" onclick="closeCurrentSection()"><i class="las la-chevron-left"></i> 返回</div></div>
+                <div id="navBackButtonContainer" style="display: none;">
+                    <div class="nav-back-button" onclick="closeCurrentSection()"><i class="las la-chevron-left"></i> 返回</div>
+                </div>
                 <a href="#" class="flex items-center gap-2 text-xl text-primary tracking-tight hover:opacity-80 transition" style="font-family: 'Microsoft JhengHei', '微软正黑', sans-serif; font-weight: normal;">
                     <img src="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png" alt="米遇安" class="h-8 w-auto">
                     米遇安
@@ -1802,8 +958,16 @@
                         <span class="text-primary block mt-2 animate-float slogan-sub" id="sloganSub" style="font-size: inherit;">米遇安</span>
                     </h1>
                     <p class="text-base md:text-lg max-w-2xl mx-auto mt-4 text-gray-600 dark:text-gray-300">用创意与代码连接校园与未来，打造有温度的智能工具、有深度的互动体验。</p>
-                    <div class="flex flex-wrap justify-center gap-4 mt-8"><a href="#about" class="btn-primary">了解我们</a><a href="#contact" class="btn-outline">联系我们</a></div>
-                    <div class="flex flex-wrap justify-center gap-3 mt-8"><button class="btn-partition" onclick="openSection('tools')"><i class="las la-tools mr-1"></i>工具分区</button><button class="btn-partition" onclick="openSection('games')"><i class="las la-gamepad mr-1"></i>娱乐分区</button><button class="btn-partition" onclick="openSection('education')"><i class="las la-graduation-cap mr-1"></i>教育分区</button><button class="btn-partition" onclick="openSection('others')"><i class="las la-ellipsis-h mr-1"></i>其他分区</button></div>
+                    <div class="flex flex-wrap justify-center gap-4 mt-8">
+                        <a href="#about" class="btn-primary">了解我们</a>
+                        <a href="#contact" class="btn-outline">联系我们</a>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-3 mt-8">
+                        <button class="btn-partition" onclick="openSection('tools')"><i class="las la-tools mr-1"></i>工具分区</button>
+                        <button class="btn-partition" onclick="openSection('games')"><i class="las la-gamepad mr-1"></i>娱乐分区</button>
+                        <button class="btn-partition" onclick="openSection('education')"><i class="las la-graduation-cap mr-1"></i>教育分区</button>
+                        <button class="btn-partition" onclick="openSection('others')"><i class="las la-ellipsis-h mr-1"></i>其他分区</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1817,24 +981,15 @@
                         <h3 class="text-2xl font-bold mt-1">团队动态 · 时刻更新</h3>
                     </div>
 
-                    <!-- ===== 广告轮播 ===== -->
                     <div class="ad-carousel-wrapper mb-6">
-                        <div class="ad-stars">
-                            <span></span><span></span><span></span><span></span><span></span><span></span>
-                        </div>
+                        <div class="ad-stars"><span></span><span></span><span></span><span></span><span></span><span></span></div>
                         <button class="ad-arrow-btn left" id="adPrevBtn" aria-label="上一则广告"><i class="las la-chevron-left"></i></button>
                         <button class="ad-arrow-btn right" id="adNextBtn" aria-label="下一则广告"><i class="las la-chevron-right"></i></button>
-
                         <div class="ad-carousel-track" id="adCarouselTrack">
                             <div class="ad-slide">
                                 <div class="ad-slide-content">
-                                    <div class="ad-icon-wrapper">
-                                        <span style="font-size: 2rem; line-height: 1;">📰</span>
-                                    </div>
-                                    <div class="ad-text">
-                                        <h4>联合日报</h4>
-                                        <p>时事新闻 · 洞察世界</p>
-                                    </div>
+                                    <div class="ad-icon-wrapper"><span style="font-size: 2rem; line-height: 1;">📰</span></div>
+                                    <div class="ad-text"><h4>联合日报</h4><p>时事新闻 · 洞察世界</p></div>
                                 </div>
                                 <button class="ad-action-btn" onclick="window.open('https://feng34937.github.io/miyuan/ass_daily', '_blank')">
                                     阅读新闻 <i class="las la-arrow-right ml-1"></i>
@@ -1842,9 +997,7 @@
                             </div>
                             <div class="ad-slide">
                                 <div class="ad-slide-content">
-                                    <div class="ad-icon-wrapper">
-                                        <span style="font-size: 2rem; line-height: 1;">🚀</span>
-                                    </div>
+                                    <div class="ad-icon-wrapper"><span style="font-size: 2rem; line-height: 1;">🚀</span></div>
                                     <div class="ad-text">
                                         <h4 class="flex items-center gap-2 flex-wrap">
                                             无尽星域
@@ -1858,14 +1011,12 @@
                                 </button>
                             </div>
                         </div>
-
                         <div class="ad-carousel-dots" id="adCarouselDots">
                             <span class="ad-dot active" data-index="0"></span>
                             <span class="ad-dot" data-index="1"></span>
                         </div>
                     </div>
 
-                    <!-- 团队动态轮播（5项） -->
                     <div class="carousel-container">
                         <button class="carousel-arrow left" id="carouselPrev"><i class="las la-chevron-left"></i></button>
                         <button class="carousel-arrow right" id="carouselNext"><i class="las la-chevron-right"></i></button>
@@ -1915,7 +1066,6 @@
                     <div class="flex justify-center gap-2 mt-5" id="carouselDotsContainer"></div>
                 </div>
 
-                <!-- ===== 里程碑（紧凑时间线，圆形节点，卡片光晕） ===== -->
                 <div class="max-w-5xl mx-auto">
                     <div class="text-center mb-8">
                         <div class="milestone-header-badge"><i class="las la-route"></i> Milestones</div>
@@ -2000,34 +1150,27 @@
                         <a href="https://www.kdocs.cn/l/coqzdkzo7y8z" target="_blank" class="btn-more text-sm">更多故事 <i class="las la-arrow-right"></i></a>
                     </div>
 
-                    <!-- ===== 社交媒体区域 ===== -->
                     <div class="thanks-section hover-tint mt-8" onmousemove="updateMask(event)">
                         <h3 class="thanks-title">关注我们</h3>
                         <p class="text-gray-500 text-xs mb-3">在以下平台找到我们</p>
                         <div class="flex flex-wrap justify-center gap-4">
                             <a href="https://www.youtube.com/@feng34937" target="_blank" class="thanks-item" rel="noopener noreferrer">
-                                <i class="fab fa-youtube thanks-icon"></i>
-                                <span class="text-xs">YouTube</span>
+                                <i class="fab fa-youtube thanks-icon"></i><span class="text-xs">YouTube</span>
                             </a>
                             <a href="https://b23.tv/AJWaQ2E" target="_blank" class="thanks-item" rel="noopener noreferrer">
-                                <i class="fab fa-bilibili thanks-icon"></i>
-                                <span class="text-xs">哔哩哔哩</span>
+                                <i class="fab fa-bilibili thanks-icon"></i><span class="text-xs">哔哩哔哩</span>
                             </a>
                             <a href="https://v.douyin.com/KimtG0-lpDI/" target="_blank" class="thanks-item" rel="noopener noreferrer">
-                                <i class="fab fa-tiktok thanks-icon"></i>
-                                <span class="text-xs">抖音</span>
+                                <i class="fab fa-tiktok thanks-icon"></i><span class="text-xs">抖音</span>
                             </a>
                             <a href="https://x.com/Fengfeng34937" target="_blank" class="thanks-item" rel="noopener noreferrer">
-                                <i class="fab fa-x-twitter thanks-icon"></i>
-                                <span class="text-xs">X</span>
+                                <i class="fab fa-x-twitter thanks-icon"></i><span class="text-xs">X</span>
                             </a>
                             <a href="https://pd.qq.com/s/d2jq3bm68?b=9" target="_blank" class="thanks-item" rel="noopener noreferrer">
-                                <i class="fab fa-qq thanks-icon"></i>
-                                <span class="text-xs">QQ频道</span>
+                                <i class="fab fa-qq thanks-icon"></i><span class="text-xs">QQ频道</span>
                             </a>
                             <a href="https://www.facebook.com/share/1DPwBiKBci/" target="_blank" class="thanks-item" rel="noopener noreferrer">
-                                <i class="fab fa-facebook thanks-icon"></i>
-                                <span class="text-xs">Facebook</span>
+                                <i class="fab fa-facebook thanks-icon"></i><span class="text-xs">Facebook</span>
                             </a>
                         </div>
                     </div>
@@ -2035,62 +1178,53 @@
             </div>
         </section>
 
-        <!-- ===== 核心成员 ===== -->
         <section id="team" class="py-16 md:py-20 bg-secondary">
             <div class="container">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">核心成员</h2>
                 <p class="text-center text-gray-600 text-sm mb-8">五位核心成员，各司其职，共同驱动团队创新</p>
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
-                        <div class="team-avatar-wrapper">
-                            <div class="team-avatar">
-                                <img src="https://feng34937.github.io/miyuan/SHIFU.jpg" alt="诗福">
-                            </div>
-                        </div>
-                        <h3 class="font-bold">诗福</h3>
-                        <p class="text-primary text-xs">领导者</p>
+                        <div class="team-avatar-wrapper"><div class="team-avatar"><img src="https://feng34937.github.io/miyuan/SHIFU.jpg" alt="诗福"></div></div>
+                        <h3 class="font-bold">诗福</h3><p class="text-primary text-xs">领导者</p>
                     </div>
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
-                        <div class="team-avatar-wrapper">
-                            <div class="team-avatar">
-                                <img src="https://feng34937.github.io/miyuan/XINGDOU.jpg" alt="星斗">
-                            </div>
-                        </div>
-                        <h3 class="font-bold">星斗</h3>
-                        <p class="text-primary text-xs">副领导者</p>
+                        <div class="team-avatar-wrapper"><div class="team-avatar"><img src="https://feng34937.github.io/miyuan/XINGDOU.jpg" alt="星斗"></div></div>
+                        <h3 class="font-bold">星斗</h3><p class="text-primary text-xs">副领导者</p>
                     </div>
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
-                        <div class="team-avatar-wrapper">
-                            <div class="team-avatar">
-                                <img src="https://feng34937.github.io/miyuan/QIANXI.jpg" alt="千汐">
-                            </div>
-                        </div>
-                        <h3 class="font-bold">千汐</h3>
-                        <p class="text-primary text-xs">领导团成员</p>
+                        <div class="team-avatar-wrapper"><div class="team-avatar"><img src="https://feng34937.github.io/miyuan/QIANXI.jpg" alt="千汐"></div></div>
+                        <h3 class="font-bold">千汐</h3><p class="text-primary text-xs">领导团成员</p>
                     </div>
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
-                        <div class="team-avatar-wrapper">
-                            <div class="team-avatar">
-                                <img src="https://feng34937.github.io/miyuan/WUGUZAMAI.jpg" alt="五谷砸麦">
-                            </div>
-                        </div>
-                        <h3 class="font-bold">五谷砸麦</h3>
-                        <p class="text-primary text-xs">领导团成员</p>
+                        <div class="team-avatar-wrapper"><div class="team-avatar"><img src="https://feng34937.github.io/miyuan/WUGUZAMAI.jpg" alt="五谷砸麦"></div></div>
+                        <h3 class="font-bold">五谷砸麦</h3><p class="text-primary text-xs">领导团成员</p>
                     </div>
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
-                        <div class="team-avatar-wrapper">
-                            <div class="team-avatar">
-                                <img src="https://feng34937.github.io/miyuan/FUZHUXIAN.jpg" alt="辅助线">
-                            </div>
-                        </div>
-                        <h3 class="font-bold">辅助线</h3>
-                        <p class="text-primary text-xs">领导团成员</p>
+                        <div class="team-avatar-wrapper"><div class="team-avatar"><img src="https://feng34937.github.io/miyuan/FUZHUXIAN.jpg" alt="辅助线"></div></div>
+                        <h3 class="font-bold">辅助线</h3><p class="text-primary text-xs">领导团成员</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="py-16 md:py-20"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">保持联系</h2><p class="text-center text-gray-600 text-sm mb-8">任何想法、合作或疑问，欢迎找到我们</p><div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-4 bg-secondary p-5"><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-map-marker-alt text-primary"></i></div><div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-phone text-primary"></i></div><div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-envelope text-primary"></i></div><div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div></div></div>
+        <section id="contact" class="py-16 md:py-20">
+            <div class="container">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">保持联系</h2>
+                <p class="text-center text-gray-600 text-sm mb-8">任何想法、合作或疑问，欢迎找到我们</p>
+                <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-4 bg-secondary p-5">
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)">
+                        <div class="bg-primary/10 p-2"><i class="las la-map-marker-alt text-primary"></i></div>
+                        <div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div>
+                    </div>
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)">
+                        <div class="bg-primary/10 p-2"><i class="las la-phone text-primary"></i></div>
+                        <div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div>
+                    </div>
+                    <div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)">
+                        <div class="bg-primary/10 p-2"><i class="las la-envelope text-primary"></i></div>
+                        <div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div>
+                    </div>
+                </div>
                 <div class="thanks-section hover-tint" onmousemove="updateMask(event)">
                     <h3 class="thanks-title">特别鸣谢</h3>
                     <p class="text-gray-500 text-xs mb-3">感谢以下平台与个人的支持</p>
@@ -2105,10 +1239,51 @@
             </div>
         </section>
 
-        <footer class="bg-dark text-white py-8"><div class="container"><div class="grid md:grid-cols-4 gap-5 mb-5"><div><h3 class="text-base font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-xs">实用工具 · 有趣游戏 · 教育文化</p></div><div><h3 class="font-bold mb-2 text-xs">快速链接</h3><ul class="space-y-1 text-xs"><li><a href="#home" class="footer-link">首页</a></li><li><a href="#about" class="footer-link">关于米遇安</a></li><li><a href="#team" class="footer-link">核心成员</a></li><li><a href="#" onclick="openSection('tools'); return false;" class="footer-link">工具分区</a></li><li><a href="#" onclick="openSection('games'); return false;" class="footer-link">娱乐分区</a></li><li><a href="#" onclick="openSection('education'); return false;" class="footer-link">教育分区</a></li><li><a href="#contact" class="footer-link">联系我们</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">产品系列</h3><ul class="space-y-1 text-xs"><li><a class="footer-link cursor-pointer" onclick="openSection('tools')">工具分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('games')">娱乐分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('education')">教育分区</a></li><li><a class="footer-link cursor-pointer" onclick="openSection('others')">其他分区</a></li></ul></div><div><h3 class="font-bold mb-2 text-xs">联系方式</h3><ul class="space-y-1 text-xs"><li><i class="las la-map-marker-alt w-4"></i> 桂林市第一中学</li><li><i class="las la-phone w-4"></i> +86 152 0773 8425</li><li><i class="las la-envelope w-4"></i> 3493792731@qq.com</li></ul></div></div><div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs"><p>&copy; 2026 米遇安 · 保留所有权利</p><div class="flex justify-center gap-4 mt-1"><a href="#" class="legal-link" onclick="window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); return false;">用户协议</a><a href="#" class="legal-link" onclick="window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); return false;">隐私政策</a></div></div></div></footer>
+        <footer class="bg-dark text-white py-8">
+            <div class="container">
+                <div class="grid md:grid-cols-4 gap-5 mb-5">
+                    <div><h3 class="text-base font-bold mb-2 text-primary">米遇安</h3><p class="text-gray-400 text-xs">实用工具 · 有趣游戏 · 教育文化</p></div>
+                    <div>
+                        <h3 class="font-bold mb-2 text-xs">快速链接</h3>
+                        <ul class="space-y-1 text-xs">
+                            <li><a href="#home" class="footer-link">首页</a></li>
+                            <li><a href="#about" class="footer-link">关于米遇安</a></li>
+                            <li><a href="#team" class="footer-link">核心成员</a></li>
+                            <li><a href="#" onclick="openSection('tools'); return false;" class="footer-link">工具分区</a></li>
+                            <li><a href="#" onclick="openSection('games'); return false;" class="footer-link">娱乐分区</a></li>
+                            <li><a href="#" onclick="openSection('education'); return false;" class="footer-link">教育分区</a></li>
+                            <li><a href="#contact" class="footer-link">联系我们</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold mb-2 text-xs">产品系列</h3>
+                        <ul class="space-y-1 text-xs">
+                            <li><a class="footer-link cursor-pointer" onclick="openSection('tools')">工具分区</a></li>
+                            <li><a class="footer-link cursor-pointer" onclick="openSection('games')">娱乐分区</a></li>
+                            <li><a class="footer-link cursor-pointer" onclick="openSection('education')">教育分区</a></li>
+                            <li><a class="footer-link cursor-pointer" onclick="openSection('others')">其他分区</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold mb-2 text-xs">联系方式</h3>
+                        <ul class="space-y-1 text-xs">
+                            <li><i class="las la-map-marker-alt w-4"></i> 桂林市第一中学</li>
+                            <li><i class="las la-phone w-4"></i> +86 152 0773 8425</li>
+                            <li><i class="las la-envelope w-4"></i> 3493792731@qq.com</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 pt-3 text-center text-gray-400 text-xs">
+                    <p>&copy; 2026 米遇安 · 保留所有权利</p>
+                    <div class="flex justify-center gap-4 mt-1">
+                        <a href="#" class="legal-link" onclick="window.open('https://sway.office.com/s/pN9w3GwXo0MHuX7C/embed', '_blank'); return false;">用户协议</a>
+                        <a href="#" class="legal-link" onclick="window.open('https://sway.cloud.microsoft/s/OOMZpzkY5Ksrff2q/embed', '_blank'); return false;">隐私政策</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </main>
 
-    <!-- ===== 工具分区 ===== -->
     <div id="toolsSection" class="section-page">
         <div class="section-content p-5 max-w-6xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center mb-2">工具分区</h1>
@@ -2172,7 +1347,6 @@
         </div>
     </div>
 
-    <!-- ===== 娱乐分区 ===== -->
     <div id="gamesSection" class="section-page">
         <div class="section-content p-5 max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center">娱乐分区</h1>
@@ -2213,7 +1387,6 @@
         </div>
     </div>
 
-    <!-- ===== 教育分区 ===== -->
     <div id="educationSection" class="section-page">
         <div class="section-content p-5 max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center">教育分区</h1>
@@ -2233,7 +1406,6 @@
         </div>
     </div>
 
-    <!-- 其他分区 -->
     <div id="othersSection" class="section-page">
         <div class="section-content p-5 max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-primary text-center">其他分区</h1>
@@ -2256,7 +1428,6 @@
     </div>
 
     <script>
-        // ===== 标题轮播 =====
         const slogans = [
             { main: '欢迎来到', sub: '米遇安' },
             { main: '做大做强', sub: '兴创辉煌' },
@@ -2285,7 +1456,6 @@
         }
         setInterval(rotateSlogan, 3500);
 
-        // ===== 深色模式 =====
         function setThemeFromSystem() {
             const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.classList.toggle('dark', isDark);
@@ -2317,67 +1487,58 @@
         };
         document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
         document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
-        window.addEventListener('scroll', () => document.getElementById('navbar')?.classList.toggle('navbar-scrolled', window
-            .scrollY > 30));
+        window.addEventListener('scroll', () => document.getElementById('navbar')?.classList.toggle('navbar-scrolled', window.scrollY > 30));
 
-        // ===== 侧边栏 =====
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('mobileSidebar');
         const overlay = document.getElementById('mobileMenuOverlay');
         const closeSidebarBtn = document.getElementById('closeSidebarBtn');
         const sidebarLinks = document.querySelectorAll('.sidebar-link');
 
-        function openSidebar() { sidebar.classList.add('active');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; }
-
-        function closeSidebar() { sidebar.classList.remove('active');
-            overlay.classList.remove('active');
-            document.body.style.overflow = ''; }
+        function openSidebar() { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
         if (menuBtn) menuBtn.addEventListener('click', openSidebar);
         if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
         if (overlay) overlay.addEventListener('click', closeSidebar);
         sidebarLinks.forEach(link => link.addEventListener('click', closeSidebar));
 
-        // ===== 团队动态轮播（5项） =====
-        let currentSlide = 0,
-            totalSlides = 5,
+        let currentSlide = 0, totalSlides = 5,
             track = document.getElementById('carouselTrack'),
             autoPlayInterval;
 
-        function updateCarousel() { if (track) track.style.transform = `translateX(-${currentSlide*100}%)`;
-            document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide)); }
-        window.goToSlide = function(i) { if (i >= 0 && i < totalSlides) { currentSlide = i;
-                updateCarousel();
-                resetAutoPlay(); } };
-
-        function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides;
-            updateCarousel(); }
-
-        function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-            updateCarousel(); }
-
+        function updateCarousel() {
+            if (track) track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+        }
+        window.goToSlide = function (i) {
+            if (i >= 0 && i < totalSlides) { currentSlide = i; updateCarousel(); resetAutoPlay(); }
+        };
+        function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides; updateCarousel(); }
+        function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; updateCarousel(); }
         function startAutoPlay() { autoPlayInterval = setInterval(nextSlide, 5000); }
+        function resetAutoPlay() { clearInterval(autoPlayInterval); startAutoPlay(); }
 
-        function resetAutoPlay() { clearInterval(autoPlayInterval);
-            startAutoPlay(); }
-        document.getElementById('carouselPrev')?.addEventListener('click', () => { prevSlide();
-            resetAutoPlay(); });
-        document.getElementById('carouselNext')?.addEventListener('click', () => { nextSlide();
-            resetAutoPlay(); });
+        document.getElementById('carouselPrev')?.addEventListener('click', () => { prevSlide(); resetAutoPlay(); });
+        document.getElementById('carouselNext')?.addEventListener('click', () => { nextSlide(); resetAutoPlay(); });
+
         let carouselContainer = document.querySelector('.carousel-container');
-        if (carouselContainer) { carouselContainer.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
-            carouselContainer.addEventListener('mouseleave', startAutoPlay); }
+        if (carouselContainer) {
+            carouselContainer.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+            carouselContainer.addEventListener('mouseleave', startAutoPlay);
+        }
         const dotsContainer = document.getElementById('carouselDotsContainer');
-        if (dotsContainer) { dotsContainer.innerHTML = '';
-            for (let i = 0; i < totalSlides; i++) { let dot = document.createElement('button');
+        if (dotsContainer) {
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                let dot = document.createElement('button');
                 dot.className = 'carousel-dot';
                 dot.onclick = () => goToSlide(i);
-                dotsContainer.appendChild(dot); } }
+                dotsContainer.appendChild(dot);
+            }
+        }
         updateCarousel();
         startAutoPlay();
 
-        // ===== 广告轮播 =====
         let adCurrentSlide = 0;
         const adTotalSlides = 2;
         const adTrack = document.getElementById('adCarouselTrack');
@@ -2387,11 +1548,8 @@
         function updateAdCarousel() {
             if (!adTrack) return;
             adTrack.style.transform = `translateX(-${adCurrentSlide * 100}%)`;
-            adDots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === adCurrentSlide);
-            });
+            adDots.forEach((dot, index) => dot.classList.toggle('active', index === adCurrentSlide));
         }
-
         function goToAdSlide(index) {
             if (index >= 0 && index < adTotalSlides && index !== adCurrentSlide) {
                 adCurrentSlide = index;
@@ -2399,107 +1557,91 @@
                 resetAdAutoPlay();
             }
         }
+        function nextAdSlide() { adCurrentSlide = (adCurrentSlide + 1) % adTotalSlides; updateAdCarousel(); }
+        function prevAdSlide() { adCurrentSlide = (adCurrentSlide - 1 + adTotalSlides) % adTotalSlides; updateAdCarousel(); }
+        function startAdAutoPlay() { if (adAutoPlayInterval) clearInterval(adAutoPlayInterval); adAutoPlayInterval = setInterval(nextAdSlide, 4000); }
+        function resetAdAutoPlay() { if (adAutoPlayInterval) { clearInterval(adAutoPlayInterval); startAdAutoPlay(); } }
 
-        function nextAdSlide() {
-            adCurrentSlide = (adCurrentSlide + 1) % adTotalSlides;
-            updateAdCarousel();
-        }
-
-        function prevAdSlide() {
-            adCurrentSlide = (adCurrentSlide - 1 + adTotalSlides) % adTotalSlides;
-            updateAdCarousel();
-        }
-
-        function startAdAutoPlay() {
-            if (adAutoPlayInterval) clearInterval(adAutoPlayInterval);
-            adAutoPlayInterval = setInterval(nextAdSlide, 4000);
-        }
-
-        function resetAdAutoPlay() {
-            if (adAutoPlayInterval) {
-                clearInterval(adAutoPlayInterval);
-                startAdAutoPlay();
-            }
-        }
-
-        document.getElementById('adPrevBtn')?.addEventListener('click', () => { prevAdSlide();
-            resetAdAutoPlay(); });
-        document.getElementById('adNextBtn')?.addEventListener('click', () => { nextAdSlide();
-            resetAdAutoPlay(); });
-
+        document.getElementById('adPrevBtn')?.addEventListener('click', () => { prevAdSlide(); resetAdAutoPlay(); });
+        document.getElementById('adNextBtn')?.addEventListener('click', () => { nextAdSlide(); resetAdAutoPlay(); });
         adDots.forEach((dot) => {
-            dot.addEventListener('click', function() {
-                const index = parseInt(this.dataset.index);
-                goToAdSlide(index);
+            dot.addEventListener('click', function () {
+                goToAdSlide(parseInt(this.dataset.index));
             });
         });
-
         const adContainer = document.querySelector('.ad-carousel-wrapper');
         if (adContainer) {
-            adContainer.addEventListener('mouseenter', () => {
-                if (adAutoPlayInterval) clearInterval(adAutoPlayInterval);
-            });
+            adContainer.addEventListener('mouseenter', () => { if (adAutoPlayInterval) clearInterval(adAutoPlayInterval); });
             adContainer.addEventListener('mouseleave', startAdAutoPlay);
         }
-
         updateAdCarousel();
         startAdAutoPlay();
 
-        // ===== 其他功能 =====
         let openStates = { warfareList: false, chessList: false };
-        window.toggleGameList = function(listId) {
+        window.toggleGameList = function (listId) {
             const listElement = document.getElementById(listId);
             const arrowElement = document.getElementById(listId.replace('List', 'Arrow'));
             if (!listElement || !arrowElement) return;
             openStates[listId] = !openStates[listId];
-            if (openStates[listId]) { listElement.classList.add('active');
-                arrowElement.style.transform = 'rotate(180deg)'; } else { listElement.classList.remove('active');
-                arrowElement.style.transform = 'rotate(0deg)'; }
+            if (openStates[listId]) {
+                listElement.classList.add('active');
+                arrowElement.style.transform = 'rotate(180deg)';
+            } else {
+                listElement.classList.remove('active');
+                arrowElement.style.transform = 'rotate(0deg)';
+            }
         };
 
-        function updateMask(ev) { let el = ev.currentTarget,
-                rect = el.getBoundingClientRect(),
+        function updateMask(ev) {
+            let el = ev.currentTarget, rect = el.getBoundingClientRect(),
                 x = (ev.clientX - rect.left) / rect.width,
                 y = (ev.clientY - rect.top) / rect.height;
-            x = Math.min(1, Math.max(0, x));
-            y = Math.min(1, Math.max(0, y));
+            x = Math.min(1, Math.max(0, x)); y = Math.min(1, Math.max(0, y));
             el.style.setProperty('--x', x * 100 + '%');
-            el.style.setProperty('--y', y * 100 + '%'); }
-
-        function updateHeroMask(ev) { let hero = ev.currentTarget,
-                rect = hero.getBoundingClientRect(),
+            el.style.setProperty('--y', y * 100 + '%');
+        }
+        function updateHeroMask(ev) {
+            let hero = ev.currentTarget, rect = hero.getBoundingClientRect(),
                 x = (ev.clientX - rect.left) / rect.width,
                 y = (ev.clientY - rect.top) / rect.height;
             hero.style.setProperty('--hero-x', Math.min(1, Math.max(0, x)) * 100 + '%');
-            hero.style.setProperty('--hero-y', Math.min(1, Math.max(0, y)) * 100 + '%'); }
-
-        function resetHeroMask(ev) { let hero = ev.currentTarget;
+            hero.style.setProperty('--hero-y', Math.min(1, Math.max(0, y)) * 100 + '%');
+        }
+        function resetHeroMask(ev) {
+            let hero = ev.currentTarget;
             hero.style.setProperty('--hero-x', '50%');
-            hero.style.setProperty('--hero-y', '50%'); }
+            hero.style.setProperty('--hero-y', '50%');
+        }
         window.updateMask = updateMask;
         window.updateHeroMask = updateHeroMask;
         window.resetHeroMask = resetHeroMask;
 
         let currentOpenSection = null;
-
-        function openSection(s) { let el = document.getElementById(s + 'Section'),
-                overlay = document.getElementById('pageOverlay'),
-                back = document.getElementById('navBackButtonContainer'); if (el) { currentOpenSection = s; if (back) back
-                    .style.display = 'block';
+        function openSection(s) {
+            let el = document.getElementById(s + 'Section'),
+                ov = document.getElementById('pageOverlay'),
+                back = document.getElementById('navBackButtonContainer');
+            if (el) {
+                currentOpenSection = s;
+                if (back) back.style.display = 'block';
                 el.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden'; } }
-
-        function closeSection(s) { let el = document.getElementById(s + 'Section'),
-                overlay = document.getElementById('pageOverlay'),
-                back = document.getElementById('navBackButtonContainer'); if (el) { if (back) back.style.display = 'none';
+                ov.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeSection(s) {
+            let el = document.getElementById(s + 'Section'),
+                ov = document.getElementById('pageOverlay'),
+                back = document.getElementById('navBackButtonContainer');
+            if (el) {
+                if (back) back.style.display = 'none';
                 el.classList.remove('active');
-                overlay.classList.remove('active');
+                ov.classList.remove('active');
                 currentOpenSection = null;
-                document.body.style.overflow = ''; } }
-
+                document.body.style.overflow = '';
+            }
+        }
         function closeCurrentSection() { if (currentOpenSection) closeSection(currentOpenSection); }
-
         function closeAllSections() { if (currentOpenSection) closeSection(currentOpenSection); }
         window.openSection = openSection;
         window.closeCurrentSection = closeCurrentSection;
@@ -2512,8 +1654,9 @@
         animateElements.forEach(el => observer.observe(el));
 
         function closeModal(e) {
-            if (e && e.target !== document.getElementById('legalModal') && !e.target.classList?.contains('modal-close') && !e
-                .target.closest?.('.modal-footer button')) {
+            if (e && e.target !== document.getElementById('legalModal') &&
+                !e.target.classList?.contains('modal-close') &&
+                !e.target.closest?.('.modal-footer button')) {
                 if (e.target === document.getElementById('legalModal')) {
                     document.getElementById('legalModal').classList.remove('active');
                     document.body.style.overflow = '';
@@ -2524,6 +1667,864 @@
             document.body.style.overflow = '';
         }
         window.closeModal = closeModal;
+    </script>
+
+    <div id="miBallPanel" class="mi-panel" aria-hidden="true">
+        <div class="mi-panel-header">
+            <div class="mi-panel-title">
+                <span class="mi-mini-orb"></span>
+                <span>米球</span>
+                <span class="mi-panel-sub">米遇安的智能小助手</span>
+            </div>
+            <button class="mi-panel-close" id="miPanelClose" aria-label="关闭米球">×</button>
+        </div>
+        <div class="mi-messages" id="miMessages"></div>
+        <div class="mi-chips" id="miChips"></div>
+        <div class="mi-input-row">
+            <input id="miInput" class="mi-input" type="text" placeholder="问我时间、生活小问题，或输入内容搜索…" autocomplete="off">
+            <button id="miSend" class="mi-send">发送</button>
+        </div>
+    </div>
+    <div id="miBall" class="mi-ball" role="button" tabindex="0" aria-label="打开米球助手">
+        <div class="mi-face">
+            <div class="mi-eye mi-eye-l"></div>
+            <div class="mi-eye mi-eye-r"></div>
+            <div class="mi-mouth"></div>
+        </div>
+        <div class="mi-ring"></div>
+    </div>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var ball = document.getElementById('miBall');
+        var panel = document.getElementById('miBallPanel');
+        var msgs = document.getElementById('miMessages');
+        var input = document.getElementById('miInput');
+        var sendBtn = document.getElementById('miSend');
+        var chipsBox = document.getElementById('miChips');
+        var closeBtn = document.getElementById('miPanelClose');
+        var greeted = false;
+
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function weekText() {
+            return ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][new Date().getDay()];
+        }
+        function timeText() {
+            var d = new Date();
+            return '现在是 ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) +
+                '（' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + weekText() + '）';
+        }
+        function dateText() {
+            var d = new Date();
+            return '今天是 ' + d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日，' + weekText() + '。';
+        }
+        function fmtNum(n) {
+            if (!isFinite(n)) return String(n);
+            var r = Math.round(n * 1e8) / 1e8;
+            return String(r);
+        }
+
+        function tryMath(q) {
+            var s = q.replace(/\s/g, '')
+                .replace(/×/g, '*').replace(/÷/g, '/')
+                .replace(/（/g, '(').replace(/）/g, ')')
+                .replace(/等于多少|等于几|等于|是多少|是几|多少/g, '');
+            if (!s) return null;
+
+            var m = s.match(/^(\d+(?:\.\d+)?)的?(平方|立方)$/);
+            if (m) {
+                var n = parseFloat(m[1]);
+                return fmtNum(m[2] === '平方' ? n * n : n * n * n);
+            }
+            m = s.match(/^根号(\d+(?:\.\d+)?)$/);
+            if (m) return fmtNum(Math.sqrt(parseFloat(m[1])));
+
+            if (/^[\d+\-*/().]+$/.test(s) && /[+\-*/]/.test(s)) {
+                try {
+                    var v = Function('"use strict";return(' + s + ')')();
+                    if (typeof v === 'number' && isFinite(v)) return fmtNum(v);
+                } catch (e) { }
+            }
+            return null;
+        }
+
+        /* ================= 米遇安专属问答（520条） ================= */
+        var MIYUAN_QA = [
+            // 基础信息
+            { k: ['米遇安是什么', '米遇安介绍', '介绍一下米遇安', '米遇安是干啥的'], a: '米遇安是由学生组成的非营利性创新团队，专注打造智能工具、互动游戏与教育内容。' },
+            { k: ['米遇安什么时候成立', '米遇安成立时间', '米遇安哪年建立'], a: '米遇安于 2026 年 3 月 26 日正式建立。' },
+            { k: ['米遇安的定位', '米遇安做什么', '米遇安方向'], a: '米遇安定位“创新与教育”，用创意与代码连接校园与未来。' },
+            { k: ['米遇安是公司吗', '米遇安是不是公司', '米遇安是盈利的吗'], a: '不是公司，米遇安是一个非营利性学生组织。' },
+            { k: ['米遇安的口号', '米遇安slogan', '米遇安标语'], a: '口号轮播：欢迎来到米遇安 / 做大做强兴创辉煌 / 我们是一个非营利性组织 / 我们将持续为您服务。' },
+            { k: ['米遇安有几个分区', '米遇安分区', '米遇安板块'], a: '米遇安官网分为工具分区、娱乐分区、教育分区、其他分区四个板块。' },
+            { k: ['米遇安官网', '米遇安网址', '米遇安网站'], a: '米遇安官网入口在页面导航栏，各分区与工具均有独立页面。' },
+            { k: ['米遇安的理念', '米遇安价值观', '米遇安精神'], a: '米遇安强调用创意与代码连接校园与未来，做有温度、有深度的内容。' },
+            { k: ['米遇安面向谁', '米遇安服务对象', '米遇安用户'], a: '主要面向学生、校园用户及对工具、游戏、教育内容感兴趣的人。' },
+            { k: ['米遇安是学生组织吗'], a: '是的，米遇安由学生组成，属于非营利性学生创新团队。' },
+
+            // 团队与成员
+            { k: ['米遇安核心成员', '米遇安成员', '米遇安团队'], a: '核心成员五位：诗福、星斗、千汐、五谷砸麦、辅助线。' },
+            { k: ['诗福是谁', '诗福职位', '诗福角色'], a: '诗福是米遇安领导者，团队核心负责人。' },
+            { k: ['星斗是谁', '星斗职位', '星斗角色'], a: '星斗是米遇安副领导者，协助统筹团队事务。' },
+            { k: ['千汐是谁', '千汐职位', '千汐角色'], a: '千汐是米遇安领导团成员。' },
+            { k: ['五谷砸麦是谁', '五谷砸麦职位', '五谷砸麦角色'], a: '五谷砸麦是米遇安领导团成员。' },
+            { k: ['辅助线是谁', '辅助线职位', '辅助线角色'], a: '辅助线是米遇安领导团成员。' },
+            { k: ['米遇安有几个人', '米遇安多少人'], a: '官网展示的核心成员共五位。' },
+            { k: ['米遇安领导者', '米遇安负责人', '米遇安老大'], a: '领导者是诗福，副领导者是星斗。' },
+            { k: ['米遇安领导团', '领导团成员'], a: '领导团成员包括千汐、五谷砸麦、辅助线。' },
+            { k: ['米遇安怎么分工', '米遇安职责'], a: '团队设领导者、副领导者与领导团成员，分别负责统筹、协作与专项事务。' },
+
+            // 里程碑
+            { k: ['米遇安里程碑', '米遇安历史', '米遇安大事记'], a: '里程碑记录从 2026 年 3 月 26 日建立到 5 月 22 日第六次集体会议等重要节点。' },
+            { k: ['米遇安什么时候建立'], a: '2026 年 3 月 26 日正式建立。' },
+            { k: ['米遇安第一次会议', '第一次集体会议'], a: '2026 年 3 月 27 日，第一次集体会议于桂林市第一中学召开。' },
+            { k: ['米遇安第二次会议', '第二次集体会议'], a: '2026 年 4 月 10 日，第二次集体会议于桂林市第一中学召开。' },
+            { k: ['米遇安第三次会议', '第三次集体会议'], a: '2026 年 4 月 15 日，第三次集体会议于桂林市第一中学召开。' },
+            { k: ['OTB是什么', 'OTB一次会议'], a: '2026 年 4 月 21 日，OTB 一次会议召开。' },
+            { k: ['米遇安官网什么时候发布', '官网发布'], a: '2026 年 4 月 25 日，发布米遇安官网及部分服务。' },
+            { k: ['特邀人士制度', '特邀人士'], a: '2026 年 4 月 30 日，试行特邀人士制度。' },
+            { k: ['米遇安第四次会议'], a: '2026 年 5 月 9 日，第四次集体会议于桂林市第一中学召开。' },
+            { k: ['米遇安第五次会议'], a: '2026 年 5 月 15 日，第五次集体会议于桂林市第一中学召开。' },
+            { k: ['米遇安第六次会议'], a: '2026 年 5 月 22 日，第六次集体会议于桂林市第一中学召开。' },
+            { k: ['米遇安第十二次会议', '第十二次集体会议'], a: '米遇安第十二次集体会议于 2026 年 10 月成功召开。' },
+            { k: ['米遇安在哪里开会', '会议地点'], a: '多次集体会议在桂林市第一中学召开。' },
+
+            // 工具分区
+            { k: ['米遇安工具', '工具分区有什么', '米遇安工具分区'], a: '工具分区有计算器、天气、时钟、日历、LinguaFlow、HTML/Markdown/LaTeX 编辑器、米遇安索引。' },
+            { k: ['米遇安计算器', '计算器'], a: '米遇安计算器用于便捷计算，可快速完成数学运算。' },
+            { k: ['米遇安天气', '天气工具'], a: '米遇安天气提供实时天气信息，出行前可以查看。' },
+            { k: ['米遇安时钟', '时钟工具'], a: '米遇安时钟提供精准时间与世界时钟。' },
+            { k: ['米遇安日历', '日历工具'], a: '米遇安日历用于日期管理与日程提醒。' },
+            { k: ['LinguaFlow是什么', 'LinguaFlow'], a: 'LinguaFlow 是米遇安的智能翻译工具，帮助打破语言壁垒。' },
+            { k: ['HTML编辑器', '米遇安HTML编辑器'], a: 'HTML 编辑器支持在线编写与预览 HTML 代码。' },
+            { k: ['Markdown编辑器', '米遇安Markdown'], a: 'Markdown 编辑器支持轻量级 Markdown 编辑、实时预览与高效写作。' },
+            { k: ['LaTeX编辑器', '米遇安LaTeX'], a: 'LaTeX 编辑器支持在线编写与预览 LaTeX 数学公式，支持多种符号。' },
+            { k: ['米遇安索引', '索引页'], a: '米遇安索引页可便捷访问所有工具与服务。' },
+            { k: ['米遇安工具有几个'], a: '官网工具分区展示 9 个工具卡片。' },
+            { k: ['米遇安有翻译工具吗'], a: '有，LinguaFlow 就是米遇安的智能翻译工具。' },
+            { k: ['米遇安有编辑器吗'], a: '有 HTML、Markdown、LaTeX 三种在线编辑器。' },
+            { k: ['米遇安有日历吗'], a: '有，米遇安日历支持日期管理与日程提醒。' },
+            { k: ['米遇安有时钟吗'], a: '有，米遇安时钟提供精准时间与世界时钟。' },
+            { k: ['米遇安有天气吗'], a: '有，米遇安天气提供实时天气。' },
+            { k: ['米遇安有计算器吗'], a: '有，米遇安计算器支持快速数学运算。' },
+            { k: ['米遇安工具怎么进', '工具分区入口'], a: '首页导航栏或按钮“工具分区”即可进入。' },
+
+            // 娱乐分区
+            { k: ['米遇安游戏', '娱乐分区有什么', '米遇安娱乐分区'], a: '娱乐分区有现代战争推演系列、棋类游戏合集和学海肉鸽游戏。' },
+            { k: ['现代战争推演', '现代战争推演系列'], a: '现代战争推演系列包含 1、2、3、4 及现代冲突，其中 2 和 4 可在线试玩。' },
+            { k: ['现代战争推演2'], a: '现代战争推演2 支持在线试玩，入口在娱乐分区。' },
+            { k: ['现代战争推演4'], a: '现代战争推演4 是最新续作，支持在线试玩，战场与战术全面升级。' },
+            { k: ['现代战争推演1', '现代战争推演3', '现代冲突'], a: '这些作品需在线下参与，官网提供说明。' },
+            { k: ['棋类游戏合集', '米遇安棋类'], a: '棋类合集包括五子棋、象棋、围棋、国际象棋、陆战棋。' },
+            { k: ['五子棋', '米遇安五子棋'], a: '五子棋可在娱乐分区点击“开始对弈”在线游玩。' },
+            { k: ['象棋', '米遇安象棋'], a: '象棋可在棋类合集点击“开始对弈”在线游玩。' },
+            { k: ['围棋', '米遇安围棋'], a: '围棋可在棋类合集点击“开始对弈”在线游玩。' },
+            { k: ['国际象棋', '米遇安国际象棋'], a: '国际象棋可在棋类合集点击“开始对弈”在线游玩。' },
+            { k: ['陆战棋', '米遇安陆战棋'], a: '陆战棋可在棋类合集点击“开始对弈”在线游玩。' },
+            { k: ['学海', '学海游戏', '学海肉鸽'], a: '学海是米遇安的肉鸽类游戏，学海无涯、随机冒险，每一局都是全新体验。' },
+            { k: ['米遇安有肉鸽游戏吗'], a: '有，学海就是米遇安的肉鸽类游戏。' },
+            { k: ['米遇安游戏怎么玩'], a: '在线游戏点击对应“点击试玩”或“开始对弈”即可，线下作品需线下参与。' },
+            { k: ['米遇安有几个游戏'], a: '娱乐分区展示现代战争推演系列、棋类五款及学海肉鸽。' },
+
+            // 教育分区
+            { k: ['米遇安教育', '教育分区有什么', '米遇安教育分区'], a: '教育分区包括米遇安课堂与米遇安文化。' },
+            { k: ['米遇安课堂', '课堂'], a: '米遇安课堂以知识为舟、以思考为桨，每一课都是一次新的发现。' },
+            { k: ['米遇安文化', '文化分区'], a: '米遇安文化深入文化内涵、探究文明本质，一篇篇溯源，一次次惊奇。' },
+            { k: ['米遇安课堂怎么进'], a: '首页“教育分区”进入后点击米遇安课堂即可。' },
+            { k: ['米遇安文化是什么'], a: '米遇安文化是教育分区中的文化内容板块。' },
+            { k: ['米遇安教育理念'], a: '强调启迪智慧、传承文化，用有温度的内容陪伴学习。' },
+
+            // 其他分区
+            { k: ['其他分区有什么', '米遇安其他分区'], a: '其他分区包含米遇安图书与米遇安硕普。' },
+            { k: ['米遇安图书', '图书'], a: '米遇安图书板块用于探索知识、阅读世界。' },
+            { k: ['米遇安硕普', '硕普'], a: '米遇安硕普提供实用小部件，丰富页面与提升效率。' },
+            { k: ['米遇安硕普在哪'], a: '米遇安硕普位于其他分区。' },
+
+            // 合作与广告
+            { k: ['联合日报', '米遇安联合日报'], a: '联合日报是米遇安广告区的合作内容，主打时事新闻与洞察世界。' },
+            { k: ['无尽星域', '无尽星域游戏'], a: '无尽星域是合作组织“艾奥”的游戏，广告语“参战于整个宇宙”。' },
+            { k: ['艾奥是谁', '合作组织艾奥'], a: '艾奥是米遇安的合作组织，合作项目为无尽星域。' },
+            { k: ['米遇安广告', '广告位招租'], a: '米遇安官网广告位曾限时免费开放，合作可联系邮箱 3493792731@qq.com。' },
+            { k: ['怎么在米遇安投广告'], a: '可通过邮箱 3493792731@qq.com 联系团队洽谈广告合作。' },
+            { k: ['米遇安合作'], a: '米遇安欢迎合作，已有联合日报、无尽星域等合作内容。' },
+
+            // 联系方式与社交
+            { k: ['米遇安联系方式', '怎么联系米遇安'], a: '邮箱 3493792731@qq.com，电话 +86 152 0773 8425，地址桂林市第一中学。' },
+            { k: ['米遇安邮箱', '米遇安email'], a: '米遇安邮箱是 3493792731@qq.com。' },
+            { k: ['米遇安电话', '米遇安手机号'], a: '米遇安联系电话是 +86 152 0773 8425。' },
+            { k: ['米遇安地址', '米遇安在哪'], a: '米遇安位于桂林市第一中学。' },
+            { k: ['米遇安YouTube', '油管'], a: '米遇安 YouTube 账号：@feng34937。' },
+            { k: ['米遇安哔哩哔哩', 'B站', 'bilibili'], a: '米遇安哔哩哔哩入口在首页“关注我们”。' },
+            { k: ['米遇安抖音'], a: '米遇安抖音入口在首页“关注我们”。' },
+            { k: ['米遇安X', '米遇安推特', 'twitter'], a: '米遇安 X 账号：@Fengfeng34937。' },
+            { k: ['米遇安QQ频道', 'QQ频道'], a: '米遇安设有 QQ 频道，入口在“关注我们”。' },
+            { k: ['米遇安Facebook', '脸书'], a: '米遇安 Facebook 入口在首页“关注我们”。' },
+            { k: ['米遇安社交媒体', '官方账号'], a: '米遇安在 YouTube、哔哩哔哩、抖音、X、QQ 频道、Facebook 均有账号。' },
+            { k: ['米遇安有Instagram吗', '米遇安有Threads吗'], a: '目前官网“关注我们”未展示 Instagram 与 Threads。' },
+            { k: ['怎么加入米遇安'], a: '可通过邮箱 3493792731@qq.com 或 QQ 频道联系团队。' },
+            { k: ['米遇安招人吗'], a: '可以联系团队了解招募与合作信息。' },
+            { k: ['米遇安特别鸣谢'], a: '鸣谢 GitHub、Microsoft、ChatGPT、DeepSeek、金山办公等。' },
+
+            // 网站设计
+            { k: ['米遇安官网风格', '米遇安设计'], a: '官网采用直角设计、蓝色主色调、毛玻璃效果与暗色模式。' },
+            { k: ['米遇安主色调', '米遇安主题色'], a: '主色调为 #0078D7 蓝色，暗色模式下使用浅蓝。' },
+            { k: ['米遇安有暗色模式吗', '深色模式'], a: '有，官网支持暗色模式，并跟随系统或手动切换。' },
+            { k: ['米遇安网站是直角的吗'], a: '是的，官网整体采用 0px 直角风格。' },
+            { k: ['米遇安官网技术', '米遇安用什么做的'], a: '官网使用 HTML、Tailwind CSS、Line Awesome 与 Font Awesome 构建。' },
+            { k: ['米遇安有悬浮球吗', '米球是什么'], a: '有，米球是官网右下角的悬浮智能助手。' },
+            { k: ['米球能做什么', '米球功能'], a: '米球能回答米遇安相关问题、时间日期、生活小问题，并支持 Bing 搜索。' },
+            { k: ['怎么打开米球'], a: '点击页面右下角的蓝色悬浮球即可打开米球。' },
+            { k: ['米球怎么关闭'], a: '再次点击悬浮球、点击面板右上角 × 或按 Esc 即可关闭。' },
+            { k: ['米遇安官网有轮播吗'], a: '有，团队动态轮播与广告轮播均支持自动与手动切换。' },
+            { k: ['米遇安官网有里程碑吗'], a: '有，里程碑以时间线形式展示团队大事记。' },
+            { k: ['米遇安官网有广告区吗'], a: '有，广告区展示联合日报与无尽星域。' },
+            { k: ['米遇安官网logo'], a: '官网导航栏与标签页均使用米遇安 LOGO。' },
+            { k: ['米遇安导航栏字体'], a: '导航栏“米遇安”使用微软正黑、非粗体。' },
+            { k: ['米遇安成员头像'], a: '核心成员头像为圆形图片，带渐变边框。' },
+            { k: ['米遇安时间线'], a: '时间线采用左右交错布局，编号节点为圆形，卡片支持鼠标光晕。' },
+            { k: ['米遇安网站适配手机吗'], a: '适配，移动端有独立侧边栏与单侧时间线布局。' },
+
+            // 更多变体
+            { k: ['米遇安团队多少人'], a: '官网展示核心成员五位。' },
+            { k: ['米遇安谁负责'], a: '领导者诗福，副领导者星斗，领导团成员千汐、五谷砸麦、辅助线。' },
+            { k: ['米遇安官网有哪些页面'], a: '首页、关于米遇安、核心成员、工具分区、娱乐分区、教育分区、其他分区、联系我们。' },
+            { k: ['米遇安联系方式有哪些'], a: '邮箱、电话、地址，以及六个社交平台。' },
+            { k: ['米遇安工具入口'], a: '导航栏“工具分区”或首页工具分区按钮。' },
+            { k: ['米遇安游戏入口'], a: '导航栏“娱乐分区”或首页娱乐分区按钮。' },
+            { k: ['米遇安教育入口'], a: '导航栏“教育分区”或首页教育分区按钮。' },
+            { k: ['米遇安其他分区入口'], a: '首页“其他分区”按钮进入。' },
+            { k: ['米遇安有图书吗'], a: '有，其他分区中的米遇安图书。' },
+            { k: ['米遇安有硕普吗'], a: '有，其他分区中的米遇安硕普。' },
+            { k: ['米遇安有索引吗'], a: '有，工具分区中的米遇安索引。' },
+            { k: ['米遇安有翻译吗'], a: '有，LinguaFlow 智能翻译。' },
+            { k: ['米遇安有代码编辑器吗'], a: '有 HTML、Markdown、LaTeX 编辑器。' },
+            { k: ['米遇安有在线游戏吗'], a: '现代战争推演2、4、棋类合集、学海均可在线游玩。' },
+            { k: ['米遇安有线下游戏吗'], a: '现代战争推演1、3、现代冲突需线下参与。' },
+            { k: ['米遇安有围棋吗'], a: '有，棋类合集包含围棋。' },
+            { k: ['米遇安有象棋吗'], a: '有，棋类合集包含象棋。' },
+            { k: ['米遇安有国际象棋吗'], a: '有，棋类合集包含国际象棋。' },
+            { k: ['米遇安有五子棋吗'], a: '有，棋类合集包含五子棋。' },
+            { k: ['米遇安有陆战棋吗'], a: '有，棋类合集包含陆战棋。' },
+            { k: ['米遇安有肉鸽吗'], a: '有，学海是肉鸽类游戏。' },
+            { k: ['米遇安课堂讲什么'], a: '米遇安课堂以知识为舟、思考为桨，每课都是一次新发现。' },
+            { k: ['米遇安文化讲什么'], a: '米遇安文化深入文化内涵、探究文明本质。' },
+            { k: ['米遇安有新闻吗'], a: '有，联合日报提供时事新闻。' },
+            { k: ['米遇安合作游戏'], a: '无尽星域是合作组织艾奥的游戏。' },
+            { k: ['米遇安广告语'], a: '联合日报“时事新闻 · 洞察世界”；无尽星域“参战于整个宇宙”。' },
+            { k: ['米遇安官网口号轮播'], a: '四组口号循环：欢迎来到米遇安、做大做强兴创辉煌、我们是一个非营利性组织、我们将持续为您服务。' },
+            { k: ['米遇安第几次会议'], a: '官网里程碑记录到第六次，团队动态展示第十二次集体会议。' },
+            { k: ['米遇安OTB'], a: '2026 年 4 月 21 日召开 OTB 一次会议。' },
+            { k: ['米遇安特邀人士'], a: '2026 年 4 月 30 日起试行特邀人士制度。' },
+            { k: ['米遇安官网发布'], a: '2026 年 4 月 25 日发布官网及部分服务。' },
+            { k: ['米遇安第一次会议地点'], a: '桂林市第一中学。' },
+            { k: ['米遇安会议都在哪开'], a: '多次会议均在桂林市第一中学召开。' },
+            { k: ['米遇安有几个工具'], a: '工具分区展示 9 个工具。' },
+            { k: ['米遇安有几个游戏'], a: '现代战争系列、棋类五款、学海肉鸽。' },
+            { k: ['米遇安有几个教育板块'], a: '两个：米遇安课堂、米遇安文化。' },
+            { k: ['米遇安有几个其他板块'], a: '两个：米遇安图书、米遇安硕普。' },
+            { k: ['米遇安有几个社交平台'], a: '六个：YouTube、哔哩哔哩、抖音、X、QQ 频道、Facebook。' },
+            { k: ['米遇安有几个合作'], a: '官网展示联合日报与无尽星域两项合作内容。' },
+            { k: ['米遇安主色'], a: '#0078D7。' },
+            { k: ['米遇安字体'], a: '导航栏使用微软正黑，正文使用 Inter。' },
+            { k: ['米遇安官网直角'], a: '是的，除头像与部分圆点外，整体为直角。' },
+            { k: ['米遇安有深色模式吗'], a: '有，支持跟随系统与手动切换。' },
+            { k: ['米遇安有移动端吗'], a: '有，移动端有侧边栏与响应式布局。' },
+            { k: ['米遇安官网有动效吗'], a: '有，包括悬停光晕、轮播、浮动、渐变文字等。' },
+            { k: ['米遇安有搜索吗'], a: '米球支持 Bing 搜索兜底，官网本身未单独设搜索框。' },
+            { k: ['米遇安有客服吗'], a: '可通过邮箱或 QQ 频道联系团队。' },
+            { k: ['米遇安是公益的吗'], a: '米遇安是非营利性组织。' },
+            { k: ['米遇安做教育吗'], a: '做，教育分区包含课堂与文化。' },
+            { k: ['米遇安做工具吗'], a: '做，工具分区有 9 个实用工具。' },
+            { k: ['米遇安做游戏吗'], a: '做，娱乐分区有战争推演、棋类与学海肉鸽。' },
+            { k: ['米遇安有官网吗'], a: '有，官网包含完整分区与介绍。' },
+            { k: ['米遇安官网谁做的'], a: '由米遇安团队制作与维护。' },
+            { k: ['米遇安团队在哪'], a: '团队位于桂林市第一中学。' },
+            { k: ['米遇安是桂林的吗'], a: '是的，米遇安与桂林市第一中学密切相关。' },
+            { k: ['米遇安学生团队'], a: '米遇安由学生组成。' },
+            { k: ['米遇安创新'], a: '米遇安强调用创意与代码做有温度的产品。' },
+            { k: ['米遇安教育理念是什么'], a: '启迪智慧、传承文化，让学习有深度也有温度。' },
+            { k: ['米遇安文化是什么'], a: '教育分区中的文化内容板块，强调溯源与探究。' },
+            { k: ['米遇安课堂理念'], a: '以知识为舟、以思考为桨，每课都是新发现。' },
+            { k: ['米遇安游戏理念'], a: '探索精彩娱乐世界，兼顾策略、棋类与随机冒险。' },
+            { k: ['米遇安工具理念'], a: '实用工具、高效便捷。' },
+            { k: ['米遇安官网导航'], a: '首页、关于、成员、工具、娱乐、教育、联系。' },
+            { k: ['米遇安官网底部'], a: '包含快速链接、产品系列、联系方式与协议入口。' },
+            { k: ['米遇安用户协议'], a: '页脚提供用户协议与隐私政策入口。' },
+            { k: ['米遇安隐私政策'], a: '页脚提供隐私政策入口。' },
+            { k: ['米遇安官网广告'], a: '广告区轮播联合日报与无尽星域。' },
+            { k: ['米遇安团队动态'], a: '团队动态轮播展示会议、广告、游戏、硕普等。' },
+            { k: ['米遇安第十二次会议时间'], a: '2026 年 10 月。' },
+            { k: ['米遇安会议记录'], a: '里程碑记录多次会议，团队动态展示第十二次。' },
+            { k: ['米遇安官网里程碑'], a: '时间线展示从建立到第六次会议等节点。' },
+            { k: ['米遇安官网时间线'], a: '左右交错、圆形编号、卡片光晕。' },
+            { k: ['米遇安卡片效果'], a: '卡片悬停有上浮、边框高亮与光晕。' },
+            { k: ['米遇安按钮风格'], a: '直角按钮，主色蓝，悬停上浮。' },
+            { k: ['米遇安轮播'], a: '团队动态与广告均支持自动轮播和手动切换。' },
+            { k: ['米遇安广告轮播'], a: '联合日报与无尽星域两则广告自动轮播。' },
+            { k: ['米遇安团队轮播'], a: '展示会议、招租、游戏、学海、硕普等五项。' },
+            { k: ['米遇安官网图标'], a: '使用 Line Awesome 与 Font Awesome 图标。' },
+            { k: ['米遇安LOGO'], a: '导航栏与标签页使用米遇安 LOGO。' },
+            { k: ['米遇安标签页图标'], a: '使用 MIYUAN_LOGO_NOBACKGROUND.png。' },
+            { k: ['米遇安成员头像链接'], a: '头像使用 SHIFU、XINGDOU、QIANXI、WUGUZAMAI、FUZHUXIAN 图片。' },
+            { k: ['米遇安诗福头像'], a: '诗福头像为 SHIFU.jpg。' },
+            { k: ['米遇安星斗头像'], a: '星斗头像为 XINGDOU.jpg。' },
+            { k: ['米遇安千汐头像'], a: '千汐头像为 QIANXI.jpg。' },
+            { k: ['米遇安五谷砸麦头像'], a: '五谷砸麦头像为 WUGUZAMAI.jpg。' },
+            { k: ['米遇安辅助线头像'], a: '辅助线头像为 FUZHUXIAN.jpg。' },
+            { k: ['米遇安有QQ吗'], a: '有 QQ 频道，入口在“关注我们”。' },
+            { k: ['米遇安有微信吗'], a: '官网未展示微信入口。' },
+            { k: ['米遇安有微博吗'], a: '官网未展示微博入口。' },
+            { k: ['米遇安有小红书吗'], a: '官网未展示小红书入口。' },
+            { k: ['米遇安有知乎吗'], a: '官网未展示知乎入口。' },
+            { k: ['米遇安有GitHub吗'], a: '官网鸣谢 GitHub，但未展示团队 GitHub 主页。' },
+            { k: ['米遇安鸣谢'], a: '鸣谢 GitHub、Microsoft、ChatGPT、DeepSeek、金山办公。' },
+            { k: ['米遇安用ChatGPT吗'], a: '官网特别鸣谢中列出了 ChatGPT。' },
+            { k: ['米遇安用DeepSeek吗'], a: '官网特别鸣谢中列出了 DeepSeek。' },
+            { k: ['米遇安用WPS吗'], a: '官网鸣谢金山办公。' },
+            { k: ['米遇安用微软吗'], a: '官网鸣谢 Microsoft。' },
+            { k: ['米遇安用什么图标库'], a: 'Line Awesome 与 Font Awesome。' },
+            { k: ['米遇安用什么CSS'], a: 'Tailwind CSS 与自定义样式。' },
+            { k: ['米遇安官网是否开源'], a: '官网未明确说明开源状态。' },
+            { k: ['米遇安可以合作吗'], a: '可以，通过邮箱联系团队洽谈。' },
+            { k: ['米遇安接受赞助吗'], a: '米遇安是非营利组织，合作可联系团队。' },
+            { k: ['米遇安广告位'], a: '官网曾限时免费开放广告位。' },
+            { k: ['米遇安无尽星域'], a: '无尽星域是合作组织艾奥的游戏。' },
+            { k: ['米遇安联合日报'], a: '联合日报是广告区合作内容。' },
+            { k: ['米遇安官网有几个分区'], a: '四个：工具、娱乐、教育、其他。' },
+            { k: ['米遇安首页有什么'], a: '口号轮播、介绍、按钮、分区入口、动态、里程碑、成员、联系等。' },
+            { k: ['米遇安关于页面'], a: '包含最新动态、广告轮播、团队动态、里程碑、社交入口。' },
+            { k: ['米遇安成员页面'], a: '展示五位核心成员与头像。' },
+            { k: ['米遇安联系页面'], a: '展示地址、电话、邮箱与鸣谢。' },
+            { k: ['米遇安官网语言'], a: '简体中文。' },
+            { k: ['米遇安官网是否响应式'], a: '是，适配桌面与移动端。' },
+            { k: ['米遇安移动端菜单'], a: '移动端使用侧边栏菜单。' },
+            { k: ['米遇安侧边栏'], a: '移动端右侧侧边栏包含主要导航。' },
+            { k: ['米遇安返回按钮'], a: '进入分区后导航栏会出现返回按钮。' },
+            { k: ['米遇安分区页面'], a: '分区以全屏滑入方式打开。' },
+            { k: ['米遇安游戏折叠'], a: '战争系列与棋类合集支持点击展开/收起。' },
+            { k: ['米遇安广告箭头'], a: '广告轮播支持左右箭头切换。' },
+            { k: ['米遇安轮播指示点'], a: '轮播下方有指示点，可点击跳转。' },
+            { k: ['米遇安自动轮播时间'], a: '团队动态约 5 秒，广告约 4 秒。' },
+            { k: ['米遇安悬停暂停'], a: '鼠标悬停轮播区域会暂停自动播放。' },
+            { k: ['米遇安光晕'], a: '卡片与时间线支持鼠标跟随光晕。' },
+            { k: ['米遇安里程碑编号'], a: '时间线节点为圆形编号 01–10。' },
+            { k: ['米遇安里程碑卡片'], a: '卡片为直角，带日期与描述，悬停有光晕。' },
+            { k: ['米遇安时间线中轴'], a: '中轴为 1px 渐变线。' },
+            { k: ['米遇安移动端时间线'], a: '移动端为左侧单侧时间线。' },
+            { k: ['米遇安成员角色'], a: '领导者、副领导者、领导团成员。' },
+            { k: ['米遇安成员介绍'], a: '诗福领导者、星斗副领导者、千汐/五谷砸麦/辅助线为领导团成员。' },
+            { k: ['米遇安团队结构'], a: '一位领导者、一位副领导者、三位领导团成员。' },
+            { k: ['米遇安谁最大'], a: '领导者诗福。' },
+            { k: ['米遇安副领导是谁'], a: '星斗。' },
+            { k: ['米遇安领导团有谁'], a: '千汐、五谷砸麦、辅助线。' },
+            { k: ['米遇安团队几个人'], a: '五位核心成员。' },
+            { k: ['米遇安成员照片'], a: '五位成员均有圆形头像。' },
+            { k: ['米遇安诗福'], a: '诗福，米遇安领导者。' },
+            { k: ['米遇安星斗'], a: '星斗，米遇安副领导者。' },
+            { k: ['米遇安千汐'], a: '千汐，米遇安领导团成员。' },
+            { k: ['米遇安五谷砸麦'], a: '五谷砸麦，米遇安领导团成员。' },
+            { k: ['米遇安辅助线'], a: '辅助线，米遇安领导团成员。' },
+            { k: ['米遇安领导'], a: '诗福、星斗与三位领导团成员。' },
+            { k: ['米遇安组织架构'], a: '领导者—副领导者—领导团成员。' },
+            { k: ['米遇安怎么联系诗福'], a: '可通过团队邮箱 3493792731@qq.com 联系。' },
+            { k: ['米遇安怎么联系星斗'], a: '可通过团队邮箱或 QQ 频道联系。' },
+            { k: ['米遇安怎么联系千汐'], a: '可通过团队邮箱或 QQ 频道联系。' },
+            { k: ['米遇安怎么联系五谷砸麦'], a: '可通过团队邮箱或 QQ 频道联系。' },
+            { k: ['米遇安怎么联系辅助线'], a: '可通过团队邮箱或 QQ 频道联系。' },
+            { k: ['米遇安成员分工'], a: '领导者统筹、副领导者协助、领导团成员负责专项。' },
+            { k: ['米遇安团队文化'], a: '创新、教育、非营利、服务校园。' },
+            { k: ['米遇安团队口号'], a: '做大做强，兴创辉煌。' },
+            { k: ['米遇安是非营利吗'], a: '是，米遇安明确为非营利性组织。' },
+            { k: ['米遇安收费吗'], a: '米遇安为非营利组织，官网工具与内容可免费访问。' },
+            { k: ['米遇安怎么支持'], a: '可以关注社交账号、使用工具、参与合作或联系团队。' },
+            { k: ['米遇安官网怎么进'], a: '访问米遇安官网首页即可。' },
+            { k: ['米遇安官网谁维护'], a: '由米遇安团队维护。' },
+            { k: ['米遇安官网更新'], a: '团队动态与里程碑会持续更新。' },
+            { k: ['米遇安最新动态'], a: '第十二次集体会议于 2026 年 10 月召开。' },
+            { k: ['米遇安最近会议'], a: '第十二次集体会议。' },
+            { k: ['米遇安会议次数'], a: '官网动态展示到第十二次。' },
+            { k: ['米遇安OTB会议'], a: '2026 年 4 月 21 日 OTB 一次会议。' },
+            { k: ['米遇安官网发布日'], a: '2026 年 4 月 25 日。' },
+            { k: ['米遇安特邀制度'], a: '2026 年 4 月 30 日试行。' },
+            { k: ['米遇安第一次会议时间'], a: '2026 年 3 月 27 日。' },
+            { k: ['米遇安第二次会议时间'], a: '2026 年 4 月 10 日。' },
+            { k: ['米遇安第三次会议时间'], a: '2026 年 4 月 15 日。' },
+            { k: ['米遇安第四次会议时间'], a: '2026 年 5 月 9 日。' },
+            { k: ['米遇安第五次会议时间'], a: '2026 年 5 月 15 日。' },
+            { k: ['米遇安第六次会议时间'], a: '2026 年 5 月 22 日。' },
+            { k: ['米遇安第十二次会议时间'], a: '2026 年 10 月。' },
+            { k: ['米遇安成立日期'], a: '2026 年 3 月 26 日。' },
+            { k: ['米遇安历史节点'], a: '建立、多次会议、官网发布、特邀制度等。' },
+            { k: ['米遇安大事'], a: '建立、会议、官网发布、特邀制度、第十二次会议。' },
+            { k: ['米遇安官网板块'], a: '动态、广告、里程碑、成员、联系、工具、娱乐、教育、其他。' },
+            { k: ['米遇安官网栏目'], a: '首页、关于、成员、分区、联系。' },
+            { k: ['米遇安官网结构'], a: '单页 + 分区滑入页面。' },
+            { k: ['米遇安官网交互'], a: '轮播、折叠、滑入、光晕、暗色模式。' },
+            { k: ['米遇安官网配色'], a: '蓝色主色、白色背景、暗色模式。' },
+            { k: ['米遇安官网字体'], a: 'Inter 与微软正黑。' },
+            { k: ['米遇安官网圆角'], a: '整体直角，头像与部分圆点为圆形。' },
+            { k: ['米遇安官网图标'], a: 'Line Awesome + Font Awesome。' },
+            { k: ['米遇安官网图片'], a: 'LOGO 与五位成员头像。' },
+            { k: ['米遇安官网按钮'], a: '主按钮、描边按钮、分区按钮、更多按钮。' },
+            { k: ['米遇安官网卡片'], a: '工具卡、游戏卡、教育卡、成员卡、时间线卡。' },
+            { k: ['米遇安官网广告'], a: '联合日报与无尽星域。' },
+            { k: ['米遇安官网合作'], a: '联合日报、无尽星域（艾奥）。' },
+            { k: ['米遇安官网社交'], a: 'YouTube、哔哩哔哩、抖音、X、QQ 频道、Facebook。' },
+            { k: ['米遇安官网鸣谢'], a: 'GitHub、Microsoft、ChatGPT、DeepSeek、金山办公。' },
+            { k: ['米遇安官网协议'], a: '用户协议与隐私政策。' },
+            { k: ['米遇安官网底部'], a: '链接、产品、联系方式、版权与协议。' },
+            { k: ['米遇安官网导航栏'], a: 'LOGO、导航、暗色模式、移动菜单。' },
+            { k: ['米遇安官网侧边栏'], a: '移动端导航侧边栏。' },
+            { k: ['米遇安官网返回'], a: '分区页导航栏提供返回按钮。' },
+            { k: ['米遇安官网滑入'], a: '分区页面从右侧滑入。' },
+            { k: ['米遇安官网折叠'], a: '游戏合集支持展开/收起。' },
+            { k: ['米遇安官网轮播'], a: '团队动态与广告轮播。' },
+            { k: ['米遇安官网指示点'], a: '轮播下方指示点可点击。' },
+            { k: ['米遇安官网箭头'], a: '轮播左右箭头可切换。' },
+            { k: ['米遇安官网自动播放'], a: '轮播自动播放，悬停暂停。' },
+            { k: ['米遇安官网光晕'], a: '卡片与时间线支持鼠标光晕。' },
+            { k: ['米遇安官网时间线'], a: '左右交错、圆形编号、直角卡片。' },
+            { k: ['米遇安官网成员卡'], a: '圆形头像 + 姓名 + 角色。' },
+            { k: ['米遇安官网角色'], a: '领导者、副领导者、领导团成员。' },
+            { k: ['米遇安官网口号'], a: '四组口号轮播。' },
+            { k: ['米遇安官网标题'], a: '动态渐变文字 + 浮动效果。' },
+            { k: ['米遇安官网背景'], a: '径向渐变光晕跟随鼠标。' },
+            { k: ['米遇安官网暗色'], a: '支持暗色模式。' },
+            { k: ['米遇安官网移动'], a: '响应式 + 移动侧边栏。' },
+            { k: ['米遇安官网适配'], a: '桌面与移动端均适配。' },
+            { k: ['米遇安官网图标库'], a: 'Line Awesome 与 Font Awesome。' },
+            { k: ['米遇安官网框架'], a: '原生 HTML + Tailwind CSS。' },
+            { k: ['米遇安官网脚本'], a: '原生 JavaScript 实现交互。' },
+            { k: ['米遇安官网米球'], a: '右下角悬浮智能助手。' },
+            { k: ['米球怎么用'], a: '点击米球打开面板，输入问题或点快捷问题。' },
+            { k: ['米球能回答什么'], a: '米遇安相关问题、时间日期、生活小问题、简单计算。' },
+            { k: ['米球会搜索吗'], a: '未收录问题会提供 Bing 搜索按钮。' },
+            { k: ['米球有快捷问题吗'], a: '有，面板底部有快捷问题按钮。' },
+            { k: ['米球怎么关闭'], a: '再次点击、点 × 或按 Esc。' },
+            { k: ['米球动画'], a: '浮动、光环、眨眼、说话动画。' },
+            { k: ['米球表情'], a: '简单几何眼睛与嘴巴。' },
+            { k: ['米球颜色'], a: '蓝色渐变球体。' },
+            { k: ['米球位置'], a: '页面右下角。' },
+            { k: ['米球移动端'], a: '移动端同样可用，尺寸略小。' },
+            { k: ['米球暗色模式'], a: '支持暗色模式。' },
+            { k: ['米球面板'], a: '直角面板，包含消息、快捷问题、输入框。' },
+            { k: ['米球消息'], a: '用户与米球对话气泡。' },
+            { k: ['米球输入'], a: '输入问题后回车或点发送。' },
+            { k: ['米球时间回答'], a: '可回答当前时间。' },
+            { k: ['米球日期回答'], a: '可回答今天日期与星期。' },
+            { k: ['米球计算'], a: '支持四则运算、平方、立方、根号。' },
+            { k: ['米球生活问答'], a: '覆盖健康、厨房、学习、数码、情绪等。' },
+            { k: ['米球米遇安问答'], a: '覆盖米遇安官网、团队、分区、工具、游戏、教育、合作、社交、设计。' },
+            { k: ['米球问答数量'], a: '包含大量米遇安专属与生活类问答。' },
+            { k: ['米球怎么打开'], a: '点击右下角蓝色悬浮球。' },
+            { k: ['米球是谁做的'], a: '米球是米遇安官网的智能小助手。' },
+            { k: ['米球名字'], a: '米球，取自米遇安。' },
+            { k: ['米球功能'], a: '问答、时间日期、计算、搜索。' },
+            { k: ['米球支持语音吗'], a: '目前以文字输入为主。' },
+            { k: ['米球会学习吗'], a: '目前为预制问答与规则匹配。' },
+            { k: ['米球安全吗'], a: '搜索会跳转 Bing，问答为本地规则。' },
+            { k: ['米球会联网吗'], a: '搜索按钮会打开 Bing，问答本身不联网。' },
+            { k: ['米球可以关掉吗'], a: '面板可关闭，悬浮球常驻。' },
+            { k: ['米球挡内容吗'], a: '位于右下角，移动端尺寸缩小。' },
+            { k: ['米球怎么提问'], a: '输入问题或点击快捷问题。' },
+            { k: ['米球回答不准'], a: '可尝试换关键词，或使用 Bing 搜索。' },
+            { k: ['米球会回答米遇安吗'], a: '会，内置大量米遇安专属问答。' },
+            { k: ['米球知道米遇安吗'], a: '知道，米球是米遇安官网助手。' },
+            { k: ['米球知道诗福吗'], a: '知道，诗福是米遇安领导者。' },
+            { k: ['米球知道星斗吗'], a: '知道，星斗是副领导者。' },
+            { k: ['米球知道千汐吗'], a: '知道，千汐是领导团成员。' },
+            { k: ['米球知道五谷砸麦吗'], a: '知道，五谷砸麦是领导团成员。' },
+            { k: ['米球知道辅助线吗'], a: '知道，辅助线是领导团成员。' },
+            { k: ['米球知道米遇安工具吗'], a: '知道，工具分区有 9 个工具。' },
+            { k: ['米球知道米遇安游戏吗'], a: '知道，娱乐分区有战争、棋类、学海。' },
+            { k: ['米球知道米遇安教育吗'], a: '知道，教育分区有课堂与文化。' },
+            { k: ['米球知道米遇安合作吗'], a: '知道，联合日报与无尽星域。' },
+            { k: ['米球知道米遇安社交吗'], a: '知道，六个社交平台。' },
+            { k: ['米球知道米遇安设计吗'], a: '知道，直角、蓝色、毛玻璃、暗色模式。' },
+            { k: ['米球知道米遇安里程碑吗'], a: '知道，官网以时间线展示。' },
+            { k: ['米球知道米遇安会议吗'], a: '知道，动态展示第十二次。' },
+            { k: ['米球知道米遇安地址吗'], a: '知道，桂林市第一中学。' },
+            { k: ['米球知道米遇安邮箱吗'], a: '知道，3493792731@qq.com。' },
+            { k: ['米球知道米遇安电话吗'], a: '知道，+86 152 0773 8425。' },
+            { k: ['米球知道米遇安口号吗'], a: '知道，四组口号轮播。' },
+            { k: ['米球知道米遇安LOGO吗'], a: '知道，导航栏与标签页均使用。' },
+            { k: ['米球知道米遇安成员头像吗'], a: '知道，五位成员圆形头像。' },
+            { k: ['米球知道米遇安时间线吗'], a: '知道，圆形编号与直角卡片。' },
+            { k: ['米球知道米遇安光晕吗'], a: '知道，卡片支持鼠标光晕。' },
+            { k: ['米球知道米遇安轮播吗'], a: '知道，团队动态与广告轮播。' },
+            { k: ['米球知道米遇安暗色吗'], a: '知道，支持暗色模式。' },
+            { k: ['米球知道米遇安移动端吗'], a: '知道，有侧边栏与响应式。' },
+            { k: ['米球知道米遇安图书吗'], a: '知道，其他分区有图书。' },
+            { k: ['米球知道米遇安硕普吗'], a: '知道，其他分区有硕普。' },
+            { k: ['米球知道米遇安索引吗'], a: '知道，工具分区有索引。' },
+            { k: ['米球知道LinguaFlow吗'], a: '知道，工具分区的翻译工具。' },
+            { k: ['米球知道HTML编辑器吗'], a: '知道，工具分区在线编辑器。' },
+            { k: ['米球知道Markdown吗'], a: '知道，工具分区 Markdown 编辑器。' },
+            { k: ['米球知道LaTeX吗'], a: '知道，工具分区 LaTeX 编辑器。' },
+            { k: ['米球知道学海吗'], a: '知道，娱乐分区肉鸽游戏。' },
+            { k: ['米球知道陆战棋吗'], a: '知道，棋类合集包含陆战棋。' },
+            { k: ['米球知道无尽星域吗'], a: '知道，合作组织艾奥的游戏。' },
+            { k: ['米球知道联合日报吗'], a: '知道，广告区合作内容。' },
+            { k: ['米球知道特别鸣谢吗'], a: '知道，鸣谢 GitHub、Microsoft 等。' },
+            { k: ['米球知道用户协议吗'], a: '知道，页脚提供入口。' },
+            { k: ['米球知道隐私政策吗'], a: '知道，页脚提供入口。' },
+            { k: ['米球知道米遇安课堂吗'], a: '知道，教育分区课堂。' },
+            { k: ['米球知道米遇安文化吗'], a: '知道，教育分区文化。' },
+            { k: ['米球知道米遇安计算器吗'], a: '知道，工具分区计算器。' },
+            { k: ['米球知道米遇安天气吗'], a: '知道，工具分区天气。' },
+            { k: ['米球知道米遇安时钟吗'], a: '知道，工具分区时钟。' },
+            { k: ['米球知道米遇安日历吗'], a: '知道，工具分区日历。' },
+            { k: ['米球知道现代战争推演吗'], a: '知道，娱乐分区战争系列。' },
+            { k: ['米球知道棋类合集吗'], a: '知道，五子棋、象棋、围棋、国际象棋、陆战棋。' },
+            { k: ['米球知道第十二次会议吗'], a: '知道，2026 年 10 月召开。' },
+            { k: ['米球知道OTB吗'], a: '知道，2026 年 4 月 21 日 OTB 一次会议。' },
+            { k: ['米球知道特邀制度吗'], a: '知道，2026 年 4 月 30 日试行。' },
+            { k: ['米球知道官网发布吗'], a: '知道，2026 年 4 月 25 日发布。' },
+            { k: ['米球知道米遇安建立吗'], a: '知道，2026 年 3 月 26 日建立。' },
+            { k: ['米球知道第一次会议吗'], a: '知道，2026 年 3 月 27 日。' },
+            { k: ['米球知道桂林一中吗'], a: '知道，米遇安与桂林市第一中学相关。' },
+            { k: ['米球知道米遇安非营利吗'], a: '知道，米遇安是非营利性组织。' },
+            { k: ['米球知道米遇安创新吗'], a: '知道，创新与教育是定位。' },
+            { k: ['米球知道米遇安口号吗'], a: '知道，四组口号轮播。' },
+            { k: ['米球知道米遇安分区吗'], a: '知道，工具、娱乐、教育、其他。' },
+            { k: ['米球知道米遇安导航吗'], a: '知道，首页、关于、成员、工具、娱乐、教育、联系。' },
+            { k: ['米球知道米遇安页脚吗'], a: '知道，链接、产品、联系方式、版权。' },
+            { k: ['米球知道米遇安广告吗'], a: '知道，联合日报与无尽星域。' },
+            { k: ['米球知道米遇安动态吗'], a: '知道，团队动态轮播。' },
+            { k: ['米球知道米遇安里程碑吗'], a: '知道，时间线展示。' },
+            { k: ['米球知道米遇安成员吗'], a: '知道，五位核心成员。' },
+            { k: ['米球知道米遇安联系吗'], a: '知道，地址、电话、邮箱。' },
+            { k: ['米球知道米遇安社交吗'], a: '知道，六个平台。' },
+            { k: ['米球知道米遇安鸣谢吗'], a: '知道，五个平台/个人。' },
+            { k: ['米球知道米遇安协议吗'], a: '知道，用户协议与隐私政策。' },
+            { k: ['米球知道米遇安设计吗'], a: '知道，直角、蓝色、毛玻璃、暗色。' },
+            { k: ['米球知道米遇安技术吗'], a: '知道，HTML、Tailwind、JS。' },
+            { k: ['米球知道米遇安图标吗'], a: '知道，Line Awesome 与 Font Awesome。' },
+            { k: ['米球知道米遇安图片吗'], a: '知道，LOGO 与成员头像。' },
+            { k: ['米球知道米遇安按钮吗'], a: '知道，多种直角按钮。' },
+            { k: ['米球知道米遇安卡片吗'], a: '知道，工具、游戏、教育、成员、时间线卡片。' },
+            { k: ['米球知道米遇安轮播吗'], a: '知道，动态与广告轮播。' },
+            { k: ['米球知道米遇安折叠吗'], a: '知道，游戏合集可折叠。' },
+            { k: ['米球知道米遇安滑入吗'], a: '知道，分区页面滑入。' },
+            { k: ['米球知道米遇安返回吗'], a: '知道，导航栏返回按钮。' },
+            { k: ['米球知道米遇安暗色吗'], a: '知道，支持暗色模式。' },
+            { k: ['米球知道米遇安移动吗'], a: '知道，移动侧边栏与响应式。' },
+            { k: ['米球知道米遇安光晕吗'], a: '知道，卡片与时间线光晕。' },
+            { k: ['米球知道米遇安圆形节点吗'], a: '知道，时间线编号为圆形。' },
+            { k: ['米球知道米遇安直角吗'], a: '知道，整体 0px 直角。' },
+            { k: ['米球知道米遇安口号轮播吗'], a: '知道，四组口号循环。' },
+            { k: ['米球知道米遇安浮动吗'], a: '知道，标题与米球有浮动动画。' },
+            { k: ['米球知道米遇安渐变吗'], a: '知道，标题使用动态渐变文字。' },
+            { k: ['米球知道米遇安背景光晕吗'], a: '知道，Hero 区域跟随鼠标。' },
+            { k: ['米球知道米遇安广告箭头吗'], a: '知道，左右箭头切换。' },
+            { k: ['米球知道米遇安指示点吗'], a: '知道，轮播指示点。' },
+            { k: ['米球知道米遇安自动播放吗'], a: '知道，轮播自动播放。' },
+            { k: ['米球知道米遇安悬停暂停吗'], a: '知道，悬停暂停轮播。' },
+            { k: ['米球知道米遇安广告轮播吗'], a: '知道，联合日报与无尽星域。' },
+            { k: ['米球知道米遇安团队轮播吗'], a: '知道，五项动态。' },
+            { k: ['米球知道米遇安会议动态吗'], a: '知道，第十二次集体会议。' },
+            { k: ['米球知道米遇安招租吗'], a: '知道，广告位免费招租。' },
+            { k: ['米球知道米遇安游戏动态吗'], a: '知道，现代战争推演4。' },
+            { k: ['米球知道米遇安学海动态吗'], a: '知道，学海肉鸽游戏。' },
+            { k: ['米球知道米遇安硕普动态吗'], a: '知道，米遇安硕普。' },
+            { k: ['米球知道米遇安战争系列吗'], a: '知道，1、2、3、4 与现代冲突。' },
+            { k: ['米球知道米遇安五子棋吗'], a: '知道，棋类合集。' },
+            { k: ['米球知道米遇安象棋吗'], a: '知道，棋类合集。' },
+            { k: ['米球知道米遇安围棋吗'], a: '知道，棋类合集。' },
+            { k: ['米球知道米遇安国际象棋吗'], a: '知道，棋类合集。' },
+            { k: ['米球知道米遇安陆战棋吗'], a: '知道，棋类合集。' },
+            { k: ['米球知道米遇安肉鸽吗'], a: '知道，学海。' },
+            { k: ['米球知道米遇安课堂吗'], a: '知道，教育分区。' },
+            { k: ['米球知道米遇安文化吗'], a: '知道，教育分区。' },
+            { k: ['米球知道米遇安图书吗'], a: '知道，其他分区。' },
+            { k: ['米球知道米遇安硕普吗'], a: '知道，其他分区。' },
+            { k: ['米球知道米遇安索引吗'], a: '知道，工具分区。' },
+            { k: ['米球知道米遇安翻译吗'], a: '知道，LinguaFlow。' },
+            { k: ['米球知道米遇安编辑器吗'], a: '知道，HTML、Markdown、LaTeX。' },
+            { k: ['米球知道米遇安计算器吗'], a: '知道，工具分区。' },
+            { k: ['米球知道米遇安天气吗'], a: '知道，工具分区。' },
+            { k: ['米球知道米遇安时钟吗'], a: '知道，工具分区。' },
+            { k: ['米球知道米遇安日历吗'], a: '知道，工具分区。' },
+            { k: ['米球知道米遇安会议地点吗'], a: '知道，桂林市第一中学。' },
+            { k: ['米球知道米遇安邮箱吗'], a: '知道，3493792731@qq.com。' },
+            { k: ['米球知道米遇安电话吗'], a: '知道，+86 152 0773 8425。' },
+            { k: ['米球知道米遇安地址吗'], a: '知道，桂林市第一中学。' },
+            { k: ['米球知道米遇安社交吗'], a: '知道，YouTube、哔哩哔哩、抖音、X、QQ 频道、Facebook。' },
+            { k: ['米球知道米遇安鸣谢吗'], a: '知道，GitHub、Microsoft、ChatGPT、DeepSeek、金山办公。' },
+            { k: ['米球知道米遇安协议吗'], a: '知道，用户协议与隐私政策。' },
+            { k: ['米球知道米遇安LOGO吗'], a: '知道，导航栏与标签页。' },
+            { k: ['米球知道米遇安头像吗'], a: '知道，五位成员头像。' },
+            { k: ['米球知道米遇安口号吗'], a: '知道，四组口号。' },
+            { k: ['米球知道米遇安分区吗'], a: '知道，工具、娱乐、教育、其他。' },
+            { k: ['米球知道米遇安导航吗'], a: '知道，首页、关于、成员、分区、联系。' },
+            { k: ['米球知道米遇安页脚吗'], a: '知道，链接、产品、联系方式、版权。' },
+            { k: ['米球知道米遇安广告吗'], a: '知道，联合日报与无尽星域。' },
+            { k: ['米球知道米遇安动态吗'], a: '知道，团队动态轮播。' },
+            { k: ['米球知道米遇安里程碑吗'], a: '知道，时间线展示。' },
+            { k: ['米球知道米遇安成员吗'], a: '知道，五位核心成员。' },
+            { k: ['米球知道米遇安联系吗'], a: '知道，地址、电话、邮箱。' },
+            { k: ['米球知道米遇安设计吗'], a: '知道，直角、蓝色、毛玻璃、暗色。' },
+            { k: ['米球知道米遇安技术吗'], a: '知道，HTML、Tailwind、JS。' },
+            { k: ['米球知道米遇安图标吗'], a: '知道，Line Awesome 与 Font Awesome。' },
+            { k: ['米球知道米遇安图片吗'], a: '知道，LOGO 与成员头像。' },
+            { k: ['米球知道米遇安按钮吗'], a: '知道，多种直角按钮。' },
+            { k: ['米球知道米遇安卡片吗'], a: '知道，工具、游戏、教育、成员、时间线卡片。' },
+            { k: ['米球知道米遇安轮播吗'], a: '知道，动态与广告轮播。' },
+            { k: ['米球知道米遇安折叠吗'], a: '知道，游戏合集可折叠。' },
+            { k: ['米球知道米遇安滑入吗'], a: '知道，分区页面滑入。' },
+            { k: ['米球知道米遇安返回吗'], a: '知道，导航栏返回按钮。' },
+            { k: ['米球知道米遇安暗色吗'], a: '知道，支持暗色模式。' },
+            { k: ['米球知道米遇安移动吗'], a: '知道，移动侧边栏与响应式。' },
+            { k: ['米球知道米遇安光晕吗'], a: '知道，卡片与时间线光晕。' },
+            { k: ['米球知道米遇安圆形节点吗'], a: '知道，时间线编号为圆形。' },
+            { k: ['米球知道米遇安直角吗'], a: '知道，整体 0px 直角。' },
+            { k: ['米球知道米遇安浮动吗'], a: '知道，标题与米球有浮动动画。' },
+            { k: ['米球知道米遇安渐变吗'], a: '知道，标题使用动态渐变文字。' },
+            { k: ['米球知道米遇安背景光晕吗'], a: '知道，Hero 区域跟随鼠标。' },
+            { k: ['米球知道米遇安广告箭头吗'], a: '知道，左右箭头切换。' },
+            { k: ['米球知道米遇安指示点吗'], a: '知道，轮播指示点。' },
+            { k: ['米球知道米遇安自动播放吗'], a: '知道，轮播自动播放。' },
+            { k: ['米球知道米遇安悬停暂停吗'], a: '知道，悬停暂停轮播。' }
+        ];
+
+        /* ================= 生活类问答（精简保留） ================= */
+        var LIFE_QA = [
+            { k: ['你是谁', '你叫什么', '米球是什么', '介绍一下你'], a: '我是米球，米遇安团队的智能小助手。可以问我米遇安相关问题、时间日期、生活小窍门、简单计算，或让我帮你搜索～' },
+            { k: ['你能做什么', '你会什么', '功能', '怎么用'], a: '我能回答米遇安官网与团队问题、时间日期、生活小问题、简单计算，还能帮你用 Bing 搜索。' },
+            { k: ['谢谢', '感谢', '多谢', 'thx'], a: '不客气！能帮上忙就好～' },
+            { k: ['再见', '拜拜', 'bye'], a: '再见！记得常来找我玩～' },
+            { k: ['你好', '您好', '嗨', 'hello', 'hi', '在吗', '哈喽'], a: '你好呀！我是米球，可以问我米遇安的事、时间日期、生活小窍门，或直接输入问题搜索～' },
+            { k: ['早上好'], a: '早上好！新的一天也要元气满满哦。' },
+            { k: ['中午好'], a: '中午好！记得好好吃午饭、休息一下。' },
+            { k: ['下午好'], a: '下午好！来杯水，活动一下肩颈吧。' },
+            { k: ['晚上好'], a: '晚上好！今天辛苦了，早点休息。' },
+            { k: ['晚安'], a: '晚安，好梦～' },
+            { k: ['讲个笑话', '笑话', '搞笑'], a: '为什么程序员总分不清万圣节和圣诞节？因为 Oct 31 == Dec 25。' },
+            { k: ['再讲一个', '再来一个笑话', '另一个笑话'], a: '有人问我代码写得怎么样，我说能跑。他说那不错啊。我说：能跑就行，别管它跑哪去。' },
+            { k: ['鼓励', '加油', '励志', '给我打气'], a: '你不需要一下子变得很厉害，只需要每天比昨天多走一小步。' },
+            { k: ['心情不好', '难过', '伤心', 'emo', '不开心'], a: '先深呼吸三次。情绪没有对错，允许自己难过一会儿，然后去做一件很小但能完成的事。' },
+            { k: ['压力大', '焦虑', '紧张', '烦躁'], a: '试试 4-7-8 呼吸法：吸气 4 秒，屏息 7 秒，呼气 8 秒，重复 4 轮。再把担心的事分成“能做的”和“不能做的”。' },
+            { k: ['推荐一本书', '看什么书', '读书推荐'], a: '可以试试《活着》《小王子》《人类简史》《明朝那些事儿》《被讨厌的勇气》，都很适合学生读。' },
+            { k: ['推荐电影', '看什么电影', '电影推荐'], a: '《肖申克的救赎》《阿甘正传》《千与千寻》《星际穿越》《当幸福来敲门》都很经典。' },
+            { k: ['今天吃什么', '吃什么', '午饭吃什么', '晚饭吃什么'], a: '不知道吃什么时，一荤一素一汤最稳：番茄炒蛋 + 清炒时蔬 + 紫菜蛋花汤，20 分钟搞定。' },
+            { k: ['人生意义', '活着的意义'], a: '没有标准答案。意义不是找到的，是你一步步走出来的。' },
+            { k: ['宇宙有多大', '宇宙多大'], a: '可观测宇宙直径约 930 亿光年，而且还在膨胀。' },
+            { k: ['天为什么是蓝的', '天空为什么是蓝的'], a: '阳光穿过大气时，蓝光波长较短、散射最强烈，所以天空看起来是蓝色。' },
+            { k: ['先看到闪电', '雷声为什么晚'], a: '光速约 30 万公里/秒，声速约 340 米/秒，所以总是先看到闪电再听到雷声。' },
+            { k: ['煮鸡蛋', '鸡蛋怎么煮', '溏心蛋'], a: '冷水下锅，水开后煮 6 分钟是溏心，8 分钟全熟，捞出过冷水更好剥壳。' },
+            { k: ['泡茶', '怎么泡茶'], a: '绿茶用 80℃ 左右的水，红茶 95℃ 左右，别用滚水直冲绿茶，容易发苦。' },
+            { k: ['油渍', '衣服沾油', '衣服油渍'], a: '立刻在油渍处干搓一点洗洁精，静置 5 分钟再正常洗涤，效果最好。' },
+            { k: ['保存香蕉', '香蕉怎么放'], a: '用保鲜膜包住香蕉根部，能多放 2–3 天，别和苹果放在一起。' },
+            { k: ['快速入睡', '失眠', '睡不着'], a: '睡前一小时不看手机，把房间调暗，试试 4-7-8 呼吸法。固定起床时间比固定睡觉时间更重要。' },
+            { k: ['头痛', '头疼'], a: '到安静、光线柔和的地方，按揉太阳穴并冷敷额头。如果持续剧烈头痛，要及时就医。' },
+            { k: ['解辣', '太辣了'], a: '喝牛奶或吃酸奶最有效，别喝热水，会更辣。' },
+            { k: ['冰箱异味', '冰箱臭'], a: '放一小碗小苏打或活性炭，定期更换；剩菜一定要密封。' },
+            { k: ['洗白鞋', '白鞋发黄'], a: '牙膏 + 旧牙刷轻刷，洗净后用纸巾包住阴干，能减少发黄。' },
+            { k: ['眼镜起雾', '镜片起雾'], a: '镜片涂一点洗洁精再擦干，或使用防雾布，能明显减少起雾。' },
+            { k: ['水垢', '去除水垢', '除水垢'], a: '白醋和水 1:1 混合，浸泡 30 分钟后刷洗，水壶、水龙头都适用。' },
+            { k: ['防蚊', '蚊子'], a: '清理积水最关键，纱窗 + 蚊帐最靠谱，户外可用含避蚊胺或派卡瑞丁的驱蚊液。' },
+            { k: ['被蚊子咬', '蚊子咬'], a: '冷敷或涂炉甘石洗剂止痒，尽量不要抓破，避免感染。' },
+            { k: ['烫伤', '烧伤'], a: '立刻用流动冷水冲 15–20 分钟，不要涂牙膏、酱油。起大水泡或面积较大要及时就医。' },
+            { k: ['流鼻血', '鼻出血'], a: '身体前倾，捏住鼻翼软骨处 10 分钟，不要仰头，避免血液倒流。' },
+            { k: ['打嗝', '一直打嗝'], a: '连续小口喝温水，或屏气 10 秒，多数能缓解。' },
+            { k: ['晕车', '坐车难受'], a: '尽量坐前排看远处，出发前别吃太饱，可以含一片姜。' },
+            { k: ['感冒', '着凉'], a: '多喝水、多休息，对症用药；如果高烧不退或呼吸困难，要及时就医。' },
+            { k: ['发烧', '退烧'], a: '38.5℃ 以下可先物理降温、多喝水；持续高烧或精神状态差要及时就医。' },
+            { k: ['拉肚子', '腹泻'], a: '补充口服补液盐，吃清淡易消化食物；出现血便或高烧要就医。' },
+            { k: ['胃疼', '胃痛'], a: '不要空腹吃辛辣刺激食物，规律三餐；反复胃痛建议做检查。' },
+            { k: ['保护视力', '护眼'], a: '记住 20-20-20 法则：每用眼 20 分钟，看 20 英尺外 20 秒。' },
+            { k: ['眼疲劳', '眼睛累'], a: '热敷 5 分钟、远眺、做眼保健操，减少连续看屏幕的时间。' },
+            { k: ['颈椎', '脖子疼', '肩膀酸'], a: '让屏幕上缘与视线齐平，每 40 分钟起身活动，做做颈部后缩和耸肩。' },
+            { k: ['护腰', '腰疼'], a: '久坐加腰靠，搬重物先蹲下再起身，别直接弯腰硬拉。' },
+            { k: ['跑步膝盖疼', '膝盖疼'], a: '先减量，加强股四头肌训练，选缓冲好的跑鞋；持续疼痛要就医。' },
+            { k: ['热身', '运动前'], a: '做 5–10 分钟动态热身，如高抬腿、开合跳、弓步走，别一上来就冲刺。' },
+            { k: ['拉伸'], a: '每个动作保持 20–30 秒，缓慢呼吸，不要弹震式拉伸。' },
+            { k: ['每天喝多少水', '喝水'], a: '一般 1500–1700ml，运动或天气热要适当增加，少量多次最好。' },
+            { k: ['每天睡多久', '睡眠时间'], a: '中小学生建议 9 小时左右，高中生至少 8 小时，固定作息更重要。' },
+            { k: ['减肥', '瘦身'], a: '控制总热量 + 每周 3 次运动，别极端节食，容易反弹还伤身体。' },
+            { k: ['长高', '怎么长高'], a: '遗传占主要因素，但保证充足睡眠、蛋白质摄入和跳跃类运动有帮助。' },
+            { k: ['防止脱发', '掉头发'], a: '少熬夜、别频繁烫染、洗头别太用力，均衡饮食。' },
+            { k: ['黑眼圈', '去黑眼圈'], a: '先保证睡眠，冷热敷交替，别揉眼睛，注意防晒。' },
+            { k: ['房间凉快', '房间太热'], a: '白天拉窗帘挡阳光，晚上开窗形成对流，风扇对着窗外吹反而更凉。' },
+            { k: ['省电', '省电费'], a: '空调设 26℃、不用时拔插头、换成 LED 灯，冰箱别塞太满。' },
+            { k: ['煮米饭', '米饭怎么煮'], a: '米水比约 1:1.2，提前泡 20 分钟更软糯，煮好焖 10 分钟再开盖。' },
+            { k: ['炒菜不粘锅', '粘锅'], a: '锅烧热再放油，油热再下菜，下锅后别立刻频繁翻动。' },
+            { k: ['煮面条', '面条怎么煮'], a: '水开下面，加一点盐，煮好过凉水更筋道。' },
+            { k: ['煎鱼不破皮', '煎鱼'], a: '鱼擦干水分，锅热油热再下，煎定型后再翻面。' },
+            { k: ['去鱼腥', '鱼腥味'], a: '用料酒、姜片、葱段，清洗时去掉鱼腹内的黑膜。' },
+            { k: ['泡发木耳', '木耳'], a: '冷水泡 2–3 小时即可，别超过 4 小时，泡好放冰箱冷藏。' },
+            { k: ['切洋葱不流泪', '洋葱'], a: '洋葱冷藏 15 分钟再切，或在水里切，能减少刺激。' },
+            { k: ['剥蒜', '大蒜'], a: '刀背拍一下再剥，或用温水泡 5 分钟，都很省事。' },
+            { k: ['解冻肉', '快速解冻'], a: '密封袋装好泡冷水，每 30 分钟换水；不要用热水，也不要在室温久放。' },
+            { k: ['肉更嫩', '肉怎么炒嫩'], a: '逆纹切、加淀粉和少许油抓匀、腌制 15 分钟，大火快炒。' },
+            { k: ['番茄炒蛋', '西红柿炒蛋'], a: '鸡蛋先炒至凝固盛出，番茄炒出汁再回锅，少放一点糖提鲜。' },
+            { k: ['可乐鸡翅'], a: '鸡翅煎至两面金黄，加可乐没过、生抽老抽姜片，中小火收汁。' },
+            { k: ['蛋炒饭', '炒饭'], a: '用隔夜饭，先炒蛋再下饭，大火快炒，粒粒分明。' },
+            { k: ['紫菜蛋花汤'], a: '水开后淋蛋液，边倒边搅，最后放紫菜和香油。' },
+            { k: ['凉拌黄瓜'], a: '黄瓜拍碎更入味，加蒜末、醋、生抽、少许糖和香油。' },
+            { k: ['红烧肉'], a: '五花肉焯水后炒糖色，加生抽老抽料酒，小火炖 40 分钟收汁。' },
+            { k: ['糖醋排骨'], a: '排骨焯水、煎香，加“1 酒 2 酱 3 糖 4 醋”的糖醋汁，收汁即可。' },
+            { k: ['麻婆豆腐'], a: '豆腐先焯水定型，豆瓣酱炒香，分两次勾芡更挂汁。' },
+            { k: ['西红柿鸡蛋面', '番茄鸡蛋面'], a: '先炒番茄出沙，加水煮开，下面条，最后淋蛋液。' },
+            { k: ['煮饺子', '饺子怎么煮'], a: '水开下锅，点三次凉水，饺子浮起就熟了。' },
+            { k: ['提高记忆力', '记忆力'], a: '间隔重复 + 主动回忆，比反复看书记得牢。学完先合上书复述一遍。' },
+            { k: ['集中注意力', '专注', '注意力'], a: '手机放远，用 25 分钟番茄钟，一次只做一件事。' },
+            { k: ['复习', '怎么复习'], a: '当天回顾、周末总结、考前只翻错题，比从头再看一遍高效。' },
+            { k: ['背单词', '单词怎么背'], a: '每天少量多次，结合例句和发音，用艾宾浩斯复习表巩固。' },
+            { k: ['学数学', '数学怎么学'], a: '先理解定义，再做例题，最后刷变式；错题一定要重做。' },
+            { k: ['学英语', '英语怎么学'], a: '每天 15 分钟听力 + 10 分钟朗读，坚持比强度更重要。' },
+            { k: ['提高写作', '作文'], a: '先列提纲再写，多读优秀范文，准备一个素材本。' },
+            { k: ['准备考试', '考试'], a: '先做一套真题摸底，再按薄弱点分配时间，考前回归基础。' },
+            { k: ['时间管理', '时间不够'], a: '把任务按“重要 / 紧急”分成四象限，先做重要且紧急的。' },
+            { k: ['拖延', '克服拖延'], a: '先做 2 分钟，开始比完美更重要。把任务拆到小得不可能失败。' },
+            { k: ['手机卡顿', '手机变慢'], a: '清理存储空间、关闭后台自启、重启手机；长期卡顿可考虑恢复出厂。' },
+            { k: ['电脑变慢', '电脑卡'], a: '卸载不用的软件、清理启动项，条件允许加内存或换固态硬盘。' },
+            { k: ['wifi信号差', '网络不好', '网速慢'], a: '路由器放高处居中，避开微波炉和金属物，优先用 5G 频段。' },
+            { k: ['截图', '怎么截图'], a: 'Windows 用 Win+Shift+S，Mac 用 Shift+Cmd+4，手机一般是电源键 + 音量下。' },
+            { k: ['录屏', '怎么录屏'], a: 'Windows 用 Win+G，Mac 用 Shift+Cmd+5，手机在控制中心里找录屏。' },
+            { k: ['清理手机内存', '手机存储'], a: '删除重复照片和大文件，清理应用缓存，别装来路不明的清理软件。' },
+            { k: ['备份照片', '照片备份'], a: '云盘 + 电脑双备份，重要照片至少存两处。' },
+            { k: ['防诈骗', '诈骗'], a: '不点陌生链接、不透露验证码、不向陌生账户转账，遇到“紧急汇款”先冷静核实。' }
+        ];
+
+        var QA = MIYUAN_QA.concat(LIFE_QA);
+
+        function resolve(q) {
+            var t = q.trim();
+            var c = t.replace(/[\s，。？！,.?!~～、]/g, '');
+
+            var math = tryMath(c);
+            if (math !== null) return { text: '答案是：' + math };
+
+            if (/几点|现在时间|当前时间/.test(c)) return { text: timeText() };
+            if (/今天.*(几号|日期)|今天日期|今天是几号/.test(c)) return { text: dateText() };
+            if (/星期几|周几/.test(c)) return { text: '今天是' + weekText() + '。' };
+            if (/(今年|现在).*(哪一年|年份)|今年是哪年/.test(c)) {
+                return { text: '今年是 ' + new Date().getFullYear() + ' 年。' };
+            }
+
+            var best = null, bestScore = 0;
+            for (var i = 0; i < QA.length; i++) {
+                var item = QA[i], score = 0;
+                for (var j = 0; j < item.k.length; j++) {
+                    if (c.indexOf(item.k[j]) !== -1) score += item.k[j].length;
+                }
+                if (score > bestScore) { bestScore = score; best = item; }
+            }
+            if (best && bestScore > 0) return { text: best.a };
+
+            return { text: '这个问题我暂时还不会，但我可以帮你搜索一下。', search: t };
+        }
+
+        function addMsg(text, who, extra) {
+            var wrap = document.createElement('div');
+            wrap.className = 'mi-msg ' + who;
+
+            var bubble = document.createElement('div');
+            bubble.className = 'mi-bubble';
+            bubble.textContent = text;
+            wrap.appendChild(bubble);
+
+            if (extra && extra.search) {
+                var btn = document.createElement('button');
+                btn.className = 'mi-search-btn';
+                btn.textContent = '用 Bing 搜索「' + extra.search + '」';
+                btn.addEventListener('click', function () {
+                    window.open('https://www.bing.com/search?q=' + encodeURIComponent(extra.search), '_blank');
+                });
+                wrap.appendChild(btn);
+            }
+
+            msgs.appendChild(wrap);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function ballTalk() {
+            ball.classList.add('talk');
+            setTimeout(function () { ball.classList.remove('talk'); }, 700);
+        }
+
+        function openPanel() {
+            panel.classList.add('open');
+            panel.setAttribute('aria-hidden', 'false');
+            ballTalk();
+            if (!greeted) {
+                greeted = true;
+                setTimeout(function () {
+                    addMsg('嗨，我是米球！可以问我米遇安官网、团队、分区、工具、游戏、教育等 500+ 个问题，也可以聊时间、生活小窍门，或直接输入问题让我帮你搜索～', 'bot');
+                }, 200);
+            }
+            setTimeout(function () { input.focus(); }, 260);
+        }
+
+        function closePanel() {
+            panel.classList.remove('open');
+            panel.setAttribute('aria-hidden', 'true');
+        }
+
+        ball.addEventListener('click', function () {
+            if (panel.classList.contains('open')) closePanel();
+            else openPanel();
+        });
+        ball.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (panel.classList.contains('open')) closePanel();
+                else openPanel();
+            }
+        });
+        closeBtn.addEventListener('click', closePanel);
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
+        });
+
+        function submit() {
+            var q = input.value.trim();
+            if (!q) return;
+            addMsg(q, 'user');
+            input.value = '';
+            ballTalk();
+            setTimeout(function () {
+                var r = resolve(q);
+                addMsg(r.text, 'bot', r.search ? { search: r.search } : null);
+            }, 320);
+        }
+
+        sendBtn.addEventListener('click', submit);
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); submit(); }
+        });
+
+        var CHIPS = [
+            '米遇安是什么',
+            '诗福是谁',
+            '米遇安有哪些工具',
+            '米遇安有哪些游戏',
+            '米遇安课堂是什么',
+            '米遇安怎么联系',
+            '现在几点',
+            '讲个笑话'
+        ];
+        CHIPS.forEach(function (text) {
+            var b = document.createElement('button');
+            b.className = 'mi-chip';
+            b.textContent = text;
+            b.addEventListener('click', function () {
+                input.value = text;
+                submit();
+            });
+            chipsBox.appendChild(b);
+        });
+
+        setInterval(function () {
+            if (Math.random() < 0.6) {
+                ball.classList.add('blink');
+                setTimeout(function () { ball.classList.remove('blink'); }, 160);
+            }
+        }, 2800);
+    })();
     </script>
 </body>
 </html>
