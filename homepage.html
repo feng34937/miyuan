@@ -500,7 +500,7 @@
             background-color: #5aa9e6 !important;
         }
 
-        /* ===== 时间线 ===== */
+        /* ===== 旧时间线（保留基础样式） ===== */
         .timeline-item {
             position: relative;
             padding-left: 1.6rem;
@@ -522,6 +522,253 @@
         .timeline-item:hover::before {
             transform: scale(1.25);
             box-shadow: 0 0 8px #0078D7;
+        }
+
+        /* ===== 新版里程碑时间线（紧凑直角版，节点圆形） ===== */
+        .milestone-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(0, 120, 215, 0.06);
+            border: 1px solid rgba(0, 120, 215, 0.15);
+            color: #0078D7;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border-radius: 0 !important;
+        }
+        .dark .milestone-header-badge {
+            background: rgba(90, 169, 230, 0.08);
+            border-color: rgba(90, 169, 230, 0.2);
+            color: #5aa9e6;
+        }
+
+        .timeline-wrap {
+            position: relative;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0.5rem 0 0.25rem;
+        }
+
+        /* 中轴线 */
+        .timeline-wrap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+            transform: translateX(-50%);
+            background: linear-gradient(180deg,
+                    transparent 0%,
+                    rgba(0, 120, 215, 0.3) 5%,
+                    rgba(0, 120, 215, 0.3) 95%,
+                    transparent 100%);
+        }
+        .dark .timeline-wrap::before {
+            background: linear-gradient(180deg,
+                    transparent 0%,
+                    rgba(90, 169, 230, 0.3) 5%,
+                    rgba(90, 169, 230, 0.3) 95%,
+                    transparent 100%);
+        }
+
+        .timeline-entry {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+        .timeline-entry:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 奇数项：卡片在左 */
+        .timeline-entry:nth-child(odd) {
+            justify-content: flex-start;
+            padding-right: calc(50% + 1.6rem);
+        }
+
+        /* 偶数项：卡片在右 */
+        .timeline-entry:nth-child(even) {
+            justify-content: flex-end;
+            padding-left: calc(50% + 1.6rem);
+        }
+
+        /* 节点：圆形编号 */
+        .timeline-node {
+            position: absolute;
+            left: 50%;
+            top: 0.55rem;
+            transform: translateX(-50%);
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0078D7, #2b88d9);
+            color: #ffffff;
+            font-size: 0.58rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            border-radius: 9999px !important;
+            box-shadow: 0 0 0 2px rgba(0, 120, 215, 0.12), 0 3px 8px rgba(0, 120, 215, 0.25);
+            z-index: 3;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .dark .timeline-node {
+            background: linear-gradient(135deg, #5aa9e6, #7bb3e0);
+            color: #0f172a;
+            box-shadow: 0 0 0 2px rgba(90, 169, 230, 0.12), 0 3px 8px rgba(90, 169, 230, 0.25);
+        }
+        .timeline-entry:hover .timeline-node {
+            transform: translateX(-50%) scale(1.08);
+            box-shadow: 0 0 0 4px rgba(0, 120, 215, 0.15), 0 4px 12px rgba(0, 120, 215, 0.35);
+        }
+        .dark .timeline-entry:hover .timeline-node {
+            box-shadow: 0 0 0 4px rgba(90, 169, 230, 0.15), 0 4px 12px rgba(90, 169, 230, 0.35);
+        }
+
+        /* 卡片：直角 + 鼠标跟随光晕 */
+        .timeline-card-new {
+            position: relative;
+            isolation: isolate;
+            width: 100%;
+            padding: 0.55rem 0.85rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 120, 215, 0.12);
+            border-radius: 0 !important;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .dark .timeline-card-new {
+            background: rgba(30, 31, 34, 0.9);
+            border-color: rgba(90, 169, 230, 0.15);
+        }
+        .timeline-card-new:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 120, 215, 0.35);
+            box-shadow: 0 8px 18px -8px rgba(0, 120, 215, 0.3);
+            background: rgba(255, 255, 255, 0.97);
+        }
+        .dark .timeline-card-new:hover {
+            border-color: rgba(90, 169, 230, 0.35);
+            box-shadow: 0 8px 18px -8px rgba(90, 169, 230, 0.3);
+            background: rgba(40, 42, 48, 0.97);
+        }
+
+        /* 鼠标跟随光晕 */
+        .timeline-card-new::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+                    rgba(0, 120, 215, 0.22) 0%,
+                    rgba(0, 120, 215, 0.06) 40%,
+                    transparent 75%);
+            opacity: 0;
+            transition: opacity 0.45s cubic-bezier(0.2, 0.9, 0.4, 1);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .dark .timeline-card-new::before {
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+                    rgba(90, 169, 230, 0.3) 0%,
+                    rgba(90, 169, 230, 0.08) 40%,
+                    transparent 75%);
+        }
+        .timeline-card-new:hover::before {
+            opacity: 1;
+        }
+        .timeline-card-new > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 指向中轴的小三角 */
+        .timeline-card-new::after {
+            content: '';
+            position: absolute;
+            top: 0.75rem;
+            width: 7px;
+            height: 7px;
+            background: inherit;
+            border: 1px solid rgba(0, 120, 215, 0.12);
+            transform: rotate(45deg);
+            transition: border-color 0.3s ease;
+            z-index: 2;
+        }
+        .dark .timeline-card-new::after {
+            border-color: rgba(90, 169, 230, 0.15);
+        }
+        .timeline-card-new:hover::after {
+            border-color: rgba(0, 120, 215, 0.35);
+        }
+        .dark .timeline-card-new:hover::after {
+            border-color: rgba(90, 169, 230, 0.35);
+        }
+        .timeline-entry:nth-child(odd) .timeline-card-new::after {
+            right: -4.5px;
+            border-left: none;
+            border-bottom: none;
+        }
+        .timeline-entry:nth-child(even) .timeline-card-new::after {
+            left: -4.5px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .timeline-date-new {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: #0078D7;
+            margin-bottom: 0.1rem;
+        }
+        .dark .timeline-date-new {
+            color: #5aa9e6;
+        }
+
+        .timeline-desc-new {
+            font-size: 0.76rem;
+            line-height: 1.45;
+            color: #374151;
+        }
+        .dark .timeline-desc-new {
+            color: #d1d5db;
+        }
+
+        /* 移动端：单侧时间线 */
+        @media (max-width: 767px) {
+            .timeline-wrap::before {
+                left: 13px;
+                transform: none;
+            }
+            .timeline-entry,
+            .timeline-entry:nth-child(odd),
+            .timeline-entry:nth-child(even) {
+                justify-content: flex-start;
+                padding-left: 2.4rem;
+                padding-right: 0;
+            }
+            .timeline-node {
+                left: 13px;
+                top: 0.5rem;
+                width: 24px;
+                height: 24px;
+                font-size: 0.55rem;
+                border-radius: 9999px !important;
+            }
+            .timeline-entry:hover .timeline-node {
+                transform: translateX(-50%) scale(1.06);
+            }
+            .timeline-card-new::after {
+                display: none !important;
+            }
         }
 
         /* ===== 团队成员头像（适配图片，使用 jpg） ===== */
@@ -1499,7 +1746,6 @@
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     <div class="mobile-sidebar" id="mobileSidebar">
         <div class="mobile-sidebar-header">
-            <!-- 侧边栏标题：微软正黑，非粗体 -->
             <h3 style="font-family: 'Microsoft JhengHei', '微软正黑', sans-serif; font-weight: normal; font-size: 1.25rem; color: #0078D7;">米遇安</h3>
             <button class="mobile-sidebar-close" id="closeSidebarBtn"><i class="las la-times"></i></button>
         </div>
@@ -1524,7 +1770,6 @@
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center gap-6">
                 <div id="navBackButtonContainer" style="display: none;"><div class="nav-back-button" onclick="closeCurrentSection()"><i class="las la-chevron-left"></i> 返回</div></div>
-                <!-- 导航栏品牌：微软正黑，非粗体 -->
                 <a href="#" class="flex items-center gap-2 text-xl text-primary tracking-tight hover:opacity-80 transition" style="font-family: 'Microsoft JhengHei', '微软正黑', sans-serif; font-weight: normal;">
                     <img src="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png" alt="米遇安" class="h-8 w-auto">
                     米遇安
@@ -1581,7 +1826,6 @@
                         <button class="ad-arrow-btn right" id="adNextBtn" aria-label="下一则广告"><i class="las la-chevron-right"></i></button>
 
                         <div class="ad-carousel-track" id="adCarouselTrack">
-                            <!-- 广告 1：联合日报 -->
                             <div class="ad-slide">
                                 <div class="ad-slide-content">
                                     <div class="ad-icon-wrapper">
@@ -1596,8 +1840,6 @@
                                     阅读新闻 <i class="las la-arrow-right ml-1"></i>
                                 </button>
                             </div>
-
-                            <!-- 广告 2：无尽星域（合作组织：艾奥） -->
                             <div class="ad-slide">
                                 <div class="ad-slide-content">
                                     <div class="ad-icon-wrapper">
@@ -1673,26 +1915,90 @@
                     <div class="flex justify-center gap-2 mt-5" id="carouselDotsContainer"></div>
                 </div>
 
-                <!-- 里程碑 -->
+                <!-- ===== 里程碑（紧凑时间线，圆形节点，卡片光晕） ===== -->
                 <div class="max-w-5xl mx-auto">
-                    <h3 class="text-2xl font-bold text-center mb-6">📆 里程碑 · 我们的故事</h3>
-                    <div class="grid md:grid-cols-2 gap-6 bg-secondary p-6">
-                        <div class="space-y-2">
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">1.</span>2026年3月26日，米遇安正式建立；</div>
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">2.</span>2026年3月27日，米遇安第一次集体会议于桂林市第一中学召开；</div>
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">3.</span>2026年4月10日，米遇安第二次集体会议于桂林市第一中学召开；</div>
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">4.</span>2026年4月15日，米遇安第三次集体会议于桂林市第一中学召开；</div>
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">5.</span>2026年4月21日，OTB一次会议召开；</div>
+                    <div class="text-center mb-8">
+                        <div class="milestone-header-badge"><i class="las la-route"></i> Milestones</div>
+                        <h3 class="text-2xl md:text-3xl font-bold mt-3">📆 里程碑 · 我们的故事</h3>
+                        <p class="text-gray-500 text-xs mt-1">每一步，都值得被记录</p>
+                    </div>
+
+                    <div class="timeline-wrap">
+                        <div class="timeline-entry">
+                            <div class="timeline-node">01</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.03.26</div>
+                                <div class="timeline-desc-new">米遇安正式建立</div>
+                            </div>
                         </div>
-                        <div class="space-y-2">
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">6.</span>2026年4月25日，发布米遇安官网及部分服务；</div>
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">7.</span>2026年4月30日，试行特邀人士制度；</div>
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">8.</span>2026年5月9日，米遇安第四次集体会议于桂林市第一中学召开；</div>
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">9.</span>2026年5月15日，米遇安第五次集体会议于桂林市第一中学召开；</div>
-                            <div class="timeline-item text-sm"><span class="font-mono text-primary font-bold mr-2">10.</span>2026年5月22日，米遇安第六次集体会议于桂林市第一中学召开；</div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">02</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.03.27</div>
+                                <div class="timeline-desc-new">米遇安第一次集体会议于桂林市第一中学召开</div>
+                            </div>
+                        </div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">03</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.04.10</div>
+                                <div class="timeline-desc-new">米遇安第二次集体会议于桂林市第一中学召开</div>
+                            </div>
+                        </div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">04</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.04.15</div>
+                                <div class="timeline-desc-new">米遇安第三次集体会议于桂林市第一中学召开</div>
+                            </div>
+                        </div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">05</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.04.21</div>
+                                <div class="timeline-desc-new">OTB 一次会议召开</div>
+                            </div>
+                        </div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">06</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.04.25</div>
+                                <div class="timeline-desc-new">发布米遇安官网及部分服务</div>
+                            </div>
+                        </div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">07</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.04.30</div>
+                                <div class="timeline-desc-new">试行特邀人士制度</div>
+                            </div>
+                        </div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">08</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.05.09</div>
+                                <div class="timeline-desc-new">米遇安第四次集体会议于桂林市第一中学召开</div>
+                            </div>
+                        </div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">09</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.05.15</div>
+                                <div class="timeline-desc-new">米遇安第五次集体会议于桂林市第一中学召开</div>
+                            </div>
+                        </div>
+                        <div class="timeline-entry">
+                            <div class="timeline-node">10</div>
+                            <div class="timeline-card-new" onmousemove="updateMask(event)">
+                                <div class="timeline-date-new">2026.05.22</div>
+                                <div class="timeline-desc-new">米遇安第六次集体会议于桂林市第一中学召开</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="text-center mt-8"><a href="https://www.kdocs.cn/l/coqzdkzo7y8z" target="_blank" class="btn-more text-sm">更多故事 <i class="las la-arrow-right"></i></a></div>
+
+                    <div class="text-center mt-8">
+                        <a href="https://www.kdocs.cn/l/coqzdkzo7y8z" target="_blank" class="btn-more text-sm">更多故事 <i class="las la-arrow-right"></i></a>
+                    </div>
 
                     <!-- ===== 社交媒体区域 ===== -->
                     <div class="thanks-section hover-tint mt-8" onmousemove="updateMask(event)">
@@ -1729,13 +2035,12 @@
             </div>
         </section>
 
-        <!-- ===== 核心成员（角色介绍已简化） ===== -->
+        <!-- ===== 核心成员 ===== -->
         <section id="team" class="py-16 md:py-20 bg-secondary">
             <div class="container">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">核心成员</h2>
                 <p class="text-center text-gray-600 text-sm mb-8">五位核心成员，各司其职，共同驱动团队创新</p>
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
-                    <!-- 诗福 -->
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
                         <div class="team-avatar-wrapper">
                             <div class="team-avatar">
@@ -1745,7 +2050,6 @@
                         <h3 class="font-bold">诗福</h3>
                         <p class="text-primary text-xs">领导者</p>
                     </div>
-                    <!-- 星斗 -->
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
                         <div class="team-avatar-wrapper">
                             <div class="team-avatar">
@@ -1755,7 +2059,6 @@
                         <h3 class="font-bold">星斗</h3>
                         <p class="text-primary text-xs">副领导者</p>
                     </div>
-                    <!-- 千汐 -->
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
                         <div class="team-avatar-wrapper">
                             <div class="team-avatar">
@@ -1765,7 +2068,6 @@
                         <h3 class="font-bold">千汐</h3>
                         <p class="text-primary text-xs">领导团成员</p>
                     </div>
-                    <!-- 五谷砸麦 -->
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
                         <div class="team-avatar-wrapper">
                             <div class="team-avatar">
@@ -1775,7 +2077,6 @@
                         <h3 class="font-bold">五谷砸麦</h3>
                         <p class="text-primary text-xs">领导团成员</p>
                     </div>
-                    <!-- 辅助线 -->
                     <div class="card-hover p-4 text-center hover-tint" onmousemove="updateMask(event)">
                         <div class="team-avatar-wrapper">
                             <div class="team-avatar">
@@ -1790,7 +2091,6 @@
         </section>
 
         <section id="contact" class="py-16 md:py-20"><div class="container"><h2 class="text-3xl md:text-4xl font-bold text-center mb-2">保持联系</h2><p class="text-center text-gray-600 text-sm mb-8">任何想法、合作或疑问，欢迎找到我们</p><div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-4 bg-secondary p-5"><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-map-marker-alt text-primary"></i></div><div><h4 class="font-bold text-sm">地址</h4><p class="text-xs text-gray-600">桂林市第一中学</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-phone text-primary"></i></div><div><h4 class="font-bold text-sm">电话</h4><p class="text-xs text-gray-600">+86 152 0773 8425</p></div></div><div class="flex items-center gap-3 hover-tint" onmousemove="updateMask(event)"><div class="bg-primary/10 p-2"><i class="las la-envelope text-primary"></i></div><div><h4 class="font-bold text-sm">邮箱</h4><p class="text-xs text-gray-600">3493792731@qq.com</p></div></div></div>
-                <!-- 特别鸣谢：已删除钟平、李志顺 -->
                 <div class="thanks-section hover-tint" onmousemove="updateMask(event)">
                     <h3 class="thanks-title">特别鸣谢</h3>
                     <p class="text-gray-500 text-xs mb-3">感谢以下平台与个人的支持</p>
