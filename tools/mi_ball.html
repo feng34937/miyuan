@@ -52,9 +52,6 @@ html.dark body::after{
 }
 body.hovering::after{opacity:1;}
 
-/* ============================================================
-   双栏布局
-   ============================================================ */
 .app{
   position:relative;z-index:1;
   display:flex;
@@ -62,7 +59,6 @@ body.hovering::after{opacity:1;}
   overflow:hidden;
 }
 
-/* ===== 侧边栏 ===== */
 .sidebar{
   position:relative;
   width:var(--sidebar-w);
@@ -83,7 +79,9 @@ html.dark .sidebar{
   box-shadow:4px 0 34px -14px rgba(0,0,0,.5);
 }
 
-.sidebar-mask{display:none;}
+.sidebar-mask{
+  display:none;
+}
 
 .sidebar-header{
   padding:13px 14px 11px;
@@ -190,7 +188,6 @@ html.dark .sidebar-footer{
 
 .empty-conv{font-size:11px;color:var(--muted);text-align:center;padding:22px 10px;}
 
-/* ===== 主区域 ===== */
 .main{
   flex:1;min-width:0;
   display:flex;flex-direction:column;
@@ -239,7 +236,6 @@ header{
 .icon-btn:active{transform:scale(.94);}
 #convBtn{display:none;}
 
-/* ===== 聊天区 ===== */
 #chat{
   flex:1;overflow-y:auto;
   padding:13px 0 10px;
@@ -290,7 +286,6 @@ header{
 }
 .msg.user .tag{border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.85);}
 
-/* 消息操作 */
 .msg-actions{
   display:flex;gap:2px;align-items:center;
   opacity:0;transform:translateY(-2px);
@@ -312,7 +307,6 @@ header{
 .msg-act.danger:hover{background:var(--danger);color:#fff;border-color:var(--danger);}
 .msg-act:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 
-/* 打字 */
 .typing .bubble{display:flex;gap:4px;align-items:center;padding:10px 13px;font-size:12.5px;color:var(--muted);}
 .typing .dot{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:tdot 1.3s ease-in-out infinite;}
 .typing .dot:nth-child(2){animation-delay:.16s;}
@@ -325,7 +319,6 @@ header{
 }
 .empty-hint .big{font-size:32px;opacity:.5;}
 
-/* 快捷 */
 .chips{display:flex;gap:6px;overflow-x:auto;padding:6px 0;flex-shrink:0;scrollbar-width:none;}
 .chips::-webkit-scrollbar{display:none;}
 .chip{
@@ -336,7 +329,6 @@ header{
 }
 .chip:hover{background:var(--primary-soft);transform:translateY(-1px);}
 
-/* 输入 */
 .composer{display:flex;gap:8px;flex-shrink:0;padding:5px 0 8px;}
 .composer input{
   flex:1;min-width:0;padding:10px 13px;
@@ -355,7 +347,6 @@ header{
 .send-btn:active{transform:scale(.97);}
 .send-btn:disabled{opacity:.45;cursor:not-allowed;}
 
-/* 版权 */
 .copyright{
   flex-shrink:0;text-align:center;
   padding:5px 0 calc(7px + env(safe-area-inset-bottom));
@@ -364,7 +355,6 @@ header{
   opacity:.75;
 }
 
-/* 光晕 */
 .hover-tint{position:relative;isolation:isolate;}
 .hover-tint::before{
   content:'';position:absolute;inset:0;z-index:-1;
@@ -376,7 +366,6 @@ html.dark .hover-tint::before{background:radial-gradient(circle at var(--x,50%) 
 .msg.user .bubble.hover-tint::before{background:radial-gradient(circle at var(--x,50%) var(--y,50%),rgba(255,255,255,.32) 0%,rgba(255,255,255,.12) 44%,transparent 72%);}
 .send-btn.hover-tint::before{background:radial-gradient(circle at var(--x,50%) var(--y,50%),rgba(255,255,255,.38) 0%,rgba(255,255,255,.14) 45%,transparent 72%);}
 
-/* ===== 米球 ===== */
 .mi-ball{
   position:relative;width:1em;height:1em;font-size:38px;border-radius:50%;flex-shrink:0;
   background:radial-gradient(circle at 32% 28%,#a9ddff,#0078D7 55%,#005a9e 100%);
@@ -480,7 +469,6 @@ html.dark .mi-ring{border-color:rgba(90,169,230,.34);}
 @keyframes miRing{0%{transform:scale(.9);opacity:.85;}100%{transform:scale(1.32);opacity:0;}}
 .mi-ball.mini{animation:none;font-size:24px;} .mi-ball.mini .mi-ring{display:none;}
 
-/* Toast */
 .toast{
   position:fixed;bottom:120px;left:50%;
   transform:translateX(-50%) translateY(14px);
@@ -495,26 +483,70 @@ html.dark .mi-ring{border-color:rgba(90,169,230,.34);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ============================================================
-   移动端：恢复抽屉式
+   移动端：抽屉式 + 玻璃效果
    ============================================================ */
 @media (max-width:860px){
+  /* 侧边栏：固定定位，滑入。半透明玻璃 + 强模糊 */
   .sidebar{
     position:fixed;top:0;left:0;bottom:0;
     width:86vw;max-width:320px;
     transform:translateX(-100%);
     z-index:999;
+    /* 玻璃质感关键：半透明 + 强 backdrop-filter */
+    background:rgba(255,255,255,.72);
+    backdrop-filter:blur(44px) saturate(200%);
+    -webkit-backdrop-filter:blur(44px) saturate(200%);
+    border-right:1px solid rgba(255,255,255,.55);
+    box-shadow:8px 0 44px -10px rgba(16,42,80,.32);
+  }
+  html.dark .sidebar{
+    background:rgba(20,24,32,.78);
+    border-right-color:rgba(90,169,230,.22);
+    box-shadow:8px 0 44px -10px rgba(0,0,0,.7);
   }
   .sidebar.active{transform:translateX(0);}
   .sidebar-close{display:grid;}
+
+  /* 遮罩：轻暗度 + 轻模糊，让玻璃更透亮 */
   .sidebar-mask{
-    display:block;position:fixed;inset:0;z-index:998;
-    background:rgba(10,20,40,.22);
-    backdrop-filter:blur(3px);
-    -webkit-backdrop-filter:blur(3px);
+    display:block;
+    position:fixed;inset:0;
+    z-index:998;
+    background:rgba(10,20,40,.18);
+    backdrop-filter:blur(2px);
+    -webkit-backdrop-filter:blur(2px);
     opacity:0;visibility:hidden;
     transition:opacity .3s ease,visibility .3s ease;
+    pointer-events:none;
   }
-  .sidebar-mask.active{opacity:1;visibility:visible;}
+  .sidebar-mask.active{opacity:1;visibility:visible;pointer-events:auto;}
+
+  /* 移动端让内部各层的玻璃更通透，与外层配合 */
+  .sidebar-header{
+    background:rgba(255,255,255,.32);
+    border-bottom-color:rgba(255,255,255,.5);
+  }
+  html.dark .sidebar-header{
+    background:rgba(255,255,255,.06);
+    border-bottom-color:rgba(255,255,255,.1);
+  }
+  .sidebar-footer{
+    background:rgba(255,255,255,.32);
+    border-top-color:rgba(255,255,255,.5);
+  }
+  html.dark .sidebar-footer{
+    background:rgba(255,255,255,.06);
+    border-top-color:rgba(255,255,255,.1);
+  }
+  .conv-item{
+    background:rgba(255,255,255,.5);
+    border-color:rgba(255,255,255,.4);
+  }
+  html.dark .conv-item{
+    background:rgba(255,255,255,.08);
+    border-color:rgba(255,255,255,.1);
+  }
+
   #convBtn{display:grid;}
   .main-inner{padding:0 12px;}
   .msg-wrap{max-width:82%;}
@@ -536,10 +568,7 @@ html.dark .mi-ring{border-color:rgba(90,169,230,.34);}
 </head>
 <body>
 
-<div class="sidebar-mask" id="sidebarMask"></div>
-
 <div class="app">
-  <!-- 侧边栏：桌面端常驻 -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <h2>对话列表</h2>
@@ -551,7 +580,8 @@ html.dark .mi-ring{border-color:rgba(90,169,230,.34);}
     </div>
   </aside>
 
-  <!-- 主区 -->
+  <div class="sidebar-mask" id="sidebarMask"></div>
+
   <div class="main">
     <div class="main-inner">
       <header>
@@ -614,7 +644,6 @@ const dateText = () => { const d=new Date(); return `今天是 ${d.getFullYear()
 const norm = s => String(s).toLowerCase().replace(/[\s，。？！、,.?!~～…:：;；"'“”‘’()（）\[\]【】《》<>]/g,'');
 const fmt = n => Number.isInteger(n) ? String(n) : String(Math.round(n*1e8)/1e8);
 
-/* Toast */
 let toastTimer = null;
 function showToast(msg){
   toastEl.textContent = msg;
@@ -1947,7 +1976,6 @@ document.addEventListener('keydown', e=>{
   if(e.key === 'Escape' && window.innerWidth <= 860) closeSidebar();
 });
 
-/* 桌面/移动切换时清理抽屉状态 */
 const mqDesktop = window.matchMedia('(min-width: 861px)');
 function handleLayoutChange(){
   if(mqDesktop.matches){
