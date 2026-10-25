@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>米球 · 米遇安智能助手</title>
+<meta name="theme-color" content="#0078D7">
+<style>
+:root{
+  --bg:#eef3fa; --panel:#fff; --text:#1a2230; --muted:#6b7a8d;
+  --border:rgba(0,120,215,.14); --primary:#0078D7; --primary-soft:rgba(0,120,215,.08);
+  --bubble-bot:#fff; --bubble-user:linear-gradient(135deg,#0a86e8,#0063b8);
+  --shadow:0 10px 30px -14px rgba(16,42,80,.28);
+  --glow1:rgba(0,120,215,.16); --glow2:rgba(0,120,215,.10);
+  --danger:#e34a4a;
+}
+html.dark{
+  --bg:#0d1116; --panel:#161a20; --text:#e6edf5; --muted:#8fa0b3;
+  --border:rgba(90,169,230,.16); --primary:#5aa9e6; --primary-soft:rgba(90,169,230,.10);
+  --bubble-bot:#1b2028; --bubble-user:linear-gradient(135deg,#4a9bdc,#2b7fbf);
+  --shadow:0 10px 30px -14px rgba(0,0,0,.7);
+  --glow1:rgba(0,120,215,.10); --glow2:rgba(90,169,230,.06);
+  --danger:#f26969;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);transition:background .3s,color .3s;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 12% 8%,var(--glow1),transparent 55%),
+             radial-gradient(circle at 88% 92%,var(--glow2),transparent 52%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(circle 560px at var(--mx,50vw) var(--my,50vh),
+    rgba(0,120,215,.14) 0%,rgba(0,120,215,.045) 45%,transparent 72%);
+  opacity:0;transition:opacity .7s ease;
+}
+html.dark body::after{
+  background:radial-gradient(circle 560px at var(--mx,50vw) var(--my,50vh),
+    rgba(90,169,230,.14) 0%,rgba(90,169,230,.05) 45%,transparent 72%);
+}
+body.hovering::after{opacity:1;}
+
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;padding:0 16px;}
+header{display:flex;align-items:center;gap:12px;padding:14px 2px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.head-info{flex:1;min-width:0;}
+.head-info h1{margin:0;font-size:17px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.head-info p{margin:2px 0 0;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.8);display:inline-block;flex-shrink:0;animation:pulseDot 2s ease-in-out infinite;}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
+.head-actions{display:flex;gap:8px;flex-shrink:0;}
+.icon-btn{
+  width:36px;height:36px;display:grid;place-items:center;background:var(--panel);
+  border:1px solid var(--border);color:var(--muted);cursor:pointer;
+  transition:all .22s cubic-bezier(.2,.9,.4,1);border-radius:0;padding:0;position:relative;isolation:isolate;
+}
+.icon-btn:hover{color:var(--primary);border-color:var(--primary);background:var(--primary-soft);}
+.icon-btn:active{transform:scale(.94);}
+
+#chat{flex:1;overflow-y:auto;padding:16px 2px 12px;display:flex;flex-direction:column;gap:13px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+#chat::-webkit-scrollbar{width:6px;}
+#chat::-webkit-scrollbar-thumb{background:var(--border);}
+
+.msg{display:flex;gap:6px;align-items:flex-start;opacity:0;transform:translateY(8px);transition:opacity .3s ease,transform .3s cubic-bezier(.2,.9,.4,1);position:relative;}
+.msg.in{opacity:1;transform:translateY(0);}
+.msg.user{flex-direction:row-reverse;}
+
+.msg-wrap{position:relative;max-width:min(72%,560px);display:flex;}
+
+.bubble{
+  padding:11px 15px;font-size:14.5px;line-height:1.66;
+  white-space:pre-wrap;word-break:break-word;background:var(--bubble-bot);
+  border:1px solid var(--border);box-shadow:var(--shadow);border-radius:0;
+  position:relative;isolation:isolate;min-width:44px;
+}
+.msg.user .bubble{background:var(--bubble-user);color:#fff;border:none;box-shadow:0 8px 22px -12px rgba(0,120,215,.85);}
+
+.search-link{display:inline-block;margin-top:8px;color:var(--primary);font-weight:700;font-size:13.5px;text-decoration:underline;text-underline-offset:3px;}
+.msg.user .search-link{color:#fff;}
+.search-link:hover{opacity:.75;}
+.tag{display:inline-block;font-size:10.5px;padding:1px 7px;margin-left:6px;border:1px solid var(--border);color:var(--muted);vertical-align:middle;}
+.msg.user .tag{border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.85);}
+
+/* 消息操作按钮组 */
+.msg-actions{
+  display:flex;
+  gap:3px;
+  align-items:center;
+  opacity:0;
+  transform:translateY(-2px);
+  transition:opacity .2s ease,transform .2s ease;
+  flex-shrink:0;
+  align-self:flex-start;
+  margin-top:2px;
+  pointer-events:none;
+}
+.msg:hover .msg-actions{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+.msg-act{
+  width:26px;height:26px;
+  display:grid;place-items:center;
+  background:var(--panel);
+  border:1px solid var(--border);
+  color:var(--muted);
+  cursor:pointer;
+  border-radius:50%;
+  padding:0;
+  font-size:12px;
+  line-height:1;
+  transition:all .18s ease;
+  flex-shrink:0;
+}
+.msg-act:hover{
+  background:var(--primary-soft);
+  color:var(--primary);
+  border-color:var(--primary);
+  transform:scale(1.08);
+}
+.msg-act.danger:hover{
+  background:var(--danger);
+  color:#fff;
+  border-color:var(--danger);
+}
+.msg-act:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* 打字 / 生成中 */
+.typing .bubble{display:flex;gap:5px;align-items:center;padding:12px 16px;font-size:13.5px;color:var(--muted);}
+.typing .dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:tdot 1.3s ease-in-out infinite;}
+.typing .dot:nth-child(2){animation-delay:.16s;}
+.typing .dot:nth-child(3){animation-delay:.32s;}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.35;}30%{transform:translateY(-5px);opacity:1;}}
+
+.empty-hint{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:13px;gap:12px;padding:30px 20px;text-align:center;}
+.empty-hint .big{font-size:40px;opacity:.5;}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding:8px 2px;flex-shrink:0;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  flex:0 0 auto;padding:7px 14px;font-size:12.5px;cursor:pointer;background:var(--panel);
+  border:1px solid var(--border);color:var(--primary);transition:all .2s cubic-bezier(.2,.9,.4,1);
+  border-radius:0;font-family:inherit;white-space:nowrap;position:relative;isolation:isolate;
+}
+.chip:hover{background:var(--primary-soft);transform:translateY(-1px);}
+.composer{display:flex;gap:10px;flex-shrink:0;padding:6px 0 calc(16px + env(safe-area-inset-bottom));}
+.composer input{
+  flex:1;min-width:0;padding:13px 16px;font-size:14.5px;font-family:inherit;
+  border:1px solid var(--border);background:var(--panel);color:var(--text);
+  outline:none;border-radius:0;transition:border-color .2s,box-shadow .2s;
+}
+.composer input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);}
+.send-btn{
+  padding:0 24px;background:var(--primary);color:#fff;border:none;cursor:pointer;
+  border-radius:0;font-size:14px;font-weight:700;font-family:inherit;
+  transition:filter .2s,transform .15s;flex-shrink:0;position:relative;isolation:isolate;
+}
+.send-btn:hover{filter:brightness(1.08);}
+.send-btn:active{transform:scale(.97);}
+.send-btn:disabled{opacity:.45;cursor:not-allowed;}
+
+.hover-tint{position:relative;isolation:isolate;}
+.hover-tint::before{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:radial-gradient(circle at var(--x,50%) var(--y,50%),rgba(0,120,215,.28) 0%,rgba(0,120,215,.10) 42%,transparent 72%);
+  opacity:0;transition:opacity .45s cubic-bezier(.2,.9,.4,1);pointer-events:none;
+}
+html.dark .hover-tint::before{background:radial-gradient(circle at var(--x,50%) var(--y,50%),rgba(90,169,230,.36) 0%,rgba(90,169,230,.12) 42%,transparent 72%);}
+.hover-tint:hover::before{opacity:1;}
+.msg.user .bubble.hover-tint::before{background:radial-gradient(circle at var(--x,50%) var(--y,50%),rgba(255,255,255,.32) 0%,rgba(255,255,255,.12) 44%,transparent 72%);}
+.send-btn.hover-tint::before{background:radial-gradient(circle at var(--x,50%) var(--y,50%),rgba(255,255,255,.38) 0%,rgba(255,255,255,.14) 45%,transparent 72%);}
+
+/* ===== 米球 ===== */
+.mi-ball{
+  position:relative;width:1em;height:1em;font-size:46px;border-radius:50%;flex-shrink:0;
+  background:radial-gradient(circle at 32% 28%,#a9ddff,#0078D7 55%,#005a9e 100%);
+  box-shadow:0 8px 22px -8px rgba(0,120,215,.65),inset 0 -.08em .18em rgba(0,0,0,.18),inset 0 .08em .16em rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;animation:miFloat 4.5s ease-in-out infinite;
+}
+html.dark .mi-ball{background:radial-gradient(circle at 32% 28%,#cdeeff,#5aa9e6 55%,#3a7ca5 100%);}
+@keyframes miFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5%);}}
+#headBall{cursor:pointer;transition:filter .2s ease;}
+#headBall:hover{filter:brightness(1.06);}
+#headBall:active{filter:brightness(1.14);}
+
+.mi-face{position:relative;width:.5em;height:.36em;}
+.mi-eye{
+  position:absolute;top:.055em;width:.083em;height:.125em;background:#0b2b45;border-radius:99px;
+  transition:height .14s ease,width .14s ease,transform .2s ease,background .2s ease,border .2s ease,border-radius .2s ease,opacity .2s ease,top .2s ease;
+}
+.mi-eye-l{left:.06em;} .mi-eye-r{right:.06em;}
+.mi-mouth{
+  position:absolute;left:50%;bottom:.02em;transform:translateX(-50%);
+  width:.17em;height:.07em;border-bottom:.028em solid #0b2b45;
+  border-radius:0 0 99px 99px;transition:all .2s ease;
+}
+.mi-brow{position:absolute;top:.005em;width:.1em;height:.022em;background:#0b2b45;border-radius:99px;opacity:0;transition:all .2s ease;transform-origin:center;}
+.mi-brow-l{left:.045em;} .mi-brow-r{right:.045em;}
+.mi-blush{position:absolute;top:.16em;width:.11em;height:.055em;border-radius:50%;background:rgba(255,110,140,.55);opacity:0;transition:opacity .2s ease;}
+.mi-blush-l{left:-.01em;} .mi-blush-r{right:-.01em;}
+.mi-tear{position:absolute;top:.17em;left:.055em;width:.05em;height:.075em;background:#7cc4ff;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;opacity:0;transition:opacity .2s ease;}
+.mi-shades{position:absolute;left:-.015em;right:-.015em;top:.045em;height:.1em;background:#0b2b45;border-radius:3px;opacity:0;transition:opacity .2s ease;}
+
+.mi-ball.exp-happy .mi-eye{background:transparent;border-top:.03em solid #0b2b45;border-radius:99px 99px 0 0;height:.07em;}
+.mi-ball.exp-happy .mi-mouth{width:.22em;height:.11em;border:.028em solid #0b2b45;border-top:none;border-radius:0 0 99px 99px;}
+.mi-ball.exp-laugh .mi-eye{background:transparent;border-top:.03em solid #0b2b45;border-radius:99px 99px 0 0;height:.075em;}
+.mi-ball.exp-laugh .mi-mouth{width:.24em;height:.13em;border:.028em solid #0b2b45;border-top:none;border-radius:0 0 99px 99px;background:#7a2233;}
+.mi-ball.exp-laugh .mi-blush{opacity:1;}
+.mi-ball.exp-surprised .mi-eye{width:.1em;height:.145em;}
+.mi-ball.exp-surprised .mi-mouth{width:.09em;height:.09em;border:.028em solid #0b2b45;border-radius:99px;}
+.mi-ball.exp-wink .mi-eye-l{height:.022em;}
+.mi-ball.exp-wink .mi-mouth{width:.13em;height:.06em;transform:translateX(-50%) rotate(-10deg);}
+.mi-ball.exp-sleepy .mi-eye{height:.032em;}
+.mi-ball.exp-sleepy .mi-mouth{width:.07em;height:.04em;border-bottom:.022em solid #0b2b45;}
+.mi-ball.exp-sly .mi-eye-l{transform:translateX(.022em);}
+.mi-ball.exp-sly .mi-eye-r{transform:translateX(-.022em);}
+.mi-ball.exp-sly .mi-mouth{width:.12em;height:.06em;transform:translateX(-50%) rotate(9deg);}
+.mi-ball.exp-sad .mi-brow{opacity:1;}
+.mi-ball.exp-sad .mi-brow-l{transform:rotate(18deg);}
+.mi-ball.exp-sad .mi-brow-r{transform:rotate(-18deg);}
+.mi-ball.exp-sad .mi-mouth{width:.12em;height:.055em;border-top:.026em solid #0b2b45;border-bottom:none;border-radius:99px 99px 0 0;}
+.mi-ball.exp-angry .mi-brow{opacity:1;background:#c0392b;}
+.mi-ball.exp-angry .mi-brow-l{transform:rotate(-22deg);}
+.mi-ball.exp-angry .mi-brow-r{transform:rotate(22deg);}
+.mi-ball.exp-angry .mi-eye{height:.1em;background:#7a1d1d;}
+.mi-ball.exp-angry .mi-mouth{width:.12em;height:.05em;border-bottom:.03em solid #7a1d1d;}
+.mi-ball.exp-love .mi-eye{width:.075em;height:.075em;background:#e8486f;border-radius:0;transform:rotate(45deg);}
+.mi-ball.exp-love .mi-eye::before,.mi-ball.exp-love .mi-eye::after{content:'';position:absolute;width:.075em;height:.075em;border-radius:50%;background:#e8486f;}
+.mi-ball.exp-love .mi-eye::before{left:-.038em;top:0;}
+.mi-ball.exp-love .mi-eye::after{left:0;top:-.038em;}
+.mi-ball.exp-love .mi-mouth{width:.1em;height:.09em;border:.026em solid #e8486f;border-top:none;border-radius:0 0 99px 99px;}
+.mi-ball.exp-love .mi-blush{opacity:1;}
+.mi-ball.exp-cool .mi-shades{opacity:1;}
+.mi-ball.exp-cool .mi-eye{opacity:0;}
+.mi-ball.exp-cool .mi-mouth{width:.15em;height:.06em;transform:translateX(-50%) rotate(-6deg);}
+.mi-ball.exp-confused .mi-eye-l{width:.09em;height:.13em;}
+.mi-ball.exp-confused .mi-eye-r{width:.068em;height:.09em;}
+.mi-ball.exp-confused .mi-brow{opacity:1;}
+.mi-ball.exp-confused .mi-brow-l{transform:rotate(-14deg);}
+.mi-ball.exp-confused .mi-mouth{width:.13em;height:.05em;transform:translateX(-50%) rotate(-8deg);}
+.mi-ball.exp-shy .mi-eye{height:.05em;}
+.mi-ball.exp-shy .mi-mouth{width:.08em;height:.055em;border:.024em solid #0b2b45;border-radius:99px;}
+.mi-ball.exp-shy .mi-blush{opacity:1;background:rgba(255,110,140,.7);}
+.mi-ball.exp-thinking .mi-eye{top:.025em;}
+.mi-ball.exp-thinking .mi-eye-r{height:.1em;}
+.mi-ball.exp-thinking .mi-mouth{width:.06em;height:.06em;border:.026em solid #0b2b45;border-radius:99px;transform:translateX(60%);}
+.mi-ball.exp-cry .mi-eye{height:.03em;}
+.mi-ball.exp-cry .mi-mouth{width:.12em;height:.055em;border-top:.026em solid #0b2b45;border-bottom:none;border-radius:99px 99px 0 0;}
+.mi-ball.exp-cry .mi-tear{opacity:1;}
+.mi-ball.exp-dizzy .mi-eye{background:transparent;width:.08em;height:.08em;border-radius:0;}
+.mi-ball.exp-dizzy .mi-eye::before,.mi-ball.exp-dizzy .mi-eye::after{content:'';position:absolute;left:0;top:50%;width:100%;height:.022em;background:#0b2b45;margin-top:-.011em;}
+.mi-ball.exp-dizzy .mi-eye::before{transform:rotate(45deg);}
+.mi-ball.exp-dizzy .mi-eye::after{transform:rotate(-45deg);}
+.mi-ball.exp-dizzy .mi-mouth{width:.11em;height:.04em;border-bottom:.026em solid #0b2b45;transform:translateX(-50%) rotate(6deg);}
+.mi-ball.exp-proud .mi-eye{height:.09em;}
+.mi-ball.exp-proud .mi-brow{opacity:1;}
+.mi-ball.exp-proud .mi-brow-l{transform:rotate(-10deg);}
+.mi-ball.exp-proud .mi-brow-r{transform:rotate(10deg);}
+.mi-ball.exp-proud .mi-mouth{width:.14em;height:.07em;transform:translateX(-50%) rotate(-5deg);}
+
+.mi-ball.blink .mi-eye{height:.022em!important;background:#0b2b45!important;border:none!important;border-radius:99px!important;}
+.mi-ball.blink .mi-eye::before,.mi-ball.blink .mi-eye::after{display:none!important;}
+.mi-ball.talk .mi-mouth{
+  width:.11em!important;height:.11em!important;border:.028em solid #0b2b45!important;
+  border-top:.028em solid #0b2b45!important;border-radius:99px!important;
+  transform:translateX(-50%)!important;background:transparent!important;
+}
+.mi-ring{
+  position:absolute;inset:-.08em;border-radius:50%;border:1px solid rgba(0,120,215,.32);
+  animation:miRing 3s ease-out infinite;pointer-events:none;
+}
+html.dark .mi-ring{border-color:rgba(90,169,230,.34);}
+@keyframes miRing{0%{transform:scale(.9);opacity:.85;}100%{transform:scale(1.32);opacity:0;}}
+.mi-ball.mini{animation:none;} .mi-ball.mini .mi-ring{display:none;}
+
+/* ============================================================
+   侧边栏（毛玻璃升级）
+   ============================================================ */
+.sidebar-mask{
+  position:fixed;inset:0;z-index:998;
+  background:rgba(10,20,40,.22);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease;
+}
+.sidebar-mask.active{opacity:1;visibility:visible;}
+
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:310px;max-width:86vw;
+  z-index:999;
+  background:rgba(255,255,255,.52);
+  backdrop-filter:blur(32px) saturate(200%);
+  -webkit-backdrop-filter:blur(32px) saturate(200%);
+  border-right:1px solid rgba(255,255,255,.4);
+  display:flex;flex-direction:column;
+  transform:translateX(-100%);
+  transition:transform .3s cubic-bezier(.2,.9,.4,1);
+  box-shadow:4px 0 40px -10px rgba(16,42,80,.25);
+}
+html.dark .sidebar{
+  background:rgba(18,22,30,.55);
+  border-right-color:rgba(90,169,230,.18);
+  box-shadow:4px 0 40px -10px rgba(0,0,0,.65);
+}
+.sidebar.active{transform:translateX(0);}
+
+.sidebar-header{
+  padding:16px 18px;
+  border-bottom:1px solid rgba(255,255,255,.45);
+  background:rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+html.dark .sidebar-header{
+  border-bottom-color:rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);
+}
+.sidebar-header h2{margin:0;font-size:15px;font-weight:800;color:var(--primary);letter-spacing:.02em;}
+.sidebar-close{
+  background:none;border:none;cursor:pointer;color:var(--muted);
+  font-size:18px;padding:4px;display:grid;place-items:center;transition:color .2s;
+}
+.sidebar-close:hover{color:var(--primary);}
+
+.conv-list{
+  flex:1;overflow-y:auto;padding:10px 10px;
+  display:flex;flex-direction:column;gap:6px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.conv-list::-webkit-scrollbar{width:5px;}
+.conv-list::-webkit-scrollbar-thumb{background:var(--border);}
+
+.conv-item{
+  position:relative;display:flex;align-items:center;gap:6px;
+  padding:10px 12px;cursor:pointer;
+  background:rgba(255,255,255,.42);
+  border:1px solid rgba(255,255,255,.3);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  transition:all .2s ease;
+  border-radius:0;
+}
+html.dark .conv-item{
+  background:rgba(255,255,255,.05);
+  border-color:rgba(255,255,255,.06);
+}
+.conv-item:hover{background:var(--primary-soft);border-color:var(--border);}
+.conv-item.active{
+  background:rgba(0,120,215,.14);
+  border-color:var(--primary);
+  box-shadow:0 0 0 1px rgba(0,120,215,.2);
+}
+html.dark .conv-item.active{
+  background:rgba(90,169,230,.16);
+}
+.conv-item-body{flex:1;min-width:0;}
+.conv-item-title{
+  font-size:13px;font-weight:600;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:2px;
+}
+.conv-item-meta{font-size:10.5px;color:var(--muted);}
+
+.conv-rename-input{
+  width:100%;font-size:13px;font-weight:600;color:var(--text);
+  padding:3px 6px;border:1px solid var(--primary);
+  background:var(--panel);outline:none;
+  font-family:inherit;border-radius:0;
+  box-shadow:0 0 0 3px var(--primary-soft);
+}
+
+.conv-actions{
+  display:flex;gap:2px;flex-shrink:0;
+  opacity:0;transition:opacity .18s;
+}
+.conv-item:hover .conv-actions{opacity:1;}
+.conv-act{
+  width:24px;height:24px;
+  display:grid;place-items:center;background:transparent;
+  border:none;color:var(--muted);cursor:pointer;padding:0;
+  border-radius:50%;font-size:12px;line-height:1;
+  transition:all .16s;
+}
+.conv-act:hover{background:rgba(0,120,215,.15);color:var(--primary);}
+.conv-act.danger:hover{background:var(--danger);color:#fff;}
+
+.sidebar-footer{
+  padding:12px;
+  border-top:1px solid rgba(255,255,255,.45);
+  background:rgba(255,255,255,.25);
+  flex-shrink:0;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+html.dark .sidebar-footer{
+  border-top-color:rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);
+}
+.new-conv-btn{
+  width:100%;padding:11px 14px;
+  background:var(--primary);color:#fff;border:none;cursor:pointer;
+  font-size:13.5px;font-weight:700;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:filter .2s,transform .15s;
+  border-radius:0;
+}
+.new-conv-btn:hover{filter:brightness(1.08);}
+.new-conv-btn:active{transform:scale(.98);}
+
+.empty-conv{font-size:12px;color:var(--muted);text-align:center;padding:24px 12px;}
+
+/* ===== Toast 提示 ===== */
+.toast{
+  position:fixed;
+  bottom:140px;
+  left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:rgba(20,28,42,.92);
+  color:#fff;
+  padding:9px 20px;
+  font-size:13px;
+  font-weight:600;
+  opacity:0;
+  transition:opacity .25s ease,transform .25s ease;
+  z-index:10000;
+  pointer-events:none;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 10px 30px -8px rgba(0,0,0,.5);
+  border-radius:0;
+  letter-spacing:.02em;
+}
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+@media (max-width:520px){
+  .wrap{padding:0 12px;}
+  .bubble{font-size:14px;}
+  .msg-wrap{max-width:78%;}
+  .send-btn{padding:0 18px;}
+  .head-info h1{font-size:16px;}
+  .sidebar{width:88%;}
+  .msg-actions{opacity:1;transform:none;pointer-events:auto;}
+  .msg-act{width:24px;height:24px;font-size:11px;}
+  .conv-actions{opacity:1;}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-mask" id="sidebarMask"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>对话列表</h2>
+    <button class="sidebar-close" id="sidebarClose" aria-label="关闭">✕</button>
+  </div>
+  <div class="conv-list" id="convList"></div>
+  <div class="sidebar-footer">
+    <button class="new-conv-btn" id="newConvBtn">＋ 新建对话</button>
+  </div>
+</aside>
+
+<div class="wrap">
+  <header>
+    <div class="mi-ball" id="headBall" style="font-size:46px" title="点我换表情（17 种）"></div>
+    <div class="head-info">
+      <h1>米球 <span id="expName" class="tag" style="font-size:10px">微笑</span></h1>
+      <p><span class="status-dot"></span><span id="convTitle">米遇安 · 智能助手</span></p>
+    </div>
+    <div class="head-actions">
+      <button class="icon-btn hover-tint" id="convBtn" aria-label="对话列表" title="对话列表">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"/>
+          <line x1="8" y1="12" x2="21" y2="12"/>
+          <line x1="8" y1="18" x2="21" y2="18"/>
+          <line x1="3" y1="6" x2="3.01" y2="6"/>
+          <line x1="3" y1="12" x2="3.01" y2="12"/>
+          <line x1="3" y1="18" x2="3.01" y2="18"/>
+        </svg>
+      </button>
+      <button class="icon-btn hover-tint" id="themeBtn" aria-label="切换主题">
+        <svg id="themeIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn hover-tint" id="clearBtn" aria-label="清空当前对话" title="清空当前对话消息">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="chat"></main>
+  <div class="chips" id="chips"></div>
+  <div class="composer">
+    <input id="input" type="text" placeholder="问点什么吧…" autocomplete="off" spellcheck="false">
+    <button class="send-btn hover-tint" id="sendBtn">发送</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   0. 基础
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const chat=$('chat'), input=$('input'), sendBtn=$('sendBtn'), chipsEl=$('chips'), headBall=$('headBall'), expName=$('expName');
+const convTitle=$('convTitle');
+const sidebar=$('sidebar'), sidebarMask=$('sidebarMask'), convList=$('convList');
+const toastEl=$('toast');
+
+const state = { busy:false };
+
+const pad = n => String(n).padStart(2,'0');
+const WEEK = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+const weekText = () => WEEK[new Date().getDay()];
+const timeText = () => { const d=new Date(); return `现在是 ${pad(d.getHours())}:${pad(d.getMinutes())}（${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${weekText()}）`; };
+const dateText = () => { const d=new Date(); return `今天是 ${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日，${weekText()}。`; };
+const norm = s => String(s).toLowerCase().replace(/[\s，。？！、,.?!~～…:：;；"'“”‘’()（）\[\]【】《》<>]/g,'');
+const fmt = n => Number.isInteger(n) ? String(n) : String(Math.round(n*1e8)/1e8);
+
+/* ============================================================
+   Toast
+   ============================================================ */
+let toastTimer = null;
+function showToast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 1600);
+}
+
+/* ============================================================
+   存储层
+   ============================================================ */
+const STORE_KEY = 'miqiu_conversations_v3';
+const store = { conversations: [], currentId: null };
+
+function uid(){ return 'c_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7); }
+
+/* 序列化：只保存必要字段，剔除临时状态 */
+function serializeStore(){
+  return {
+    currentId: store.currentId,
+    conversations: store.conversations.map(c=>({
+      id: c.id,
+      title: c.title,
+      createdAt: c.createdAt,
+      updatedAt: c.updatedAt,
+      messages: c.messages.map(m=>({
+        role: m.role,
+        text: m.text,
+        link: m.link || null,
+        tag: m.tag || null,
+        time: m.time || Date.now()
+      }))
+    }))
+  };
+}
+
+function loadStore(){
+  // 尝试 v3，失败时兼容 v2
+  let raw = null;
+  try{ raw = localStorage.getItem(STORE_KEY); }catch(e){}
+  if(!raw){
+    try{ raw = localStorage.getItem('miqiu_conversations_v2'); }catch(e){}
+  }
+  if(!raw) return false;
+  try{
+    const d = JSON.parse(raw);
+    if(d && Array.isArray(d.conversations)){
+      store.conversations = d.conversations.map(c=>({
+        id: c.id,
+        title: c.title || '新对话',
+        createdAt: c.createdAt || Date.now(),
+        updatedAt: c.updatedAt || Date.now(),
+        messages: (c.messages || []).map(m=>({
+          role: m.role,
+          text: m.text,
+          link: m.link || null,
+          tag: m.tag || null,
+          time: m.time || Date.now()
+        }))
+      }));
+      store.currentId = d.currentId || (store.conversations[0] && store.conversations[0].id) || null;
+      return true;
+    }
+  }catch(e){ /* 数据损坏 */ }
+  return false;
+}
+
+function saveStore(){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(serializeStore()));
+    // 顺手清理旧版 key
+    try{ localStorage.removeItem('miqiu_conversations_v2'); }catch(e){}
+  }catch(e){
+    console.warn('保存失败', e);
+    showToast('保存失败，可能是存储空间已满');
+  }
+}
+
+function getCurrentConv(){
+  return store.conversations.find(c => c.id === store.currentId) || null;
+}
+
+function createConversation(silent){
+  const conv = {
+    id: uid(),
+    title: '新对话',
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    messages: []
+  };
+  store.conversations.unshift(conv);
+  store.currentId = conv.id;
+  saveStore();
+  if(!silent) renderSidebarList();
+  return conv;
+}
+
+function deleteConversation(id){
+  const idx = store.conversations.findIndex(c => c.id === id);
+  if(idx < 0) return;
+  const conv = store.conversations[idx];
+  if(conv.messages.length > 0){
+    if(!confirm('删除这个对话？里面的 ' + conv.messages.length + ' 条消息将一并消失。')) return;
+  }
+  store.conversations.splice(idx, 1);
+  if(store.currentId === id){
+    if(store.conversations.length > 0){
+      store.currentId = store.conversations[0].id;
+    }else{
+      createConversation(true);
+    }
+  }
+  saveStore();
+  renderSidebarList();
+  renderCurrentConversation();
+}
+
+function switchConversation(id){
+  if(store.currentId === id) return;
+  store.currentId = id;
+  saveStore();
+  renderSidebarList();
+  renderCurrentConversation();
+}
+
+function renameConversation(conv, newTitle){
+  const t = String(newTitle).trim();
+  if(!t || t === conv.title) return;
+  conv.title = t.slice(0, 40);
+  conv.updatedAt = Date.now();
+  saveStore();
+  renderSidebarList();
+  if(conv.id === store.currentId){
+    convTitle.textContent = conv.title;
+  }
+}
+
+/* 关闭页面前兜底保存 */
+window.addEventListener('beforeunload', ()=>{ saveStore(); });
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'hidden') saveStore();
+});
+
+/* ============================================================
+   语言检测
+   ============================================================ */
+function chineseRatio(s){
+  if(!s) return 0;
+  const m = String(s).match(/[\u4e00-\u9fa5]/g);
+  const zh = m ? m.length : 0;
+  const visible = String(s).replace(/\s/g,'').length;
+  return visible ? zh / visible : 0;
+}
+function englishRatio(s){
+  if(!s) return 0;
+  const m = String(s).match(/[a-zA-Z]/g);
+  const en = m ? m.length : 0;
+  const visible = String(s).replace(/\s/g,'').length;
+  return visible ? en / visible : 0;
+}
+function isEnglishQuestion(q){
+  return englishRatio(q) >= 0.5 && chineseRatio(q) < 0.15;
+}
+function isAcceptable(text, requireChinese){
+  if(!text) return false;
+  if(!requireChinese) return true;
+  const letters = String(text).match(/[a-zA-Z]/g);
+  if(!letters) return true;
+  return chineseRatio(text) >= 0.15;
+}
+
+/* ============================================================
+   米球形象 + 17 种表情
+   ============================================================ */
+const FACE_HTML =
+'<div class="mi-face">'+
+  '<div class="mi-brow mi-brow-l"></div><div class="mi-brow mi-brow-r"></div>'+
+  '<div class="mi-eye mi-eye-l"></div><div class="mi-eye mi-eye-r"></div>'+
+  '<div class="mi-mouth"></div>'+
+  '<div class="mi-blush mi-blush-l"></div><div class="mi-blush mi-blush-r"></div>'+
+  '<div class="mi-tear"></div><div class="mi-shades"></div>'+
+'</div><div class="mi-ring"></div>';
+
+headBall.innerHTML = FACE_HTML;
+
+function ballEl(size, mini){
+  const d = document.createElement('div');
+  d.className = 'mi-ball' + (mini?' mini':'');
+  d.style.fontSize = size+'px';
+  d.innerHTML = FACE_HTML;
+  return d;
+}
+
+const EXPRESSIONS = [
+  ['smile','微笑'],['happy','开心'],['laugh','大笑'],['surprised','惊讶'],
+  ['wink','眨眼'],['sleepy','困倦'],['sly','调皮'],['sad','难过'],
+  ['angry','生气'],['love','花痴'],['cool','酷'],['confused','疑惑'],
+  ['shy','害羞'],['thinking','思考'],['cry','哭泣'],['dizzy','晕'],['proud','得意']
+];
+let expIndex = 0;
+
+function applyExpression(i){
+  const [key,label] = EXPRESSIONS[i];
+  EXPRESSIONS.forEach(([k])=>headBall.classList.remove('exp-'+k));
+  if(key!=='smile') headBall.classList.add('exp-'+key);
+  expName.textContent = label;
+}
+headBall.addEventListener('click', ()=>{
+  expIndex = (expIndex+1) % EXPRESSIONS.length;
+  applyExpression(expIndex);
+});
+
+function blink(){ headBall.classList.add('blink'); setTimeout(()=>headBall.classList.remove('blink'),150); }
+setInterval(()=>{ if(Math.random()<.6) blink(); }, 3200);
+function talk(){ headBall.classList.add('talk'); setTimeout(()=>headBall.classList.remove('talk'),600); }
+
+/* ============================================================
+   鼠标光晕
+   ============================================================ */
+let rafPending=false, lastEvt=null;
+document.addEventListener('mousemove', e=>{
+  lastEvt=e;
+  if(rafPending) return;
+  rafPending=true;
+  requestAnimationFrame(()=>{
+    rafPending=false;
+    const ev=lastEvt; if(!ev) return;
+    document.documentElement.style.setProperty('--mx', ev.clientX+'px');
+    document.documentElement.style.setProperty('--my', ev.clientY+'px');
+    document.body.classList.add('hovering');
+    const t = ev.target && ev.target.closest ? ev.target.closest('.hover-tint') : null;
+    if(t){
+      const r=t.getBoundingClientRect();
+      if(r.width && r.height){
+        t.style.setProperty('--x', Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width))*100+'%');
+        t.style.setProperty('--y', Math.max(0,Math.min(1,(ev.clientY-r.top)/r.height))*100+'%');
+      }
+    }
+  });
+}, {passive:true});
+document.documentElement.addEventListener('mouseleave', ()=>document.body.classList.remove('hovering'));
+document.documentElement.addEventListener('mouseenter', ()=>document.body.classList.add('hovering'));
+
+/* ============================================================
+   知识库
+   ============================================================ */
+const QA = [];
+function add(keys, ans, type){
+  const k = (Array.isArray(keys)?keys:[keys]).filter(x=>x && String(x).length>=2);
+  if(!k.length || !ans) return;
+  QA.push({ k, a:ans, t:type||'g' });
+}
+
+function wd(dateStr){
+  const d = new Date(dateStr+'T00:00:00');
+  return '星期'+['日','一','二','三','四','五','六'][d.getDay()];
+}
+function md(dateStr){
+  const p = dateStr.split('-');
+  return `${p[0]}年${parseInt(p[1],10)}月${parseInt(p[2],10)}日`;
+}
+
+const MEETINGS = [
+  ['一','2026-03-27'],['二','2026-04-10'],['三','2026-04-15'],
+  ['四','2026-05-09'],['五','2026-05-15'],['六','2026-05-22'],
+  ['七','2026-06-13'],['八','2026-06-24'],['九','2026-09-03'],
+  ['十','2026-09-09'],['十一','2026-09-18'],['十二','2026-10-21']
+];
+MEETINGS.forEach(([n,d])=>{
+  add([`第${n}次集体会议`,`第${n}次会议`,`米遇安第${n}次集体会议`,`米遇安第${n}次会议`,`${n}次会议时间`,`第${n}次会议什么时候`,`第${n}次会议在哪开`],
+      `米遇安第${n}次集体会议于${md(d)}（${wd(d)}）在桂林市第一中学召开。`, 'm');
+});
+
+const OTB = [['一','2026-04-21'],['二','2026-05-22'],['三','2026-08-24'],['四','2026-09-04'],['五','2026-09-12']];
+OTB.forEach(([n,d])=>{
+  add([`OTB第${n}次会议`,`OTB${n}次会议`,`OTB第${n}次会议时间`,`OTB${n}次会议什么时候`,`OTB第${n}次会议日期`],
+      `OTB第${n}次会议于${md(d)}（${wd(d)}）召开。`, 'm');
+});
+
+const EVENTS = [
+  ['2026-03-26','米遇安正式建立',['米遇安什么时候建立','米遇安成立时间','米遇安哪年建立','米遇安成立日期','米遇安什么时候成立','米遇安建立时间','米遇安是哪天成立的']],
+  ['2026-04-25','发布米遇安官网及部分服务',['米遇安官网什么时候发布','米遇安官网上线时间','米遇安官网发布','米遇安什么时候有的官网']],
+  ['2026-04-30','试行特邀人士制度',['特邀人士制度','米遇安特邀人士','特邀制度什么时候开始','米遇安特邀人士制度']],
+  ['2026-05-22','试行"522工程"',['522工程','什么是522工程','522工程什么时候','522工程什么时候试行']],
+  ['2026-06-05','设立米遇安办事咨询所',['米遇安办事咨询所','办事咨询所什么时候设立','米遇安咨询所']],
+  ['2026-06-06','公布"522工程"',['522工程什么时候公布','522工程公布时间']],
+  ['2026-06-11','将米遇安办事咨询所更名为米遇安办事咨询所及课程辅导部',['办事咨询所更名','米遇安办事咨询所及课程辅导部','咨询所什么时候更名','课程辅导部']],
+  ['2026-06-17','米遇安成为由班主任批准的合规性学生正式组织',['米遇安什么时候成为正式组织','米遇安合规性学生组织','米遇安成为正式组织','米遇安是正式组织吗']],
+  ['2026-07-23','在YouTube上创建米遇安官方频道',['米遇安YouTube什么时候创建','米遇安油管频道','米遇安YouTube频道']],
+  ['2026-07-23','在哔哩哔哩创建米遇安官方频道',['米遇安B站什么时候创建','米遇安哔哩哔哩频道','米遇安B站']],
+  ['2026-07-24','在X（Twitter）上创建米遇安官方账号',['米遇安X什么时候创建','米遇安推特账号','米遇安Twitter']],
+  ['2026-08-03','与艾奥组织联合',['米遇安什么时候和艾奥联合','米遇安和艾奥','艾奥组织联合','米遇安与艾奥']],
+  ['2026-08-15','在QQ频道上创建米遇安官方频道',['米遇安QQ频道什么时候','米遇安QQ频道']],
+  ['2026-08-16','在Threads上创建米遇安官方账号',['米遇安Threads','米遇安Threads账号']],
+  ['2026-08-17','在抖音上创建米遇安官方账号',['米遇安抖音什么时候','米遇安抖音账号']]
+];
+EVENTS.forEach(([d,desc,keys])=>{
+  add(keys, `${md(d)}（${wd(d)}），${desc}。`, 'm');
+});
+
+const DATE_LOOKUP = {
+  '2026-03-26':'米遇安正式建立',
+  '2026-03-27':'米遇安第一次集体会议召开',
+  '2026-04-10':'米遇安第二次集体会议召开',
+  '2026-04-15':'米遇安第三次集体会议召开',
+  '2026-04-21':'OTB一次会议召开',
+  '2026-04-25':'发布米遇安官网及部分服务',
+  '2026-04-30':'试行特邀人士制度',
+  '2026-05-09':'米遇安第四次集体会议召开',
+  '2026-05-15':'米遇安第五次集体会议召开',
+  '2026-05-22':'OTB二次会议、米遇安第六次集体会议召开，并试行"522工程"',
+  '2026-06-05':'设立米遇安办事咨询所',
+  '2026-06-06':'公布"522工程"',
+  '2026-06-11':'米遇安办事咨询所更名为米遇安办事咨询所及课程辅导部',
+  '2026-06-13':'米遇安第七次集体会议召开',
+  '2026-06-17':'米遇安成为由班主任批准的合规性学生正式组织',
+  '2026-06-24':'米遇安第八次集体会议召开',
+  '2026-07-23':'在YouTube与哔哩哔哩创建米遇安官方频道',
+  '2026-07-24':'在X（Twitter）创建米遇安官方账号',
+  '2026-08-03':'与艾奥组织联合',
+  '2026-08-15':'在QQ频道创建米遇安官方频道',
+  '2026-08-16':'在Threads创建米遇安官方账号',
+  '2026-08-17':'在抖音创建米遇安官方账号',
+  '2026-08-24':'OTB三次会议召开',
+  '2026-09-03':'米遇安第九次集体会议召开',
+  '2026-09-04':'OTB四次会议召开',
+  '2026-09-09':'米遇安第十次集体会议召开',
+  '2026-09-12':'OTB五次会议召开',
+  '2026-09-18':'米遇安第十一次集体会议召开',
+  '2026-10-21':'米遇安第十二次集体会议召开'
+};
+Object.keys(DATE_LOOKUP).forEach(d=>{
+  const p=d.split('-'); const mm=parseInt(p[1],10), dd=parseInt(p[2],10);
+  add([`${p[0]}年${mm}月${dd}日发生了什么`,`${p[0]}年${mm}月${dd}日`,`${mm}月${dd}日米遇安`,`${mm}月${dd}日发生了什么`],
+      `${md(d)}（${wd(d)}）：${DATE_LOOKUP[d]}。`, 'm');
+});
+
+add(['米遇安是什么','米遇安介绍','介绍一下米遇安','米遇安是做什么的','米遇安是干啥的','米遇安简介','米遇安是干嘛的','米遇安是啥'],
+  '米遇安是由学生组成的非营利性创新团队，定位「创新与教育」，专注打造智能工具、互动游戏与教育内容，用创意与代码连接校园与未来。','m');
+add(['米遇安是公司吗','米遇安是盈利的吗','米遇安收费吗','米遇安免费吗','米遇安是公益的吗','米遇安是非营利吗','米遇安是学生组织吗','米遇安是学生团队吗'],
+  '米遇安不是公司，是由学生组成的非营利性组织，官网工具与内容均可免费访问。','m');
+add(['米遇安的口号','米遇安slogan','米遇安标语','米遇安口号是什么'],
+  '官网口号轮播：\n• 欢迎来到米遇安\n• 做大做强，兴创辉煌\n• 我们是一个非营利性组织\n• 我们将持续为您服务','m');
+add(['米遇安的理念','米遇安价值观','米遇安精神','米遇安定位','米遇安方向'],
+  '米遇安强调用创意与代码连接校园与未来，做有温度、有深度的内容；定位「创新与教育」。','m');
+add(['米遇安在哪','米遇安地址','米遇安在哪个学校','米遇安是桂林的吗','米遇安团队在哪'],
+  '米遇安与桂林市第一中学密切相关，团队地址是桂林市第一中学。','m');
+add(['米遇安分区','米遇安板块','米遇安有几个分区','米遇安有哪些分区','米遇安官网有哪些板块'],
+  '米遇安官网分为四个板块：\n• 工具分区 —— 实用工具 · 高效便捷\n• 娱乐分区 —— 探索精彩娱乐世界\n• 教育分区 —— 启迪智慧 · 传承文化\n• 其他分区 —— 图书与硕普小部件','m');
+add(['米遇安有几岁','米遇安年龄','米遇安几年了'],
+  '米遇安于 2026 年 3 月 26 日建立，可以按当前日期推算它的"年龄"。','m');
+
+add(['米遇安核心成员','米遇安成员','米遇安团队','米遇安有几个人','米遇安多少人','米遇安领导','米遇安负责人','米遇安组织架构','米遇安成员有哪些'],
+  '米遇安官网展示五位核心成员：\n• 诗福 —— 领导者\n• 星斗 —— 副领导者\n• 千汐 —— 领导团成员\n• 五谷砸麦 —— 领导团成员\n• 辅助线 —— 领导团成员','m');
+add(['诗福','诗福是谁','诗福职位','诗福角色','米遇安领导者','米遇安老大'],'诗福是米遇安的领导者，团队核心负责人。','m');
+add(['星斗','星斗是谁','星斗职位','米遇安副领导者','米遇安副领导'],'星斗是米遇安的副领导者，协助统筹团队事务。','m');
+add(['千汐','千汐是谁','千汐职位','千汐角色'],'千汐是米遇安领导团成员。','m');
+add(['五谷砸麦','五谷砸麦是谁','五谷砸麦职位','五谷砸麦角色'],'五谷砸麦是米遇安领导团成员。','m');
+add(['辅助线','辅助线是谁','辅助线职位','辅助线角色'],'辅助线是米遇安领导团成员。','m');
+add(['米遇安领导团','领导团有谁','米遇安有几个领导'],'领导团成员包括千汐、五谷砸麦、辅助线；领导者为诗福，副领导者为星斗。','m');
+add(['米遇安怎么分工','米遇安职责','米遇安团队结构'],'领导者统筹、副领导者协助、领导团成员负责专项事务。','m');
+
+add(['米遇安工具','工具分区','米遇安工具分区','米遇安有哪些工具','米遇安工具入口','米遇安有几个工具','米遇安工具有哪些'],
+  '工具分区共有 9 个工具：\n• 米遇安计算器\n• 米遇安天气\n• 米遇安时钟\n• 米遇安日历\n• LinguaFlow 智能翻译\n• HTML 编辑器\n• Markdown 编辑器\n• LaTeX 编辑器\n• 米遇安索引','m');
+add(['米遇安计算器','计算器工具','米遇安有计算器吗'],'米遇安计算器用于便捷计算，快速完成数学运算。','m');
+add(['米遇安天气','天气工具','米遇安有天气吗'],'米遇安天气提供实时天气信息，出行前查看很方便。','m');
+add(['米遇安时钟','时钟工具','米遇安有时钟吗'],'米遇安时钟提供精准时间与世界时钟。','m');
+add(['米遇安日历','日历工具','米遇安有日历吗'],'米遇安日历用于日期管理与日程提醒。','m');
+add(['LinguaFlow','米遇安翻译','翻译工具','米遇安有翻译吗','灵光翻译'],'LinguaFlow 是米遇安的智能翻译工具，帮你打破语言壁垒。','m');
+add(['HTML编辑器','米遇安HTML编辑器','米遇安有代码编辑器吗'],'HTML 编辑器支持在线编写与实时预览 HTML 代码。','m');
+add(['Markdown编辑器','米遇安Markdown'],'Markdown 编辑器支持轻量级 Markdown 写作与实时预览，高效写作。','m');
+add(['LaTeX编辑器','米遇安LaTeX','公式编辑器'],'LaTeX 编辑器支持在线编写与预览 LaTeX 数学公式，支持多种符号。','m');
+add(['米遇安索引','索引页'],'米遇安索引页可以便捷访问米遇安所有工具与服务。','m');
+
+add(['米遇安游戏','娱乐分区','米遇安娱乐分区','米遇安有哪些游戏','米遇安游戏入口','米遇安有几个游戏'],
+  '娱乐分区包括三大类：\n• 现代战争推演系列（1 / 2 / 3 / 4 与现代冲突）\n• 棋类游戏合集（五子棋、象棋、围棋、国际象棋、陆战棋）\n• 学海 · 肉鸽游戏','m');
+add(['现代战争推演','现代战争推演系列','战争推演','现代战争推演有哪些'],
+  '现代战争推演系列包含 1、2、3、4 以及「现代冲突」。\n其中 2 和 4 支持在线试玩，其余需要线下参与。','m');
+add(['现代战争推演4','战争推演4'],'现代战争推演4 是最新续作，战场升级、战术革新，支持在线试玩。','m');
+add(['现代战争推演2','战争推演2'],'现代战争推演2 支持在线试玩，入口在娱乐分区。','m');
+add(['现代战争推演1','现代战争推演3','现代冲突','线下游戏'],'现代战争推演1、3 与现代冲突需要在线下参与，官网提供说明。','m');
+add(['棋类游戏合集','米遇安棋类','米遇安有哪些棋','棋类有哪些'],
+  '棋类合集包括五款：五子棋、象棋、围棋、国际象棋、陆战棋，都可以在线对弈。','m');
+add(['五子棋','米遇安五子棋'],'五子棋可在娱乐分区的棋类合集中点击「开始对弈」在线游玩。','m');
+add(['国际象棋','米遇安国际象棋'],'国际象棋可在棋类合集点击「开始对弈」在线游玩。','m');
+add(['米遇安象棋'],'象棋可在棋类合集点击「开始对弈」在线游玩。','m');
+add(['米遇安围棋'],'围棋可在棋类合集点击「开始对弈」在线游玩。','m');
+add(['陆战棋','米遇安陆战棋'],'陆战棋可在棋类合集点击「开始对弈」在线游玩。','m');
+add(['学海','学海游戏','学海肉鸽','肉鸽游戏','米遇安有肉鸽吗'],
+  '学海是米遇安的肉鸽类游戏 —— 学海无涯、随机冒险，在知识的海洋中挑战自我，每一局都是全新体验。','m');
+
+add(['米遇安教育','教育分区','米遇安教育分区','米遇安课堂','米遇安文化'],
+  '教育分区包含两块：\n• 米遇安课堂 —— 以知识为舟，以思考为桨，每一课都是一次新的发现\n• 米遇安文化 —— 深入文化内涵，探究文明本质','m');
+add(['其他分区','米遇安其他分区','米遇安图书','米遇安硕普','硕普'],
+  '其他分区包含：\n• 米遇安图书 —— 探索知识，阅读世界\n• 米遇安硕普 —— 实用小部件集合，丰富页面、提升效率','m');
+
+add(['米遇安联系方式','怎么联系米遇安','米遇安邮箱','米遇安电话','米遇安联系方式有哪些'],
+  '联系方式：\n• 📍 地址：桂林市第一中学\n• 📞 电话：+86 152 0773 8425\n• ✉️ 邮箱：3493792731@qq.com','m');
+add(['米遇安社交','米遇安账号','关注米遇安','米遇安社交媒体','米遇安官方账号'],
+  '米遇安在多个平台有官方账号：YouTube、哔哩哔哩、抖音、X（Twitter）、QQ 频道、Facebook、Threads。','m');
+add(['米遇安YouTube','米遇安油管'],'米遇安 YouTube 官方频道于 2026 年 7 月 23 日创建。','m');
+add(['米遇安B站','米遇安哔哩哔哩','米遇安bilibili'],'米遇安哔哩哔哩官方频道于 2026 年 7 月 23 日创建。','m');
+add(['米遇安抖音'],'米遇安抖音官方账号于 2026 年 8 月 17 日创建。','m');
+add(['米遇安X','米遇安推特','米遇安Twitter'],'米遇安 X（Twitter）官方账号于 2026 年 7 月 24 日创建。','m');
+add(['米遇安QQ频道'],'米遇安 QQ 频道官方频道于 2026 年 8 月 15 日创建。','m');
+add(['米遇安Threads'],'米遇安 Threads 官方账号于 2026 年 8 月 16 日创建。','m');
+add(['米遇安Facebook','米遇安脸书'],'米遇安设有 Facebook 入口，位于官网首页「关注我们」。','m');
+add(['怎么加入米遇安','米遇安招人','加入米遇安'],
+  '可以通过邮箱 3493792731@qq.com 或 QQ 频道联系团队，了解招募与合作信息。','m');
+
+add(['米遇安合作','米遇安广告','广告位','怎么投广告','米遇安广告位'],
+  '米遇安欢迎合作，官网广告区展示「联合日报」与「无尽星域」（合作组织艾奥）。\n广告合作可联系邮箱 3493792731@qq.com。','m');
+add(['无尽星域','艾奥','米遇安和艾奥'],'无尽星域是合作组织「艾奥」的游戏，广告语是「参战于整个宇宙」。米遇安于 2026 年 8 月 3 日与艾奥组织联合。','m');
+add(['联合日报'],'联合日报是米遇安广告区的合作内容，主打时事新闻与洞察世界。','m');
+add(['米遇安官网技术','米遇安用什么做的','米遇安网站','米遇安官网怎么做的'],
+  '米遇安官网使用 HTML + Tailwind CSS + 原生 JavaScript 构建，图标来自 Line Awesome 与 Font Awesome。\n整体采用直角设计、蓝色主色调与毛玻璃效果，并支持暗色模式。','m');
+add(['米遇安主色调','米遇安主题色'],'米遇安主色调是 #0078D7 蓝色，暗色模式下会切换为浅蓝。','m');
+add(['米遇安暗色模式','米遇安深色模式'],'米遇安官网支持暗色模式，可以跟随系统，也可以手动切换。','m');
+add(['米遇安鸣谢','米遇安特别鸣谢'],'特别鸣谢：GitHub、Microsoft、ChatGPT、DeepSeek、金山办公。','m');
+add(['米遇安里程碑','米遇安历史','米遇安大事记','米遇安发展历程'],
+  '米遇安里程碑从 2026 年 3 月 26 日正式建立开始，历经十二次集体会议、五次 OTB 会议、官网发布、特邀人士制度、522 工程、办事咨询所、成为合规性学生组织、各平台官方账号创建、与艾奥组织联合等重要节点。','m');
+add(['米遇安第十二次会议','米遇安第十二次集体会议','米遇安最近会议','米遇安最新动态'],
+  '米遇安第十二次集体会议于 2026 年 10 月 21 日（星期三）在桂林市第一中学召开。','m');
+add(['米遇安总共开过几次会','米遇安开了几次会议'],
+  '截至记录，米遇安共召开 12 次集体会议，另有 5 次 OTB 会议。','m');
+add(['OTB是什么','OTB会议','OTB有几次会议'],
+  'OTB 是米遇安相关的会议体系，目前已记录 OTB 一次至五次会议，分别在 2026 年 4 月 21 日、5 月 22 日、8 月 24 日、9 月 4 日、9 月 12 日召开。','m');
+
+add(['你是谁','你叫什么','米球是什么','介绍一下你自己','你是什么','米球是谁'],
+  '我是米球 ⚽ —— 米遇安的 AI 小助手。\n可以问我米遇安相关问题，也能算数、查时间、聊生活小窍门；答不上来的，我会先联网搜索，超时再查预设库。','s');
+add(['你能做什么','你会什么','有什么功能','怎么用你','你的功能'],
+  '我的技能树 📚\n• 米遇安知识问答（约 500 个问题）\n• 通用预设问答（3000+）\n• 数学计算（四则运算、平方、立方、根号、百分比）\n• 时间、日期、星期查询\n• 天气查询\n• 实时搜索\n• 对话记录保存在浏览器，可新建 / 重命名 / 删除\n• 消息可复制、重新生成、删除\n• 点击头像切换 17 种表情 😉','s');
+
+add(['谢谢','感谢','多谢','thanks','thx','谢了'],'不客气～能帮上忙就好 😊','s');
+add(['再见','拜拜','bye','回头见'],'再见！米球随时都在这里 👋','s');
+add(['你好','您好','嗨','hello','hi','在吗','哈喽'],'你好呀！我是米球 🤖 想聊点什么？','s');
+add(['早上好'],'早上好 ☀️ 新的一天也要元气满满！','s');
+add(['中午好'],'中午好～记得好好吃饭、歇一会儿 🍚','s');
+add(['下午好'],'下午好！来杯水，顺便活动一下肩颈 💧','s');
+add(['晚上好'],'晚上好 🌙 今天辛苦了。','s');
+add(['晚安'],'晚安，做个好梦 🌙','s');
+add(['讲个笑话','笑话','搞笑'],'为什么程序员总分不清万圣节和圣诞节？\n因为 Oct 31 == Dec 25 🎃🎄','s');
+add(['再讲一个','再来一个笑话','另一个笑话'],'有人问我代码写得怎么样，我说能跑。\n他说那不错啊。\n我说：能跑就行，别管它跑哪去 😂','s');
+add(['心情不好','难过','伤心','emo','不开心'],'先深呼吸三次。情绪没有对错，允许自己难过一会儿，然后去做一件很小但能完成的事。','s');
+add(['压力大','焦虑','紧张','烦躁'],'试试 4-7-8 呼吸法：吸气 4 秒，屏息 7 秒，呼气 8 秒，重复 4 轮。再把担心的事分成「能做的」和「不能做的」。','s');
+add(['推荐一本书','看什么书','读书推荐','推荐书'],'可以试试：《活着》《小王子》《人类简史》《明朝那些事儿》《被讨厌的勇气》。','s');
+add(['推荐电影','看什么电影','电影推荐'],'《肖申克的救赎》《阿甘正传》《千与千寻》《星际穿越》《当幸福来敲门》。','s');
+add(['今天吃什么','吃什么','午饭吃什么','晚饭吃什么'],'不知道吃什么时，一荤一素一汤最稳：番茄炒蛋 + 清炒时蔬 + 紫菜蛋花汤，20 分钟搞定 🍳','s');
+add(['怎么煮鸡蛋','溏心蛋','煮鸡蛋'],'冷水下锅，水开后煮 6 分钟是溏心，8 分钟全熟，捞出过冷水更好剥壳 🥚','s');
+add(['快速入睡','失眠','睡不着'],'睡前一小时不看手机，把房间调暗，试试 4-7-8 呼吸法。固定起床时间比固定睡觉时间更重要。','s');
+add(['解辣','太辣了'],'喝牛奶或吃酸奶最有效，别喝热水，会更辣 🥛','s');
+add(['保护视力','护眼','眼睛累','眼疲劳'],'记住 20-20-20 法则：每用眼 20 分钟，看 20 英尺（约 6 米）外 20 秒。','s');
+add(['每天喝多少水','喝水'],'一般 1500–1700ml，运动或天热要适当增加，少量多次最好 💧','s');
+add(['每天睡多久','睡眠时间'],'中小学生建议 9 小时左右，高中生至少 8 小时。','s');
+add(['拖延','克服拖延'],'先做 2 分钟。开始比完美更重要，把任务拆到「小得不可能失败」。','s');
+add(['时间管理','时间不够'],'把任务按「重要 / 紧急」分成四象限，先做重要且紧急的。','s');
+add(['手机卡顿','手机变慢'],'清理存储空间、关闭后台自启、重启手机；长期卡顿可考虑恢复出厂。','s');
+add(['电脑变慢','电脑卡'],'卸载不用的软件、清理启动项；条件允许加内存或换固态硬盘。','s');
+add(['wifi信号差','网络不好','网速慢'],'路由器放高处居中，避开微波炉和金属物，优先用 5G 频段。','s');
+add(['截图','怎么截图'],'Windows：Win + Shift + S\nMac：Shift + Cmd + 4\n手机：电源键 + 音量下','s');
+add(['防诈骗','诈骗'],'不点陌生链接、不透露验证码、不向陌生账户转账。遇到「紧急汇款」先冷静核实。','s');
+add(['宇宙有多大','宇宙多大'],'可观测宇宙直径约 930 亿光年，而且还在膨胀。','s');
+add(['天为什么是蓝的','天空为什么是蓝的'],'阳光穿过大气时，蓝光波长较短、散射最强烈，所以天空看起来是蓝色。','s');
+add(['先看到闪电','雷声为什么晚'],'光速约 30 万公里/秒，声速约 340 米/秒，所以总是先看到闪电再听到雷声。','s');
+
+for(let i=1;i<=9;i++)for(let j=1;j<=9;j++){
+  add([`${i}乘${j}`,`${i}乘以${j}`,`${i}×${j}`,`${i}x${j}`], `${i} × ${j} = ${i*j}`, 'g');
+}
+for(let i=2;i<=50;i++) add([`${i}的平方`,`${i}平方是多少`,`${i}的二次方`], `${i}² = ${i*i}`, 'g');
+for(let i=2;i<=15;i++) add([`${i}的立方`,`${i}立方是多少`,`${i}的三次方`], `${i}³ = ${i*i*i}`, 'g');
+(function(){ let f=1; for(let i=1;i<=10;i++){ f*=i; add([`${i}的阶乘`,`${i}!是多少`], `${i}! = ${f}`, 'g');} })();
+for(let i=1;i<=20;i++) add([`2的${i}次方`,`2的${i}次幂`], `2^${i} = ${Math.pow(2,i)}`, 'g');
+
+const UNITS = [
+  ['千米','米',1000],['米','厘米',100],['米','毫米',1000],['厘米','毫米',10],
+  ['分米','厘米',10],['米','分米',10],['千米','厘米',100000],['毫米','微米',1000],
+  ['吨','千克',1000],['千克','克',1000],['克','毫克',1000],['斤','克',500],
+  ['公斤','斤',2],['磅','克',453.592],['盎司','克',28.3495],
+  ['小时','分钟',60],['分钟','秒',60],['天','小时',24],['周','天',7],['年','天',365],
+  ['世纪','年',100],['毫秒','微秒',1000],
+  ['公顷','平方米',10000],['亩','平方米',666.67],['平方米','平方分米',100],
+  ['平方千米','公顷',100],['平方千米','平方米',1000000],
+  ['GB','MB',1024],['MB','KB',1024],['KB','B',1024],['TB','GB',1024],['字节','位',8],
+  ['升','毫升',1000],['立方米','升',1000],['加仑','升',3.785],
+  ['英里','千米',1.609],['海里','千米',1.852],['英尺','厘米',30.48],
+  ['英寸','厘米',2.54],['码','米',0.9144],
+  ['弧度','度',57.2958],['度','分',60],['分','秒',60],
+  ['标准大气压','帕',101325],['千瓦时','焦耳',3600000],['卡','焦耳',4.184],['马力','瓦',735.5]
+];
+UNITS.forEach(([a,b,v])=>{
+  add([`1${a}等于多少${b}`,`一${a}是多少${b}`,`${a}换算成${b}`,`${a}和${b}的换算`], `1 ${a} = ${v} ${b}`, 'g');
+  add([`1${b}等于多少${a}`,`${b}换算成${a}`], `1 ${b} = ${fmt(1/v)} ${a}`, 'g');
+});
+
+const TERMS = [
+  ['立春','2月3-5日'],['雨水','2月18-20日'],['惊蛰','3月5-7日'],['春分','3月20-22日'],
+  ['清明','4月4-6日'],['谷雨','4月19-21日'],['立夏','5月5-7日'],['小满','5月20-22日'],
+  ['芒种','6月5-7日'],['夏至','6月21-22日'],['小暑','7月6-8日'],['大暑','7月22-24日'],
+  ['立秋','8月7-9日'],['处暑','8月22-24日'],['白露','9月7-9日'],['秋分','9月22-24日'],
+  ['寒露','10月8-9日'],['霜降','10月23-24日'],['立冬','11月7-8日'],['小雪','11月22-23日'],
+  ['大雪','12月6-8日'],['冬至','12月21-23日'],['小寒','1月5-7日'],['大寒','1月20-21日']
+];
+TERMS.forEach(([n,d])=> add([`${n}是什么时候`,`${n}在几月`,`节气${n}`], `二十四节气之${n}，一般在 ${d}。`, 'g'));
+add(['二十四节气','24节气','节气有哪些'],
+  '二十四节气：立春、雨水、惊蛰、春分、清明、谷雨、立夏、小满、芒种、夏至、小暑、大暑、立秋、处暑、白露、秋分、寒露、霜降、立冬、小雪、大雪、冬至、小寒、大寒。','g');
+
+const ZODIAC = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+ZODIAC.forEach((z,i)=> add([`属${z}是哪一年`,`${z}年出生`], `生肖${z}对应的年份按 12 年循环，例如 ${2020+i} 年、${2032+i} 年。`, 'g'));
+const STARS = [
+  ['白羊座','3月21日-4月19日'],['金牛座','4月20日-5月20日'],['双子座','5月21日-6月21日'],
+  ['巨蟹座','6月22日-7月22日'],['狮子座','7月23日-8月22日'],['处女座','8月23日-9月22日'],
+  ['天秤座','9月23日-10月23日'],['天蝎座','10月24日-11月22日'],['射手座','11月23日-12月21日'],
+  ['摩羯座','12月22日-1月19日'],['水瓶座','1月20日-2月18日'],['双鱼座','2月19日-3月20日']
+];
+STARS.forEach(([n,d])=> add([`${n}是几月`,`${n}日期`,`${n}时间`], `${n}：${d}。`, 'g'));
+const GAN=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const ZHI=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+GAN.forEach((g,i)=> add([`天干第${i+1}个`,`天干${g}`], `天干第 ${i+1} 位是「${g}」。`, 'g'));
+ZHI.forEach((z,i)=> add([`地支第${i+1}个`,`地支${z}`], `地支第 ${i+1} 位是「${z}」。`, 'g'));
+
+const PROV = [
+  ['北京','京','北京'],['天津','津','天津'],['河北','冀','石家庄'],['山西','晋','太原'],
+  ['内蒙古','蒙','呼和浩特'],['辽宁','辽','沈阳'],['吉林','吉','长春'],['黑龙江','黑','哈尔滨'],
+  ['上海','沪','上海'],['江苏','苏','南京'],['浙江','浙','杭州'],['安徽','皖','合肥'],
+  ['福建','闽','福州'],['江西','赣','南昌'],['山东','鲁','济南'],['河南','豫','郑州'],
+  ['湖北','鄂','武汉'],['湖南','湘','长沙'],['广东','粤','广州'],['广西','桂','南宁'],
+  ['海南','琼','海口'],['重庆','渝','重庆'],['四川','川/蜀','成都'],['贵州','黔/贵','贵阳'],
+  ['云南','滇/云','昆明'],['西藏','藏','拉萨'],['陕西','陕/秦','西安'],['甘肃','甘/陇','兰州'],
+  ['青海','青','西宁'],['宁夏','宁','银川'],['新疆','新','乌鲁木齐'],['台湾','台','台北'],
+  ['香港','港','香港'],['澳门','澳','澳门']
+];
+PROV.forEach(([p,s,c])=>{
+  add([`${p}省的简称`,`${p}的简称`,`${p}简称`], `${p}的简称是「${s}」。`, 'g');
+  add([`${p}省的省会`,`${p}的省会`,`${p}省会`], `${p}的省会是${c}。`, 'g');
+});
+
+const ELEM = [
+  ['氢','H',1],['氦','He',2],['锂','Li',3],['铍','Be',4],['硼','B',5],['碳','C',6],
+  ['氮','N',7],['氧','O',8],['氟','F',9],['氖','Ne',10],['钠','Na',11],['镁','Mg',12],
+  ['铝','Al',13],['硅','Si',14],['磷','P',15],['硫','S',16],['氯','Cl',17],['氩','Ar',18],
+  ['钾','K',19],['钙','Ca',20],['钪','Sc',21],['钛','Ti',22],['钒','V',23],['铬','Cr',24],
+  ['锰','Mn',25],['铁','Fe',26],['钴','Co',27],['镍','Ni',28],['铜','Cu',29],['锌','Zn',30],
+  ['镓','Ga',31],['锗','Ge',32],['砷','As',33],['硒','Se',34],['溴','Br',35],['氪','Kr',36]
+];
+ELEM.forEach(([n,s,z])=>{
+  add([`${n}的化学符号`,`${n}元素符号`,`元素${n}`], `${n}的元素符号是 ${s}，原子序数 ${z}。`, 'g');
+  add([`原子序数${z}`], `原子序数 ${z} 的元素是 ${n}（${s}）。`, 'g');
+});
+
+const DYNASTY = [
+  ['夏','约前2070-前1600'],['商','约前1600-前1046'],['周','前1046-前256'],
+  ['秦','前221-前207'],['汉','前202-220'],['三国','220-280'],['晋','265-420'],
+  ['南北朝','420-589'],['隋','581-618'],['唐','618-907'],['五代十国','907-979'],
+  ['宋','960-1279'],['元','1271-1368'],['明','1368-1644'],['清','1636-1912']
+];
+DYNASTY.forEach(([n,d])=> add([`${n}朝时间`,`${n}朝多少年`,`${n}朝起止`], `${n}：${d}。`, 'g'));
+
+const HIST = [
+  ['秦统一六国','前221年'],['西汉建立','前202年'],['隋统一全国','589年'],['唐朝建立','618年'],
+  ['北宋建立','960年'],['元朝建立','1271年'],['明朝建立','1368年'],['清朝建立','1636年'],
+  ['辛亥革命','1911年'],['五四运动','1919年'],['中国共产党成立','1921年'],['抗日战争胜利','1945年'],
+  ['新中国成立','1949年'],['改革开放开始','1978年'],['香港回归','1997年'],['澳门回归','1999年'],
+  ['北京奥运会','2008年'],['上海世博会','2010年']
+];
+HIST.forEach(([e,y])=> add([`${e}是哪一年`,`${e}时间`,`${e}年份`], `${e}：${y}。`, 'g'));
+
+const IDIOMS = [
+  ['画蛇添足','比喻做了多余的事，反而不合适。'],['守株待兔','比喻死守狭隘经验，不知变通。'],
+  ['亡羊补牢','比喻出了问题以后想办法补救，可以防止继续受损失。'],
+  ['掩耳盗铃','比喻自己欺骗自己，明明掩盖不住的事偏要设法掩盖。'],
+  ['刻舟求剑','比喻不懂事物已发展变化，仍静止地看问题。'],
+  ['井底之蛙','比喻见识狭窄的人。'],['对牛弹琴','比喻对不懂道理的人讲道理，白费口舌。'],
+  ['杯弓蛇影','比喻疑神疑鬼，自相惊扰。'],['塞翁失马','比喻坏事在一定条件下可以变成好事。'],
+  ['一箭双雕','比喻做一件事达到两个目的。'],['三心二意','形容犹豫不决或意志不专一。'],
+  ['四通八达','形容道路、交通等非常便利。'],['五光十色','形容色彩鲜艳，花样繁多。'],
+  ['六神无主','形容惊慌失措，没了主意。'],['七上八下','形容心神不定。'],
+  ['八面玲珑','形容为人处世圆滑，不得罪人。'],['九牛一毛','比喻极大数量中极小的数量。'],
+  ['十全十美','形容完美无缺。'],['百发百中','形容射箭或打枪准确，每次都命中目标。'],
+  ['千钧一发','形容情况万分危急。'],['雪中送炭','比喻在别人急需时给予帮助。'],
+  ['锦上添花','比喻好上加好，美上添美。'],['画龙点睛','比喻在关键处点明要旨，使内容生动传神。'],
+  ['胸有成竹','比喻做事之前已有通盘考虑。'],['水滴石穿','比喻只要有恒心，不断努力，事情就能成功。'],
+  ['愚公移山','比喻坚持不懈地改造自然和坚定不移地进行斗争。'],
+  ['精卫填海','比喻意志坚决，不畏艰难。'],['卧薪尝胆','形容人刻苦自励，发愤图强。'],
+  ['闻鸡起舞','比喻有志之士及时奋发。'],['悬梁刺股','形容刻苦学习。'],
+  ['凿壁偷光','形容家贫而读书刻苦。'],['囊萤映雪','形容家境贫穷，勤学苦读。'],
+  ['程门立雪','形容尊敬师长，诚心求教。'],['破釜沉舟','比喻下定决心，不顾一切干到底。'],
+  ['背水一战','比喻在艰难情况下跟敌人决一死战。'],
+  ['四面楚歌','比喻陷入四面受敌、孤立无援的境地。'],
+  ['纸上谈兵','比喻空谈理论，不能解决实际问题。'],
+  ['草木皆兵','形容极度惊恐时疑神疑鬼。'],['望梅止渴','比喻用空想安慰自己。'],
+  ['老马识途','比喻有经验的人熟悉情况，能起指引作用。'],
+  ['胸无点墨','形容读书太少，文化水平极低。'],['学富五车','形容读书多，学问大。'],
+  ['才高八斗','形容文才非常高。'],['出口成章','形容文思敏捷，口才好。'],
+  ['妙笔生花','比喻文笔美妙，写作能力强。'],['栩栩如生','形容艺术形象非常逼真，如同活的一样。'],
+  ['惟妙惟肖','形容描写或模仿得非常好，非常逼真。'],
+  ['入木三分','形容书法有力，也比喻分析深刻。'],
+  ['力透纸背','形容书法刚劲有力，也形容诗文立意深刻。']
+];
+IDIOMS.forEach(([w,m])=> add([`${w}是什么意思`,`${w}意思`,`解释${w}`,`${w}含义`], `${w}：${m}`, 'g'));
+
+const POEMS = [
+  ['床前明月光','李白《静夜思》'],
+  ['举头望明月，低头思故乡','李白《静夜思》'],
+  ['海内存知己，天涯若比邻','王勃《送杜少府之任蜀州》'],
+  ['会当凌绝顶，一览众山小','杜甫《望岳》'],
+  ['大漠孤烟直，长河落日圆','王维《使至塞上》'],
+  ['欲穷千里目，更上一层楼','王之涣《登鹳雀楼》'],
+  ['春眠不觉晓，处处闻啼鸟','孟浩然《春晓》'],
+  ['野火烧不尽，春风吹又生','白居易《赋得古原草送别》'],
+  ['谁知盘中餐，粒粒皆辛苦','李绅《悯农》'],
+  ['独在异乡为异客，每逢佳节倍思亲','王维《九月九日忆山东兄弟》'],
+  ['千山鸟飞绝，万径人踪灭','柳宗元《江雪》'],
+  ['白日依山尽，黄河入海流','王之涣《登鹳雀楼》'],
+  ['两个黄鹂鸣翠柳，一行白鹭上青天','杜甫《绝句》'],
+  ['停车坐爱枫林晚，霜叶红于二月花','杜牧《山行》'],
+  ['爆竹声中一岁除，春风送暖入屠苏','王安石《元日》'],
+  ['但愿人长久，千里共婵娟','苏轼《水调歌头》'],
+  ['长风破浪会有时，直挂云帆济沧海','李白《行路难》'],
+  ['山重水复疑无路，柳暗花明又一村','陆游《游山西村》'],
+  ['不畏浮云遮望眼，只缘身在最高层','王安石《登飞来峰》'],
+  ['人生自古谁无死，留取丹心照汗青','文天祥《过零丁洋》']
+];
+POEMS.forEach(([line,src])=> add([`${line}出自哪里`,`${line}作者`,`${line}出处`], `「${line}」出自 ${src}。`, 'g'));
+
+const ABBR = [
+  ['CPU','中央处理器'],['GPU','图形处理器'],['RAM','随机存取存储器'],['ROM','只读存储器'],
+  ['SSD','固态硬盘'],['HDD','机械硬盘'],['USB','通用串行总线'],['HTTP','超文本传输协议'],
+  ['HTTPS','加密的超文本传输协议'],['URL','统一资源定位符'],['DNS','域名系统'],['IP','网际协议'],
+  ['API','应用程序编程接口'],['SDK','软件开发工具包'],['IDE','集成开发环境'],['AI','人工智能'],
+  ['ML','机器学习'],['NLP','自然语言处理'],['LLM','大语言模型'],['VR','虚拟现实'],
+  ['AR','增强现实'],['IoT','物联网'],['GPS','全球定位系统'],['PDF','便携式文档格式'],
+  ['HTML','超文本标记语言'],['CSS','层叠样式表'],['JSON','JavaScript 对象表示法'],['XML','可扩展标记语言']
+];
+ABBR.forEach(([a,b])=> add([`${a}是什么`,`${a}全称`,`${a}意思`], `${a}：${b}。`, 'g'));
+
+const KEYS = [
+  ['Ctrl+C','复制'],['Ctrl+V','粘贴'],['Ctrl+X','剪切'],['Ctrl+Z','撤销'],['Ctrl+Y','重做'],
+  ['Ctrl+A','全选'],['Ctrl+S','保存'],['Ctrl+F','查找'],['Ctrl+P','打印'],['Ctrl+N','新建'],
+  ['Ctrl+O','打开'],['Ctrl+W','关闭标签页'],['Ctrl+T','新建标签页'],['Ctrl+Shift+T','恢复关闭的标签页'],
+  ['Alt+Tab','切换窗口'],['Alt+F4','关闭窗口'],['Win+D','显示桌面'],['Win+E','打开文件资源管理器'],
+  ['Win+L','锁定屏幕'],['Win+R','打开运行'],['Win+Shift+S','截图'],['F5','刷新'],
+  ['F2','重命名'],['F11','全屏'],['Esc','取消/退出']
+];
+KEYS.forEach(([k,d])=> add([`${k}是什么快捷键`,`${k}作用`,`${k}快捷键`], `${k}：${d}。`, 'g'));
+
+const HTTP = [
+  [200,'请求成功'],[201,'已创建'],[204,'无内容'],[301,'永久重定向'],[302,'临时重定向'],
+  [304,'未修改'],[400,'请求错误'],[401,'未授权'],[403,'禁止访问'],[404,'未找到'],
+  [405,'方法不允许'],[408,'请求超时'],[409,'冲突'],[413,'请求体过大'],[429,'请求过多'],
+  [500,'服务器内部错误'],[501,'未实现'],[502,'网关错误'],[503,'服务不可用'],[504,'网关超时']
+];
+HTTP.forEach(([c,d])=> add([`${c}状态码`,`HTTP ${c}`,`${c}是什么意思`], `HTTP ${c}：${d}。`, 'g'));
+
+const CMDS = [
+  ['ls','列出目录内容'],['cd','切换目录'],['pwd','显示当前路径'],['mkdir','创建目录'],
+  ['rm','删除文件或目录'],['cp','复制文件'],['mv','移动或重命名'],['cat','查看文件内容'],
+  ['grep','文本搜索'],['find','查找文件'],['chmod','修改权限'],['ps','查看进程'],
+  ['kill','终止进程'],['top','查看系统资源'],['df','查看磁盘空间'],['ping','测试网络连通'],
+  ['curl','发起网络请求'],['ssh','远程登录']
+];
+CMDS.forEach(([c,d])=> add([`${c}命令`,`${c}是什么命令`,`Linux ${c}`], `${c}：${d}。`, 'g'));
+const GIT = [
+  ['git init','初始化仓库'],['git clone','克隆仓库'],['git add','添加文件到暂存区'],
+  ['git commit','提交更改'],['git push','推送到远程'],['git pull','拉取并合并'],
+  ['git status','查看状态'],['git log','查看提交历史'],['git branch','查看/管理分支'],
+  ['git checkout','切换分支或恢复文件'],['git merge','合并分支'],['git reset','重置']
+];
+GIT.forEach(([c,d])=> add([`${c}怎么用`,`${c}作用`,`${c}是什么`], `${c}：${d}。`, 'g'));
+
+const RECORDS = [
+  ['世界最高峰','珠穆朗玛峰，海拔约 8848.86 米'],
+  ['世界最深海沟','马里亚纳海沟，最深处约 11034 米'],
+  ['世界最长河流','尼罗河，约 6650 公里'],
+  ['世界最大洋','太平洋'],['世界最大洲','亚洲'],
+  ['世界最大沙漠','撒哈拉沙漠（热带沙漠中最大）'],
+  ['世界最大岛','格陵兰岛'],['世界最大湖','里海'],
+  ['世界人口最多国家','印度（2023 年起）'],
+  ['世界面积最大国家','俄罗斯'],['中国最长河流','长江'],
+  ['中国最大淡水湖','鄱阳湖'],['中国最高高原','青藏高原'],
+  ['中国最大沙漠','塔克拉玛干沙漠'],['中国最长城墙','长城']
+];
+RECORDS.forEach(([q,a])=> add([q, q.replace('世界','全球'), q.replace('中国','我国')], `${q}：${a}。`, 'g'));
+
+const LANGS = [
+  ['JavaScript','前端与全栈开发的主力语言，浏览器原生支持'],
+  ['Python','语法简洁，广泛用于数据分析、AI、自动化'],
+  ['Java','跨平台企业级开发，Android 生态重要语言'],
+  ['C','底层系统编程，性能极高'],
+  ['C++','在 C 基础上增加面向对象与泛型'],
+  ['C#','微软生态主力语言，常用于 Unity 游戏开发'],
+  ['Go','高并发、云原生后端开发'],
+  ['Rust','内存安全、高性能系统编程'],
+  ['PHP','传统 Web 后端开发'],['Swift','苹果生态开发语言'],
+  ['Kotlin','Android 官方推荐语言之一'],
+  ['TypeScript','JavaScript 的超集，增加静态类型']
+];
+LANGS.forEach(([l,d])=> add([`${l}是什么`,`${l}语言`,`${l}介绍`], `${l}：${d}。`, 'g'));
+
+const DUOYIN = [
+  ['行','xíng（行走）/ háng（银行）'],['重','zhòng（重要）/ chóng（重复）'],
+  ['长','cháng（长短）/ zhǎng（长大）'],['乐','lè（快乐）/ yuè（音乐）'],
+  ['好','hǎo（好人）/ hào（爱好）'],['发','fā（发现）/ fà（头发）'],
+  ['数','shù（数学）/ shǔ（数数）'],['空','kōng（天空）/ kòng（空白）'],
+  ['间','jiān（中间）/ jiàn（间隔）'],['为','wéi（成为）/ wèi（因为）'],
+  ['的','de（我的）/ dí（的确）/ dì（目的）'],
+  ['地','dì（土地）/ de（慢慢地）'],
+  ['得','dé（得到）/ de（跑得快）/ děi（得去）']
+];
+DUOYIN.forEach(([c,r])=> add([`${c}的多音字`,`${c}怎么读`,`${c}有几个读音`], `「${c}」的读音：${r}。`, 'g'));
+
+const CUOBIE = [
+  ['再接再厉','不写「再接再励」'],['一如既往','不写「一如继往」'],
+  ['按部就班','不写「按步就班」'],['不假思索','不写「不加思索」'],
+  ['川流不息','不写「穿流不息」'],['迫不及待','不写「迫不急待」'],
+  ['甘拜下风','不写「甘败下风」'],['走投无路','不写「走头无路」'],
+  ['一筹莫展','不写「一愁莫展」'],['直截了当','不写「直接了当」']
+];
+CUOBIE.forEach(([right,wrong])=> add([`${right}怎么写`,`${right}正确写法`,`${right}错别字`], `正确写法是「${right}」，${wrong}。`, 'g'));
+
+const HEALTH = [
+  ['烫伤','立刻用流动冷水冲 15–20 分钟，不要涂牙膏、酱油。起大水泡或面积较大要及时就医。'],
+  ['流鼻血','身体前倾，捏住鼻翼软骨处 10 分钟，不要仰头，避免血液倒流。'],
+  ['被蚊子咬','冷敷或涂炉甘石洗剂止痒，尽量不要抓破，避免感染。'],
+  ['晕车','尽量坐前排看远处，出发前别吃太饱，可以含一片姜。'],
+  ['发烧','38.5℃ 以下可先物理降温、多喝水；持续高烧或精神状态差要及时就医。'],
+  ['拉肚子','补充口服补液盐，吃清淡易消化食物；出现血便或高烧要就医。'],
+  ['胃疼','不要空腹吃辛辣刺激食物，规律三餐；反复胃痛建议做检查。'],
+  ['头痛','到安静、光线柔和的地方，按揉太阳穴并冷敷额头。持续剧烈头痛要及时就医。'],
+  ['颈椎不适','让屏幕上缘与视线齐平，每 40 分钟起身活动，做颈部后缩和耸肩。'],
+  ['腰疼','久坐加腰靠，搬重物先蹲下再起身，别直接弯腰硬拉。'],
+  ['膝盖疼','先减量，加强股四头肌训练，选缓冲好的跑鞋；持续疼痛要就医。'],
+  ['中暑','迅速移到阴凉处，补充淡盐水，物理降温；意识不清要立即就医。'],
+  ['触电','先切断电源，不要直接用手拉人，随后立即拨打急救电话。'],
+  ['异物卡喉','成人可用海姆立克急救法，婴儿用拍背压胸法，同时拨打急救电话。']
+];
+HEALTH.forEach(([q,a])=> add([`${q}怎么办`,`${q}怎么处理`,`${q}急救`,`${q}了怎么办`], `${q}：${a}`, 'g'));
+
+const FOODS = [
+  ['米饭','每 100 克约 116 千卡'],['馒头','每 100 克约 223 千卡'],
+  ['鸡蛋','每 100 克约 144 千卡'],['牛奶','每 100 毫升约 54 千卡'],
+  ['苹果','每 100 克约 52 千卡'],['香蕉','每 100 克约 89 千卡'],
+  ['鸡胸肉','每 100 克约 133 千卡'],['牛肉','每 100 克约 250 千卡'],
+  ['猪肉','每 100 克约 395 千卡'],['西兰花','每 100 克约 34 千卡'],
+  ['土豆','每 100 克约 77 千卡'],['面包','每 100 克约 265 千卡']
+];
+FOODS.forEach(([f,c])=> add([`${f}热量`,`${f}多少卡`,`${f}卡路里`], `${f}：${c}。`, 'g'));
+
+const STUDY = [
+  ['怎么背书','间隔重复 + 主动回忆。学完先合上书复述一遍，比反复看书记得牢。'],
+  ['怎么复习','当天回顾、周末总结、考前只翻错题，比从头再看一遍高效。'],
+  ['怎么背单词','每天少量多次，结合例句和发音，用艾宾浩斯复习表巩固。'],
+  ['数学怎么学','先理解定义，再做例题，最后刷变式；错题一定要重做。'],
+  ['英语怎么学','每天 15 分钟听力 + 10 分钟朗读，坚持比强度更重要。'],
+  ['作文怎么写','先列提纲再写，多读优秀范文，准备一个素材本。'],
+  ['怎么准备考试','先做一套真题摸底，再按薄弱点分配时间，考前回归基础。'],
+  ['怎么集中注意力','手机放远，用 25 分钟番茄钟，一次只做一件事。'],
+  ['怎么提高记忆力','间隔重复 + 主动回忆，结合图像和联想。'],
+  ['怎么缓解考试焦虑','提前准备、模拟考试环境，考前做深呼吸，把注意力放在过程而非结果。']
+];
+STUDY.forEach(([q,a])=> add([q, q.replace('怎么','如何'), q.replace('怎么','怎样')], a, 'g'));
+
+const DIGITAL = [
+  ['手机发烫','关闭高负载应用、取下厚壳、避免边充边玩，必要时重启。'],
+  ['手机耗电快','关闭后台自启、降低屏幕亮度、关闭不用的定位与蓝牙。'],
+  ['照片备份','云盘 + 电脑双备份，重要照片至少存两处。'],
+  ['清理手机内存','删除重复照片和大文件，清理应用缓存，别装来路不明的清理软件。'],
+  ['电脑蓝屏','记录错误码，更新驱动，检查内存与硬盘，必要时重装系统。'],
+  ['文件误删','先别再写入该磁盘，用数据恢复软件扫描，或从备份/回收站恢复。'],
+  ['路由器重启','断电 30 秒再通电，能解决大部分临时网络故障。'],
+  ['密码安全','不同网站用不同密码，开启两步验证，避免用生日和手机号。']
+];
+DIGITAL.forEach(([q,a])=> add([`${q}怎么办`,`${q}怎么解决`,`${q}处理方法`], a, 'g'));
+
+/* ============================================================
+   匹配
+   ============================================================ */
+function matchQA(c){
+  let best=null, bestScore=0;
+  for(let i=0;i<QA.length;i++){
+    const item=QA[i];
+    let s=0;
+    for(let j=0;j<item.k.length;j++){
+      const k=item.k[j];
+      if(k && c.indexOf(k)!==-1) s += k.length;
+    }
+    if(s>bestScore){ bestScore=s; best=item; }
+  }
+  return { item:best, score:bestScore };
+}
+
+/* ============================================================
+   天气描述映射
+   ============================================================ */
+const WEATHER_ZH = {
+  'Sunny':'晴','Clear':'晴朗','Partly cloudy':'局部多云','Cloudy':'多云','Overcast':'阴',
+  'Mist':'薄雾','Fog':'雾','Freezing fog':'冻雾','Haze':'霾','Smoke':'烟霾',
+  'Patchy rain nearby':'附近有零星小雨','Patchy rain possible':'可能有零星小雨',
+  'Light rain':'小雨','Moderate rain':'中雨','Heavy rain':'大雨',
+  'Light drizzle':'毛毛雨','Patchy light drizzle':'零星毛毛雨',
+  'Light rain shower':'小阵雨','Moderate or heavy rain shower':'中到大阵雨',
+  'Torrential rain shower':'暴雨','Thundery outbreaks possible':'可能有雷阵雨',
+  'Patchy light rain with thunder':'局部雷阵雨',
+  'Light snow':'小雪','Moderate snow':'中雪','Heavy snow':'大雪',
+  'Blizzard':'暴雪','Patchy snow possible':'可能有零星小雪',
+  'Patchy light snow':'零星小雪','Blowing snow':'风吹雪','Patchy heavy snow':'局部大雪',
+  'Sleet':'雨夹雪','Light freezing rain':'小冻雨','Heavy freezing rain':'强冻雨',
+  'Patchy freezing drizzle possible':'可能有冻毛毛雨',
+  'Light sleet':'小雨夹雪','Moderate or heavy sleet':'中到大雨夹雪',
+  'Ice pellets':'冰粒','Light showers of ice pellets':'小冰粒阵',
+  'Moderate or heavy showers of ice pellets':'中到大冰粒阵',
+  'Patchy light rain':'零星小雨','Patchy moderate rain':'局部中雨',
+  'Moderate or heavy rain with thunder':'中到大雨伴雷',
+  'Patchy rain with thunder':'局部雷阵雨'
+};
+function zhWeather(desc){
+  if(!desc) return '未知';
+  const s = String(desc).trim();
+  if(WEATHER_ZH[s]) return WEATHER_ZH[s];
+  const low = s.toLowerCase();
+  if(low.includes('thunder')) return '雷阵雨';
+  if(low.includes('heavy rain')) return '大雨';
+  if(low.includes('moderate rain')) return '中雨';
+  if(low.includes('light rain')) return '小雨';
+  if(low.includes('rain')) return '有雨';
+  if(low.includes('heavy snow')) return '大雪';
+  if(low.includes('light snow')) return '小雪';
+  if(low.includes('snow')) return '有雪';
+  if(low.includes('sleet')) return '雨夹雪';
+  if(low.includes('drizzle')) return '毛毛雨';
+  if(low.includes('fog')) return '雾';
+  if(low.includes('haze')) return '霾';
+  if(low.includes('overcast')) return '阴';
+  if(low.includes('cloud')) return '多云';
+  if(low.includes('sun') || low.includes('clear')) return '晴';
+  return s;
+}
+
+/* ============================================================
+   联网搜索
+   ============================================================ */
+function fetchT(url, opts, ms){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), ms);
+  return fetch(url, Object.assign({}, opts, {signal:ctrl.signal})).finally(()=>clearTimeout(t));
+}
+
+async function tryWeather(city){
+  try{
+    const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=zh`;
+    const res = await fetchT(url, {headers:{'Accept':'application/json'}}, 8000);
+    if(!res.ok) return null;
+    const data = await res.json();
+    const cc = data.current_condition && data.current_condition[0];
+    if(!cc) return null;
+    let desc = '';
+    if(cc.lang_zh && cc.lang_zh[0] && cc.lang_zh[0].value) desc = cc.lang_zh[0].value;
+    else if(cc.weatherDesc && cc.weatherDesc[0] && cc.weatherDesc[0].value) desc = zhWeather(cc.weatherDesc[0].value);
+    else desc = '未知';
+    const area = data.nearest_area && data.nearest_area[0];
+    const place = [area&&area.areaName&&area.areaName[0]&&area.areaName[0].value,
+                   area&&area.region&&area.region[0]&&area.region[0].value].filter(Boolean).join(' · ') || city;
+    return {
+      text:`🌤️ ${place} 当前天气\n${desc}，气温 ${cc.temp_C}°C（体感 ${cc.FeelsLikeC}°C）\n湿度 ${cc.humidity}% · 风速 ${cc.windspeedKmph} km/h`,
+      src:'天气'
+    };
+  }catch(e){ return null; }
+}
+
+async function tryDDG(q, requireChinese){
+  try{
+    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1&kl=cn-zh`;
+    const res = await fetchT(url, {}, 8000);
+    if(!res.ok) return null;
+    const d = await res.json();
+    const candidates = [];
+    if(d.Answer) candidates.push({ text:d.Answer, url:null });
+    if(d.AbstractText) candidates.push({ text:d.AbstractText, url:d.AbstractURL||null });
+    if(d.Definition) candidates.push({ text:d.Definition, url:null });
+    const rel = (d.RelatedTopics||[]).find(t=>t && t.Text);
+    if(rel) candidates.push({ text:rel.Text, url:rel.FirstURL||null });
+    for(const c of candidates){
+      if(isAcceptable(c.text, requireChinese)) return { text:`🔎 ${c.text}`, url:c.url, src:'联网' };
+    }
+    return null;
+  }catch(e){ return null; }
+}
+
+async function tryTavily(q, requireChinese){
+  try{
+    const res = await fetchT('https://api.tavily.com/search', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Tavily-Access-Mode':'keyless'},
+      body: JSON.stringify({query:q, max_results:5, include_answer:true, search_depth:'basic'})
+    }, 8000);
+    if(!res.ok) return null;
+    const d = await res.json();
+    if(d.answer && isAcceptable(d.answer, requireChinese)){
+      return { text:`🔎 ${String(d.answer).trim()}`, url:(d.results&&d.results[0]&&d.results[0].url)||null, src:'联网' };
+    }
+    const results = d.results || [];
+    for(const r of results){
+      if(r.content && isAcceptable(r.content, requireChinese)){
+        const s = r.content.length>320 ? r.content.slice(0,320)+'…' : r.content;
+        return { text:`🔎 ${s}`, url:r.url||null, src:'联网' };
+      }
+    }
+    return null;
+  }catch(e){ return null; }
+}
+
+function searchAll(q, city, requireChinese){
+  return new Promise(resolve=>{
+    let done=false;
+    const finish = v => { if(!done){ done=true; clearTimeout(timer); resolve(v); } };
+    const timer = setTimeout(()=>finish(null), 30000);
+    (async ()=>{
+      try{
+        if(city){
+          const w = await tryWeather(city);
+          if(w) return finish(w);
+        }
+        const d = await tryDDG(q, requireChinese);
+        if(d) return finish(d);
+        const t = await tryTavily(q, requireChinese);
+        if(t) return finish(t);
+      }catch(e){}
+      finish(null);
+    })();
+  });
+}
+
+/* ============================================================
+   数学
+   ============================================================ */
+function tryMath(raw){
+  let s = String(raw).replace(/\s/g,'')
+    .replace(/[×✕✖]/g,'*').replace(/[÷]/g,'/')
+    .replace(/（/g,'(').replace(/）/g,')')
+    .replace(/[，。？！、,.?!]/g,'');
+  s = s.replace(/(等于多少|等于几|等于|是多少|是几|计算|算一下|帮我算|请问|求)/g,'');
+  if(!s) return null;
+  let m = s.match(/^(\d+(?:\.\d+)?)(?:的)?(平方|立方|二次方|三次方)$/);
+  if(m){ const n=parseFloat(m[1]); const p=(m[2]==='平方'||m[2]==='二次方')?2:3; return {expr:`${m[1]}${m[2]}`, val:Math.pow(n,p)}; }
+  m = s.match(/^(?:根号|√)(\d+(?:\.\d+)?)$/);
+  if(m) return {expr:`√${m[1]}`, val:Math.sqrt(parseFloat(m[1]))};
+  m = s.match(/^(\d+(?:\.\d+)?)%(?:的)?(\d+(?:\.\d+)?)$/);
+  if(m) return {expr:`${m[1]}% × ${m[2]}`, val:parseFloat(m[1])/100*parseFloat(m[2])};
+  m = s.match(/^(\d+(?:\.\d+)?)的(\d+(?:\.\d+)?)%$/);
+  if(m) return {expr:`${m[1]} × ${m[2]}%`, val:parseFloat(m[1])*parseFloat(m[2])/100};
+  if(/^[\d+\-*/().%]+$/.test(s) && /[+\-*/%]/.test(s)){
+    try{ const v = Function('"use strict";return('+s+')')(); if(typeof v==='number' && isFinite(v)) return {expr:s, val:v}; }catch(e){}
+  }
+  return null;
+}
+
+/* ============================================================
+   消息渲染（含操作按钮）
+   ============================================================ */
+function scrollBottom(){ chat.scrollTop = chat.scrollHeight; }
+
+/* 复制到剪贴板 */
+async function copyText(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  }catch(e){ /* fall through */ }
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.top = '-9999px';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+
+/* 构建消息操作按钮 */
+function buildActions(convId, msgIdx, msg){
+  const box = document.createElement('div');
+  box.className = 'msg-actions';
+
+  // 复制（所有消息）
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'msg-act';
+  copyBtn.type = 'button';
+  copyBtn.title = '复制';
+  copyBtn.textContent = '📋';
+  copyBtn.addEventListener('click', async (e)=>{
+    e.stopPropagation();
+    const ok = await copyText(msg.text);
+    showToast(ok ? '已复制' : '复制失败');
+  });
+  box.appendChild(copyBtn);
+
+  // 重新生成（仅 bot）
+  if(msg.role === 'bot'){
+    const regenBtn = document.createElement('button');
+    regenBtn.className = 'msg-act';
+    regenBtn.type = 'button';
+    regenBtn.title = '重新生成';
+    regenBtn.textContent = '↻';
+    regenBtn.disabled = !!msg._generating;
+    regenBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      regenerateMessage(convId, msgIdx);
+    });
+    box.appendChild(regenBtn);
+  }
+
+  // 删除
+  const delBtn = document.createElement('button');
+  delBtn.className = 'msg-act danger';
+  delBtn.type = 'button';
+  delBtn.title = '删除';
+  delBtn.textContent = '✕';
+  delBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(confirm('删除这条消息？')) deleteMessage(convId, msgIdx);
+  });
+  box.appendChild(delBtn);
+
+  return box;
+}
+
+function renderMessage(msg, convId, msgIdx, animate){
+  const role = msg.role;
+  const el = document.createElement('div');
+  el.className = 'msg ' + role;
+
+  if(role === 'bot') el.appendChild(ballEl(26, true));
+
+  const wrapEl = document.createElement('div');
+  wrapEl.className = 'msg-wrap';
+
+  // 生成中状态
+  if(msg._generating){
+    el.classList.add('typing');
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    b.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+    wrapEl.appendChild(b);
+  }else{
+    const b = document.createElement('div');
+    b.className = 'bubble hover-tint';
+    b.textContent = msg.text;
+    if(msg.tag){
+      const t = document.createElement('span');
+      t.className = 'tag';
+      t.textContent = msg.tag;
+      b.appendChild(t);
+    }
+    if(msg.link){
+      const a = document.createElement('a');
+      a.className = 'search-link';
+      a.href = msg.link.url; a.target='_blank'; a.rel='noopener noreferrer';
+      a.textContent = msg.link.label;
+      b.appendChild(document.createElement('br'));
+      b.appendChild(a);
+    }
+    wrapEl.appendChild(b);
+  }
+
+  el.appendChild(wrapEl);
+
+  // 操作按钮（生成中不显示）
+  if(!msg._generating){
+    el.appendChild(buildActions(convId, msgIdx, msg));
+  }
+
+  chat.appendChild(el);
+
+  if(animate){
+    requestAnimationFrame(()=>el.classList.add('in'));
+  }else{
+    el.classList.add('in');
+  }
+
+  return el;
+}
+
+function renderCurrentConversation(){
+  const prevScroll = chat.scrollTop;
+  const prevHeight = chat.scrollHeight;
+  const wasAtBottom = (prevHeight - prevScroll - chat.clientHeight) < 40;
+
+  chat.innerHTML = '';
+  const conv = getCurrentConv();
+  if(!conv){ convTitle.textContent = '米遇安 · 智能助手'; return; }
+
+  convTitle.textContent = conv.title === '新对话' ? '米遇安 · 智能助手' : conv.title;
+
+  if(conv.messages.length === 0){
+    const hint = document.createElement('div');
+    hint.className = 'empty-hint';
+    hint.innerHTML = '<div class="big">💬</div><div>这是一个新的对话<br>在下方输入框开始聊天吧</div>';
+    chat.appendChild(hint);
+    return;
+  }
+
+  conv.messages.forEach((msg, idx)=>{
+    renderMessage(msg, conv.id, idx, false);
+  });
+
+  if(wasAtBottom){
+    requestAnimationFrame(scrollBottom);
+  }else{
+    chat.scrollTop = prevScroll;
+  }
+}
+
+/* ============================================================
+   消息操作
+   ============================================================ */
+function pushMessage(role, text, link, tag){
+  let conv = getCurrentConv();
+  if(!conv) conv = createConversation(true);
+
+  const msg = { role, text, link: link || null, tag: tag || null, time: Date.now() };
+  conv.messages.push(msg);
+  conv.updatedAt = Date.now();
+
+  if(role === 'user' && conv.title === '新对话'){
+    const t = text.replace(/\s+/g,' ').trim();
+    conv.title = t.length > 18 ? t.slice(0,18) + '…' : (t || '新对话');
+  }
+
+  saveStore();
+  renderSidebarList();
+  return { conv, msg, idx: conv.messages.length - 1 };
+}
+
+function deleteMessage(convId, msgIdx){
+  const conv = store.conversations.find(c => c.id === convId);
+  if(!conv) return;
+  if(msgIdx < 0 || msgIdx >= conv.messages.length) return;
+  conv.messages.splice(msgIdx, 1);
+  conv.updatedAt = Date.now();
+
+  if(conv.messages.length === 0) conv.title = '新对话';
+
+  saveStore();
+  renderSidebarList();
+  if(convId === store.currentId){
+    renderCurrentConversation();
+  }
+  showToast('已删除');
+}
+
+async function regenerateMessage(convId, msgIdx){
+  if(state.busy) return;
+  const conv = store.conversations.find(c => c.id === convId);
+  if(!conv) return;
+  const msg = conv.messages[msgIdx];
+  if(!msg || msg.role !== 'bot') return;
+  if(msg._generating) return;
+
+  // 向前找最近的用户消息
+  let userText = null;
+  for(let i = msgIdx - 1; i >= 0; i--){
+    if(conv.messages[i].role === 'user'){
+      userText = conv.messages[i].text;
+      break;
+    }
+  }
+  if(!userText){
+    showToast('找不到对应的问题');
+    return;
+  }
+
+  state.busy = true;
+  sendBtn.disabled = true;
+  talk();
+
+  // 备份原内容
+  const backup = { text: msg.text, link: msg.link, tag: msg.tag };
+
+  // 显示生成中
+  msg._generating = true;
+  renderCurrentConversation();
+
+  try{
+    const res = await respond(userText, null);
+    msg.text = res.text;
+    msg.link = res.link || null;
+    msg.tag = res.tag || null;
+    msg.time = Date.now();
+    delete msg._generating;
+    conv.updatedAt = Date.now();
+    saveStore();
+    renderSidebarList();
+    renderCurrentConversation();
+    if(res.follow) setChips(res.follow);
+    talk();
+  }catch(e){
+    msg.text = backup.text;
+    msg.link = backup.link;
+    msg.tag = backup.tag;
+    delete msg._generating;
+    saveStore();
+    renderCurrentConversation();
+    showToast('重新生成失败');
+  }finally{
+    state.busy = false;
+    sendBtn.disabled = false;
+  }
+}
+
+/* ============================================================
+   对话列表渲染（含重命名）
+   ============================================================ */
+function fmtTime(ts){
+  const d = new Date(ts);
+  const now = new Date();
+  const sameDay = d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth() && d.getDate()===now.getDate();
+  if(sameDay) return pad(d.getHours()) + ':' + pad(d.getMinutes());
+  const diff = (now - d) / 86400000;
+  if(diff < 7){
+    return ['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];
+  }
+  return (d.getMonth()+1) + '/' + d.getDate();
+}
+
+function startRename(conv, titleEl){
+  if(titleEl.querySelector('input')) return;
+  const oldTitle = conv.title;
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'conv-rename-input';
+  inp.value = oldTitle;
+  inp.maxLength = 40;
+
+  titleEl.textContent = '';
+  titleEl.appendChild(inp);
+  inp.focus();
+  inp.select();
+
+  let finished = false;
+  const finish = (save)=>{
+    if(finished) return;
+    finished = true;
+    const nv = inp.value.trim();
+    if(save && nv && nv !== oldTitle){
+      renameConversation(conv, nv);
+    }else{
+      renderSidebarList();
+    }
+  };
+
+  inp.addEventListener('click', e=>e.stopPropagation());
+  inp.addEventListener('mousedown', e=>e.stopPropagation());
+  inp.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){ e.preventDefault(); inp.blur(); }
+    else if(e.key === 'Escape'){ e.preventDefault(); inp.value = oldTitle; inp.blur(); }
+  });
+  inp.addEventListener('blur', ()=> finish(true));
+}
+
+function renderSidebarList(){
+  convList.innerHTML = '';
+  const list = store.conversations.slice().sort((a,b)=> b.updatedAt - a.updatedAt);
+
+  if(list.length === 0){
+    const e = document.createElement('div');
+    e.className = 'empty-conv';
+    e.textContent = '还没有对话，点下方按钮新建';
+    convList.appendChild(e);
+    return;
+  }
+
+  list.forEach(conv=>{
+    const item = document.createElement('div');
+    item.className = 'conv-item' + (conv.id === store.currentId ? ' active' : '');
+    item.dataset.id = conv.id;
+
+    const body = document.createElement('div');
+    body.className = 'conv-item-body';
+
+    const title = document.createElement('div');
+    title.className = 'conv-item-title';
+    title.textContent = conv.title || '新对话';
+
+    const meta = document.createElement('div');
+    meta.className = 'conv-item-meta';
+    meta.textContent = (conv.messages.length || 0) + ' 条 · ' + fmtTime(conv.updatedAt);
+
+    body.appendChild(title);
+    body.appendChild(meta);
+
+    // 操作按钮组（悬停显示）
+    const actions = document.createElement('div');
+    actions.className = 'conv-actions';
+
+    const renameBtn = document.createElement('button');
+    renameBtn.className = 'conv-act';
+    renameBtn.type = 'button';
+    renameBtn.title = '重命名';
+    renameBtn.textContent = '✎';
+    renameBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      startRename(conv, title);
+    });
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'conv-act danger';
+    delBtn.type = 'button';
+    delBtn.title = '删除对话';
+    delBtn.textContent = '🗑';
+    delBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      deleteConversation(conv.id);
+    });
+
+    actions.appendChild(renameBtn);
+    actions.appendChild(delBtn);
+
+    item.appendChild(body);
+    item.appendChild(actions);
+
+    // 双击标题也能重命名
+    title.addEventListener('dblclick', (e)=>{
+      e.stopPropagation();
+      startRename(conv, title);
+    });
+
+    item.addEventListener('click', ()=> switchConversation(conv.id));
+
+    convList.appendChild(item);
+  });
+}
+
+/* ============================================================
+   侧边栏控制
+   ============================================================ */
+function openSidebar(){ sidebar.classList.add('active'); sidebarMask.classList.add('active'); }
+function closeSidebar(){ sidebar.classList.remove('active'); sidebarMask.classList.remove('active'); }
+
+$('convBtn').addEventListener('click', openSidebar);
+$('sidebarClose').addEventListener('click', closeSidebar);
+sidebarMask.addEventListener('click', closeSidebar);
+$('newConvBtn').addEventListener('click', ()=>{
+  createConversation();
+  renderCurrentConversation();
+  closeSidebar();
+  input.focus();
+});
+
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape') closeSidebar();
+});
+
+/* ============================================================
+   快捷选项
+   ============================================================ */
+const DEFAULT_CHIPS = ['你是谁','米遇安第十二次会议','今天上海天气','米遇安有哪些游戏','讲个笑话'];
+function setChips(list){
+  chipsEl.innerHTML='';
+  (list&&list.length?list:DEFAULT_CHIPS).forEach(t=>{
+    const b=document.createElement('button');
+    b.className='chip hover-tint';
+    b.type='button';
+    b.textContent=t;
+    b.addEventListener('click', ()=>{ input.value=t; send(); });
+    chipsEl.appendChild(b);
+  });
+}
+
+/* ============================================================
+   核心 respond
+   ============================================================ */
+async function respond(raw, typingEl){
+  const q = raw.trim();
+  const c = norm(q);
+  if(!q) return { text:'说点什么吧～' };
+
+  if(/(几点了|现在几点|现在时间|当前时间|什么时间|报时)/.test(c) || c==='几点')
+    return { text: timeText(), follow:['今天几号','今天星期几'] };
+  if(/(今天.*(几号|日期)|今天几号|今天日期|什么日期|几月几号)/.test(c))
+    return { text: dateText(), follow:['现在几点','今天星期几'] };
+  if(/(星期几|周几)/.test(c)) return { text:'今天是 '+weekText()+'。', follow:['今天几号','现在几点'] };
+  if(/(哪一年|今年是几年|年份|今年几几年)/.test(c))
+    return { text:'今年是 '+new Date().getFullYear()+' 年。' };
+
+  const math = tryMath(q);
+  if(math) return { text:`🧮 ${math.expr} = ${fmt(math.val)}`, follow:['再算一个','现在几点'] };
+
+  const requireChinese = !isEnglishQuestion(q);
+  const m = matchQA(c);
+
+  if(m.item && (m.item.t === 'm' || m.item.t === 's') && m.score >= 2){
+    return {
+      text: m.item.a,
+      follow: m.item.follow,
+      tag: m.item.t === 'm' ? '米遇安' : '预设'
+    };
+  }
+  if(m.item && m.item.t === 'g' && m.score >= 5){
+    return { text: m.item.a, follow: m.item.follow, tag:'预设' };
+  }
+
+  let city = null;
+  if(/(天气|气温|温度|下雨|下雨吗|冷吗|热吗|刮风)/.test(c)){
+    const mm = q.match(/(?:今天|明天|现在)?\s*([\u4e00-\u9fa5]{2,10}?)(?:的)?(?:天气|气温|温度)/) ||
+               q.match(/(?:天气|气温|温度)\s*(?:在|是)?\s*([\u4e00-\u9fa5]{2,10})/);
+    city = mm ? mm[1] : null;
+    if(city) city = city.replace(/^(今天|明天|现在|请问)/,'').trim();
+    if(!city) city = 'Shanghai';
+  }
+
+  if(typingEl) setTyping(typingEl, '🔍 正在搜索…');
+  const net = await searchAll(q, city, requireChinese);
+  if(net){
+    return {
+      text: net.text,
+      link: net.url ? { url:net.url, label:'🔗 来源' } : null,
+      tag: net.src || '联网',
+      follow: ['今天上海天气','现在几点']
+    };
+  }
+
+  if(typingEl) setTyping(typingEl, '💭 正在整理…');
+  if(m.item && m.score >= 2){
+    return {
+      text: m.item.a,
+      tag: m.item.t === 'm' ? '米遇安' : '预设',
+      follow: m.item.follow
+    };
+  }
+
+  return {
+    text:'这个问题我暂时没找到合适的中文答案 🤔\n你可以点下面用 Bing 搜一下 ——',
+    link:{ url:'https://www.bing.com/search?q='+encodeURIComponent(q), label:'🔍 搜索「'+q+'」' }
+  };
+}
+
+function setTyping(el, text){
+  const t = el.querySelector('.ttext');
+  if(t) t.textContent = text;
+}
+
+/* ============================================================
+   发送
+   ============================================================ */
+async function send(){
+  if(state.busy) return;
+  const text = input.value.trim();
+  if(!text) return;
+
+  state.busy = true;
+  sendBtn.disabled = true;
+  input.value = '';
+  talk();
+
+  const userRec = pushMessage('user', text, null, null);
+  renderMessage(userRec.msg, userRec.conv.id, userRec.idx, true);
+
+  // 临时 typing（不写入 store）
+  const typing = document.createElement('div');
+  typing.className = 'msg bot typing';
+  typing.appendChild(ballEl(26, true));
+  const tw = document.createElement('div');
+  tw.className = 'msg-wrap';
+  const tb = document.createElement('div');
+  tb.className = 'bubble';
+  tb.innerHTML = '<span class="ttext">…</span><span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+  tw.appendChild(tb);
+  typing.appendChild(tw);
+  chat.appendChild(typing);
+  requestAnimationFrame(()=>typing.classList.add('in'));
+  scrollBottom();
+
+  try{
+    const res = await respond(text, typing);
+    typing.remove();
+    const botRec = pushMessage('bot', res.text, res.link, res.tag);
+    renderMessage(botRec.msg, botRec.conv.id, botRec.idx, true);
+    talk();
+    if(res.follow) setChips(res.follow);
+    scrollBottom();
+  }catch(e){
+    typing.remove();
+    const botRec = pushMessage('bot', '出了点小问题，你再试一次？或者换个说法。', null, null);
+    renderMessage(botRec.msg, botRec.conv.id, botRec.idx, true);
+  }finally{
+    state.busy = false;
+    sendBtn.disabled = false;
+    input.focus();
+  }
+}
+
+/* ============================================================
+   主题
+   ============================================================ */
+const themeBtn=$('themeBtn'), themeIcon=$('themeIcon');
+const ICON_MOON='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+const ICON_SUN='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';
+function applyTheme(dark){
+  document.documentElement.classList.toggle('dark', dark);
+  themeIcon.innerHTML = dark ? ICON_SUN : ICON_MOON;
+  try{ localStorage.setItem('miqiu-theme', dark?'dark':'light'); }catch(e){}
+}
+(function(){
+  let s=null; try{ s=localStorage.getItem('miqiu-theme'); }catch(e){}
+  if(s) applyTheme(s==='dark');
+  else applyTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+})();
+themeBtn.addEventListener('click', ()=>applyTheme(!document.documentElement.classList.contains('dark')));
+
+/* 清空当前对话 */
+$('clearBtn').addEventListener('click', ()=>{
+  const conv = getCurrentConv();
+  if(!conv) return;
+  if(conv.messages.length === 0) return;
+  if(!confirm('清空当前对话的所有消息？')) return;
+  conv.messages = [];
+  conv.title = '新对话';
+  conv.updatedAt = Date.now();
+  saveStore();
+  renderSidebarList();
+  renderCurrentConversation();
+  showToast('已清空');
+});
+
+/* ============================================================
+   初始化
+   ============================================================ */
+applyExpression(0);
+
+sendBtn.addEventListener('click', send);
+input.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.isComposing){ e.preventDefault(); send(); }
+});
+
+// 加载持久化数据
+const loaded = loadStore();
+if(!loaded || store.conversations.length === 0){
+  const conv = createConversation(true);
+  conv.messages.push({
+    role:'bot',
+    text:'嗨，我是米球 ⚽\n点左上角我的头像可以切换表情；右上角列表按钮管理对话（新建 / 重命名 / 删除），对话会自动保存在浏览器里，关掉浏览器也不会丢。\n\n消息支持复制、重新生成和删除，鼠标悬停就能看到操作按钮～',
+    link:null,
+    tag:null,
+    time:Date.now()
+  });
+  conv.updatedAt = Date.now();
+  saveStore();
+}
+
+if(!store.currentId || !store.conversations.find(c=>c.id===store.currentId)){
+  if(store.conversations.length > 0) store.currentId = store.conversations[0].id;
+  else createConversation(true);
+}
+
+renderSidebarList();
+renderCurrentConversation();
+setChips(DEFAULT_CHIPS);
+setTimeout(()=>input.focus(), 300);
+
+})();
+</script>
+</body>
+</html>
