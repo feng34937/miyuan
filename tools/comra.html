@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>康荣</title>
 <meta name="theme-color" content="#ffffff">
-<!-- Line Awesome（页面其余图标） -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
-<!-- Font Awesome（外部引擎按钮图标） -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
@@ -43,9 +41,7 @@ button{font-family:inherit;}
 [hidden]{display:none !important;}
 i.las,i.lar{display:inline-block;line-height:1;vertical-align:middle;}
 
-/* ============================================================
-   顶部加载进度条
-   ============================================================ */
+/* 进度条 */
 .progress-bar{
   position:fixed; top:0; left:0; right:0;
   height:3px; z-index:9999;
@@ -71,9 +67,7 @@ html.dark .progress-bar::before{
   100%{left:100%; width:35%;}
 }
 
-/* ============================================================
-   搜索框
-   ============================================================ */
+/* 搜索框 */
 .searchbox{
   display:flex; align-items:center; height:46px;
   background:var(--search-bg); border:1px solid var(--line);
@@ -104,9 +98,7 @@ html.dark .progress-bar::before{
 }
 .go-btn:hover{background:var(--chip-bg);}
 
-/* ============================================================
-   联想下拉
-   ============================================================ */
+/* 联想 */
 .suggest{
   position:absolute;left:0;right:0;top:calc(100% + 6px);
   background:var(--search-bg);border-radius:0 0 24px 24px;
@@ -128,9 +120,7 @@ html.dark .progress-bar::before{
 .sug .sug-ico{width:18px;text-align:center;font-size:14px;color:var(--muted);flex-shrink:0;}
 .sug .sug-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-/* ============================================================
-   圆形图标按钮
-   ============================================================ */
+/* 圆形图标按钮 */
 .round-btn{
   width:38px;height:38px;border-radius:50%;
   display:grid;place-items:center;
@@ -143,9 +133,7 @@ html.dark .progress-bar::before{
 .mi-btn img{width:24px;height:24px;object-fit:contain;display:block;border-radius:50%;}
 .comra-icon-btn svg{width:24px;height:24px;display:block;}
 
-/* ============================================================
-   首页
-   ============================================================ */
+/* 首页 */
 .home-view{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;}
 .home-header{
   display:flex;align-items:center;justify-content:space-between;
@@ -171,32 +159,18 @@ html.dark .progress-bar::before{
   flex:1;display:flex;flex-direction:column;align-items:center;
   justify-content:center;padding:0 20px 12vh;
 }
-
 .logo{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:14px;
-  user-select:none;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;user-select:none;
 }
 .logo-mark{
-  width:104px;
-  height:104px;
-  display:block;
-  flex-shrink:0;
+  width:104px;height:104px;display:block;flex-shrink:0;
   filter:drop-shadow(0 3px 10px rgba(66,133,244,.20));
 }
-html.dark .logo-mark{
-  filter:drop-shadow(0 3px 12px rgba(138,180,248,.28));
-}
+html.dark .logo-mark{filter:drop-shadow(0 3px 12px rgba(138,180,248,.28));}
 .logo-sub{
-  margin-top:0;
-  margin-bottom:34px;
-  font-size:15px;
-  letter-spacing:.5em;
-  text-indent:.5em;
-  color:var(--muted);
-  font-weight:500;
+  margin-top:0;margin-bottom:34px;font-size:15px;
+  letter-spacing:.5em;text-indent:.5em;color:var(--muted);font-weight:500;
 }
 
 .home-search{
@@ -228,9 +202,7 @@ html.dark .lang-note a{color:#8ab4f8;}
 .home-footer a:hover{text-decoration:underline;color:var(--text);}
 .footer-left,.footer-right{display:flex;gap:4px;flex-wrap:wrap;}
 
-/* ============================================================
-   结果页
-   ============================================================ */
+/* 结果页 */
 .results-view{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;}
 .r-header{
   display:flex;align-items:center;gap:18px;
@@ -248,13 +220,8 @@ html.dark .r-header.scrolled{
   box-shadow:0 1px 4px rgba(0,0,0,.5);
 }
 .r-left{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-
-.r-logo{
-  display:flex;align-items:center;
-  flex-shrink:0;cursor:pointer;
-}
+.r-logo{display:flex;align-items:center;flex-shrink:0;cursor:pointer;}
 .r-logo svg{width:28px;height:28px;display:block;}
-
 .r-search-wrap{flex:1;max-width:692px;position:relative;min-width:0;}
 .r-search-wrap .searchbox{height:44px;padding-left:16px;padding-right:6px;}
 .r-theme{
@@ -280,40 +247,24 @@ html.dark .r-header.scrolled{
 .r-tab:hover{color:var(--text);}
 .r-tab.active{color:var(--tab-active);border-bottom-color:var(--tab-active);}
 .r-stat{
-  padding:10px 26px 0;
-  max-width:1120px;
-  margin:0 auto;
-  width:100%;
+  padding:10px 26px 0;max-width:1120px;margin:0 auto;width:100%;
   font-size:14px;color:var(--muted);
 }
 
-/* ---------- 两栏布局 ---------- */
 .r-content{
-  width:100%;
-  max-width:1120px;
-  margin:0 auto;
+  width:100%;max-width:1120px;margin:0 auto;
   padding:14px 26px 60px;
   display:grid;
   grid-template-columns:minmax(0,652px) 360px;
-  gap:32px;
-  align-items:start;
-  justify-content:center;
+  gap:32px;align-items:start;justify-content:center;
 }
 .r-main{min-width:0;width:100%;}
-
-/* 右栏：桌面端独立滚动 */
 .r-aside{
-  min-width:0;
-  position:sticky;
-  top:90px;
+  min-width:0;position:sticky;top:90px;
   max-height:calc(100vh - 108px);
-  overflow-y:auto;
-  overscroll-behavior:contain;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-  scrollbar-width:thin;
-  scrollbar-color:var(--line) transparent;
+  overflow-y:auto;overscroll-behavior:contain;
+  display:flex;flex-direction:column;gap:18px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent;
   scrollbar-gutter:stable;
 }
 .r-aside::-webkit-scrollbar{width:6px;}
@@ -321,9 +272,7 @@ html.dark .r-header.scrolled{
 .r-aside::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
 .r-aside::-webkit-scrollbar-thumb:hover{background:var(--muted);}
 
-/* ============================================================
-   结果条目
-   ============================================================ */
+/* 结果条目 */
 .g-result{
   margin-bottom:29px;max-width:600px;
   animation:gFadeIn .22s var(--g-ease-out) both;
@@ -350,6 +299,17 @@ html.dark .r-header.scrolled{
   padding:1px 5px;border-radius:3px;
   background:var(--chip-bg);color:var(--muted);flex-shrink:0;
 }
+.g-source-tag.official{
+  background:#e6f4ea;
+  color:#137333;
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+}
+html.dark .g-source-tag.official{
+  background:rgba(52,168,83,.18);
+  color:#81c995;
+}
 .g-site-url{
   font-size:12px;color:var(--url);line-height:1.3;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -363,14 +323,11 @@ html.dark .r-header.scrolled{
 .g-title:visited{color:var(--link-visited);}
 .g-snippet{font-size:14px;line-height:1.58;color:var(--text-soft);word-break:break-word;}
 
-/* ============================================================
-   卡片（右栏）
-   ============================================================ */
+/* 卡片 */
 .g-card{
   border:1px solid var(--line);border-radius:8px;padding:18px 20px;
   max-width:none;margin-bottom:0;
-  animation:gFadeIn .22s var(--g-ease-out) both;
-  background:var(--bg);
+  animation:gFadeIn .22s var(--g-ease-out) both;background:var(--bg);
 }
 .g-card-label{
   font-size:11px;font-weight:700;letter-spacing:.08em;
@@ -398,30 +355,19 @@ html.dark .wx-days{border-top-color:#3c4043;}
 .wx-day .e{font-size:20px;margin:5px 0;line-height:1;}
 .wx-day .t{font-size:12px;color:var(--text);font-weight:500;}
 
-/* ============================================================
-   右栏辅助卡片
-   ============================================================ */
+/* 右栏辅助卡片 */
 .side-card{
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:16px 18px;
-  background:var(--bg);
-  animation:gFadeIn .22s var(--g-ease-out) both;
+  border:1px solid var(--line);border-radius:8px;padding:16px 18px;
+  background:var(--bg);animation:gFadeIn .22s var(--g-ease-out) both;
 }
 .side-title{
-  font-size:13px;
-  font-weight:700;
-  color:var(--text);
-  margin-bottom:10px;
-  display:flex;
-  align-items:center;
-  gap:8px;
+  font-size:13px;font-weight:700;color:var(--text);
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
 }
 .side-title i{font-size:14px;color:var(--muted);}
 .source-row{
   display:flex;align-items:center;justify-content:space-between;
-  font-size:13px;color:var(--text-soft);
-  padding:7px 0;
+  font-size:13px;color:var(--text-soft);padding:7px 0;
 }
 .source-row + .source-row{border-top:1px solid var(--line-soft);}
 html.dark .source-row + .source-row{border-top-color:#3c4043;}
@@ -433,16 +379,13 @@ html.dark .source-row + .source-row{border-top-color:#3c4043;}
 .related-item{
   display:flex;align-items:center;gap:10px;
   padding:8px 10px;border-radius:6px;
-  font-size:13.5px;color:var(--text);
-  cursor:pointer;
+  font-size:13.5px;color:var(--text);cursor:pointer;
   transition:background .12s var(--g-ease);
 }
 .related-item:hover{background:var(--chip-bg);}
 .related-item i{font-size:12px;color:var(--muted);flex-shrink:0;}
 
-/* ============================================================
-   骨架屏
-   ============================================================ */
+/* 骨架屏 */
 .g-skeleton{
   max-width:600px;margin-bottom:29px;
   animation:gFadeIn .2s var(--g-ease-out) both;
@@ -468,9 +411,7 @@ html.dark .source-row + .source-row{border-top-color:#3c4043;}
   50%{opacity:1;}
 }
 
-/* ============================================================
-   空 / 分页 / 更多
-   ============================================================ */
+/* 空 / 分页 / 更多 */
 .g-empty{padding:40px 0 20px;max-width:600px;animation:gFadeIn .22s var(--g-ease-out) both;}
 .g-empty h3{font-size:18px;font-weight:400;color:var(--text);margin:0 0 12px;}
 .g-empty p{font-size:14px;color:var(--muted);line-height:1.7;margin:0;}
@@ -506,68 +447,44 @@ html.dark .g-more{border-top-color:#3c4043;}
   transition:border-color .15s var(--g-ease),color .15s var(--g-ease),background .15s var(--g-ease);
   display:inline-flex;align-items:center;gap:7px;
 }
-.g-more-links a i{
-  font-size:13px;
-  line-height:1;
-  display:inline-block;
-  vertical-align:middle;
-}
+.g-more-links a i{font-size:13px;line-height:1;display:inline-block;vertical-align:middle;}
 .g-more-links a:hover{border-color:var(--blue);color:var(--blue);background:rgba(66,133,244,.06);}
 
-/* ============================================================
-   响应式
-   ============================================================ */
+/* 响应式 */
 @media (max-width:1024px){
   .r-content{
-    display:flex;
-    flex-direction:column;
-    max-width:740px;
-    gap:0;
-    padding:12px 16px 40px;
-    align-items:stretch;
+    display:flex;flex-direction:column;max-width:740px;
+    gap:0;padding:12px 16px 40px;align-items:stretch;
   }
   .r-aside{
-    position:static;
-    order:-1;
-    margin-bottom:14px;
-    gap:14px;
-    max-height:none;
-    overflow:visible;
+    position:static;order:-1;margin-bottom:14px;gap:14px;
+    max-height:none;overflow:visible;
   }
   .r-aside .side-card{display:none;}
   .r-stat{max-width:none;padding:8px 16px 0;}
 }
-
 @media (max-width:860px){
   .home-header{padding:10px 14px;gap:8px;}
   .header-link{font-size:12px;padding:5px 7px;}
   .round-btn{width:36px;height:36px;}
   .mi-btn img{width:22px;height:22px;}
   .comra-icon-btn svg{width:22px;height:22px;}
-
   .r-header{
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
-    grid-template-areas:
-      "rleft rlogo rtheme"
-      "rsearch rsearch rsearch";
-    align-items:center;
-    gap:10px 8px;
-    padding:10px 14px;
+    display:grid;grid-template-columns:1fr auto 1fr;
+    grid-template-areas:"rleft rlogo rtheme" "rsearch rsearch rsearch";
+    align-items:center;gap:10px 8px;padding:10px 14px;
   }
   .r-left{grid-area:rleft;justify-self:start;}
   .r-logo{grid-area:rlogo;justify-self:center;}
   .r-logo svg{width:26px;height:26px;}
   .r-theme{grid-area:rtheme;justify-self:end;margin-left:0;}
   .r-search-wrap{grid-area:rsearch;max-width:none;flex:initial;}
-
   .r-tabs{padding:0 14px;}
   .r-tab{margin-right:16px;font-size:13px;}
   .g-title{font-size:18px;}
   .pagination{gap:4px;margin:32px auto 16px;}
   .page-btn{min-width:32px;height:32px;padding:0 9px;font-size:12px;}
 }
-
 @media (max-width:640px){
   .home-main{padding:0 20px 18vh;}
   .logo-mark{width:72px;height:72px;}
@@ -595,14 +512,10 @@ html.dark .g-more{border-top-color:#3c4043;}
 </head>
 <body>
 
-<!-- 顶部进度条 -->
 <div class="progress-bar" id="progressBar"></div>
 
-<!-- ============================================================
-     首页
-     ============================================================ -->
+<!-- 首页 -->
 <div class="home-view" id="homeView">
-
   <header class="home-header">
     <div class="header-left">
       <a class="round-btn mi-btn" href="https://feng34937.github.io/miyuan/homepage" target="_blank" rel="noopener" title="米遇安" aria-label="米遇安">
@@ -673,21 +586,16 @@ html.dark .g-more{border-top-color:#3c4043;}
       <a id="fPrivacy">隐私</a><a id="fTerms">条款</a><a id="fSettings">设置</a>
     </div>
   </footer>
-
 </div>
 
-<!-- ============================================================
-     结果页
-     ============================================================ -->
+<!-- 结果页 -->
 <div class="results-view" id="resultsView" hidden>
-
   <header class="r-header" id="rHeader">
     <div class="r-left">
       <a class="round-btn mi-btn" href="https://feng34937.github.io/miyuan/homepage" target="_blank" rel="noopener" title="米遇安" aria-label="米遇安">
         <img src="https://feng34937.github.io/miyuan/MIYUAN_LOGO_NOBACKGROUND.png" alt="米遇安">
       </a>
     </div>
-
     <a class="r-logo" id="rLogo" aria-label="康荣 首页">
       <svg viewBox="0 0 48 48" aria-hidden="true">
         <defs>
@@ -701,7 +609,6 @@ html.dark .g-more{border-top-color:#3c4043;}
         <circle cx="24" cy="24" r="6.5" fill="url(#comraGradResults)"/>
       </svg>
     </a>
-
     <div class="r-search-wrap" id="rSearchWrap">
       <div class="searchbox">
         <i class="las la-search si"></i>
@@ -711,7 +618,6 @@ html.dark .g-more{border-top-color:#3c4043;}
       </div>
       <div class="suggest" id="sugResults"></div>
     </div>
-
     <button class="r-theme" id="themeBtnResults" aria-label="切换主题">
       <i class="las la-moon" id="themeIconResults"></i>
     </button>
@@ -720,6 +626,7 @@ html.dark .g-more{border-top-color:#3c4043;}
   <nav class="r-tabs" id="rTabs">
     <a class="r-tab active" data-tab="all">全部</a>
     <a class="r-tab" data-tab="web">网页</a>
+    <a class="r-tab" data-tab="official">官网</a>
     <a class="r-tab" data-tab="wiki">百科</a>
     <a class="r-tab" data-tab="news">新闻</a>
     <a class="r-tab" data-tab="tech">技术</a>
@@ -732,7 +639,6 @@ html.dark .g-more{border-top-color:#3c4043;}
     <main class="r-main" id="rMain"></main>
     <aside class="r-aside" id="rAside"></aside>
   </div>
-
 </div>
 
 <script>
@@ -740,7 +646,7 @@ html.dark .g-more{border-top-color:#3c4043;}
 'use strict';
 
 /* ============================================================
-   Favicon：康荣环形图标（SVG data URI）
+   Favicon
    ============================================================ */
 (function setComraFavicon(){
   const svg =
@@ -800,34 +706,585 @@ function fetchT(url,opts,ms){ const ctrl=new AbortController(); const t=setTimeo
 function normalizeUrl(u){ if(!u) return ''; try{ const x=new URL(u); return (x.hostname+x.pathname+x.search).toLowerCase().replace(/^www\./,'').replace(/\/$/,''); }catch(e){ return String(u).toLowerCase(); } }
 function invertAbstract(idx){ if(!idx) return ''; const arr=[]; Object.keys(idx).forEach(w=>{ (idx[w]||[]).forEach(p=>{ arr[p]=w; }); }); return arr.filter(Boolean).join(' '); }
 
+/* ============================================================
+   ★ 预置官网库（550+ 网站）
+   格式：名称|别名1,别名2,别名3|URL|描述|分类
+   ============================================================ */
+const SITE_DATA = `
+Google|谷歌,google搜索,谷歌搜索,谷歌官网|https://www.google.com|全球最大的搜索引擎，提供网页、图片、视频、地图、翻译等搜索服务。|搜索引擎
+百度|baidu,百度搜索,度娘,百度官网|https://www.baidu.com|全球最大的中文搜索引擎，提供网页、图片、地图、知道、百科等搜索服务。|搜索引擎
+必应|bing,微软必应,bing搜索|https://www.bing.com|微软旗下的搜索引擎，提供网页、图片、视频、地图等搜索服务。|搜索引擎
+搜狗|sogou,搜狗搜索,搜狗官网|https://www.sogou.com|搜狐旗下的搜索引擎，提供网页、微信、知乎等搜索服务。|搜索引擎
+360搜索|so.com,360,好搜,360搜索引擎|https://www.so.com|360旗下的搜索引擎，提供网页、图片、视频、问答等搜索服务。|搜索引擎
+DuckDuckGo|ddg,duckduckgo搜索|https://duckduckgo.com|注重隐私保护的搜索引擎，不追踪用户搜索记录。|搜索引擎
+神马搜索|sm.cn,神马|https://m.sm.cn|阿里巴巴旗下的移动搜索引擎。|搜索引擎
+头条搜索|头条搜索|https://so.toutiao.com|字节跳动旗下的搜索引擎。|搜索引擎
+夸克搜索|quark,夸克|https://quark.sm.cn|阿里巴巴旗下的智能搜索应用。|搜索引擎
+Yahoo|雅虎,雅虎搜索|https://www.yahoo.com|美国门户网站与搜索引擎。|搜索引擎
+Yandex|yandex|https://yandex.com|俄罗斯最大的搜索引擎。|搜索引擎
+Brave Search|brave,brave搜索|https://search.brave.com|注重隐私的独立搜索引擎。|搜索引擎
+Ecosia|ecosia|https://www.ecosia.org|用搜索收益种树的环保搜索引擎。|搜索引擎
+Qwant|qwant|https://www.qwant.com|欧洲隐私搜索引擎。|搜索引擎
+Startpage|startpage|https://www.startpage.com|提供 Google 结果的隐私搜索引擎。|搜索引擎
+Mojeek|mojeek|https://www.mojeek.com|英国独立搜索引擎。|搜索引擎
+Naver|naver|https://www.naver.com|韩国最大的搜索引擎与门户网站。|搜索引擎
+Daum|daum|https://www.daum.net|韩国门户网站。|搜索引擎
+中国搜索|chinaso|https://www.chinaso.com|国家级搜索引擎。|搜索引擎
+Wolfram Alpha|wolframalpha,wolfram|https://www.wolframalpha.com|计算知识引擎，擅长数学与科学计算。|搜索引擎
+秘迹搜索|mijisou,秘迹|https://mijisou.com|注重隐私的中文搜索引擎。|搜索引擎
+多吉搜索|dogedoge,多吉|https://www.dogedoge.com|无追踪的中文搜索引擎。|搜索引擎
+SearX|searx,searxng|https://searx.be|开源元搜索引擎，聚合多个搜索源。|搜索引擎
+百度学术|百度学术|https://xueshu.baidu.com|百度旗下的学术搜索。|搜索引擎
+Google Scholar|谷歌学术,googlescholar,scholar|https://scholar.google.com|Google 旗下的学术搜索。|搜索引擎
+搜狗微信|微信搜索,搜一搜,weixin|https://weixin.sogou.com|搜狗提供的微信公众号文章搜索。|搜索引擎
+中国知网|知网,cnki|https://www.cnki.net|中国最大的学术文献数据库。|搜索引擎
+AOL|aol,aol搜索|https://search.aol.com|美国门户网站与搜索引擎。|搜索引擎
+Ask|ask,ask搜索|https://www.ask.com|美国问答式搜索引擎。|搜索引擎
+LookSmart|looksmart|https://www.looksmart.com|美国搜索引擎。|搜索引擎
+
+Facebook|脸书,fb|https://www.facebook.com|全球最大的社交网络平台。|社交社区
+Twitter|推特,x,twitter|https://x.com|全球知名的微博客社交平台。|社交社区
+Instagram|ins,instagram,ig|https://www.instagram.com|以图片和短视频为主的社交平台。|社交社区
+LinkedIn|领英,linkedin|https://www.linkedin.com|全球最大的职业社交平台。|社交社区
+Reddit|reddit|https://www.reddit.com|美国最大的兴趣社区与论坛。|社交社区
+Pinterest|pinterest|https://www.pinterest.com|以图片收藏与发现为主的社交平台。|社交社区
+Snapchat|snapchat|https://www.snapchat.com|以阅后即焚消息为特色的社交应用。|社交社区
+Telegram|电报,telegram,tg|https://telegram.org|注重隐私的即时通讯软件。|社交社区
+WhatsApp|whatsapp|https://www.whatsapp.com|全球流行的即时通讯软件。|社交社区
+Discord|discord|https://discord.com|面向游戏与社区的语音聊天平台。|社交社区
+TikTok|tiktok,海外抖音|https://www.tiktok.com|字节跳动旗下的短视频社交平台。|社交社区
+抖音|douyin,抖音短视频,抖音官网|https://www.douyin.com|字节跳动旗下的短视频平台。|社交社区
+快手|kuaishou,快手官网|https://www.kuaishou.com|中国领先的短视频与直播平台。|社交社区
+微博|weibo,新浪微博,微博官网|https://weibo.com|中国最大的社交媒体平台之一。|社交社区
+小红书|xiaohongshu,red,小红书官网|https://www.xiaohongshu.com|以生活方式分享为主的社区平台。|社交社区
+微信|wechat,微信官网|https://weixin.qq.com|腾讯旗下的国民级即时通讯软件。|社交社区
+QQ|腾讯qq,qq官网|https://im.qq.com|腾讯旗下的即时通讯软件。|社交社区
+知乎|zhihu,知乎网,知乎官网|https://www.zhihu.com|中文互联网问答社区。|社交社区
+豆瓣|douban,豆瓣网,豆瓣官网|https://www.douban.com|以书籍、电影、音乐评论为主的社区。|社交社区
+百度贴吧|贴吧,tieba|https://tieba.baidu.com|百度旗下的兴趣社区。|社交社区
+陌陌|momo,陌陌官网|https://www.immomo.com|以陌生人社交为主的移动应用。|社交社区
+脉脉|maimai,脉脉官网|https://maimai.cn|中国职场社交平台。|社交社区
+掘金|juejin,稀土掘金|https://juejin.cn|面向开发者的技术社区。|社交社区
+V2EX|v2ex|https://www.v2ex.com|程序员与技术爱好者社区。|社交社区
+少数派|sspai,少数派官网|https://sspai.com|专注数字生活方式的媒体社区。|社交社区
+简书|jianshu,简书官网|https://www.jianshu.com|中文写作与阅读平台。|社交社区
+CSDN|csdn,开发者社区|https://www.csdn.net|中国最大的开发者社区。|社交社区
+博客园|cnblogs,博客园官网|https://www.cnblogs.com|面向开发者的技术博客社区。|社交社区
+开源中国|oschina,oschina官网|https://www.oschina.net|中国开源技术社区。|社交社区
+SegmentFault|sf,思否,segmentfault|https://segmentfault.com|面向开发者的技术问答社区。|社交社区
+牛客网|nowcoder,牛客|https://www.nowcoder.com|程序员求职与刷题平台。|社交社区
+力扣|leetcode,力扣官网|https://leetcode.cn|程序员算法刷题平台。|社交社区
+Hacker News|hn,yc,hackernews|https://news.ycombinator.com|科技创业与编程领域的新闻社区。|社交社区
+Stack Overflow|stackoverflow,so|https://stackoverflow.com|全球最大的程序员问答社区。|社交社区
+GitHub|github,gh|https://github.com|全球最大的代码托管与协作平台。|社交社区
+GitLab|gitlab|https://gitlab.com|开源的代码托管与 DevOps 平台。|社交社区
+Gitee|码云,gitee|https://gitee.com|中国本土的代码托管平台。|社交社区
+Bitbucket|bitbucket|https://bitbucket.org|Atlassian 旗下的代码托管平台。|社交社区
+人人都是产品经理|woshipm,产品经理社区|https://www.woshipm.com|产品经理学习与交流社区。|社交社区
+虎扑|hupu,虎扑体育|https://www.hupu.com|以体育为主的男性兴趣社区。|社交社区
+天涯社区|tianya,天涯|https://www.tianya.cn|中国知名的网络社区。|社交社区
+豆瓣电影|豆瓣电影|https://movie.douban.com|豆瓣旗下的电影评分与评论平台。|社交社区
+豆瓣读书|豆瓣读书|https://book.douban.com|豆瓣旗下的图书评分与评论平台。|社交社区
+即刻|jike,即刻app|https://web.okjike.com|年轻人的兴趣社区。|社交社区
+Keep|keep,keep官网|https://www.gotokeep.com|运动健身社区与工具。|社交社区
+
+YouTube|油管,youtube,yt|https://www.youtube.com|全球最大的视频分享平台。|视频
+哔哩哔哩|bilibili,b站,哔哩哔哩官网|https://www.bilibili.com|中国知名的视频弹幕网站。|视频
+优酷|youku,优酷官网|https://www.youku.com|阿里巴巴旗下的视频平台。|视频
+爱奇艺|iqiyi,爱奇艺官网|https://www.iqiyi.com|中国领先的在线视频平台。|视频
+腾讯视频|v.qq.com,腾讯视频官网|https://v.qq.com|腾讯旗下的在线视频平台。|视频
+芒果TV|mgtv,芒果tv|https://www.mgtv.com|湖南广电旗下的视频平台。|视频
+搜狐视频|sohu视频|https://tv.sohu.com|搜狐旗下的视频平台。|视频
+乐视视频|letv,乐视|https://www.le.com|乐视旗下的视频平台。|视频
+土豆网|tudou,土豆|https://www.tudou.com|优酷旗下的视频平台。|视频
+西瓜视频|xigua,西瓜|https://www.ixigua.com|字节跳动旗下的视频平台。|视频
+央视频|yangshipin,央视频|https://www.yangshipin.cn|中央广播电视总台旗下的视频平台。|视频
+央视网|cctv,央视网官网|https://www.cctv.com|中央广播电视总台官方网站。|视频
+咪咕视频|migu,咪咕|https://www.miguvideo.com|中国移动旗下的视频平台。|视频
+AcFun|a站,acfun|https://www.acfun.cn|中国知名的弹幕视频网站。|视频
+好看视频|haokan,好看|https://haokan.baidu.com|百度旗下的短视频平台。|视频
+微视|weishi,腾讯微视|https://weishi.qq.com|腾讯旗下的短视频平台。|视频
+Netflix|奈飞,netflix|https://www.netflix.com|全球领先的流媒体视频平台。|视频
+Disney+|迪士尼+,disneyplus|https://www.disneyplus.com|迪士尼旗下的流媒体平台。|视频
+Hulu|hulu|https://www.hulu.com|美国的流媒体视频平台。|视频
+Amazon Prime Video|primevideo,亚马逊视频|https://www.primevideo.com|亚马逊旗下的流媒体平台。|视频
+HBO Max|hbomax,max|https://www.hbomax.com|HBO 旗下的流媒体平台。|视频
+Apple TV+|appletv,苹果tv|https://tv.apple.com|苹果旗下的流媒体平台。|视频
+Twitch|twitch|https://www.twitch.tv|全球最大的游戏直播平台。|视频
+Vimeo|vimeo|https://vimeo.com|以高质量视频为主的分享平台。|视频
+Dailymotion|dailymotion|https://www.dailymotion.com|法国的视频分享平台。|视频
+韩剧TV|hanjutv,韩剧tv|https://www.hanjutv.com|韩剧观看平台。|视频
+人人视频|rrsp,人人视频|https://www.rr.tv|海外影视剧观看平台。|视频
+南瓜电影|nanguo,南瓜电影|https://www.nangua.com|影视剧观看平台。|视频
+影视大全|yingshi,影视大全|https://www.yingshi.com|影视资源聚合平台。|视频
+抖音直播|抖音直播|https://live.douyin.com|抖音旗下的直播平台。|视频
+斗鱼直播|douyu,斗鱼|https://www.douyu.com|中国领先的游戏直播平台。|视频
+虎牙直播|huya,虎牙|https://www.huya.com|中国领先的游戏直播平台。|视频
+企鹅电竞|qie,企鹅电竞|https://egame.qq.com|腾讯旗下的游戏直播平台。|视频
+网易CC直播|cc直播,网易cc|https://cc.163.com|网易旗下的游戏直播平台。|视频
+B站直播|bilibili直播|https://live.bilibili.com|哔哩哔哩旗下的直播平台。|视频
+快手直播|快手直播|https://live.kuaishou.com|快手旗下的直播平台。|视频
+YouTube Live|youtube直播|https://www.youtube.com/live|YouTube 旗下的直播平台。|视频
+Facebook Live|facebook直播|https://www.facebook.com/live|Facebook 旗下的直播平台。|视频
+Instagram Live|instagram直播|https://www.instagram.com|Instagram 旗下的直播功能。|视频
+
+网易云音乐|music.163.com,网易云,网易音乐|https://music.163.com|网易旗下的音乐平台。|音乐
+QQ音乐|qq音乐,y.qq.com|https://y.qq.com|腾讯旗下的音乐平台。|音乐
+酷狗音乐|kugou,酷狗|https://www.kugou.com|腾讯音乐旗下的音乐平台。|音乐
+酷我音乐|kuwo,酷我|https://www.kuwo.cn|腾讯音乐旗下的音乐平台。|音乐
+咪咕音乐|migu音乐,咪咕音乐|https://music.migu.cn|中国移动旗下的音乐平台。|音乐
+千千音乐|qianqian,千千|https://music.taihe.com|百度旗下的音乐平台。|音乐
+豆瓣FM|doubanfm,豆瓣fm|https://fm.douban.com|豆瓣旗下的音乐电台。|音乐
+Spotify|spotify|https://www.spotify.com|全球最大的流媒体音乐平台。|音乐
+Apple Music|applemusic,苹果音乐|https://music.apple.com|苹果旗下的音乐平台。|音乐
+YouTube Music|youtubemusic|https://music.youtube.com|YouTube 旗下的音乐平台。|音乐
+SoundCloud|soundcloud|https://soundcloud.com|音乐分享与发现平台。|音乐
+Tidal|tidal|https://tidal.com|注重高音质的流媒体音乐平台。|音乐
+Deezer|deezer|https://www.deezer.com|法国的流媒体音乐平台。|音乐
+Pandora|pandora|https://www.pandora.com|美国的音乐电台平台。|音乐
+Last.fm|lastfm,last.fm|https://www.last.fm|音乐社交与推荐平台。|音乐
+Bandcamp|bandcamp|https://bandcamp.com|独立音乐人的作品发布平台。|音乐
+喜马拉雅|ximalaya,喜马拉雅fm|https://www.ximalaya.com|中国最大的音频分享平台。|音乐
+蜻蜓FM|qingting,蜻蜓fm|https://www.qtfm.cn|音频分享与播客平台。|音乐
+荔枝FM|lizhi,荔枝fm|https://www.lizhi.fm|音频分享与播客平台。|音乐
+猫耳FM|maoer,猫耳fm|https://www.missevan.com|二次元音频分享平台。|音乐
+懒人听书|lrts,懒人听书|https://www.lrts.me|有声书与音频平台。|音乐
+得到|dedao,得到app|https://www.dedao.cn|知识付费与音频学习平台。|音乐
+樊登读书|fandeng,樊登读书|https://www.dushu365.com|知识付费与书籍解读平台。|音乐
+喜马拉雅直播|喜马拉雅直播|https://live.ximalaya.com|喜马拉雅旗下的直播平台。|音乐
+网易云音乐人|网易音乐人|https://music.163.com|网易云音乐的音乐人平台。|音乐
+
+淘宝|taobao,淘宝网,淘宝官网|https://www.taobao.com|阿里巴巴旗下的综合电商平台。|购物电商
+天猫|tmall,天猫商城,天猫官网|https://www.tmall.com|阿里巴巴旗下的 B2C 电商平台。|购物电商
+京东|jd,京东商城,京东官网|https://www.jd.com|中国领先的自营电商平台。|购物电商
+拼多多|pinduoduo,pdd,拼多多官网|https://www.pinduoduo.com|中国领先的社交电商平台。|购物电商
+苏宁易购|suning,苏宁|https://www.suning.com|中国知名的电商与零售平台。|购物电商
+国美|gome,国美在线|https://www.gome.com.cn|中国知名的家电零售平台。|购物电商
+唯品会|vip,唯品会官网|https://www.vip.com|品牌特卖电商平台。|购物电商
+当当|dangdang,当当网|https://www.dangdang.com|中国知名的图书电商平台。|购物电商
+亚马逊|amazon,亚马逊官网|https://www.amazon.com|全球最大的电商平台。|购物电商
+eBay|ebay|https://www.ebay.com|全球知名的电商平台。|购物电商
+阿里巴巴|alibaba|https://www.alibaba.com|阿里巴巴 B2B 国际贸易平台。|购物电商
+1688|1688,阿里巴巴1688|https://www.1688.com|阿里巴巴旗下的 B2B 批发平台。|购物电商
+速卖通|aliexpress,速卖通官网|https://www.aliexpress.com|阿里巴巴旗下的跨境电商平台。|购物电商
+亚马逊中国|amazon中国|https://www.amazon.cn|亚马逊中国站。|购物电商
+沃尔玛|walmart,沃尔玛官网|https://www.walmart.com|全球最大的零售企业。|购物电商
+乐天|rakuten,乐天市场|https://www.rakuten.co.jp|日本最大的电商平台。|购物电商
+Shopee|shopee,虾皮|https://shopee.cn|东南亚领先的电商平台。|购物电商
+Lazada|lazada|https://www.lazada.com|东南亚领先的电商平台。|购物电商
+有赞|youzan,有赞商城|https://www.youzan.com|社交电商与零售 SaaS 平台。|购物电商
+微店|weidian,微店官网|https://www.weidian.com|移动电商开店平台。|购物电商
+小红书商城|小红书商城|https://www.xiaohongshu.com|小红书旗下的电商平台。|购物电商
+抖音商城|抖音商城,抖音电商|https://www.douyin.com|抖音旗下的电商平台。|购物电商
+快手小店|快手小店,快手电商|https://www.kuaishou.com|快手旗下的电商平台。|购物电商
+美团|meituan,美团网,美团官网|https://www.meituan.com|中国领先的生活服务电商平台。|购物电商
+饿了么|ele.me,饿了么官网|https://www.ele.me|阿里巴巴旗下的外卖平台。|购物电商
+大众点评|dianping,大众点评网|https://www.dianping.com|中国领先的本地生活信息平台。|购物电商
+盒马|hema,盒马鲜生|https://www.freshhema.com|阿里巴巴旗下的新零售超市。|购物电商
+叮咚买菜|dingdong,叮咚|https://www.dingdongxian.com|生鲜电商平台。|购物电商
+每日优鲜|meiriyouxian|https://www.missfresh.cn|生鲜电商平台。|购物电商
+山姆会员店|samsclub,山姆|https://www.samsclub.cn|沃尔玛旗下的会员制仓储超市。|购物电商
+Costco|好市多,costco|https://www.costco.com|全球知名的会员制仓储超市。|购物电商
+屈臣氏|watsons,屈臣氏官网|https://www.watsons.com.cn|个人护理用品连锁店。|购物电商
+优衣库|uniqlo,优衣库官网|https://www.uniqlo.com|日本知名的服装品牌。|购物电商
+Zara|zara|https://www.zara.com|西班牙知名的服装品牌。|购物电商
+H&M|hm,h&m官网|https://www.hm.com|瑞典知名的服装品牌。|购物电商
+Nike|耐克,nike官网|https://www.nike.com|全球知名的运动品牌。|购物电商
+Adidas|阿迪达斯,adidas官网|https://www.adidas.com|全球知名的运动品牌。|购物电商
+李宁|lining,李宁官网|https://www.lining.com|中国知名的运动品牌。|购物电商
+安踏|anta,安踏官网|https://www.anta.cn|中国知名的运动品牌。|购物电商
+小米商城|mi.com,小米官网|https://www.mi.com|小米官方商城。|购物电商
+华为商城|vmall,华为官网|https://www.vmall.com|华为官方商城。|购物电商
+苹果官网|apple,苹果,apple官网|https://www.apple.com|苹果公司官方网站。|购物电商
+三星官网|samsung,三星|https://www.samsung.com|三星电子官方网站。|购物电商
+OPPO官网|oppo|https://www.oppo.com|OPPO 官方网站。|购物电商
+vivo官网|vivo|https://www.vivo.com|vivo 官方网站。|购物电商
+荣耀官网|honor,荣耀|https://www.honor.com|荣耀官方网站。|购物电商
+联想商城|lenovo,联想官网|https://www.lenovo.com.cn|联想官方网站。|购物电商
+戴尔官网|dell,戴尔|https://www.dell.com|戴尔官方网站。|购物电商
+惠普官网|hp,惠普|https://www.hp.com|惠普官方网站。|购物电商
+华硕官网|asus,华硕|https://www.asus.com.cn|华硕官方网站。|购物电商
+索尼官网|sony,索尼|https://www.sony.com|索尼官方网站。|购物电商
+中关村在线|zol,中关村在线官网|https://www.zol.com.cn|中国知名的科技资讯与电商导购平台。|购物电商
+太平洋电脑网|pconline,太平洋电脑网|https://www.pconline.com.cn|中国知名的 IT 资讯与电商导购平台。|购物电商
+
+新华网|xinhua,新华网官网|https://www.news.cn|新华社官方网站。|新闻资讯
+人民网|people,人民网官网|https://www.people.com.cn|人民日报官方网站。|新闻资讯
+中国新闻网|chinanews,中新网|https://www.chinanews.com.cn|中国新闻社官方网站。|新闻资讯
+澎湃新闻|thepaper,澎湃|https://www.thepaper.cn|上海报业集团旗下的新闻平台。|新闻资讯
+环球网|huanqiu,环球网官网|https://www.huanqiu.com|环球时报官方网站。|新闻资讯
+参考消息|cankaoxiaoxi,参考消息官网|https://www.cankaoxiaoxi.com|新华社旗下的新闻平台。|新闻资讯
+光明网|gmw,光明网官网|https://www.gmw.cn|光明日报官方网站。|新闻资讯
+中国青年网|youth,中国青年网|https://www.youth.cn|中国青年报官方网站。|新闻资讯
+观察者网|guancha,观察者|https://www.guancha.cn|时政评论与新闻平台。|新闻资讯
+界面新闻|jiemian,界面|https://www.jiemian.com|上海报业集团旗下的财经新闻平台。|新闻资讯
+财新网|caixin,财新|https://www.caixin.com|中国领先的财经新闻平台。|新闻资讯
+第一财经|yicai,一财|https://www.yicai.com|上海文广集团旗下的财经新闻平台。|新闻资讯
+每日经济新闻|nbd,每经|https://www.nbd.com.cn|成都传媒集团旗下的财经新闻平台。|新闻资讯
+21世纪经济报道|21jingji,21经济|https://www.21jingji.com|南方报业旗下的财经新闻平台。|新闻资讯
+新浪新闻|sina,新浪新闻|https://news.sina.com.cn|新浪旗下的新闻平台。|新闻资讯
+网易新闻|163,网易新闻|https://news.163.com|网易旗下的新闻平台。|新闻资讯
+腾讯新闻|qq新闻,腾讯新闻|https://news.qq.com|腾讯旗下的新闻平台。|新闻资讯
+搜狐新闻|sohu,搜狐新闻|https://news.sohu.com|搜狐旗下的新闻平台。|新闻资讯
+凤凰网|ifeng,凤凰|https://www.ifeng.com|凤凰卫视旗下的新闻平台。|新闻资讯
+百度新闻|baidu新闻|https://news.baidu.com|百度旗下的新闻聚合平台。|新闻资讯
+今日头条|toutiao,头条|https://www.toutiao.com|字节跳动旗下的资讯平台。|新闻资讯
+一点资讯|yidian,一点资讯|https://www.yidianzixun.com|资讯聚合平台。|新闻资讯
+BBC|bbc,bbc中文|https://www.bbc.com|英国广播公司官方网站。|新闻资讯
+CNN|cnn|https://www.cnn.com|美国有线电视新闻网。|新闻资讯
+纽约时报|nytimes,nyt|https://www.nytimes.com|美国知名报纸。|新闻资讯
+卫报|theguardian,guardian|https://www.theguardian.com|英国知名报纸。|新闻资讯
+路透社|reuters|https://www.reuters.com|全球知名的通讯社。|新闻资讯
+彭博社|bloomberg|https://www.bloomberg.com|全球知名的财经资讯平台。|新闻资讯
+美联社|apnews,ap|https://apnews.com|美国联合通讯社。|新闻资讯
+半岛电视台|aljazeera|https://www.aljazeera.com|卡塔尔知名的新闻频道。|新闻资讯
+华尔街日报|wsj|https://www.wsj.com|美国知名的财经报纸。|新闻资讯
+金融时报|ft,financialtimes|https://www.ft.com|英国知名的财经报纸。|新闻资讯
+经济学人|economist|https://www.economist.com|英国知名的新闻周刊。|新闻资讯
+福布斯|forbes|https://www.forbes.com|美国知名的商业杂志。|新闻资讯
+TechCrunch|techcrunch|https://techcrunch.com|科技创投新闻平台。|新闻资讯
+The Verge|verge,theverge|https://www.theverge.com|科技新闻与评测平台。|新闻资讯
+Wired|wired|https://www.wired.com|科技与文化杂志。|新闻资讯
+36氪|36kr,36氪官网|https://36kr.com|中国领先的科技创投媒体。|新闻资讯
+虎嗅|huxiu,虎嗅网|https://www.huxiu.com|科技与商业资讯平台。|新闻资讯
+钛媒体|tmtpost,钛媒体官网|https://www.tmtpost.com|科技与商业资讯平台。|新闻资讯
+爱范儿|ifanr,爱范儿官网|https://www.ifanr.com|科技生活方式媒体。|新闻资讯
+品玩|pingwest,品玩官网|https://www.pingwest.com|科技媒体平台。|新闻资讯
+极客公园|geekpark,极客公园|https://www.geekpark.net|科技媒体平台。|新闻资讯
+
+中国大学MOOC|icourse163,中国大学mooc|https://www.icourse163.org|中国领先的在线课程平台。|学习教育
+学堂在线|xuetangx,学堂在线|https://www.xuetangx.com|清华大学发起的在线课程平台。|学习教育
+网易公开课|open.163.com,网易公开课|https://open.163.com|网易旗下的免费课程平台。|学习教育
+网易云课堂|study.163.com,网易云课堂|https://study.163.com|网易旗下的职业技能学习平台。|学习教育
+腾讯课堂|ke.qq.com,腾讯课堂|https://ke.qq.com|腾讯旗下的在线教育平台。|学习教育
+Coursera|coursera|https://www.coursera.org|全球领先的在线课程平台。|学习教育
+edX|edx|https://www.edx.org|全球领先的在线课程平台。|学习教育
+可汗学院|khanacademy,khan|https://www.khanacademy.org|免费在线教育平台。|学习教育
+Udemy|udemy|https://www.udemy.com|全球在线课程平台。|学习教育
+Udacity|udacity|https://www.udacity.com|技术与职业技能在线课程平台。|学习教育
+慕课网|imooc,慕课网官网|https://www.imooc.com|IT 技能在线学习平台。|学习教育
+极客时间|geekbang,极客时间官网|https://time.geekbang.org|IT 技术知识付费平台。|学习教育
+我要自学网|51zxw,我要自学网|https://www.51zxw.net|免费视频教程学习平台。|学习教育
+沪江网校|hujiang,沪江|https://www.hujiang.com|外语学习平台。|学习教育
+新东方|xdf,新东方官网|https://www.xdf.cn|中国知名的教育培训机构。|学习教育
+学而思网校|xueersi,学而思|https://www.xueersi.com|中小学在线教育平台。|学习教育
+猿辅导|yuanfudao,猿辅导官网|https://www.yuanfudao.com|中小学在线教育平台。|学习教育
+作业帮|zybang,作业帮官网|https://www.zybang.com|中小学在线教育平台。|学习教育
+粉笔网|fenbi,粉笔|https://www.fenbi.com|职业考试在线教育平台。|学习教育
+中公教育|offcn,中公教育官网|https://www.offcn.com|公务员考试培训机构。|学习教育
+华图教育|huatu,华图教育官网|https://www.huatu.com|公务员考试培训机构。|学习教育
+微信读书|weread,微信读书|https://weread.qq.com|腾讯旗下的电子书阅读平台。|学习教育
+中国知网|知网,cnki|https://www.cnki.net|中国最大的学术文献数据库。|学习教育
+万方数据|wanfang,万方|https://www.wanfangdata.com.cn|中国学术文献数据库。|学习教育
+维普|cqvip,维普|http://www.cqvip.com|中国学术文献数据库。|学习教育
+中国国家图书馆|nlc,国家图书馆|https://www.nlc.cn|中国国家图书馆官方网站。|学习教育
+JSTOR|jstor|https://www.jstor.org|学术期刊数据库。|学习教育
+PubMed|pubmed|https://pubmed.ncbi.nlm.nih.gov|生物医学文献数据库。|学习教育
+arXiv|arxiv|https://arxiv.org|预印本论文数据库。|学习教育
+ResearchGate|researchgate|https://www.researchgate.net|科研社交网络平台。|学习教育
+Semantic Scholar|semanticscholar|https://www.semanticscholar.org|AI 驱动的学术搜索平台。|学习教育
+Springer|springer|https://www.springer.com|学术出版机构。|学习教育
+Elsevier|elsevier|https://www.elsevier.com|学术出版机构。|学习教育
+Nature|nature,自然杂志|https://www.nature.com|国际顶级科学期刊。|学习教育
+Science|science,科学杂志|https://www.science.org|国际顶级科学期刊。|学习教育
+中国哲学书电子化计划|ctext|https://ctext.org|中国古典文献数据库。|学习教育
+国家哲学社会科学文献中心|ncpssd|https://www.ncpssd.org|哲学社会科学文献数据库。|学习教育
+学习强国|xuexi,学习强国|https://www.xuexi.cn|中宣部主办的学习平台。|学习教育
+中国科普博览|kepu,科普博览|https://www.kepu.net.cn|中国科学院科普平台。|学习教育
+果壳|guokr,果壳网|https://www.guokr.com|科学传播平台。|学习教育
+科学松鼠会|songshuhui,松鼠会|https://songshuhui.net|科学传播平台。|学习教育
+丁香园|dxy,丁香医生|https://www.dxy.cn|医学专业交流平台。|学习教育
+百度文库|wenku,百度文库|https://wenku.baidu.com|文档分享平台。|学习教育
+清华大学|tsinghua,清华|https://www.tsinghua.edu.cn|清华大学官方网站。|学习教育
+北京大学|pku,北大|https://www.pku.edu.cn|北京大学官方网站。|学习教育
+复旦大学|fudan,复旦|https://www.fudan.edu.cn|复旦大学官方网站。|学习教育
+上海交通大学|sjtu,上交|https://www.sjtu.edu.cn|上海交通大学官方网站。|学习教育
+浙江大学|zju,浙大|https://www.zju.edu.cn|浙江大学官方网站。|学习教育
+南京大学|nju,南大|https://www.nju.edu.cn|南京大学官方网站。|学习教育
+中国科学技术大学|ustc,中科大|https://www.ustc.edu.cn|中国科学技术大学官方网站。|学习教育
+
+阿里云|aliyun,阿里云官网|https://www.aliyun.com|阿里巴巴旗下的云计算平台。|开发者
+腾讯云|cloud.tencent.com,腾讯云官网|https://cloud.tencent.com|腾讯旗下的云计算平台。|开发者
+华为云|huaweicloud,华为云官网|https://www.huaweicloud.com|华为旗下的云计算平台。|开发者
+百度智能云|baidu云,百度云|https://cloud.baidu.com|百度旗下的云计算平台。|开发者
+AWS|亚马逊云,aws|https://aws.amazon.com|亚马逊旗下的云计算平台。|开发者
+Google Cloud|gcp,谷歌云|https://cloud.google.com|Google 旗下的云计算平台。|开发者
+Azure|微软云,azure|https://azure.microsoft.com|微软旗下的云计算平台。|开发者
+七牛云|qiniu,七牛|https://www.qiniu.com|云存储与 CDN 服务。|开发者
+又拍云|upyun,又拍云|https://www.upyun.com|云存储与 CDN 服务。|开发者
+Vercel|vercel|https://vercel.com|前端部署与托管平台。|开发者
+Netlify|netlify|https://www.netlify.com|前端部署与托管平台。|开发者
+Cloudflare|cloudflare,cf|https://www.cloudflare.com|CDN 与网络安全服务。|开发者
+InfoQ|infoq,infoq中文|https://www.infoq.cn|技术资讯与社区平台。|开发者
+51CTO|51cto,51cto官网|https://www.51cto.com|IT 技术学习与交流平台。|开发者
+菜鸟教程|runoob,菜鸟教程|https://www.runoob.com|编程入门教程网站。|开发者
+W3school|w3school,w3school官网|https://www.w3school.com.cn|Web 技术教程网站。|开发者
+MDN|mdn,mdnwebdocs|https://developer.mozilla.org|Web 技术文档平台。|开发者
+HackerRank|hackerrank|https://www.hackerrank.com|编程技能测评平台。|开发者
+Codeforces|codeforces|https://codeforces.com|算法竞赛平台。|开发者
+CodePen|codepen|https://codepen.io|前端代码在线编辑与分享平台。|开发者
+JSFiddle|jsfiddle|https://jsfiddle.net|前端代码在线编辑与测试平台。|开发者
+npm|npmjs|https://www.npmjs.com|JavaScript 包管理平台。|开发者
+PyPI|pypi,python包|https://pypi.org|Python 包管理平台。|开发者
+Docker Hub|dockerhub,docker|https://hub.docker.com|Docker 镜像仓库。|开发者
+Hugging Face|huggingface,hf|https://huggingface.co|AI 模型与数据集托管平台。|开发者
+ModelScope|modelscope,魔搭|https://modelscope.cn|阿里巴巴旗下的 AI 模型社区。|开发者
+
+中国政府网|gov.cn,中国政府网|https://www.gov.cn|中华人民共和国中央人民政府网站。|政府银行
+中国人大网|npc,全国人大|http://www.npc.gov.cn|全国人民代表大会官方网站。|政府银行
+中国政协网|cppcc,全国政协|http://www.cppcc.gov.cn|中国人民政治协商会议官方网站。|政府银行
+最高人民法院|court,最高法|https://www.court.gov.cn|最高人民法院官方网站。|政府银行
+最高人民检察院|spp,最高检|https://www.spp.gov.cn|最高人民检察院官方网站。|政府银行
+外交部|mfa,中国外交部|https://www.mfa.gov.cn|中华人民共和国外交部官方网站。|政府银行
+教育部|moe,中国教育部|http://www.moe.gov.cn|中华人民共和国教育部官方网站。|政府银行
+科技部|most,中国科技部|https://www.most.gov.cn|中华人民共和国科学技术部官方网站。|政府银行
+工业和信息化部|miit,工信部|https://www.miit.gov.cn|中华人民共和国工业和信息化部官方网站。|政府银行
+公安部|mps,中国公安部|https://www.mps.gov.cn|中华人民共和国公安部官方网站。|政府银行
+财政部|mof,中国财政部|http://www.mof.gov.cn|中华人民共和国财政部官方网站。|政府银行
+人社部|mohrss,人力资源社会保障部|http://www.mohrss.gov.cn|中华人民共和国人力资源和社会保障部官方网站。|政府银行
+国家税务总局|chinatax,税务总局|http://www.chinatax.gov.cn|国家税务总局官方网站。|政府银行
+国家统计局|stats,中国统计局|https://www.stats.gov.cn|国家统计局官方网站。|政府银行
+中国气象局|cma,中国气象局|https://www.cma.gov.cn|中国气象局官方网站。|政府银行
+国家卫健委|nhc,卫健委|http://www.nhc.gov.cn|国家卫生健康委员会官方网站。|政府银行
+12306|铁路12306,火车票|https://www.12306.cn|中国铁路官方购票平台。|政府银行
+中国邮政|chinapost,中国邮政官网|https://www.chinapost.com.cn|中国邮政官方网站。|政府银行
+国家政务服务平台|gjzwfw,政务服务平台|https://gjzwfw.www.gov.cn|国家级政务服务平台。|政府银行
+支付宝|alipay,支付宝官网|https://www.alipay.com|蚂蚁集团旗下的支付平台。|政府银行
+微信支付|wechatpay,微信支付|https://pay.weixin.qq.com|腾讯旗下的支付平台。|政府银行
+中国银行|boc,中国银行官网|https://www.boc.cn|中国银行官方网站。|政府银行
+工商银行|icbc,工商银行官网|https://www.icbc.com.cn|中国工商银行官方网站。|政府银行
+建设银行|ccb,建设银行官网|http://www.ccb.com|中国建设银行官方网站。|政府银行
+农业银行|abchina,农业银行官网|https://www.abchina.com|中国农业银行官方网站。|政府银行
+交通银行|bankcomm,交通银行官网|https://www.bankcomm.com|交通银行官方网站。|政府银行
+招商银行|cmbchina,招商银行官网|https://www.cmbchina.com|招商银行官方网站。|政府银行
+平安银行|pingan,平安银行官网|https://bank.pingan.com|平安银行官方网站。|政府银行
+中信银行|citicbank,中信银行官网|https://www.citicbank.com|中信银行官方网站。|政府银行
+民生银行|cmbc,民生银行官网|https://www.cmbc.com.cn|中国民生银行官方网站。|政府银行
+浦发银行|spdb,浦发银行官网|https://www.spdb.com.cn|上海浦东发展银行官方网站。|政府银行
+兴业银行|cib,兴业银行官网|https://www.cib.com.cn|兴业银行官方网站。|政府银行
+光大银行|cebbank,光大银行官网|https://www.cebbank.com|中国光大银行官方网站。|政府银行
+华夏银行|hxb,华夏银行官网|https://www.hxb.com.cn|华夏银行官方网站。|政府银行
+广发银行|cgb,广发银行官网|https://www.cgbchina.com.cn|广发银行官方网站。|政府银行
+
+高德地图|amap,高德|https://www.amap.com|阿里巴巴旗下的地图与导航服务。|出行地图
+百度地图|map.baidu.com,百度地图|https://map.baidu.com|百度旗下的地图与导航服务。|出行地图
+腾讯地图|map.qq.com,腾讯地图|https://map.qq.com|腾讯旗下的地图与导航服务。|出行地图
+Google Maps|谷歌地图,googlemaps|https://maps.google.com|Google 旗下的地图与导航服务。|出行地图
+滴滴出行|didi,滴滴|https://www.didiglobal.com|中国领先的出行平台。|出行地图
+曹操出行|caocao,曹操专车|https://www.caocao.com.cn|吉利旗下的出行平台。|出行地图
+T3出行|t3出行|https://www.t3go.cn|一汽、东风、长安联合推出的出行平台。|出行地图
+首汽约车|shouqi,首汽约车|https://www.01zhuanche.com|首汽集团旗下的出行平台。|出行地图
+哈啰出行|hello,哈啰|https://www.hello-inc.com|哈啰旗下的出行平台。|出行地图
+携程|ctrip,携程旅行|https://www.ctrip.com|中国领先的在线旅游平台。|出行地图
+去哪儿|qunar,去哪儿网|https://www.qunar.com|中国领先的在线旅游平台。|出行地图
+飞猪|fliggy,飞猪旅行|https://www.fliggy.com|阿里巴巴旗下的在线旅游平台。|出行地图
+同程|同程旅行|https://www.ly.com|中国领先的在线旅游平台。|出行地图
+途牛|tuniu,途牛旅游|https://www.tuniu.com|中国领先的在线旅游平台。|出行地图
+Booking|booking.com|https://www.booking.com|全球领先的酒店预订平台。|出行地图
+爱彼迎|airbnb|https://www.airbnb.cn|全球领先的民宿短租平台。|出行地图
+Expedia|expedia|https://www.expedia.com|全球领先的在线旅游平台。|出行地图
+Agoda|agoda|https://www.agoda.com|全球领先的酒店预订平台。|出行地图
+马蜂窝|mafengwo,马蜂窝旅游|https://www.mafengwo.cn|中国领先的旅游攻略平台。|出行地图
+穷游网|qyer,穷游|https://www.qyer.com|出境游攻略平台。|出行地图
+航旅纵横|umetrip|https://www.umetrip.com|中国民航信息集团旗下的航班信息平台。|出行地图
+春秋航空|春秋航空官网|https://www.ch.com|中国领先的廉价航空公司。|出行地图
+中国国航|airchina,国航官网|https://www.airchina.com.cn|中国国际航空股份有限公司官方网站。|出行地图
+东方航空|ceair,东航官网|https://www.ceair.com|中国东方航空股份有限公司官方网站。|出行地图
+南方航空|csair,南航官网|https://www.csair.com|中国南方航空股份有限公司官方网站。|出行地图
+海南航空|hnair,海航官网|https://www.hnair.com|海南航空股份有限公司官方网站。|出行地图
+厦门航空|xiamenair,厦航官网|https://www.xiamenair.com|厦门航空股份有限公司官方网站。|出行地图
+深圳航空|shenzhenair,深航官网|https://www.shenzhenair.com|深圳航空股份有限公司官方网站。|出行地图
+四川航空|scal,川航官网|https://www.sichuanair.com|四川航空股份有限公司官方网站。|出行地图
+
+百度翻译|fanyi.baidu.com,百度翻译|https://fanyi.baidu.com|百度旗下的翻译服务。|工具办公
+Google翻译|谷歌翻译,translate|https://translate.google.com|Google 旗下的翻译服务。|工具办公
+有道翻译|youdao,有道词典|https://fanyi.youdao.com|网易旗下的翻译服务。|工具办公
+DeepL|deepl,deepl翻译|https://www.deepl.com|德国的高质量机器翻译服务。|工具办公
+金山词霸|iciba,词霸|https://www.iciba.com|金山旗下的词典与翻译服务。|工具办公
+微软翻译|微软翻译|https://translator.microsoft.com|微软旗下的翻译服务。|工具办公
+百度网盘|pan.baidu.com,百度网盘|https://pan.baidu.com|百度旗下的云存储服务。|工具办公
+阿里云盘|aliyundrive,阿里云盘|https://www.aliyundrive.com|阿里巴巴旗下的云存储服务。|工具办公
+腾讯微云|weiyun,微云|https://www.weiyun.com|腾讯旗下的云存储服务。|工具办公
+115网盘|115,115网盘|https://115.com|云存储服务。|工具办公
+Dropbox|dropbox|https://www.dropbox.com|全球知名的云存储服务。|工具办公
+Google Drive|googledrive,谷歌云盘|https://drive.google.com|Google 旗下的云存储服务。|工具办公
+OneDrive|onedrive,微软云盘|https://onedrive.live.com|微软旗下的云存储服务。|工具办公
+iCloud|icloud,苹果云|https://www.icloud.com|苹果旗下的云存储服务。|工具办公
+迅雷|xunlei,迅雷下载|https://www.xunlei.com|中国知名的下载工具。|工具办公
+WPS|wps,wps office|https://www.wps.cn|金山旗下的办公软件。|工具办公
+石墨文档|shimo,石墨|https://shimo.im|在线协作文档平台。|工具办公
+腾讯文档|docs.qq.com,腾讯文档|https://docs.qq.com|腾讯旗下的在线文档平台。|工具办公
+飞书|feishu,飞书官网|https://www.feishu.cn|字节跳动旗下的企业协作平台。|工具办公
+钉钉|dingtalk,钉钉官网|https://www.dingtalk.com|阿里巴巴旗下的企业协作平台。|工具办公
+企业微信|work.weixin.qq.com,企业微信|https://work.weixin.qq.com|腾讯旗下的企业协作平台。|工具办公
+Notion|notion|https://www.notion.so|一体化工作协作平台。|工具办公
+印象笔记|evernote,印象笔记|https://www.yinxiang.com|知名的笔记软件。|工具办公
+Trello|trello|https://trello.com|看板式项目管理工具。|工具办公
+语雀|yuque,语雀官网|https://www.yuque.com|阿里巴巴旗下的知识管理平台。|工具办公
+幕布|mubu,幕布官网|https://mubu.com|大纲笔记与思维导图工具。|工具办公
+Canva|可画,canva|https://www.canva.cn|在线设计平台。|工具办公
+Figma|figma|https://www.figma.com|在线协作设计工具。|工具办公
+Adobe|adobe,photoshop|https://www.adobe.com|全球知名的创意软件公司。|工具办公
+稿定设计|gaoding,稿定|https://www.gaoding.com|在线设计工具。|工具办公
+创客贴|chuangkit,创客贴|https://www.chuangkit.com|在线设计工具。|工具办公
+剪映|jianying,capcut|https://www.capcut.cn|字节跳动旗下的视频剪辑工具。|工具办公
+腾讯会议|meeting.tencent.com,腾讯会议|https://meeting.tencent.com|腾讯旗下的视频会议工具。|工具办公
+Zoom|zoom,zoom视频会议|https://zoom.us|全球领先的视频会议工具。|工具办公
+Webex|webex,思科会议|https://www.webex.com|思科旗下的视频会议工具。|工具办公
+百度脑图|naotu,百度脑图|https://naotu.baidu.com|百度旗下的在线思维导图工具。|工具办公
+ProcessOn|processon|https://www.processon.com|在线绘图与思维导图工具。|工具办公
+XMind|xmind,思维导图|https://www.xmind.cn|知名的思维导图软件。|工具办公
+
+Steam|steam,steam游戏平台|https://store.steampowered.com|全球最大的 PC 游戏平台。|游戏
+Epic Games|epic,epic游戏商城|https://www.epicgames.com|Epic 旗下的游戏平台。|游戏
+网易游戏|game.163.com,网易游戏|https://game.163.com|网易旗下的游戏业务。|游戏
+腾讯游戏|game.qq.com,腾讯游戏|https://game.qq.com|腾讯旗下的游戏业务。|游戏
+米哈游|mihoyo|https://www.mihoyo.com|开发《原神》的游戏公司。|游戏
+原神|genshin,原神官网|https://ys.mihoyo.com|米哈游开发的开放世界游戏。|游戏
+崩坏星穹铁道|starrail,崩铁|https://sr.mihoyo.com|米哈游开发的回合制游戏。|游戏
+英雄联盟|lol,英雄联盟官网|https://lol.qq.com|腾讯代理的 MOBA 游戏。|游戏
+王者荣耀|wzry,王者荣耀官网|https://pvp.qq.com|腾讯开发的 MOBA 手游。|游戏
+和平精英|hpjy,和平精英官网|https://gp.qq.com|腾讯开发的战术竞技手游。|游戏
+4399|4399小游戏,4399游戏|https://www.4399.com|中国知名的休闲小游戏平台。|游戏
+7k7k|7k7k小游戏|https://www.7k7k.com|中国知名的休闲小游戏平台。|游戏
+NGA|nga,艾泽拉斯国家地理|https://bbs.nga.cn|游戏玩家社区。|游戏
+TapTap|taptap|https://www.taptap.cn|游戏推荐与社区平台。|游戏
+好游快爆|haoyou,好游快爆|https://www.3839.com|游戏推荐与社区平台。|游戏
+Nintendo|任天堂,nintendo官网|https://www.nintendo.com|日本知名的游戏公司。|游戏
+PlayStation|ps,索尼playstation|https://www.playstation.com|索尼旗下的游戏平台。|游戏
+Xbox|xbox,微软xbox|https://www.xbox.com|微软旗下的游戏平台。|游戏
+Ubisoft|育碧,ubisoft官网|https://www.ubisoft.com|法国知名的游戏公司。|游戏
+EA|electronic arts,ea官网|https://www.ea.com|美国知名的游戏公司。|游戏
+Blizzard|暴雪,blizzard官网|https://www.blizzard.com|美国知名的游戏公司。|游戏
+Riot Games|拳头,riot|https://www.riotgames.com|开发《英雄联盟》的游戏公司。|游戏
+完美世界|wanmei,完美世界官网|https://www.wanmei.com|中国知名的游戏公司。|游戏
+
+微软|microsoft,微软官网|https://www.microsoft.com|全球知名的科技公司。|科技数码
+华为|huawei,华为官网|https://www.huawei.com|中国知名的科技公司。|科技数码
+小米|xiaomi,小米官网|https://www.mi.com|中国知名的科技公司。|科技数码
+一加|oneplus,一加官网|https://www.oneplus.com|中国知名的手机品牌。|科技数码
+魅族|meizu,魅族官网|https://www.meizu.com|中国知名的手机品牌。|科技数码
+大疆|dji,大疆官网|https://www.dji.com|全球知名的无人机公司。|科技数码
+英伟达|nvidia,英伟达官网|https://www.nvidia.com|全球知名的 GPU 与 AI 芯片公司。|科技数码
+英特尔|intel,英特尔官网|https://www.intel.com|全球知名的半导体公司。|科技数码
+AMD|amd,amd官网|https://www.amd.com|全球知名的半导体公司。|科技数码
+高通|qualcomm,高通官网|https://www.qualcomm.com|全球知名的半导体公司。|科技数码
+台积电|tsmc,台积电官网|https://www.tsmc.com|全球最大的半导体代工厂。|科技数码
+IT之家|ithome|https://www.ithome.com|中国知名的科技资讯平台。|科技数码
+科技美学|kejimeixue,科技美学|https://www.kejimeixue.com|数码评测平台。|科技数码
+Zealer|zealer,zealer官网|https://www.zealer.com|数码评测平台。|科技数码
+锋潮科技|锋潮科技|https://www.ireallylike.com|数码评测平台。|科技数码
+
+ChatGPT|chatgpt,chatgpt官网|https://chat.openai.com|OpenAI 开发的 AI 对话助手。|AI大模型
+Claude|claude,anthropic|https://claude.ai|Anthropic 开发的 AI 对话助手。|AI大模型
+Gemini|gemini,谷歌gemini|https://gemini.google.com|Google 开发的 AI 对话助手。|AI大模型
+Copilot|微软copilot,copilot|https://copilot.microsoft.com|微软开发的 AI 助手。|AI大模型
+文心一言|yiyan,文心|https://yiyan.baidu.com|百度开发的 AI 对话助手。|AI大模型
+通义千问|tongyi,通义|https://tongyi.aliyun.com|阿里巴巴开发的 AI 对话助手。|AI大模型
+讯飞星火|xinghuo,星火|https://xinghuo.xfyun.cn|科大讯飞开发的 AI 对话助手。|AI大模型
+豆包|doubao,字节豆包|https://www.doubao.com|字节跳动开发的 AI 对话助手。|AI大模型
+Kimi|kimi,月之暗面|https://kimi.moonshot.cn|月之暗面开发的 AI 对话助手。|AI大模型
+智谱清言|chatglm,智谱|https://chatglm.cn|智谱 AI 开发的 AI 对话助手。|AI大模型
+DeepSeek|deepseek,深度求索|https://chat.deepseek.com|深度求索开发的 AI 对话助手。|AI大模型
+腾讯元宝|yuanbao,腾讯元宝|https://yuanbao.tencent.com|腾讯开发的 AI 对话助手。|AI大模型
+秘塔AI搜索|metaso,秘塔|https://metaso.cn|AI 驱动的搜索引擎。|AI大模型
+天工AI|tiangong,天工|https://www.tiangong.cn|昆仑万维开发的 AI 对话助手。|AI大模型
+Poe|quora poe|https://poe.com|Quora 旗下的 AI 对话聚合平台。|AI大模型
+Midjourney|midjourney,mj|https://www.midjourney.com|AI 绘画工具。|AI大模型
+Stable Diffusion|stablediffusion,sd|https://stability.ai|开源 AI 绘画模型。|AI大模型
+DALL·E|dalle,openai绘画|https://openai.com/dall-e-3|OpenAI 开发的 AI 绘画工具。|AI大模型
+Runway|runwayml|https://runwayml.com|AI 视频生成工具。|AI大模型
+Suno|suno,ai音乐|https://www.suno.ai|AI 音乐生成工具。|AI大模型
+OpenAI|openai官网|https://openai.com|开发 ChatGPT 的人工智能公司。|AI大模型
+Anthropic|anthropic官网|https://www.anthropic.com|开发 Claude 的人工智能公司。|AI大模型
+Mistral|mistral ai|https://mistral.ai|法国的 AI 公司。|AI大模型
+
+顺丰|sf-express,顺丰速运|https://www.sf-express.com|顺丰速运官方网站。|生活服务
+京东物流|京东物流|https://www.jdl.com|京东物流官方网站。|生活服务
+中通快递|zto,中通|https://www.zto.com|中通快递官方网站。|生活服务
+圆通速递|yto,圆通|https://www.yto.net.cn|圆通速递官方网站。|生活服务
+申通快递|sto,申通|https://www.sto.cn|申通快递官方网站。|生活服务
+韵达快递|yunda,韵达|https://www.yundaex.com|韵达快递官方网站。|生活服务
+EMS|中国邮政ems|https://www.ems.com.cn|中国邮政速递物流官方网站。|生活服务
+德邦快递|deppon,德邦|https://www.deppon.com|德邦快递官方网站。|生活服务
+极兔速递|jtexpress,极兔|https://www.jtexpress.com|极兔速递官方网站。|生活服务
+`;
+/* 解析预置网站数据 */
+const OFFICIAL_SITES = SITE_DATA.trim().split('\n')
+  .filter(line => line.trim() && line.indexOf('|') > -1)
+  .map(line => {
+    const parts = line.split('|');
+    if(parts.length < 3) return null;
+    const name = parts[0].trim();
+    const aliasArr = (parts[1] || '').split(',').map(a => norm(a)).filter(Boolean);
+    const names = [norm(name), ...aliasArr].filter(Boolean);
+    return {
+      name: name,
+      names: names,
+      url: parts[2].trim(),
+      desc: parts[3] ? parts[3].trim() : '',
+      cat: parts[4] ? parts[4].trim() : ''
+    };
+  })
+  .filter(Boolean);
+
+/* 官网匹配 */
+function matchOfficial(query){
+  const q = norm(query);
+  if(!q) return null;
+  let best = null, bestScore = 0;
+  for(let i = 0; i < OFFICIAL_SITES.length; i++){
+    const site = OFFICIAL_SITES[i];
+    for(let j = 0; j < site.names.length; j++){
+      const n = site.names[j];
+      if(!n) continue;
+      let s = 0;
+      if(n === q){
+        s = 1000;
+      }else if(n.length >= 2 && q.length >= 2){
+        if(q.indexOf(n) !== -1){
+          /* 查询比别名长太多时不算 */
+          if(q.length <= n.length * 3 + 2) s = 600 + n.length * 10;
+        }else if(n.indexOf(q) !== -1){
+          if(q.length >= n.length * 0.6) s = 500 + q.length * 10;
+        }
+      }
+      if(s > bestScore){ bestScore = s; best = site; }
+    }
+  }
+  return bestScore >= 500 ? { site: best, score: bestScore } : null;
+}
+
 /* ===== 本地知识库 ===== */
 const KB = [
   { title:'康荣 ComRa 是什么', keys:['康荣','comra','康荣comra','康荣是什么','康荣搜索引擎','康荣搜索'],
-    desc:'康荣（ComRa）是一个轻量级聚合搜索引擎。它不建立庞大的网页索引，而是把「本地知识库 + 即时答案 + 联网检索」串成一条检索链路：先查自有词条，再并行请求 DuckDuckGo 即时答案、Tavily 联网搜索、百度百科、搜狗百科、360百科、维基百科、人民网/新华网/央视新闻等新闻RSS、Hacker News、OpenAlex、Crossref 与 wttr.in 天气服务，最后把结果聚合呈现。' },
+    desc:'康荣（ComRa）是一个轻量级聚合搜索引擎。它不建立庞大的网页索引，而是把「本地知识库 + 预置官网 + 即时答案 + 联网检索」串成一条检索链路：先查预置官网与自有词条，再并行请求 DuckDuckGo、Tavily、四大百科、国内新闻 RSS、Hacker News、OpenAlex、Crossref 与 wttr.in 天气服务，最后把结果聚合呈现。' },
+  { title:'预置官网库', keys:['预置官网','官网库','官方网站库','康荣官网库'],
+    desc:'康荣内置了 550+ 个常见网站的官方入口，覆盖搜索引擎、社交社区、视频、音乐、购物电商、新闻资讯、学习教育、开发者、政府银行、出行地图、工具办公、游戏、科技数码、AI 大模型、生活服务等 15 个分类。搜索对应名称时，官方网站会固定排在第一位，并带有绿色的「官网」标识。' },
   { title:'康荣的检索链路', keys:['康荣怎么搜索','康荣原理','comra原理','聚合搜索','检索链路'],
-    desc:'① 本地词条匹配 —— 关键词归一化后按命中长度加权打分\n② 结构化直答 —— 时间、日期、四则运算、平方根、百分比即时计算\n③ 天气直连 —— wttr.in 返回实时天气与三日预报\n④ 即时答案 —— DuckDuckGo Instant Answer API 提供摘要与相关主题\n⑤ 联网检索 —— Tavily 无密钥模式返回网页结果与摘要\n⑥ 百科 —— 百度百科 / 搜狗百科 / 360百科 / 中文维基百科\n⑦ 新闻 —— rss2json 聚合人民网、新华网、央视新闻、澎湃新闻、中国新闻网等国内RSS\n⑧ 技术社区 —— Hacker News Algolia 搜索\n⑨ 学术 —— OpenAlex 与 Crossref 论文检索\n⑩ 代码 —— GitHub 仓库搜索\n⑪ 兜底 —— 一键跳转 Google / Bing / 百度 / 搜狗 等外部引擎' },
+    desc:'① 预置官网匹配 —— 命中时官网固定排在第一位\n② 本地词条匹配 —— 关键词归一化后按命中长度加权打分\n③ 结构化直答 —— 时间、日期、四则运算、平方根、百分比即时计算\n④ 天气直连 —— wttr.in 返回实时天气与三日预报\n⑤ 即时答案 —— DuckDuckGo Instant Answer API\n⑥ 联网检索 —— Tavily 无密钥模式\n⑦ 百科 —— 百度百科 / 搜狗百科 / 360百科 / 中文维基百科\n⑧ 新闻 —— rss2json 聚合人民网、新华网、央视新闻等国内 RSS\n⑨ 技术社区 —— Hacker News Algolia 搜索\n⑩ 学术 —— OpenAlex 与 Crossref 论文检索\n⑪ 代码 —— GitHub 仓库搜索\n⑫ 兜底 —— 一键跳转 Google / Bing / 百度 / 搜狗 等外部引擎' },
   { title:'百度百科搜索接入', keys:['百度百科','baidu baike','百科搜索'],
-    desc:'通过 xiaoapi.cn 的免密钥百科接口或 CORS 代理直接请求百度百科搜索页，获取词条标题、摘要与链接。接口无需 API Key，支持 GET/POST，返回 JSON 包含 msg（摘要）、pic（图片）、more（链接）等字段。' },
+    desc:'通过 xiaoapi.cn 的免密钥百科接口或 CORS 代理直接请求百度百科搜索页，获取词条标题、摘要与链接。' },
   { title:'搜狗百科搜索接入', keys:['搜狗百科','sogou baike'],
-    desc:'通过 xiaoapi.cn 的百科接口（type=sg）或 xiaobapi.top 的搜狗百科接口获取搜狗百科词条摘要与链接。同样无需密钥，返回 JSON 结构。' },
+    desc:'通过 xiaoapi.cn 的百科接口（type=sg）获取搜狗百科词条摘要与链接，无需密钥。' },
   { title:'360百科搜索接入', keys:['360百科','好搜百科','so.com百科'],
-    desc:'360百科没有公开的官方搜索 API，康荣通过 CORS 代理直接请求 baike.so.com 的搜索页面，或借助聚合搜索方案解析 360 搜索结果中的百科卡片。' },
+    desc:'360百科没有公开的官方搜索 API，康荣通过 CORS 代理直接请求 baike.so.com 的搜索页面解析结果。' },
   { title:'维基百科搜索接入', keys:['维基百科','wikipedia','wiki搜索'],
-    desc:'使用维基百科官方的 MediaWiki Search API（action=query&list=search），支持中文（zh）与英文（en）两个语言版本，无需密钥，返回标题、摘要片段与词数。' },
+    desc:'使用维基百科官方的 MediaWiki Search API，支持中文（zh）与英文（en）两个语言版本，无需密钥。' },
   { title:'新闻 RSS 聚合', keys:['新闻RSS','rss2json','新闻聚合','国内新闻源'],
-    desc:'康荣使用 rss2json.com 将 RSS/Atom 转为 JSON，前端直接 fetch。已接入的国内新闻源包括：人民网、中国新闻网、央视新闻（通过 RSSHub 镜像）、联合早报、第一财经、36氪、知乎热榜、哔哩哔哩排行榜等。RSS 源经 CORS 代理转发，解决浏览器跨域限制。' },
+    desc:'康荣使用 rss2json.com 将 RSS/Atom 转为 JSON。已接入人民网、中国新闻网、央视新闻、联合早报、第一财经、36氪、知乎热榜、哔哩哔哩排行榜等国内新闻源。' },
   { title:'DuckDuckGo Instant Answer API', keys:['duckduckgo','ddg','即时答案','instantanswer'],
-    desc:'DuckDuckGo 提供的免密钥即时答案接口，返回 Answer、Abstract、Definition 与 RelatedTopics 等字段。康荣用它来生成右侧知识面板中的「即时答案」卡片和「相关主题」结果。' },
+    desc:'DuckDuckGo 提供的免密钥即时答案接口，返回 Answer、Abstract、Definition 与 RelatedTopics 等字段。' },
   { title:'Tavily 搜索 API', keys:['tavily','tavily搜索','联网检索','keyless'],
-    desc:'Tavily 是面向 AI 应用的搜索接口，支持无密钥（keyless）调用模式。康荣在请求头中携带 X-Tavily-Access-Mode: keyless，获取 answer 摘要与网页结果。' },
+    desc:'Tavily 是面向 AI 应用的搜索接口，支持无密钥（keyless）调用模式。' },
   { title:'wttr.in 天气服务', keys:['wttr','wttrin','天气接口','天气api'],
-    desc:'wttr.in 是一个文本／JSON 天气服务，支持 ?format=j1&lang=zh 返回中文天气描述。康荣用它生成天气卡片，包含实时气温、体感、湿度、风速和三日预报。' },
+    desc:'wttr.in 是一个文本／JSON 天气服务，支持 ?format=j1&lang=zh 返回中文天气描述。' },
   { title:'搜索引擎是如何工作的', keys:['搜索引擎原理','搜索引擎怎么工作','搜索原理','爬虫','倒排索引'],
-    desc:'传统搜索引擎分三步：抓取（爬虫遍历网页）→ 索引（建立倒排索引，记录每个词出现在哪些文档中）→ 检索（按查询词匹配文档，用 TF-IDF、BM25、PageRank 等算法排序）。康荣采用的是另一条路线：不做全量索引，而是按需实时聚合多个答案源。' },
+    desc:'传统搜索引擎分三步：抓取 → 索引 → 检索排序。康荣采用的是另一条路线：不做全量索引，而是按需实时聚合多个答案源，并用预置官网库兜底常见查询。' },
   { title:'怎样写出更好的搜索词', keys:['搜索技巧','怎么搜索','搜索语法','提高搜索效率'],
-    desc:'1. 用具体名词代替抽象描述，例如「Tavily API 返回字段」优于「那个搜索接口」\n2. 加限定词缩小范围，如年份、地区、语言\n3. 一次只问一件事，别把多个问题塞进一句\n4. 中文结果少时，试试换成英文关键词\n5. 善用外部引擎的站内搜索语法，如 site: 与 filetype:' },
+    desc:'1. 用具体名词代替抽象描述\n2. 加限定词缩小范围\n3. 一次只问一件事\n4. 中文结果少时，试试英文关键词\n5. 善用外部引擎的站内搜索语法，如 site: 与 filetype:' },
   { title:'隐私与数据说明', keys:['隐私','数据','记录','本地存储'],
-    desc:'康荣本身不保存任何搜索记录到服务器。搜索历史与主题偏好仅保存在你自己的浏览器 localStorage 中，清除浏览器数据即可彻底移除。联网请求会直达 DuckDuckGo、Tavily、维基百科、百度百科、搜狗百科、360百科、rss2json、Hacker News、OpenAlex、Crossref、GitHub 与 wttr.in。' }
+    desc:'康荣本身不保存任何搜索记录到服务器。搜索历史与主题偏好仅保存在你浏览器的 localStorage 中。联网请求会直达 DuckDuckGo、Tavily、维基百科、百度百科、搜狗百科、360百科、rss2json、Hacker News、OpenAlex、Crossref、GitHub 与 wttr.in。' }
 ];
 function matchKB(c){ let best=null,bestScore=0; for(let i=0;i<KB.length;i++){ const item=KB[i]; let s=0; for(let j=0;j<item.keys.length;j++){ const k=norm(item.keys[j]); if(k&&c.indexOf(k)!==-1) s+=k.length; } if(s>bestScore){ bestScore=s; best=item; } } return { item:best, score:bestScore }; }
 
@@ -867,9 +1324,7 @@ async function fetchWeather(city){
   }catch(e){ return null; }
 }
 
-/* ============================================================
-   多源检索
-   ============================================================ */
+/* ===== 多源检索 ===== */
 const PROXIES = [
   u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
   u => 'https://corsproxy.io/?' + encodeURIComponent(u)
@@ -1066,14 +1521,15 @@ async function githubSearch(q, limit){
 }
 
 /* ===== 打分排序 ===== */
-const SOURCE_WEIGHT = { kb:8, tavily:6, ddg:5, baidu:5, sogou:4, '360':4, wiki:4, news:4, hn:3, github:3, openalex:2, crossref:2 };
+const SOURCE_WEIGHT = { official:1000, kb:8, tavily:6, ddg:5, baidu:5, sogou:4, '360':4, wiki:4, news:4, hn:3, github:3, openalex:2, crossref:2 };
 function scoreResult(r, query){
+  if(r.source === 'official') return 99999;
   const q = norm(query); const title = norm(r.title || ''); const sn = norm(r.snippet || '');
   let score = 1;
-  if(q && title.includes(q)) score += 20;
-  if(q && sn.includes(q)) score += 5;
+  if(q && title.indexOf(q) !== -1) score += 20;
+  if(q && sn.indexOf(q) !== -1) score += 5;
   const tokens = q.match(/[\u4e00-\u9fa5]{2,}|[a-z]{3,}/gi) || [];
-  tokens.forEach(t => { const tt = norm(t); if(title.includes(tt)) score += 6; if(sn.includes(tt)) score += 2; });
+  tokens.forEach(t => { const tt = norm(t); if(title.indexOf(tt) !== -1) score += 6; if(sn.indexOf(tt) !== -1) score += 2; });
   score += (SOURCE_WEIGHT[r.source] || 0);
   if(r.snippet && r.snippet.length > 40) score += 2;
   if(r.url) score += 1;
@@ -1084,6 +1540,31 @@ function scoreResult(r, query){
 async function runSearch(query){
   const t0 = performance.now(); const c = norm(query); const cards = []; const collected = [];
 
+  /* ① 预置官网匹配 */
+  const official = matchOfficial(query);
+  let officialHit = false;
+  if(official){
+    const s = official.site;
+    collected.push({
+      title: s.name + ' — 官方网站',
+      url: s.url,
+      snippet: s.desc || (s.name + ' 官方网站，点击直达。'),
+      site: domainOf(s.url) || s.cat || '官网',
+      source: 'official',
+      officialName: s.name
+    });
+    cards.push({
+      type:'note',
+      label:'官方网站 · 康荣预置',
+      icon:'la-check-circle',
+      title: s.name,
+      text: (s.desc || '') + '\n\n' + s.url,
+      url: s.url
+    });
+    officialHit = true;
+  }
+
+  /* ② 结构化直答 */
   if(/(几点了|现在几点|现在时间|当前时间)/.test(c)) cards.push({ type:'note', label:'当前时间', icon:'la-clock', text: timeText() });
   if(/(今天几号|今天日期|几月几号|什么日期)/.test(c)) cards.push({ type:'note', label:'今天日期', icon:'la-calendar', text: dateText() });
   if(/(星期几|周几)/.test(c)) cards.push({ type:'note', label:'星期', icon:'la-calendar-day', text: '今天是 ' + WEEK[new Date().getDay()] + '。' });
@@ -1091,12 +1572,14 @@ async function runSearch(query){
   const math = tryMath(query);
   if(math) cards.push({ type:'calc', label:'计算结果', icon:'la-calculator', expr: math.expr, val: fmt(math.val) });
 
+  /* ③ 本地知识库 */
   const kb = matchKB(c); const hasKB = !!(kb.item && kb.score >= 2);
   if(hasKB){
-    cards.push({ type:'note', label:'康荣速览', icon:'la-lightbulb', title: kb.item.title, text: kb.item.desc });
+    if(!officialHit) cards.push({ type:'note', label:'康荣速览', icon:'la-lightbulb', title: kb.item.title, text: kb.item.desc });
     collected.push({ title: kb.item.title, url: null, snippet: kb.item.desc, site: '康荣知识库', source: 'kb' });
   }
 
+  /* ④ 网络检索 */
   const isWx = /(天气|气温|温度|下雨|冷不冷|热不热|刮风|阴晴)/.test(c);
   const city = isWx ? (extractCity(query) || '北京') : null;
   const hasChinese = /[\u4e00-\u9fa5]/.test(query);
@@ -1135,18 +1618,19 @@ async function runSearch(query){
 
   if(ddg){
     const ans = ddg.answer || ddg.abstract;
-    if(ans) cards.push({ type:'note', label: ddg.answer?'即时答案 · DuckDuckGo':('速览 · '+(ddg.heading||'DuckDuckGo')), icon:'la-bolt', text: ans, url: ddg.abstractUrl });
+    if(ans && !officialHit) cards.push({ type:'note', label: ddg.answer?'即时答案 · DuckDuckGo':('速览 · '+(ddg.heading||'DuckDuckGo')), icon:'la-bolt', text: ans, url: ddg.abstractUrl });
     ddg.related.slice(0,10).forEach(r => { if(!r.url) return; collected.push({ title: trim(String(r.text||'').split(' - ')[0].trim(),90)||domainOf(r.url)||r.url, url: r.url, snippet: r.text, site: domainOf(r.url)||'DuckDuckGo', source:'ddg' }); });
   }
 
   if(tav){
     const hasAnswerCard = cards.some(x => x.label && x.label.indexOf('答案') !== -1);
-    if(tav.answer && !hasAnswerCard) cards.push({ type:'note', label:'联网摘要 · Tavily', icon:'la-bolt', text: tav.answer });
+    if(tav.answer && !hasAnswerCard && !officialHit) cards.push({ type:'note', label:'联网摘要 · Tavily', icon:'la-bolt', text: tav.answer });
     tav.results.forEach(r => { if(!r.url||!r.content) return; collected.push({ title: r.title||domainOf(r.url)||r.url, url: r.url, snippet: r.content, site: domainOf(r.url)||'网页', source:'tavily' }); });
   }
 
   [...baidu, ...sogou, ...q360, ...wikiZh, ...wikiEn, ...news, ...hnRes, ...oaRes, ...crRes, ...ghRes].forEach(r => collected.push(r));
 
+  /* ⑤ 去重 */
   const seen = new Set(); const deduped = [];
   collected.forEach(r => {
     const key = normalizeUrl(r.url);
@@ -1155,17 +1639,23 @@ async function runSearch(query){
     r.score = scoreResult(r, query);
     deduped.push(r);
   });
-  deduped.sort((a,b) => b.score - a.score);
+  /* 官网置顶 */
+  deduped.sort((a,b) => {
+    if(a.source === 'official' && b.source !== 'official') return -1;
+    if(b.source === 'official' && a.source !== 'official') return 1;
+    return b.score - a.score;
+  });
 
   const elapsed = ((performance.now()-t0)/1000).toFixed(2);
-  return { cards, all: deduped, query, elapsed, kbHit: hasKB };
+  return { cards, all: deduped, query, elapsed, kbHit: hasKB, officialHit };
 }
 
 /* ===== 分类 ===== */
-const CAT_LABELS = { all:'全部', web:'网页', wiki:'百科', news:'新闻', tech:'技术', academic:'学术' };
+const CAT_LABELS = { all:'全部', web:'网页', official:'官网', wiki:'百科', news:'新闻', tech:'技术', academic:'学术' };
 const CAT_MATCH = {
   all: () => true,
   web: r => r.source==='tavily'||r.source==='ddg'||r.source==='kb',
+  official: r => r.source==='official',
   wiki: r => r.source==='wiki'||r.source==='baidu'||r.source==='sogou'||r.source==='360',
   news: r => r.source==='news',
   tech: r => r.source==='hn'||r.source==='github',
@@ -1185,7 +1675,7 @@ function makeFavicon(url, site){
   return d;
 }
 
-const SOURCE_TAG = { kb:'康荣', tavily:'Tavily', ddg:'DDG', baidu:'百度百科', sogou:'搜狗百科', '360':'360百科', wiki:'维基', news:'新闻', hn:'HN', github:'GitHub', openalex:'OpenAlex', crossref:'Crossref' };
+const SOURCE_TAG = { official:'官网', kb:'康荣', tavily:'Tavily', ddg:'DDG', baidu:'百度百科', sogou:'搜狗百科', '360':'360百科', wiki:'维基', news:'新闻', hn:'HN', github:'GitHub', openalex:'OpenAlex', crossref:'Crossref' };
 
 function renderResult(r){
   const el = document.createElement('div'); el.className='g-result';
@@ -1195,7 +1685,16 @@ function renderResult(r){
   const nameEl = document.createElement('div'); nameEl.className='g-site-name';
   const nameTxt = document.createElement('span'); nameTxt.textContent = r.site||'网页'; nameEl.appendChild(nameTxt);
   const tagTxt = SOURCE_TAG[r.source];
-  if(tagTxt){ const tag = document.createElement('span'); tag.className='g-source-tag'; tag.textContent = tagTxt; nameEl.appendChild(tag); }
+  if(tagTxt){
+    const tag = document.createElement('span');
+    tag.className = 'g-source-tag' + (r.source === 'official' ? ' official' : '');
+    if(r.source === 'official'){
+      tag.innerHTML = '<i class="las la-check-circle" style="font-size:9px;"></i>官网';
+    }else{
+      tag.textContent = tagTxt;
+    }
+    nameEl.appendChild(tag);
+  }
   const urlEl = document.createElement('div'); urlEl.className='g-site-url'; urlEl.textContent = prettyUrl(r.url);
   info.appendChild(nameEl); info.appendChild(urlEl); site.appendChild(info); el.appendChild(site);
   const a = document.createElement('a'); a.className='g-title'; a.textContent = trim(r.title||prettyUrl(r.url)||'未命名结果',120);
@@ -1214,7 +1713,7 @@ function renderCard(c){
   else if(c.type==='note'){
     if(c.title){ const h = document.createElement('div'); h.className='g-card-title'; h.textContent=c.title; el.appendChild(h); }
     const b = document.createElement('div'); b.className='g-card-body'; b.textContent=c.text; el.appendChild(b);
-    if(c.url){ const a = document.createElement('a'); a.className='g-card-link'; a.href=c.url; a.target='_blank'; a.rel='noopener noreferrer'; a.innerHTML='访问来源 <i class="las la-external-link-alt"></i>'; el.appendChild(a); }
+    if(c.url){ const a = document.createElement('a'); a.className='g-card-link'; a.href=c.url; a.target='_blank'; a.rel='noopener noreferrer'; a.innerHTML='访问官网 <i class="las la-external-link-alt"></i>'; el.appendChild(a); }
   }else if(c.type==='weather'){ el.appendChild(renderWeather(c.data)); }
   return el;
 }
@@ -1253,9 +1752,7 @@ function renderEmpty(query){
   el.appendChild(h); el.appendChild(p); return el;
 }
 
-/* ============================================================
-   外部引擎：改用 Font Awesome 图标
-   ============================================================ */
+/* 外部引擎：Font Awesome */
 const ENGINES = [
   ['Google','https://www.google.com/search?q=','fa-brands fa-google'],
   ['Bing','https://www.bing.com/search?q=','fa-brands fa-windows'],
@@ -1275,7 +1772,6 @@ function renderMoreBlock(query){
     a.href = pair[1] + encodeURIComponent(query);
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
-    /* 直接用 Font Awesome 完整类名渲染 */
     a.innerHTML = '<i class="' + pair[2] + '"></i>' + pair[0];
     wrap.appendChild(a);
   });
@@ -1287,6 +1783,7 @@ function renderMoreBlock(query){
    ============================================================ */
 function renderSourceStats(){
   const groups = [
+    { label:'官网', icon:'la-check-circle', test: r => r.source==='official' },
     { label:'网页', icon:'la-globe', test: r => r.source==='tavily'||r.source==='ddg'||r.source==='kb' },
     { label:'百科', icon:'la-book', test: r => r.source==='wiki'||r.source==='baidu'||r.source==='sogou'||r.source==='360' },
     { label:'新闻', icon:'la-newspaper', test: r => r.source==='news' },
@@ -1324,7 +1821,7 @@ function renderSourceStats(){
 function renderRelatedSearches(query){
   const q = String(query || '').trim();
   if(!q) return null;
-  const suffixes = ['是什么', '百科', '新闻', '官网', '教程'];
+  const suffixes = ['是什么', '官网', '新闻', '百科', '教程'];
   const list = suffixes.map(s => q + ' ' + s);
 
   const box = document.createElement('div');
@@ -1462,7 +1959,6 @@ function renderAside(){
   const related = renderRelatedSearches(state.query);
   if(related) P.rAside.appendChild(related);
 
-  /* 切换结果后右栏滚动条回到顶部 */
   P.rAside.scrollTop = 0;
 }
 
@@ -1544,22 +2040,12 @@ function showResults(q){
 }
 function getActiveInput(){ return state.view === 'home' ? P.qHome : P.qResults; }
 
-/* ============================================================
-   进度条
-   ============================================================ */
+/* 进度条 */
 let progressTimer = null;
-function showProgress(){
-  clearTimeout(progressTimer);
-  P.progressBar.classList.add('active');
-}
-function hideProgress(){
-  clearTimeout(progressTimer);
-  progressTimer = setTimeout(() => P.progressBar.classList.remove('active'), 220);
-}
+function showProgress(){ clearTimeout(progressTimer); P.progressBar.classList.add('active'); }
+function hideProgress(){ clearTimeout(progressTimer); progressTimer = setTimeout(() => P.progressBar.classList.remove('active'), 220); }
 
-/* ============================================================
-   搜索动作
-   ============================================================ */
+/* 搜索动作 */
 async function performSearch(rawQuery){
   const query = String(rawQuery == null ? getActiveInput().value : rawQuery).trim();
   if(!query){ getActiveInput().focus(); return; }
@@ -1593,7 +2079,15 @@ async function performSearch(rawQuery){
 
 async function luckySearch(){
   const q = P.qHome.value.trim();
-  if(!q){ const item = KB[Math.floor(Math.random()*KB.length)]; P.qHome.value = item.title; P.clrHome.classList.add('on'); performSearch(item.title); return; }
+  if(!q){
+    /* 随机跳一个预置官网 */
+    const site = OFFICIAL_SITES[Math.floor(Math.random() * OFFICIAL_SITES.length)];
+    window.open(site.url, '_blank', 'noopener');
+    return;
+  }
+  /* 优先跳预置官网 */
+  const off = matchOfficial(q);
+  if(off){ window.open(off.site.url, '_blank', 'noopener'); return; }
   state.busy = true;
   try{
     const data = await runSearch(q);
@@ -1603,22 +2097,37 @@ async function luckySearch(){
   state.busy = false; performSearch(q);
 }
 
-/* ============================================================
-   搜索联想
-   ============================================================ */
+/* 搜索联想 */
 let sugItems = []; let sugIndex = -1;
 function hideSuggest(el){ el.classList.remove('open'); el.innerHTML=''; sugItems=[]; sugIndex=-1; }
 function showSuggest(v, el, input){
   const n = norm(v); if(!n){ hideSuggest(el); return; }
   const out = []; const seen = new Set();
+
+  /* 预置官网联想优先 */
+  OFFICIAL_SITES.forEach(site => {
+    for(const nm of site.names){
+      if(!nm) continue;
+      if(nm.indexOf(n) === 0 || (nm.length >= 2 && nm.indexOf(n) !== -1)){
+        if(!seen.has(site.name)){
+          seen.add(site.name);
+          out.push({ t: site.name, type: 'site' });
+        }
+        break;
+      }
+    }
+  });
+
   loadHistory().forEach(h => { if(norm(h).indexOf(n) !== -1 && !seen.has(h)){ seen.add(h); out.push({ t:h, type:'history' }); } });
   KB.forEach(item => { if(norm(item.title).indexOf(n) !== -1 && !seen.has(item.title)){ seen.add(item.title); out.push({ t:item.title, type:'kb' }); } });
+
   if(!out.length){ hideSuggest(el); return; }
   sugItems = out.slice(0,8).map(x => x.t); sugIndex = -1;
   el.innerHTML = '';
   out.slice(0,8).forEach(x => {
     const row = document.createElement('div'); row.className='sug';
-    const ico = document.createElement('i'); ico.className = 'sug-ico las ' + (x.type==='history'?'la-history':'la-lightbulb');
+    const ico = document.createElement('i');
+    ico.className = 'sug-ico las ' + (x.type === 'site' ? 'la-globe' : (x.type==='history' ? 'la-history' : 'la-lightbulb'));
     const txt = document.createElement('span'); txt.className='sug-t'; txt.textContent = x.t;
     row.appendChild(ico); row.appendChild(txt);
     row.addEventListener('mousedown', e => { e.preventDefault(); input.value = x.t; hideSuggest(el); onInput(input, input.parentNode.parentNode); performSearch(x.t); });
@@ -1639,9 +2148,7 @@ function setupInput(input, wrap, suggestEl){
   input.addEventListener('blur', () => setTimeout(() => hideSuggest(suggestEl), 130));
 }
 
-/* ============================================================
-   事件绑定
-   ============================================================ */
+/* 事件绑定 */
 setupInput(P.qHome, P.homeSearchWrap, P.sugHome);
 setupInput(P.qResults, P.rSearchWrap, P.sugResults);
 
@@ -1673,9 +2180,7 @@ document.addEventListener('mousedown', e => {
   if(!P.sugResults.contains(e.target) && e.target !== P.qResults) hideSuggest(P.sugResults);
 });
 
-/* ============================================================
-   主题
-   ============================================================ */
+/* 主题 */
 function applyTheme(dark){
   document.documentElement.classList.toggle('dark', dark);
   if(P.themeIconHome) P.themeIconHome.className = 'las ' + (dark?'la-sun':'la-moon');
@@ -1688,16 +2193,14 @@ function applyTheme(dark){
 $('themeBtnHome').addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('dark')));
 $('themeBtnResults').addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('dark')));
 
-/* ============================================================
-   杂项
-   ============================================================ */
+/* 杂项 */
 $('lnkAbout').addEventListener('click', e => { e.preventDefault(); performSearch('康荣 ComRa 是什么'); });
-$('lnkKB').addEventListener('click', e => { e.preventDefault(); performSearch('搜索引擎是如何工作的'); });
+$('lnkKB').addEventListener('click', e => { e.preventDefault(); performSearch('预置官网库'); });
 $('langZh').addEventListener('click', e => { e.preventDefault(); performSearch('康荣 ComRa 是什么'); });
 $('langEn').addEventListener('click', e => { e.preventDefault(); performSearch('ComRa search engine'); });
 $('fAbout').addEventListener('click', e => { e.preventDefault(); performSearch('康荣 ComRa 是什么'); });
 $('fHow').addEventListener('click', e => { e.preventDefault(); performSearch('康荣的检索链路'); });
-$('fKB').addEventListener('click', e => { e.preventDefault(); performSearch('搜索引擎是如何工作的'); });
+$('fKB').addEventListener('click', e => { e.preventDefault(); performSearch('预置官网库'); });
 $('fPrivacy').addEventListener('click', e => { e.preventDefault(); performSearch('隐私与数据说明'); });
 $('fTerms').addEventListener('click', e => { e.preventDefault(); performSearch('康荣 ComRa 是什么'); });
 $('fSettings').addEventListener('click', e => { e.preventDefault(); applyTheme(!document.documentElement.classList.contains('dark')); });
