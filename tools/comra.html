@@ -399,6 +399,7 @@ html.dark .g-more{border-top-color:#3c4043;}
     <a class="r-tab active" data-tab="all">全部</a>
     <a class="r-tab" data-tab="web">网页</a>
     <a class="r-tab" data-tab="official">官网</a>
+    <a class="r-tab" data-tab="wiki">百科</a>
     <a class="r-tab" data-tab="tech">技术</a>
     <a class="r-tab" data-tab="academic">学术</a>
   </nav>
@@ -969,11 +970,19 @@ function matchOfficial(query){
 /* 本地知识库 */
 const KB = [
   { title:'康荣 ComRa 是什么', keys:['康荣','comra','康荣comra','康荣是什么','康荣搜索引擎','康荣搜索'],
-    desc:'康荣（ComRa）是一个轻量级聚合搜索引擎。它不建立庞大的网页索引，而是把「本地知识库 + 预置官网 + 即时答案 + 联网检索」串成一条检索链路：先查预置官网与自有词条，再并行请求 DuckDuckGo、Tavily、SearXNG、Purili、DDG HTML、Hacker News、OpenAlex、Crossref 与 wttr.in 天气服务，最后把结果聚合呈现。' },
+    desc:'康荣（ComRa）是一个轻量级聚合搜索引擎。它不建立庞大的网页索引，而是把「本地知识库 + 预置官网 + 即时答案 + 联网检索」串成一条检索链路：先查预置官网与自有词条，再并行请求 DuckDuckGo、Tavily、SearXNG、Purili、DDG HTML、百度百科、搜狗百科、360百科、维基百科、Hacker News、OpenAlex、Crossref 与 wttr.in 天气服务，最后把结果聚合呈现。' },
   { title:'预置官网库', keys:['预置官网','官网库','官方网站库','康荣官网库'],
     desc:'康荣内置了 550+ 个常见网站的官方入口，覆盖搜索引擎、社交社区、视频、音乐、购物电商、新闻资讯、学习教育、开发者、政府银行、出行地图、工具办公、游戏、科技数码、AI 大模型、生活服务等 15 个分类。搜索对应名称时，官方网站会固定排在第一位，并带有绿色的「官网」标识。' },
   { title:'康荣的检索链路', keys:['康荣怎么搜索','康荣原理','comra原理','聚合搜索','检索链路'],
-    desc:'① 预置官网匹配 —— 命中时官网固定排在第一位\n② 本地词条匹配 —— 关键词归一化后按命中长度加权打分\n③ 结构化直答 —— 时间、日期、四则运算、平方根、百分比即时计算\n④ 天气直连 —— wttr.in 返回实时天气与三日预报\n⑤ DuckDuckGo Instant Answer API\n⑥ Tavily 无密钥模式\n⑦ SearXNG 元搜索（HTML 解析）\n⑧ Purili 独立索引（公开 CORS）\n⑨ DuckDuckGo HTML 兜底解析\n⑩ Hacker News Algolia 搜索\n⑪ OpenAlex 与 Crossref 论文检索\n⑫ GitHub 仓库搜索\n⑬ 兜底 —— 一键跳转 Google / Bing / 百度 / 搜狗 等外部引擎' },
+    desc:'① 预置官网匹配 —— 命中时官网固定排在第一位\n② 本地词条匹配 —— 关键词归一化后按命中长度加权打分\n③ 结构化直答 —— 时间、日期、四则运算、平方根、百分比即时计算\n④ 天气直连 —— wttr.in 返回实时天气与三日预报\n⑤ DuckDuckGo Instant Answer API\n⑥ Tavily 无密钥模式\n⑦ SearXNG 元搜索（HTML 解析）\n⑧ Purili 独立索引（公开 CORS）\n⑨ DuckDuckGo HTML 兜底解析\n⑩ 百科 —— 百度百科 / 搜狗百科 / 360百科 / 中文维基百科\n⑪ Hacker News Algolia 搜索\n⑫ OpenAlex 与 Crossref 论文检索\n⑬ GitHub 仓库搜索\n⑭ 兜底 —— 一键跳转 Google / Bing / 百度 / 搜狗 等外部引擎' },
+  { title:'百度百科搜索接入', keys:['百度百科','baidu baike','百科搜索'],
+    desc:'通过 xiaoapi.cn 的免密钥百科接口获取百度百科词条的摘要与链接，无需 API Key。' },
+  { title:'搜狗百科搜索接入', keys:['搜狗百科','sogou baike'],
+    desc:'通过 xiaoapi.cn 的百科接口（type=sg）获取搜狗百科词条摘要与链接，无需密钥。' },
+  { title:'360百科搜索接入', keys:['360百科','好搜百科','so.com百科'],
+    desc:'360百科没有公开的官方搜索 API，康荣通过 CORS 代理直接请求 baike.so.com 的搜索页面解析结果。' },
+  { title:'维基百科搜索接入', keys:['维基百科','wikipedia','wiki搜索'],
+    desc:'使用维基百科官方的 MediaWiki Search API，支持中文（zh）与英文（en）两个语言版本，无需密钥。' },
   { title:'SearXNG 公开实例', keys:['searxng','searx','元搜索'],
     desc:'SearXNG 是开源元搜索引擎，聚合 Google、Bing、DuckDuckGo 等 70+ 引擎。公共实例大多默认关闭 JSON API，因此康荣解析其 HTML 结果页，经 CORS 代理获取结构化数据。' },
   { title:'Purili 搜索', keys:['purili','独立索引'],
@@ -1028,6 +1037,69 @@ async function fetchWeather(city){
 const PROXIES = [ u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u), u => 'https://corsproxy.io/?' + encodeURIComponent(u) ];
 async function proxiedFetch(url, opts, ms){ for(const proxy of PROXIES){ try{ const res = await fetchT(proxy(url), opts, ms || 7000); if(res.ok) return res; }catch(e){} } return null; }
 
+/* 百科：百度百科 */
+async function baiduBaikeSearch(q){
+  try{
+    const url = 'https://xiaoapi.cn/API/bk.php?m=json&type=bd&msg=' + encodeURIComponent(q);
+    const res = await fetchT(url, {}, 6000);
+    if(!res.ok) return [];
+    const d = await res.json();
+    if(!d || !d.msg) return [];
+    return [{ title: (d.msg || '').split('。')[0] || q + ' - 百度百科', url: d.more || ('https://baike.baidu.com/item/' + encodeURIComponent(q)), snippet: trim(d.msg, 300), site: '百度百科', source: 'baidu' }];
+  }catch(e){ return []; }
+}
+
+/* 百科：搜狗百科 */
+async function sogouBaikeSearch(q){
+  try{
+    const url = 'https://xiaoapi.cn/API/bk.php?m=json&type=sg&msg=' + encodeURIComponent(q);
+    const res = await fetchT(url, {}, 6000);
+    if(!res.ok) return [];
+    const d = await res.json();
+    if(!d || !d.msg) return [];
+    return [{ title: (d.msg || '').split('。')[0] || q + ' - 搜狗百科', url: d.more || ('https://baike.sogou.com/v' + encodeURIComponent(q) + '.htm'), snippet: trim(d.msg, 300), site: '搜狗百科', source: 'sogou' }];
+  }catch(e){ return []; }
+}
+
+/* 百科：360百科（CORS 代理 + HTML 解析） */
+async function q360BaikeSearch(q){
+  try{
+    const target = 'https://baike.so.com/doc/search?q=' + encodeURIComponent(q);
+    const res = await proxiedFetch(target, {}, 7000);
+    if(!res) return [];
+    const html = await res.text();
+    const results = [];
+    const itemRegex = /<div[^>]*class="[^"]*item[^"]*"[^>]*>[\s\S]*?<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/gi;
+    let m;
+    while((m = itemRegex.exec(html)) !== null && results.length < 5){
+      const href = m[1].startsWith('http') ? m[1] : 'https://baike.so.com' + m[1];
+      const title = stripHtml(m[2]);
+      const snippet = stripHtml(m[3]);
+      if(title && title.length > 1) results.push({ title, url: href, snippet: trim(snippet, 250), site: '360百科', source: '360' });
+    }
+    if(results.length === 0){
+      results.push({ title: q + ' - 360百科', url: 'https://baike.so.com/doc/search?q=' + encodeURIComponent(q), snippet: '在 360百科中搜索「' + q + '」', site: '360百科', source: '360' });
+    }
+    return results;
+  }catch(e){ return []; }
+}
+
+/* 百科：维基百科 */
+async function wikiSearch(q, lang, limit){
+  try{
+    const url = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(q) + '&srlimit=' + limit + '&format=json&origin=*&srprop=snippet|wordcount';
+    const res = await fetchT(url, {}, 6500);
+    if(!res.ok) return [];
+    const d = await res.json();
+    const arr = (d.query && d.query.search) || [];
+    const siteName = lang === 'zh' ? '中文维基百科' : 'English Wikipedia';
+    return arr.map(x => {
+      const title = stripHtml(x.title);
+      return { title, url: 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(title.replace(/ /g, '_')), snippet: stripHtml(x.snippet || '') + (x.wordcount ? '（约 ' + x.wordcount + ' 词）' : ''), site: siteName, source: 'wiki' };
+    });
+  }catch(e){ return []; }
+}
+
 async function ddgSearch(q){
   try{
     const url = 'https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1&kl=cn-zh';
@@ -1048,7 +1120,7 @@ async function tavilySearch(q){
   }catch(e){ return { answer:null, results:[] }; }
 }
 
-/* SearXNG：解析 HTML（公共实例 JSON API 通常被禁用） */
+/* SearXNG：解析 HTML */
 async function searxngSearch(q){
   const instances = ['https://searx.be', 'https://search.bus-hit.me', 'https://searx.tiekoetter.com', 'https://priv.au'];
   for(const base of instances){
@@ -1068,7 +1140,7 @@ async function searxngSearch(q){
   return [];
 }
 
-/* Purili：独立索引，公开 CORS，无需密钥 */
+/* Purili：独立索引，公开 CORS */
 async function puriliSearch(q){
   try{
     const res = await fetchT(`https://api.purili.com/search?q=${encodeURIComponent(q)}`, {}, 6000);
@@ -1078,7 +1150,7 @@ async function puriliSearch(q){
   }catch(e){ return []; }
 }
 
-/* DuckDuckGo HTML Lite：解析 SERP 真实网页结果 */
+/* DuckDuckGo HTML Lite：解析 SERP */
 async function ddgHtmlSearch(q){
   try{
     const target = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}&kl=cn-zh`;
@@ -1141,7 +1213,7 @@ async function githubSearch(q, limit){
 }
 
 /* 打分排序 */
-const SOURCE_WEIGHT = { official:1000, kb:8, tavily:6, ddg:5, searxng:5, purili:5, 'ddg-html':5, hn:3, github:3, openalex:2, crossref:2 };
+const SOURCE_WEIGHT = { official:1000, kb:8, tavily:6, ddg:5, searxng:5, purili:5, 'ddg-html':5, baidu:5, sogou:4, '360':4, wiki:4, hn:3, github:3, openalex:2, crossref:2 };
 function scoreResult(r, query){
   if(r.source === 'official') return 99999;
   const q = norm(query); const title = norm(r.title || ''); const sn = norm(r.snippet || '');
@@ -1160,7 +1232,6 @@ function scoreResult(r, query){
 async function runSearch(query){
   const t0 = performance.now(); const c = norm(query); const cards = []; const collected = [];
 
-  /* 官网匹配 */
   const official = matchOfficial(query); let officialHit = false;
   if(official){
     const s = official.site;
@@ -1169,30 +1240,36 @@ async function runSearch(query){
     officialHit = true;
   }
 
-  /* 结构化直答 */
   if(/(几点了|现在几点|现在时间|当前时间)/.test(c)) cards.push({ type:'note', label:'当前时间', icon:'la-clock', text: timeText() });
   if(/(今天几号|今天日期|几月几号|什么日期)/.test(c)) cards.push({ type:'note', label:'今天日期', icon:'la-calendar', text: dateText() });
   if(/(星期几|周几)/.test(c)) cards.push({ type:'note', label:'星期', icon:'la-calendar-day', text: '今天是 ' + WEEK[new Date().getDay()] + '。' });
   const math = tryMath(query); if(math) cards.push({ type:'calc', label:'计算结果', icon:'la-calculator', expr: math.expr, val: fmt(math.val) });
 
-  /* 本地知识库 */
   const kb = matchKB(c); const hasKB = !!(kb.item && kb.score >= 2);
   if(hasKB){
     if(!officialHit) cards.push({ type:'note', label:'康荣速览', icon:'la-lightbulb', title: kb.item.title, text: kb.item.desc });
     collected.push({ title: kb.item.title, url: null, snippet: kb.item.desc, site: '康荣知识库', source: 'kb' });
   }
 
-  /* 网络检索 */
   const isWx = /(天气|气温|温度|下雨|冷不冷|热不热|刮风|阴晴)/.test(c);
   const city = isWx ? (extractCity(query) || '北京') : null;
   const hasChinese = /[\u4e00-\u9fa5]/.test(query);
 
+  /* 索引对照：
+     0 ddg, 1 tavily, 2 searxng, 3 purili, 4 ddg-html,
+     5 baidu, 6 sogou, 7 360, 8 wiki-zh, 9 wiki-en(条件),
+     10 hn, 11 openalex, 12 crossref, 13 github, 14 weather */
   const settled = await Promise.allSettled([
     ddgSearch(query),
     tavilySearch(query),
     searxngSearch(query),
     puriliSearch(query),
     ddgHtmlSearch(query),
+    baiduBaikeSearch(query),
+    sogouBaikeSearch(query),
+    q360BaikeSearch(query),
+    wikiSearch(query, 'zh', 25),
+    hasChinese ? wikiSearch(query, 'en', 15) : Promise.resolve([]),
     hnSearch(query, 30),
     openAlexSearch(query, 30),
     crossrefSearch(query, 20),
@@ -1205,11 +1282,16 @@ async function runSearch(query){
   const searxngRes = settled[2].status==='fulfilled'?settled[2].value:[];
   const puriliRes = settled[3].status==='fulfilled'?settled[3].value:[];
   const ddgHtmlRes = settled[4].status==='fulfilled'?settled[4].value:[];
-  const hnRes = settled[5].status==='fulfilled'?settled[5].value:[];
-  const oaRes = settled[6].status==='fulfilled'?settled[6].value:[];
-  const crRes = settled[7].status==='fulfilled'?settled[7].value:[];
-  const ghRes = settled[8].status==='fulfilled'?settled[8].value:[];
-  const wx = settled[9].status==='fulfilled'?settled[9].value:null;
+  const baiduRes = settled[5].status==='fulfilled'?settled[5].value:[];
+  const sogouRes = settled[6].status==='fulfilled'?settled[6].value:[];
+  const q360Res = settled[7].status==='fulfilled'?settled[7].value:[];
+  const wikiZhRes = settled[8].status==='fulfilled'?settled[8].value:[];
+  const wikiEnRes = settled[9].status==='fulfilled'?settled[9].value:[];
+  const hnRes = settled[10].status==='fulfilled'?settled[10].value:[];
+  const oaRes = settled[11].status==='fulfilled'?settled[11].value:[];
+  const crRes = settled[12].status==='fulfilled'?settled[12].value:[];
+  const ghRes = settled[13].status==='fulfilled'?settled[13].value:[];
+  const wx = settled[14].status==='fulfilled'?settled[14].value:null;
 
   if(wx) cards.push({ type:'weather', label:'实时天气 · wttr.in', icon:'la-cloud-sun', data: wx });
 
@@ -1225,9 +1307,8 @@ async function runSearch(query){
     tav.results.forEach(r => { if(!r.url||!r.content) return; collected.push({ title: r.title||domainOf(r.url)||r.url, url: r.url, snippet: r.content, site: domainOf(r.url)||'网页', source:'tavily' }); });
   }
 
-  [...searxngRes, ...puriliRes, ...ddgHtmlRes, ...hnRes, ...oaRes, ...crRes, ...ghRes].forEach(r => collected.push(r));
+  [...searxngRes, ...puriliRes, ...ddgHtmlRes, ...baiduRes, ...sogouRes, ...q360Res, ...wikiZhRes, ...wikiEnRes, ...hnRes, ...oaRes, ...crRes, ...ghRes].forEach(r => collected.push(r));
 
-  /* 去重 & 排序 */
   const seen = new Set(); const deduped = [];
   collected.forEach(r => { const key = normalizeUrl(r.url); if(key && seen.has(key)) return; if(key) seen.add(key); r.score = scoreResult(r, query); deduped.push(r); });
   deduped.sort((a,b) => { if(a.source === 'official' && b.source !== 'official') return -1; if(b.source === 'official' && a.source !== 'official') return 1; return b.score - a.score; });
@@ -1237,8 +1318,15 @@ async function runSearch(query){
 }
 
 /* 分类 */
-const CAT_LABELS = { all:'全部', web:'网页', official:'官网', tech:'技术', academic:'学术' };
-const CAT_MATCH = { all: () => true, web: r => ['tavily','ddg','searxng','purili','ddg-html','kb'].includes(r.source), official: r => r.source==='official', tech: r => ['hn','github'].includes(r.source), academic: r => ['openalex','crossref'].includes(r.source) };
+const CAT_LABELS = { all:'全部', web:'网页', official:'官网', wiki:'百科', tech:'技术', academic:'学术' };
+const CAT_MATCH = {
+  all: () => true,
+  web: r => ['tavily','ddg','searxng','purili','ddg-html','kb'].includes(r.source),
+  official: r => r.source==='official',
+  wiki: r => ['wiki','baidu','sogou','360'].includes(r.source),
+  tech: r => ['hn','github'].includes(r.source),
+  academic: r => ['openalex','crossref'].includes(r.source)
+};
 function getFiltered(cat){ return state.all.filter(CAT_MATCH[cat]||CAT_MATCH.all); }
 function countForCat(cat){ return state.all.filter(CAT_MATCH[cat]||(()=>false)).length; }
 
@@ -1250,7 +1338,7 @@ function makeFavicon(url, site){
   if(url){ const dom = domainOf(url); if(dom){ const img = document.createElement('img'); img.alt=''; img.src='https://icons.duckduckgo.com/ip3/'+dom+'.ico'; img.onload=()=>{ d.textContent=''; d.style.background='transparent'; d.appendChild(img); }; img.onerror=()=>{}; } }
   return d;
 }
-const SOURCE_TAG = { official:'官网', kb:'康荣', tavily:'Tavily', ddg:'DDG', searxng:'SearXNG', purili:'Purili', 'ddg-html':'DDG HTML', hn:'HN', github:'GitHub', openalex:'OpenAlex', crossref:'Crossref' };
+const SOURCE_TAG = { official:'官网', kb:'康荣', tavily:'Tavily', ddg:'DDG', searxng:'SearXNG', purili:'Purili', 'ddg-html':'DDG HTML', baidu:'百度百科', sogou:'搜狗百科', '360':'360百科', wiki:'维基', hn:'HN', github:'GitHub', openalex:'OpenAlex', crossref:'Crossref' };
 
 function renderResult(r){
   const el = document.createElement('div'); el.className='g-result';
@@ -1306,7 +1394,13 @@ function renderMoreBlock(query){
 
 /* 右栏辅助卡片 */
 function renderSourceStats(){
-  const groups = [ { label:'官网', icon:'la-check-circle', test: r => r.source==='official' }, { label:'网页', icon:'la-globe', test: r => ['tavily','ddg','searxng','purili','ddg-html','kb'].includes(r.source) }, { label:'技术', icon:'la-code', test: r => ['hn','github'].includes(r.source) }, { label:'学术', icon:'la-graduation-cap', test: r => ['openalex','crossref'].includes(r.source) } ];
+  const groups = [
+    { label:'官网', icon:'la-check-circle', test: r => r.source==='official' },
+    { label:'网页', icon:'la-globe', test: r => ['tavily','ddg','searxng','purili','ddg-html','kb'].includes(r.source) },
+    { label:'百科', icon:'la-book', test: r => ['wiki','baidu','sogou','360'].includes(r.source) },
+    { label:'技术', icon:'la-code', test: r => ['hn','github'].includes(r.source) },
+    { label:'学术', icon:'la-graduation-cap', test: r => ['openalex','crossref'].includes(r.source) }
+  ];
   const rows = []; groups.forEach(g => { const n = state.all.filter(g.test).length; if(n > 0) rows.push({ label: g.label, icon: g.icon, n }); }); if(!rows.length) return null;
   const box = document.createElement('div'); box.className = 'side-card'; const title = document.createElement('div'); title.className = 'side-title'; title.innerHTML = '<i class="las la-chart-pie"></i>结果来源'; box.appendChild(title);
   rows.forEach(r => { const row = document.createElement('div'); row.className = 'source-row'; const left = document.createElement('span'); left.innerHTML = '<i class="las ' + r.icon + '"></i>' + r.label; const right = document.createElement('b'); right.textContent = r.n; row.appendChild(left); row.appendChild(right); box.appendChild(row); }); return box;
