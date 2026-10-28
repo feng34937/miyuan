@@ -449,7 +449,20 @@ function prettyUrl(u){ if(!u) return '康荣知识库'; try{ const x=new URL(u);
 function colorFrom(s){ let h=0; s=String(s||'x'); for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))%360; return `hsl(${h} 58% 48%)`; }
 function stripHtml(s){ const d=document.createElement('div'); d.innerHTML=String(s||''); return (d.textContent||'').replace(/\s+/g,' ').trim(); }
 function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-function fetchT(url,opts,ms){ const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),ms||6500); return fetch(url,Object.assign({},opts,{signal:ctrl.signal})).finally(()=>clearTimeout(t)); }
+
+/* ★ 网络请求工具：默认 5s 超时 */
+function fetchT(url,opts,ms){ const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),ms||5000); return fetch(url,Object.assign({},opts,{signal:ctrl.signal})).finally(()=>clearTimeout(t)); }
+
+/* ★ 强制兜底：无论 promise 何时完成，超过 ms 一律回退 */
+function withTimeout(promise, ms, fallback){
+  let timer;
+  const timeout = new Promise(resolve => { timer = setTimeout(() => resolve(fallback), ms); });
+  return Promise.race([
+    Promise.resolve(promise).then(v => v).catch(() => fallback),
+    timeout
+  ]).finally(() => clearTimeout(timer));
+}
+
 function normalizeUrl(u){ if(!u) return ''; try{ const x=new URL(u); return (x.hostname+x.pathname+x.search).toLowerCase().replace(/^www\./,'').replace(/\/$/,''); }catch(e){ return String(u).toLowerCase(); } }
 function invertAbstract(idx){ if(!idx) return ''; const arr=[]; Object.keys(idx).forEach(w=>{ (idx[w]||[]).forEach(p=>{ arr[p]=w; }); }); return arr.filter(Boolean).join(' '); }
 
@@ -1023,7 +1036,7 @@ function extractCity(q){ let s=String(q).replace(/\s/g,''); s=s.replace(/^(今�
 async function fetchWeather(city){
   try{
     const url='https://wttr.in/'+encodeURIComponent(city)+'?format=j1&lang=zh';
-    const res=await fetchT(url,{headers:{'Accept':'application/json'}},8000); if(!res.ok) return null;
+    const res=await fetchT(url,{headers:{'Accept':'application/json'}},5000); if(!res.ok) return null;
     const d=await res.json(); const cc=d.current_condition&&d.current_condition[0]; if(!cc) return null;
     let desc=''; if(cc.lang_zh&&cc.lang_zh[0]&&cc.lang_zh[0].value) desc=cc.lang_zh[0].value; else if(cc.weatherDesc&&cc.weatherDesc[0]&&cc.weatherDesc[0].value) desc=zhWeather(cc.weatherDesc[0].value); else desc='未知';
     const area=d.nearest_area&&d.nearest_area[0];
@@ -1033,15 +1046,22 @@ async function fetchWeather(city){
   }catch(e){ return null; }
 }
 
-/* 多源检索 */
+/* ★ 多代理并行竞速：谁先返回用谁 */
 const PROXIES = [ u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u), u => 'https://corsproxy.io/?' + encodeURIComponent(u) ];
-async function proxiedFetch(url, opts, ms){ for(const proxy of PROXIES){ try{ const res = await fetchT(proxy(url), opts, ms || 7000); if(res.ok) return res; }catch(e){} } return null; }
+async function proxiedFetch(url, opts, ms){
+  const timeout = ms || 4500;
+  const tasks = PROXIES.map(proxy =>
+    fetchT(proxy(url), opts, timeout).then(r => { if(!r.ok) throw new Error('http'); return r; })
+  );
+  try { return await Promise.any(tasks); }
+  catch(e){ return null; }
+}
 
 /* 百科：百度百科 */
 async function baiduBaikeSearch(q){
   try{
     const url = 'https://xiaoapi.cn/API/bk.php?m=json&type=bd&msg=' + encodeURIComponent(q);
-    const res = await fetchT(url, {}, 6000);
+    const res = await fetchT(url, {}, 4500);
     if(!res.ok) return [];
     const d = await res.json();
     if(!d || !d.msg) return [];
@@ -1053,7 +1073,7 @@ async function baiduBaikeSearch(q){
 async function sogouBaikeSearch(q){
   try{
     const url = 'https://xiaoapi.cn/API/bk.php?m=json&type=sg&msg=' + encodeURIComponent(q);
-    const res = await fetchT(url, {}, 6000);
+    const res = await fetchT(url, {}, 4500);
     if(!res.ok) return [];
     const d = await res.json();
     if(!d || !d.msg) return [];
@@ -1061,11 +1081,11 @@ async function sogouBaikeSearch(q){
   }catch(e){ return []; }
 }
 
-/* 百科：360百科（CORS 代理 + HTML 解析） */
+/* 百科：360百科 */
 async function q360BaikeSearch(q){
   try{
     const target = 'https://baike.so.com/doc/search?q=' + encodeURIComponent(q);
-    const res = await proxiedFetch(target, {}, 7000);
+    const res = await proxiedFetch(target, {}, 5000);
     if(!res) return [];
     const html = await res.text();
     const results = [];
@@ -1088,7 +1108,7 @@ async function q360BaikeSearch(q){
 async function wikiSearch(q, lang, limit){
   try{
     const url = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(q) + '&srlimit=' + limit + '&format=json&origin=*&srprop=snippet|wordcount';
-    const res = await fetchT(url, {}, 6500);
+    const res = await fetchT(url, {}, 4500);
     if(!res.ok) return [];
     const d = await res.json();
     const arr = (d.query && d.query.search) || [];
@@ -1103,7 +1123,7 @@ async function wikiSearch(q, lang, limit){
 async function ddgSearch(q){
   try{
     const url = 'https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1&kl=cn-zh';
-    const res = await fetchT(url, {}, 6500); if(!res.ok) return { answer:null, related:[] };
+    const res = await fetchT(url, {}, 4500); if(!res.ok) return { answer:null, related:[] };
     const d = await res.json();
     const out = { answer: d.Answer || null, abstract: d.AbstractText || null, abstractUrl: d.AbstractURL || null, heading: d.Heading || '', related: [] };
     (d.RelatedTopics || []).forEach(t => { if(t && t.Text) out.related.push({ text: t.Text, url: t.FirstURL || null }); else if(t && t.Topics) t.Topics.forEach(x => { if(x && x.Text) out.related.push({ text: x.Text, url: x.FirstURL || null }); }); });
@@ -1113,48 +1133,50 @@ async function ddgSearch(q){
 
 async function tavilySearch(q){
   try{
-    const res = await fetchT('https://api.tavily.com/search', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Tavily-Access-Mode': 'keyless' }, body: JSON.stringify({ query: q, max_results: 20, include_answer: true, search_depth: 'basic' }) }, 9000);
+    const res = await fetchT('https://api.tavily.com/search', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Tavily-Access-Mode': 'keyless' }, body: JSON.stringify({ query: q, max_results: 20, include_answer: true, search_depth: 'basic' }) }, 5000);
     if(!res.ok) return { answer:null, results:[] };
     const d = await res.json();
     return { answer: d.answer || null, results: (d.results || []).map(r => ({ title: r.title || '', url: r.url || '', content: r.content || '' })) };
   }catch(e){ return { answer:null, results:[] }; }
 }
 
-/* SearXNG：解析 HTML */
+/* ★ SearXNG：4 个实例并行竞速，谁先解析成功用谁 */
 async function searxngSearch(q){
   const instances = ['https://searx.be', 'https://search.bus-hit.me', 'https://searx.tiekoetter.com', 'https://priv.au'];
-  for(const base of instances){
-    try{
-      const target = `${base}/search?q=${encodeURIComponent(q)}&safesearch=0`;
-      const res = await proxiedFetch(target, {}, 7000); if(!res) continue;
-      const html = await res.text(); const results = [];
-      const re = /<article[^>]*class="[^"]*result[^"]*"[^>]*>[\s\S]*?<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<p[^>]*class="[^"]*content[^"]*"[^>]*>([\s\S]*?)<\/p>/gi;
-      let m;
-      while((m = re.exec(html)) !== null && results.length < 20){
-        const url = m[1].startsWith('http') ? m[1] : base + m[1];
-        results.push({ title: stripHtml(m[2]), url, snippet: stripHtml(m[3]), site: domainOf(url) || 'SearXNG', source: 'searxng' });
-      }
-      if(results.length) return results;
-    }catch(e){ continue; }
-  }
-  return [];
+  const tasks = instances.map(async base => {
+    const target = `${base}/search?q=${encodeURIComponent(q)}&safesearch=0`;
+    const res = await proxiedFetch(target, {}, 4500);
+    if(!res) throw new Error('no-proxy');
+    const html = await res.text();
+    const results = [];
+    const re = /<article[^>]*class="[^"]*result[^"]*"[^>]*>[\s\S]*?<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<p[^>]*class="[^"]*content[^"]*"[^>]*>([\s\S]*?)<\/p>/gi;
+    let m;
+    while((m = re.exec(html)) !== null && results.length < 20){
+      const url = m[1].startsWith('http') ? m[1] : base + m[1];
+      results.push({ title: stripHtml(m[2]), url, snippet: stripHtml(m[3]), site: domainOf(url) || 'SearXNG', source: 'searxng' });
+    }
+    if(!results.length) throw new Error('empty');
+    return results;
+  });
+  try { return await Promise.any(tasks); }
+  catch(e){ return []; }
 }
 
-/* Purili：独立索引，公开 CORS */
+/* Purili：独立索引 */
 async function puriliSearch(q){
   try{
-    const res = await fetchT(`https://api.purili.com/search?q=${encodeURIComponent(q)}`, {}, 6000);
+    const res = await fetchT(`https://api.purili.com/search?q=${encodeURIComponent(q)}`, {}, 4500);
     if(!res.ok) return [];
     const d = await res.json();
     return (d.results || []).slice(0, 20).map(r => ({ title: r.title || '', url: r.url || '', snippet: r.snippet || r.description || '', site: domainOf(r.url) || 'Purili', source: 'purili' }));
   }catch(e){ return []; }
 }
 
-/* DuckDuckGo HTML Lite：解析 SERP */
+/* DuckDuckGo HTML Lite */
 async function ddgHtmlSearch(q){
   try{
     const target = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}&kl=cn-zh`;
-    const res = await proxiedFetch(target, {}, 7000); if(!res) return [];
+    const res = await proxiedFetch(target, {}, 5000); if(!res) return [];
     const html = await res.text(); const results = [];
     const re = /<a[^>]*class="result__a"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<a[^>]*class="result__snippet"[^>]*>([\s\S]*?)<\/a>/gi;
     let m;
@@ -1169,7 +1191,7 @@ async function ddgHtmlSearch(q){
 async function hnSearch(q, limit){
   try{
     const url = 'https://hn.algolia.com/api/v1/search?query=' + encodeURIComponent(q) + '&tags=story&hitsPerPage=' + limit;
-    const res = await fetchT(url, {}, 6500); if(!res.ok) return [];
+    const res = await fetchT(url, {}, 4500); if(!res.ok) return [];
     const d = await res.json();
     return (d.hits || []).map(h => ({ title: h.title || 'Hacker News 讨论', url: h.url || ('https://news.ycombinator.com/item?id=' + h.objectID), snippet: (h.story_text || '').replace(/\s+/g,' ').trim() + (h.points != null ? ' · ' + h.points + ' 分' : '') + (h.author ? ' · by ' + h.author : ''), site: 'Hacker News', source: 'hn' }));
   }catch(e){ return []; }
@@ -1178,7 +1200,7 @@ async function hnSearch(q, limit){
 async function openAlexSearch(q, limit){
   try{
     const url = 'https://api.openalex.org/works?search=' + encodeURIComponent(q) + '&per-page=' + limit;
-    const res = await fetchT(url, {}, 8000); if(!res.ok) return [];
+    const res = await fetchT(url, {}, 5000); if(!res.ok) return [];
     const d = await res.json();
     return (d.results || []).map(w => {
       const authors = (w.authorships || []).slice(0, 3).map(a => a.author && a.author.display_name).filter(Boolean).join('、');
@@ -1192,7 +1214,7 @@ async function openAlexSearch(q, limit){
 async function crossrefSearch(q, limit){
   try{
     const url = 'https://api.crossref.org/works?query=' + encodeURIComponent(q) + '&rows=' + limit + '&select=DOI,title,author,issued,abstract,URL';
-    const res = await fetchT(url, {}, 8000); if(!res.ok) return [];
+    const res = await fetchT(url, {}, 5000); if(!res.ok) return [];
     const d = await res.json(); const items = (d.message && d.message.items) || [];
     return items.map(it => {
       const title = (it.title && it.title[0]) || '未命名文献';
@@ -1206,7 +1228,7 @@ async function crossrefSearch(q, limit){
 async function githubSearch(q, limit){
   try{
     const url = 'https://api.github.com/search/repositories?q=' + encodeURIComponent(q) + '&per_page=' + limit + '&sort=stars&order=desc';
-    const res = await fetchT(url, { headers: { 'Accept': 'application/vnd.github+json' } }, 7000); if(!res.ok) return [];
+    const res = await fetchT(url, { headers: { 'Accept': 'application/vnd.github+json' } }, 4500); if(!res.ok) return [];
     const d = await res.json();
     return (d.items || []).map(r => ({ title: r.full_name, url: r.html_url, snippet: trim([r.description, r.language, r.stargazers_count != null ? '★ ' + r.stargazers_count : ''].filter(Boolean).join(' · '), 300), site: 'GitHub', source: 'github' }));
   }catch(e){ return []; }
@@ -1228,7 +1250,7 @@ function scoreResult(r, query){
   return score;
 }
 
-/* 检索主流程 */
+/* ★ 检索主流程：所有源并行 + 10s 全局强制兜底 */
 async function runSearch(query){
   const t0 = performance.now(); const c = norm(query); const cards = []; const collected = [];
 
@@ -1255,43 +1277,29 @@ async function runSearch(query){
   const city = isWx ? (extractCity(query) || '北京') : null;
   const hasChinese = /[\u4e00-\u9fa5]/.test(query);
 
-  /* 索引对照：
-     0 ddg, 1 tavily, 2 searxng, 3 purili, 4 ddg-html,
-     5 baidu, 6 sogou, 7 360, 8 wiki-zh, 9 wiki-en(条件),
-     10 hn, 11 openalex, 12 crossref, 13 github, 14 weather */
-  const settled = await Promise.allSettled([
-    ddgSearch(query),
-    tavilySearch(query),
-    searxngSearch(query),
-    puriliSearch(query),
-    ddgHtmlSearch(query),
-    baiduBaikeSearch(query),
-    sogouBaikeSearch(query),
-    q360BaikeSearch(query),
-    wikiSearch(query, 'zh', 25),
-    hasChinese ? wikiSearch(query, 'en', 15) : Promise.resolve([]),
-    hnSearch(query, 30),
-    openAlexSearch(query, 30),
-    crossrefSearch(query, 20),
-    githubSearch(query, 20),
-    city ? fetchWeather(city) : Promise.resolve(null)
+  /* ★ 全局 10 秒强制兜底，所有源并行启动 */
+  const TMO = 10000;
+  const [
+    ddg, tav, searxngRes, puriliRes, ddgHtmlRes,
+    baiduRes, sogouRes, q360Res, wikiZhRes, wikiEnRes,
+    hnRes, oaRes, crRes, ghRes, wx
+  ] = await Promise.all([
+    withTimeout(ddgSearch(query), TMO, {answer:null, related:[]}),
+    withTimeout(tavilySearch(query), TMO, {answer:null, results:[]}),
+    withTimeout(searxngSearch(query), TMO, []),
+    withTimeout(puriliSearch(query), TMO, []),
+    withTimeout(ddgHtmlSearch(query), TMO, []),
+    withTimeout(baiduBaikeSearch(query), TMO, []),
+    withTimeout(sogouBaikeSearch(query), TMO, []),
+    withTimeout(q360BaikeSearch(query), TMO, []),
+    withTimeout(wikiSearch(query, 'zh', 25), TMO, []),
+    withTimeout(hasChinese ? wikiSearch(query, 'en', 15) : Promise.resolve([]), TMO, []),
+    withTimeout(hnSearch(query, 30), TMO, []),
+    withTimeout(openAlexSearch(query, 30), TMO, []),
+    withTimeout(crossrefSearch(query, 20), TMO, []),
+    withTimeout(githubSearch(query, 20), TMO, []),
+    withTimeout(city ? fetchWeather(city) : Promise.resolve(null), TMO, null)
   ]);
-
-  const ddg = settled[0].status==='fulfilled'?settled[0].value:{answer:null,related:[]};
-  const tav = settled[1].status==='fulfilled'?settled[1].value:{answer:null,results:[]};
-  const searxngRes = settled[2].status==='fulfilled'?settled[2].value:[];
-  const puriliRes = settled[3].status==='fulfilled'?settled[3].value:[];
-  const ddgHtmlRes = settled[4].status==='fulfilled'?settled[4].value:[];
-  const baiduRes = settled[5].status==='fulfilled'?settled[5].value:[];
-  const sogouRes = settled[6].status==='fulfilled'?settled[6].value:[];
-  const q360Res = settled[7].status==='fulfilled'?settled[7].value:[];
-  const wikiZhRes = settled[8].status==='fulfilled'?settled[8].value:[];
-  const wikiEnRes = settled[9].status==='fulfilled'?settled[9].value:[];
-  const hnRes = settled[10].status==='fulfilled'?settled[10].value:[];
-  const oaRes = settled[11].status==='fulfilled'?settled[11].value:[];
-  const crRes = settled[12].status==='fulfilled'?settled[12].value:[];
-  const ghRes = settled[13].status==='fulfilled'?settled[13].value:[];
-  const wx = settled[14].status==='fulfilled'?settled[14].value:null;
 
   if(wx) cards.push({ type:'weather', label:'实时天气 · wttr.in', icon:'la-cloud-sun', data: wx });
 
